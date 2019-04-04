@@ -1,6 +1,6 @@
 package com.tp.proyecto1;
 
-import com.tp.proyecto1.Repository.PersonaRepository;
+import com.tp.proyecto1.repository.PersonaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

@@ -1,6 +1,6 @@
 package com.tp.proyecto1.services;
 
-import com.tp.proyecto1.Repository.PersonaRepository;
+import com.tp.proyecto1.repository.PersonaRepository;
 import com.tp.proyecto1.model.Persona;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
