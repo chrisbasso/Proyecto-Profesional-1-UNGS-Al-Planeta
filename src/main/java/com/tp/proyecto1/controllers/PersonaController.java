@@ -4,10 +4,12 @@ import com.tp.proyecto1.model.Persona;
 import com.tp.proyecto1.services.PersonaService;
 import com.tp.proyecto1.views.PersonaView;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 @Controller
+@UIScope
 public class PersonaController {
 
 	private PersonaView personaView;
