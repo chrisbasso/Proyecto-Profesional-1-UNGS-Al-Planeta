@@ -11,15 +11,18 @@ public class Persona {
 	private Long id;
 
 	private String firstName;
-
 	private String lastName;
+	private String dni;
+	private String age;
 
 	protected Persona() {
 	}
 
-	public Persona(String firstName, String lastName) {
+	public Persona(String firstName, String lastName, String dni, String age) {
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.dni = dni;
+		this.age = age;
 	}
 
 	public Long getId() {
@@ -42,10 +45,30 @@ public class Persona {
 		this.lastName = lastName;
 	}
 
-	@Override
-	public String toString() {
-		return String.format("Persona[id=%d, firstName='%s', lastName='%s']", id,
-				firstName, lastName);
+	public String getDni() {
+		return dni;
 	}
 
+	public void setDni(String dni) {
+		this.dni = dni;
+	}
+
+	public String getAge() {
+		return age;
+	}
+
+	public void setAge(String age) {
+		this.age = age;
+	}
+
+	@Override
+	public String toString() {
+		return "Persona{" +
+				"id=" + id +
+				", firstName='" + firstName + '\'' +
+				", lastName='" + lastName + '\'' +
+				", dni='" + dni + '\'' +
+				", age='" + age + '\'' +
+				'}';
+	}
 }

@@ -13,14 +13,10 @@ import java.util.List;
 @Service
 public class PersonaService {
 
-	private final PersonaRepository personaRepository;
+	@Autowired
+	private PersonaRepository personaRepository;
 
 	private static final Logger log = LoggerFactory.getLogger(PersonaService.class);
-
-	@Autowired
-	public PersonaService(PersonaRepository personaRepository) {
-		this.personaRepository = personaRepository;
-	}
 
 	@Transactional
 	public void save(Persona persona){
@@ -32,5 +28,9 @@ public class PersonaService {
 		return this.personaRepository.findAll();
 	}
 
+	@Transactional
+	public void delete(Persona persona) {
+		personaRepository.delete(persona);
+	}
 }
 
