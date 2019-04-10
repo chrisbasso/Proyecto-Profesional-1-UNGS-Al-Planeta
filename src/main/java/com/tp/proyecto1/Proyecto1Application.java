@@ -19,8 +19,7 @@ public class Proyecto1Application {
 
 	@Bean
 	public CommandLineRunner loadData(PersonaRepository repository) {
-		return (args) -> {
-			//repository.deleteAll();
+		return args -> {
 		};
 	}
 

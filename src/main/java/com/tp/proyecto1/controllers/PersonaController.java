@@ -44,7 +44,8 @@ public class PersonaController {
 		String lastName = personaView.getTextLastName().getValue();
 		String dni = personaView.getTextDni().getValue();
 		String age = personaView.getTextAge().getValue();
-		Persona newPersona = new Persona(name, lastName, dni, age);
+		String email = "asd";
+		Persona newPersona = new Persona(name, lastName, dni, age, email);
 		personaService.save(newPersona);
 		Notification.show("Persona Guardada");
 		changeHandler.onChange();
