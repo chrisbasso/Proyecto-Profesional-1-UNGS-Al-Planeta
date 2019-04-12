@@ -1,6 +1,6 @@
 package com.tp.proyecto1;
 
-import com.tp.proyecto1.repository.PersonaRepository;
+import com.tp.proyecto1.repository.ClienteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -18,7 +18,7 @@ public class Proyecto1Application {
 	}
 
 	@Bean
-	public CommandLineRunner loadData(PersonaRepository repository) {
+	public CommandLineRunner loadData(ClienteRepository repository) {
 		return args -> {
 		};
 	}

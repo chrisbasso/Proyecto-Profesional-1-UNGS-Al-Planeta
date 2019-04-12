@@ -1,12 +1,13 @@
 package com.tp.proyecto1;
 
-import com.tp.proyecto1.controllers.PersonaController;
+import com.tp.proyecto1.controllers.ClientesController;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -15,19 +16,19 @@ import com.vaadin.flow.router.Route;
 @StyleSheet("styles.css")
 public class MainView extends VerticalLayout {
 
-	private PersonaController personaController;
+	private ClientesController clientesController;
 
 	private VerticalLayout mainLayout;
 	private AppLayout appLayout;
 	private AppLayoutMenu menu;
 
-	public MainView(PersonaController personaController) {
+	public MainView(ClientesController clientesController) {
 
-		this.personaController = personaController;
+		this.clientesController = clientesController;
 
 		setLayouts();
 		setMenu();
-		openPersonaView();
+		openClientesView();
 
 	}
 
@@ -42,10 +43,13 @@ public class MainView extends VerticalLayout {
 	private void setMenu() {
 		menu = appLayout.createMenu();
 
-		menu.addMenuItems(new AppLayoutMenuItem("Viajes", e -> openPersonaView()),
-				new AppLayoutMenuItem("Pagina 2"),
-				new AppLayoutMenuItem("Pagina 3"),
-				new AppLayoutMenuItem("Pagina 4"));
+		menu.addMenuItems(
+				new AppLayoutMenuItem(VaadinIcon.AIRPLANE.create(),"Destinos"),
+				new AppLayoutMenuItem(VaadinIcon.TICKET.create(),"Pasajes"),
+				new AppLayoutMenuItem(VaadinIcon.GROUP.create(),"Clientes", e -> openClientesView()),
+				new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Contabilidad"),
+				new AppLayoutMenuItem(VaadinIcon.COGS.create(),"Configuración")
+		);
 	}
 
 	private HorizontalLayout getLogo() {
@@ -56,7 +60,7 @@ public class MainView extends VerticalLayout {
 		return new HorizontalLayout(logo, title);
 	}
 
-	private void openPersonaView() {
-		appLayout.setContent(personaController.getView());
+	private void openClientesView() {
+		appLayout.setContent(clientesController.getView());
 	}
 }

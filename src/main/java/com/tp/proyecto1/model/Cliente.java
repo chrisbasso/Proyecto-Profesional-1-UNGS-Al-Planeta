@@ -5,7 +5,7 @@ import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity
-public class Persona {
+public class Cliente {
 
 	@Id
 	@GeneratedValue
@@ -17,10 +17,10 @@ public class Persona {
 	private String age;
 	private String email;
 
-	protected Persona() {
+	protected Cliente() {
 	}
 
-	public Persona(String firstName, String lastName, String dni, String age, String email) {
+	public Cliente(String firstName, String lastName, String dni, String age, String email) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.dni = dni;
@@ -78,7 +78,7 @@ public class Persona {
 
 	@Override
 	public String toString() {
-		return "Persona{" +
+		return "Cliente{" +
 				"id=" + id +
 				", firstName='" + firstName + '\'' +
 				", lastName='" + lastName + '\'' +
@@ -92,13 +92,13 @@ public class Persona {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		Persona persona = (Persona) o;
-		return Objects.equals(id, persona.id) &&
-				Objects.equals(firstName, persona.firstName) &&
-				Objects.equals(lastName, persona.lastName) &&
-				Objects.equals(dni, persona.dni) &&
-				Objects.equals(age, persona.age) &&
-				Objects.equals(email, persona.email);
+		Cliente cliente = (Cliente) o;
+		return Objects.equals(id, cliente.id) &&
+				Objects.equals(firstName, cliente.firstName) &&
+				Objects.equals(lastName, cliente.lastName) &&
+				Objects.equals(dni, cliente.dni) &&
+				Objects.equals(age, cliente.age) &&
+				Objects.equals(email, cliente.email);
 	}
 
 	@Override
