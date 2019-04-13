@@ -8,6 +8,8 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.login.AbstractLogin;
+import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -21,26 +23,54 @@ public class MainView extends VerticalLayout {
 	private VerticalLayout mainLayout;
 	private AppLayout appLayout;
 	private AppLayoutMenu menu;
+	private LoginForm loginComponent;
 
 	public MainView(ClientesController clientesController) {
 
 		this.clientesController = clientesController;
-
 		setLayouts();
-		setMenu();
-		openClientesView();
+		setLoginForm();
 
 	}
 
+	private void setLoginForm() {
+		loginComponent = new LoginForm();
+		loginComponent.addLoginListener(e -> {
+			boolean isAuthenticated = authenticate(e);
+			if (isAuthenticated) {
+				navigateToMainPage();
+			} else {
+				loginComponent.setError(true);
+			}
+		});
+		mainLayout.add(loginComponent);
+	}
+
+	private void navigateToMainPage() {
+		setMenu();
+		openClientesView();
+	}
+
+	private boolean authenticate(AbstractLogin.LoginEvent e) {
+		return true;
+	}
+
 	private void setLayouts() {
+
 		mainLayout = new VerticalLayout();
+		mainLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+		this.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+		this.add(mainLayout);
+
+
+	}
+
+	private void setMenu() {
+
 		appLayout = new AppLayout();
 		appLayout.setBranding(getLogo());
 		this.add(mainLayout);
 		mainLayout.add(appLayout);
-	}
-
-	private void setMenu() {
 		menu = appLayout.createMenu();
 
 		menu.addMenuItems(
