@@ -1,59 +1,50 @@
 package com.tp.proyecto1;
 
 import com.tp.proyecto1.controllers.ClientesController;
+import com.tp.proyecto1.controllers.LoginController;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.login.AbstractLogin;
-import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Route
 @StyleSheet("styles.css")
 public class MainView extends VerticalLayout {
 
+	@Autowired
 	private ClientesController clientesController;
+
+	@Autowired
+	private LoginController loginController;
 
 	private VerticalLayout mainLayout;
 	private AppLayout appLayout;
 	private AppLayoutMenu menu;
-	private LoginForm loginComponent;
 
-	public MainView(ClientesController clientesController) {
+	@Autowired
+	public MainView() {
 
-		this.clientesController = clientesController;
 		setLayouts();
-		setLoginForm();
+		setMainPage();
+	}
+
+	private void setMainPage() {
+
+		Button btnSignIn = new Button("Ingresar");
+		Button btnSignUp = new Button("Registrarse");
+		mainLayout.add(btnSignIn, btnSignUp);
+		btnSignIn.addClickListener(e->openLoginView());
 
 	}
 
-	private void setLoginForm() {
-		loginComponent = new LoginForm();
-		loginComponent.addLoginListener(e -> {
-			boolean isAuthenticated = authenticate(e);
-			if (isAuthenticated) {
-				navigateToMainPage();
-			} else {
-				loginComponent.setError(true);
-			}
-		});
-		mainLayout.add(loginComponent);
-	}
-
-	private void navigateToMainPage() {
-		setMenu();
-		openClientesView();
-	}
-
-	private boolean authenticate(AbstractLogin.LoginEvent e) {
-		return true;
-	}
 
 	private void setLayouts() {
 
@@ -62,10 +53,9 @@ public class MainView extends VerticalLayout {
 		this.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 		this.add(mainLayout);
 
-
 	}
 
-	private void setMenu() {
+	private void openMenu() {
 
 		appLayout = new AppLayout();
 		appLayout.setBranding(getLogo());
@@ -90,7 +80,15 @@ public class MainView extends VerticalLayout {
 		return new HorizontalLayout(logo, title);
 	}
 
+
 	private void openClientesView() {
 		appLayout.setContent(clientesController.getView());
 	}
+
+	private void openLoginView(){
+		mainLayout.removeAll();
+		mainLayout.add(loginController.getLoginView());
+		loginController.setChangeHandler(this::openMenu);
+	}
+
 }
