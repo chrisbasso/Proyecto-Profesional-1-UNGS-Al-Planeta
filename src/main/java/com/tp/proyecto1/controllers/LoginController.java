@@ -1,5 +1,6 @@
 package com.tp.proyecto1.controllers;
 
+import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.views.LoginView;
 import com.vaadin.flow.component.login.AbstractLogin;
@@ -17,6 +18,8 @@ public class LoginController{
 
 	private ChangeHandler changeHandler;
 
+	private User loginUser;
+
 	@Autowired
 	public LoginController(UserService userService) {
 		this.loginView = new LoginView();
@@ -29,8 +32,8 @@ public class LoginController{
 		loginView.getLoginComponent().addLoginListener(e -> {
 			boolean isAuthenticated = authenticate(e);
 			if (isAuthenticated) {
+				loginUser = userService.getUserByName(e.getUsername());
 				changeHandler.onChange();
-//				navigateToMainPage();
 			} else {
 				loginView.getLoginComponent().setError(true);
 			}
@@ -39,7 +42,13 @@ public class LoginController{
 	}
 
 	private boolean authenticate(AbstractLogin.LoginEvent e) {
-		return true;
+		String userName = e.getUsername();
+		String pass = e.getPassword();
+		User user = new User(userName,pass);
+		if(userService.valideUser(user)){
+			return true;
+		}
+		return false;
 	}
 
 	public LoginView getLoginView() {
@@ -51,5 +60,9 @@ public class LoginController{
 	}
 	public void setChangeHandler(LoginController.ChangeHandler h) {
 		changeHandler = h;
+	}
+
+	public User getLoginUser() {
+		return loginUser;
 	}
 }

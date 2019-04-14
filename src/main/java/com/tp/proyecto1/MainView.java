@@ -2,6 +2,7 @@ package com.tp.proyecto1;
 
 import com.tp.proyecto1.controllers.ClientesController;
 import com.tp.proyecto1.controllers.LoginController;
+import com.tp.proyecto1.model.users.User;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
@@ -25,6 +26,8 @@ public class MainView extends VerticalLayout {
 	@Autowired
 	private LoginController loginController;
 
+	private User loginUser;
+
 	private VerticalLayout mainLayout;
 	private AppLayout appLayout;
 	private AppLayoutMenu menu;
@@ -38,13 +41,18 @@ public class MainView extends VerticalLayout {
 
 	private void setMainPage() {
 
-		Button btnSignIn = new Button("Ingresar");
-		Button btnSignUp = new Button("Registrarse");
-		mainLayout.add(btnSignIn, btnSignUp);
-		btnSignIn.addClickListener(e->openLoginView());
+		mainLayout.removeAll();
+
+		if(loginUser == null){
+			Button btnSignIn = new Button("Ingresar");
+			Button btnSignUp = new Button("Registrarse");
+			mainLayout.add(btnSignIn, btnSignUp);
+			btnSignIn.addClickListener(e->openLoginView());
+		}else{
+			openMenu();
+		}
 
 	}
-
 
 	private void setLayouts() {
 
@@ -56,12 +64,13 @@ public class MainView extends VerticalLayout {
 	}
 
 	private void openMenu() {
-
+		loginUser = loginController.getLoginUser();
 		appLayout = new AppLayout();
 		appLayout.setBranding(getLogo());
 		this.add(mainLayout);
 		mainLayout.add(appLayout);
 		menu = appLayout.createMenu();
+
 
 		menu.addMenuItems(
 				new AppLayoutMenuItem(VaadinIcon.AIRPLANE.create(),"Destinos"),
@@ -70,6 +79,9 @@ public class MainView extends VerticalLayout {
 				new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Contabilidad"),
 				new AppLayoutMenuItem(VaadinIcon.COGS.create(),"Configuración")
 		);
+
+		menu.addMenuItem(new AppLayoutMenuItem(VaadinIcon.USER.create(),loginUser.getUser()));
+
 	}
 
 	private HorizontalLayout getLogo() {

@@ -1,6 +1,7 @@
 package com.tp.proyecto1;
 
-import com.tp.proyecto1.repository.ClienteRepository;
+import com.tp.proyecto1.model.users.User;
+import com.tp.proyecto1.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -18,8 +19,13 @@ public class Proyecto1Application {
 	}
 
 	@Bean
-	public CommandLineRunner loadData(ClienteRepository repository) {
+	public CommandLineRunner loadData(UserService userService) {
 		return args -> {
+			userService.createPrivilegeIfNotFound("READ_PRIVILEGE");
+			userService.createPrivilegeIfNotFound("WRITE_PRIVILEGE");
+			userService.createRoleIfNotFound("ADMIN", userService.getPrivileges());
+			User userAdmin = new User("root", "root", userService.getRoles());
+			userService.createUserIfNotExist(userAdmin);
 		};
 	}
 
