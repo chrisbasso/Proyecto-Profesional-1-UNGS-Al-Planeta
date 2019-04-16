@@ -26,15 +26,11 @@ public class MainView extends VerticalLayout {
 	@Autowired
 	private LoginController loginController;
 
-	private User loginUser;
-
 	private VerticalLayout mainLayout;
 	private AppLayout appLayout;
 	private AppLayoutMenu menu;
 
-	@Autowired
 	public MainView() {
-
 		setLayouts();
 		setMainPage();
 	}
@@ -43,7 +39,7 @@ public class MainView extends VerticalLayout {
 
 		mainLayout.removeAll();
 
-		if(loginUser == null){
+		if(Proyecto1Application.userLogin == null){
 			Button btnSignIn = new Button("Ingresar");
 			Button btnSignUp = new Button("Registrarse");
 			mainLayout.add(btnSignIn, btnSignUp);
@@ -64,7 +60,9 @@ public class MainView extends VerticalLayout {
 	}
 
 	private void openMenu() {
-		loginUser = loginController.getLoginUser();
+		if (Proyecto1Application.userLogin == null) {
+			Proyecto1Application.userLogin = loginController.getLoginUser();
+		}
 		appLayout = new AppLayout();
 		appLayout.setBranding(getLogo());
 		this.add(mainLayout);
@@ -80,7 +78,7 @@ public class MainView extends VerticalLayout {
 				new AppLayoutMenuItem(VaadinIcon.COGS.create(),"Configuración")
 		);
 
-		menu.addMenuItem(new AppLayoutMenuItem(VaadinIcon.USER.create(),loginUser.getUser()));
+		menu.addMenuItem(new AppLayoutMenuItem(VaadinIcon.USER.create(), Proyecto1Application.userLogin.getUser()));
 
 	}
 
