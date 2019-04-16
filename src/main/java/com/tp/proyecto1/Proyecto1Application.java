@@ -14,6 +14,8 @@ public class Proyecto1Application {
 
 	private static final Logger log = LoggerFactory.getLogger(Proyecto1Application.class);
 
+	//public static boolean session;
+
 	public static void main(String[] args) {
 		SpringApplication.run(Proyecto1Application.class);
 	}

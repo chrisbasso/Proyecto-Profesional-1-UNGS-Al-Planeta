@@ -32,7 +32,7 @@ public class MainView extends VerticalLayout {
 	private AppLayout appLayout;
 	private AppLayoutMenu menu;
 
-	@Autowired
+	//@Autowired
 	public MainView() {
 
 		setLayouts();
@@ -43,14 +43,15 @@ public class MainView extends VerticalLayout {
 
 		mainLayout.removeAll();
 
-		if(loginUser == null){
+		//if(Proyecto1Application.session == false){
 			Button btnSignIn = new Button("Ingresar");
 			Button btnSignUp = new Button("Registrarse");
 			mainLayout.add(btnSignIn, btnSignUp);
 			btnSignIn.addClickListener(e->openLoginView());
-		}else{
-			openMenu();
-		}
+		//}
+//		else{
+//			openMenu();
+//		}
 
 	}
 
@@ -64,6 +65,7 @@ public class MainView extends VerticalLayout {
 	}
 
 	private void openMenu() {
+		//Proyecto1Application.session = true;
 		loginUser = loginController.getLoginUser();
 		appLayout = new AppLayout();
 		appLayout.setBranding(getLogo());
