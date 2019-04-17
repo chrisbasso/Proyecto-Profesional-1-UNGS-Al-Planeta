@@ -3,6 +3,7 @@ package com.tp.proyecto1;
 import com.tp.proyecto1.controllers.ClientesController;
 import com.tp.proyecto1.controllers.LoginController;
 import com.tp.proyecto1.model.users.User;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
@@ -39,7 +40,7 @@ public class MainView extends VerticalLayout {
 
 		mainLayout.removeAll();
 
-		if(Proyecto1Application.userLogin == null){
+		if(UI.getCurrent().getSession().getAttribute("usuarioLogueado")==null){
 			Button btnSignIn = new Button("Ingresar");
 			Button btnSignUp = new Button("Registrarse");
 			mainLayout.add(btnSignIn, btnSignUp);
@@ -60,9 +61,6 @@ public class MainView extends VerticalLayout {
 	}
 
 	private void openMenu() {
-		if (Proyecto1Application.userLogin == null) {
-			Proyecto1Application.userLogin = loginController.getLoginUser();
-		}
 		appLayout = new AppLayout();
 		appLayout.setBranding(getLogo());
 		this.add(mainLayout);
@@ -78,7 +76,7 @@ public class MainView extends VerticalLayout {
 				new AppLayoutMenuItem(VaadinIcon.COGS.create(),"Configuración")
 		);
 
-		menu.addMenuItem(new AppLayoutMenuItem(VaadinIcon.USER.create(), Proyecto1Application.userLogin.getUser()));
+		menu.addMenuItem(new AppLayoutMenuItem(VaadinIcon.USER.create(), "Logout " + ((User) UI.getCurrent().getSession().getAttribute("usuarioLogueado")).getUser()));
 
 	}
 

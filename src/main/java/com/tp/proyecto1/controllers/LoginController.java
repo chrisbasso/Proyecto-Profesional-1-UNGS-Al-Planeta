@@ -3,6 +3,7 @@ package com.tp.proyecto1.controllers;
 import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.views.LoginView;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.login.AbstractLogin;
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -34,6 +35,7 @@ public class LoginController{
 			boolean isAuthenticated = authenticate(e);
 			if (isAuthenticated) {
 				loginUser = userService.getUserByName(e.getUsername());
+				UI.getCurrent().getSession().setAttribute("usuarioLogueado", loginUser);
 				changeHandler.onChange();
 			} else {
 				loginView.getLoginComponent().setError(true);
