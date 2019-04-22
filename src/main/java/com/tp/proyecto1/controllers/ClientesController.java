@@ -5,6 +5,7 @@ import com.tp.proyecto1.model.Domicilio;
 import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.views.clientes.ClientesView;
 import com.tp.proyecto1.views.clientes.ClienteForm;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -31,6 +32,8 @@ public class ClientesController {
 
 	private ChangeHandler changeHandler;
 
+	private Cliente cliente;
+
 	@Autowired
 	public ClientesController(ClienteService clienteService) {
 		this.clientesView = new ClientesView();
@@ -42,28 +45,32 @@ public class ClientesController {
 	}
 
 	private void setComponents() {
-		this.clientesView.getGrid().addComponentColumn(this::createRemoveButton).setHeader("").setTextAlign(ColumnTextAlign.END);
+		this.clientesView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("80px").setFlexGrow(0);
+		this.clientesView.getGrid().addComponentColumn(this::createRemoveButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("80px").setFlexGrow(0);
 	}
 
 	private void setListeners() {
 		setChangeHandler(this::listClientes);
 		clientesView.getNewClientButton().addClickListener(e-> openNewClienteForm());
-		clienteForm.getSave().addClickListener(e->saveCliente());
+		clienteForm.getSave().addClickListener(e->saveCliente(cliente));
 		clienteForm.getCancel().addClickListener(e->{clienteForm.clean();clienteForm.close();});
 	}
 
 	private void openNewClienteForm() {
+		cliente = null;
 		clienteForm.open();
 	}
 
-	private void saveCliente() {
+	private void saveCliente(Cliente cliente) {
 
-		Cliente newCliente = setNewCliente();
-		Domicilio domicilioNewCliente = newCliente.getDomicilio();
+		if(cliente==null){
+			cliente = setNewCliente();
+		}
+		Domicilio domicilioNewCliente = cliente.getDomicilio();
 
-		if (clienteForm.getBinderCliente().writeBeanIfValid(newCliente) &&
+		if (clienteForm.getBinderCliente().writeBeanIfValid(cliente) &&
 				clienteForm.getBinderDomicilio().writeBeanIfValid(domicilioNewCliente)) {
-			clienteService.save(newCliente);
+			clienteService.save(cliente);
 			clienteForm.close();
 			Notification.show("Cliente Guardado");
 			changeHandler.onChange();
@@ -74,12 +81,12 @@ public class ClientesController {
 	private Cliente setNewCliente() {
 		String nombre = clienteForm.getNombre().getValue();
 		String apellido = clienteForm.getApellido().getValue();
-		String dni = String.valueOf(clienteForm.getDni().getValue());
+		String dni = clienteForm.getDni().getValue();
 		String email = clienteForm.getEmail().getValue();
 		String telefono = clienteForm.getTelefono().getValue();
 		LocalDate fechaNacimiento = clienteForm.getFechaNacimiento().getValue();
 		String calle = clienteForm.getCalle().getValue();
-		String altura = String.valueOf(clienteForm.getAltura().getValue());
+		String altura = clienteForm.getAltura().getValue();
 		String localidad = clienteForm.getLocalidad().getValue();
 		String ciudad = clienteForm.getCiudad().getValue();
 		String pais = clienteForm.getPais().getValue();
@@ -96,6 +103,14 @@ public class ClientesController {
 
 	private Button createRemoveButton(Cliente cliente) {
 		return new Button(VaadinIcon.TRASH.create(), clickEvent -> deleteCliente(cliente));
+	}
+
+	private Button createEditButton(Cliente cliente) {
+		return new Button(VaadinIcon.EDIT.create(), clickEvent -> {
+			this.cliente = cliente;
+			clienteForm.setComponentsValues(cliente);
+			clienteForm.open();
+		});
 	}
 
 	private void listClientes() {

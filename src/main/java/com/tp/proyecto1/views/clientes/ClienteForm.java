@@ -1,7 +1,6 @@
 package com.tp.proyecto1.views.clientes;
 
 
-import com.tp.proyecto1.controllers.ClientesController;
 import com.tp.proyecto1.model.Cliente;
 import com.tp.proyecto1.model.Domicilio;
 import com.vaadin.flow.component.button.Button;
@@ -13,7 +12,6 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
-import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.Setter;
@@ -22,7 +20,6 @@ import com.vaadin.flow.function.SerializablePredicate;
 import com.vaadin.flow.function.ValueProvider;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class ClienteForm extends Dialog {
 
@@ -46,6 +43,8 @@ public class ClienteForm extends Dialog {
 
 	Binder<Cliente> binderCliente = new Binder<>();
 	Binder<Domicilio> binderDomicilio = new Binder<>();
+
+
 
 	public ClienteForm() {
 
@@ -87,9 +86,24 @@ public class ClienteForm extends Dialog {
 
 	}
 
+	public void setComponentsValues(Cliente cliente) {
+		nombre.setValue(cliente.getNombre());
+		apellido.setValue(cliente.getApellido());
+		telefono.setValue(cliente.getTelefono());
+		email.setValue(cliente.getEmail());
+		calle.setValue(cliente.getDomicilio().getCalle());
+		altura.setValue(cliente.getDomicilio().getAltura());
+		localidad.setValue(cliente.getDomicilio().getLocalidad());
+		ciudad.setValue(cliente.getDomicilio().getCiudad());
+		pais.setValue(cliente.getDomicilio().getPais());
+		codPostal.setValue(cliente.getDomicilio().getCodPostal());
+		dni.setValue(cliente.getDni());
+		fechaNacimiento.setValue(cliente.getFechaNacimiento());
+	}
+
 	private void setBinderTextFieldCliente(TextField textField, ValueProvider<Cliente, String> valueProvider,  Setter<Cliente, String> setter){
 
-		//textField.setValueChangeMode(ValueChangeMode.EAGER);
+		textField.setValueChangeMode(ValueChangeMode.EAGER);
 		SerializablePredicate<String> predicate = value -> !textField
 				.getValue().trim().isEmpty();
 
@@ -252,4 +266,6 @@ public class ClienteForm extends Dialog {
 	public Binder<Domicilio> getBinderDomicilio() {
 		return binderDomicilio;
 	}
+
+
 }
