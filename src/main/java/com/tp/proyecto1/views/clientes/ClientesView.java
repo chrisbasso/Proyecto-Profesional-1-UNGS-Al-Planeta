@@ -33,7 +33,9 @@ public class ClientesView extends VerticalLayout {
 		this.lastNameFilter = new TextField();
 		this.dniFilter = new NumberField();
 		this.searchButton = new Button("Buscar", VaadinIcon.SEARCH.create());
-		this.newClientButton = new Button("Nuevo Cliente", VaadinIcon.PLUS.create());
+		this.searchButton.setMinWidth("130px");
+		this.newClientButton = new Button("Nuevo", VaadinIcon.PLUS.create());
+		this.newClientButton.setMinWidth("130px");
 		nameFilter.setLabel("Nombre");
 		idFilter.setLabel("N° Cliente");
 		lastNameFilter.setLabel("Apellido");
@@ -41,22 +43,22 @@ public class ClientesView extends VerticalLayout {
 	}
 
 	private void setLayout() {
-		HorizontalLayout actions = new HorizontalLayout(idFilter, nameFilter, lastNameFilter, dniFilter, searchButton, newClientButton);
+		HorizontalLayout hlSpace = new HorizontalLayout();
+		hlSpace.setWidthFull();
+		HorizontalLayout actions = new HorizontalLayout(idFilter, nameFilter, lastNameFilter, dniFilter,hlSpace, searchButton, newClientButton);
 		this.add(actions, grid);
-		this.setWidthFull();
+		this.setSizeFull();
 		actions.setWidthFull();
 		actions.setVerticalComponentAlignment(Alignment.END, searchButton, newClientButton);
 	}
 
 	private void setGrid() {
-		grid.setHeight("400px");
-		grid.setColumns("id", "firstName", "lastName", "dni", "age");
-		grid.getColumnByKey("id").setHeader("");
-		grid.getColumnByKey("id").setWidth("50px").setFlexGrow(0);
-		grid.getColumnByKey("firstName").setHeader("Nombre");
-		grid.getColumnByKey("lastName").setHeader("Apellido");
+		grid.setColumns("id", "nombre", "apellido", "dni");
+		grid.getColumnByKey("id").setHeader("Nº");
+		grid.getColumnByKey("id").setWidth("70px").setFlexGrow(0);
+		grid.getColumnByKey("nombre").setHeader("Nombre");
+		grid.getColumnByKey("apellido").setHeader("Apellido");
 		grid.getColumnByKey("dni").setHeader("DNI");
-		grid.getColumnByKey("age").setHeader("Edad");
 	}
 
 	public Grid<Cliente> getGrid() {

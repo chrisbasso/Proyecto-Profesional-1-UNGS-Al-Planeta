@@ -41,14 +41,20 @@ public class MainView extends VerticalLayout {
 		mainLayout.removeAll();
 
 		if(UI.getCurrent().getSession().getAttribute("usuarioLogueado")==null){
-			Button btnSignIn = new Button("Ingresar");
-			Button btnSignUp = new Button("Registrarse");
-			mainLayout.add(btnSignIn, btnSignUp);
-			btnSignIn.addClickListener(e->openLoginView());
-		}else{
+			openMain();
+		}else if(((User)UI.getCurrent().getSession().getAttribute("usuarioLogueado")).getUser()==null){
+			openMain();
+		} else{
 			openMenu();
 		}
 
+	}
+
+	private void openMain() {
+		Button btnSignIn = new Button("Ingresar");
+		Button btnSignUp = new Button("Registrarse");
+		mainLayout.add(btnSignIn, btnSignUp);
+		btnSignIn.addClickListener(e->openLoginView());
 	}
 
 	private void setLayouts() {
@@ -76,7 +82,9 @@ public class MainView extends VerticalLayout {
 				new AppLayoutMenuItem(VaadinIcon.COGS.create(),"Configuración")
 		);
 
-		menu.addMenuItem(new AppLayoutMenuItem(VaadinIcon.USER.create(), "Logout " + ((User) UI.getCurrent().getSession().getAttribute("usuarioLogueado")).getUser()));
+		menu.addMenuItem(new AppLayoutMenuItem(VaadinIcon.USER.create(),
+				"Logout " + ((User) UI.getCurrent().getSession().getAttribute("usuarioLogueado")).getUser()),
+				e->loginController.logout());
 
 	}
 

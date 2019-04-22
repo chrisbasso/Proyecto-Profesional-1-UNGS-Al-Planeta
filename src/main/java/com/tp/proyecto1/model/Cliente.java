@@ -1,7 +1,6 @@
 package com.tp.proyecto1.model;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -11,21 +10,28 @@ public class Cliente {
 	@GeneratedValue
 	private Long id;
 
-	private String firstName;
-	private String lastName;
+	private String nombre;
+	private String apellido;
 	private String dni;
-	private String age;
-	private String email;
+	private LocalDate fechaNacimiento;
 
-	protected Cliente() {
+	@OneToOne(cascade = CascadeType.ALL)
+	private Domicilio domicilio;
+
+	private String email;
+	private String telefono;
+
+	public Cliente() {
 	}
 
-	public Cliente(String firstName, String lastName, String dni, String age, String email) {
-		this.firstName = firstName;
-		this.lastName = lastName;
+	public Cliente(String nombre, String apellido, String dni, LocalDate fechaNacimiento, Domicilio domicilio, String email, String telefono) {
+		this.nombre = nombre;
+		this.apellido = apellido;
 		this.dni = dni;
-		this.age = age;
+		this.fechaNacimiento = fechaNacimiento;
+		this.domicilio = domicilio;
 		this.email = email;
+		this.telefono = telefono;
 	}
 
 	public Long getId() {
@@ -36,20 +42,20 @@ public class Cliente {
 		this.id = id;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getNombre() {
+		return nombre;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public String getApellido() {
+		return apellido;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setApellido(String apellido) {
+		this.apellido = apellido;
 	}
 
 	public String getDni() {
@@ -60,12 +66,20 @@ public class Cliente {
 		this.dni = dni;
 	}
 
-	public String getAge() {
-		return age;
+	public LocalDate getFechaNacimiento() {
+		return fechaNacimiento;
 	}
 
-	public void setAge(String age) {
-		this.age = age;
+	public void setFechaNacimiento(LocalDate fechaNacimiento) {
+		this.fechaNacimiento = fechaNacimiento;
+	}
+
+	public Domicilio getDomicilio() {
+		return domicilio;
+	}
+
+	public void setDomicilio(Domicilio domicilio) {
+		this.domicilio = domicilio;
 	}
 
 	public String getEmail() {
@@ -76,16 +90,12 @@ public class Cliente {
 		this.email = email;
 	}
 
-	@Override
-	public String toString() {
-		return "Cliente{" +
-				"id=" + id +
-				", firstName='" + firstName + '\'' +
-				", lastName='" + lastName + '\'' +
-				", dni='" + dni + '\'' +
-				", age='" + age + '\'' +
-				", email='" + email + '\'' +
-				'}';
+	public String getTelefono() {
+		return telefono;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
 	}
 
 	@Override
@@ -94,15 +104,17 @@ public class Cliente {
 		if (o == null || getClass() != o.getClass()) return false;
 		Cliente cliente = (Cliente) o;
 		return Objects.equals(id, cliente.id) &&
-				Objects.equals(firstName, cliente.firstName) &&
-				Objects.equals(lastName, cliente.lastName) &&
+				Objects.equals(nombre, cliente.nombre) &&
+				Objects.equals(apellido, cliente.apellido) &&
 				Objects.equals(dni, cliente.dni) &&
-				Objects.equals(age, cliente.age) &&
-				Objects.equals(email, cliente.email);
+				Objects.equals(fechaNacimiento, cliente.fechaNacimiento) &&
+				Objects.equals(domicilio, cliente.domicilio) &&
+				Objects.equals(email, cliente.email) &&
+				Objects.equals(telefono, cliente.telefono);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, firstName, lastName, dni, age, email);
+		return Objects.hash(id, nombre, apellido, dni, fechaNacimiento, domicilio, email, telefono);
 	}
 }

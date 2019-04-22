@@ -72,6 +72,13 @@ public class LoginController{
 		return false;
 	}
 
+	public void logout(){
+
+		((User) UI.getCurrent().getSession().getAttribute("usuarioLogueado")).setUser(null);
+		UI.getCurrent().getPage().reload();
+
+	}
+
 	public LoginView getLoginView() {
 		return loginView;
 	}
