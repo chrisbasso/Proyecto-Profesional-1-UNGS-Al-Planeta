@@ -1,25 +1,16 @@
 package com.tp.proyecto1.views.clientes;
 
 
-import com.tp.proyecto1.model.Cliente;
-import com.tp.proyecto1.model.Domicilio;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.Setter;
-import com.vaadin.flow.data.value.ValueChangeMode;
-import com.vaadin.flow.function.SerializablePredicate;
-import com.vaadin.flow.function.ValueProvider;
 
-import java.time.LocalDate;
 
 public class ClienteForm extends Dialog {
 
@@ -37,14 +28,8 @@ public class ClienteForm extends Dialog {
 	private TextField codPostal;
 	private EmailField email;
 	private DatePicker fechaNacimiento;
-	private Label infoLabel;
 	private Button save;
 	private Button cancel;
-
-	Binder<Cliente> binderCliente = new Binder<>();
-	Binder<Domicilio> binderDomicilio = new Binder<>();
-
-
 
 	public ClienteForm() {
 
@@ -59,91 +44,18 @@ public class ClienteForm extends Dialog {
 		save = new Button("Guardar");
 		cancel = new Button("Cancelar");
 		nombre = new TextField();
-		setBinderTextFieldCliente(nombre, Cliente::getNombre, Cliente::setNombre);
 		apellido = new TextField();
-		setBinderTextFieldCliente(apellido, Cliente::getApellido, Cliente::setApellido);
 		telefono = new TextField();
-		setBinderTextFieldCliente(telefono, Cliente::getTelefono, Cliente::setTelefono);
 		email = new EmailField();
-		setBinderEmailFieldCliente(email, Cliente::getEmail, Cliente::setEmail);
 		calle = new TextField();
-		setBinderTextFieldDomicilio(calle, Domicilio::getCalle, Domicilio::setCalle);
 		altura = new TextField();
-		setBinderTextFieldDomicilio(altura, Domicilio::getAltura, Domicilio::setAltura);
 		localidad = new TextField();
-		setBinderTextFieldDomicilio(localidad, Domicilio::getLocalidad, Domicilio::setLocalidad);
 		ciudad = new TextField();
-		setBinderTextFieldDomicilio(ciudad, Domicilio::getCiudad, Domicilio::setCiudad);
 		pais = new TextField();
-		setBinderTextFieldDomicilio(pais, Domicilio::getPais, Domicilio::setPais);
 		codPostal = new TextField();
-		setBinderTextFieldDomicilio(codPostal, Domicilio::getCodPostal, Domicilio::setCodPostal);
 		dni = new TextField();
-		setBinderTextFieldCliente(dni, Cliente::getDni, Cliente::setDni);
 		fechaNacimiento = new DatePicker();
-		setBinderDatePickerCliente(fechaNacimiento, Cliente::getFechaNacimiento, Cliente::setFechaNacimiento);
-		infoLabel = new Label();
 
-	}
-
-	public void setComponentsValues(Cliente cliente) {
-		nombre.setValue(cliente.getNombre());
-		apellido.setValue(cliente.getApellido());
-		telefono.setValue(cliente.getTelefono());
-		email.setValue(cliente.getEmail());
-		calle.setValue(cliente.getDomicilio().getCalle());
-		altura.setValue(cliente.getDomicilio().getAltura());
-		localidad.setValue(cliente.getDomicilio().getLocalidad());
-		ciudad.setValue(cliente.getDomicilio().getCiudad());
-		pais.setValue(cliente.getDomicilio().getPais());
-		codPostal.setValue(cliente.getDomicilio().getCodPostal());
-		dni.setValue(cliente.getDni());
-		fechaNacimiento.setValue(cliente.getFechaNacimiento());
-	}
-
-	private void setBinderTextFieldCliente(TextField textField, ValueProvider<Cliente, String> valueProvider,  Setter<Cliente, String> setter){
-
-		textField.setValueChangeMode(ValueChangeMode.EAGER);
-		SerializablePredicate<String> predicate = value -> !textField
-				.getValue().trim().isEmpty();
-
-		Binder.Binding<Cliente, String> binding = binderCliente.forField(textField)
-				.withValidator(predicate, "El campo es obligatorio")
-				.bind(valueProvider, setter);
-		save.addClickListener(event -> binding.validate());
-	}
-	private void setBinderDatePickerCliente(DatePicker datePicker, ValueProvider<Cliente, LocalDate> valueProvider, Setter<Cliente, LocalDate> setter){
-
-		SerializablePredicate<LocalDate> predicate = value -> datePicker.getValue() != null;
-
-		Binder.Binding<Cliente, LocalDate> binding = binderCliente.forField(datePicker)
-				.withValidator(predicate, "El campo es obligatorio")
-				.bind(valueProvider, setter);
-		save.addClickListener(event -> binding.validate());
-	}
-
-	private void setBinderTextFieldDomicilio(TextField textField, ValueProvider<Domicilio, String> valueProvider,  Setter<Domicilio, String> setter){
-
-		textField.setValueChangeMode(ValueChangeMode.EAGER);
-		SerializablePredicate<String> predicate = value -> !textField
-				.getValue().trim().isEmpty();
-
-		Binder.Binding<Domicilio, String> binding = binderDomicilio.forField(textField)
-				.withValidator(predicate, "El campo es obligatorio")
-				.bind(valueProvider, setter);
-		save.addClickListener(event -> binding.validate());
-	}
-
-	private void setBinderEmailFieldCliente(EmailField emailField, ValueProvider<Cliente, String> valueProvider,  Setter<Cliente, String> setter){
-
-		emailField.setValueChangeMode(ValueChangeMode.EAGER);
-		SerializablePredicate<String> predicate = value -> !emailField
-				.getValue().trim().isEmpty();
-
-		Binder.Binding<Cliente, String> binding = binderCliente.forField(emailField)
-				.withValidator(predicate, "El campo es obligatorio")
-				.bind(valueProvider, setter);
-		save.addClickListener(event -> binding.validate());
 	}
 
 	private void setForm() {
@@ -173,22 +85,6 @@ public class ClienteForm extends Dialog {
 		this.setWidth("800px");
 		this.setHeight("100%");
 
-	}
-	public void clean() {
-		binderCliente.readBean(null);
-		binderDomicilio.readBean(null);
-		nombre.setValue("");
-		apellido.setValue("");
-		telefono.setValue("");
-		email.setValue("");
-		calle.setValue("");
-		altura.setValue("");
-		localidad.setValue("");
-		ciudad.setValue("");
-		pais.setValue("");
-		codPostal.setValue("");
-		dni.setValue("");
-		fechaNacimiento.setValue(null);
 	}
 
 	public VerticalLayout getMainLayout() {
@@ -253,18 +149,6 @@ public class ClienteForm extends Dialog {
 
 	public TextField getCodPostal() {
 		return codPostal;
-	}
-
-	public Label getInfoLabel() {
-		return infoLabel;
-	}
-
-	public Binder<Cliente> getBinderCliente() {
-		return binderCliente;
-	}
-
-	public Binder<Domicilio> getBinderDomicilio() {
-		return binderDomicilio;
 	}
 
 
