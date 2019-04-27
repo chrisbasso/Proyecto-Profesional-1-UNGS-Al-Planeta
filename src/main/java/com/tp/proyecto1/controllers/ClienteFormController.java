@@ -5,6 +5,7 @@ import com.tp.proyecto1.model.Domicilio;
 import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.views.clientes.ClienteForm;
 import com.vaadin.flow.component.AbstractField;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.binder.Binder;
@@ -54,6 +55,11 @@ public class ClienteFormController {
 
 		if (binderCliente.writeBeanIfValid(cliente) &&
 				binderDomicilio.writeBeanIfValid(domicilioNewCliente)) {
+			if(!cliente.isActivo()){
+				cliente.setFechaBaja(LocalDate.now());
+			}else{
+				cliente.setFechaBaja(null);
+			}
 			clienteService.save(cliente);
 			clienteForm.close();
 			Notification.show("Cliente Guardado");
@@ -92,6 +98,8 @@ public class ClienteFormController {
 		clienteForm.getCodPostal().setValue(cliente.getDomicilio().getCodPostal());
 		clienteForm.getDni().setValue(cliente.getDni());
 		clienteForm.getFechaNacimiento().setValue(cliente.getFechaNacimiento());
+		clienteForm.getCheckActivo().setVisible(true);
+		clienteForm.getCheckActivo().setValue(cliente.isActivo());
 	}
 
 	private void setBinders() {
@@ -108,7 +116,12 @@ public class ClienteFormController {
 		setBinderFieldDomicilio(clienteForm.getCodPostal(), Domicilio::getCodPostal, Domicilio::setCodPostal);
 		setBinderFieldCliente(clienteForm.getDni(), Cliente::getDni, Cliente::setDni);
 		setBinderDatePickerCliente(clienteForm.getFechaNacimiento(), Cliente::getFechaNacimiento, Cliente::setFechaNacimiento);
+		setBinderCheckCliente(clienteForm.getCheckActivo(), Cliente::isActivo, Cliente::setActivo);
+	}
 
+	private void setBinderCheckCliente(Checkbox check, ValueProvider<Cliente, Boolean> valueProvider, Setter<Cliente, Boolean> setter){
+		Binder.Binding<Cliente, Boolean> binding = binderCliente.forField(check).bind(valueProvider, setter);
+		clienteForm.getSave().addClickListener(event -> binding.validate());
 	}
 
 	private void setBinderFieldCliente(AbstractField field, ValueProvider<Cliente, String> valueProvider, Setter<Cliente, String> setter){

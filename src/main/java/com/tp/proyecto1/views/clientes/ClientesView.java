@@ -38,7 +38,7 @@ public class ClientesView extends VerticalLayout {
 		this.searchButton.setMinWidth("130px");
 		this.newClientButton = new Button("Nuevo", VaadinIcon.PLUS.create());
 		this.newClientButton.setMinWidth("130px");
-		this.activosCheck = new Checkbox("Activos");
+		this.activosCheck = new Checkbox("Solo Activos");
 		activosCheck.setValue(true);
 		nameFilter.setLabel("Nombre");
 		idFilter.setLabel("N° Cliente");

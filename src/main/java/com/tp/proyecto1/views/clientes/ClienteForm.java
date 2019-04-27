@@ -2,6 +2,7 @@ package com.tp.proyecto1.views.clientes;
 
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -10,6 +11,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
+
 
 
 public class ClienteForm extends Dialog {
@@ -28,6 +30,7 @@ public class ClienteForm extends Dialog {
 	private TextField codPostal;
 	private EmailField email;
 	private DatePicker fechaNacimiento;
+	private Checkbox checkActivo;
 	private Button save;
 	private Button cancel;
 
@@ -49,12 +52,19 @@ public class ClienteForm extends Dialog {
 		email = new EmailField();
 		calle = new TextField();
 		altura = new TextField();
+		altura.setPattern("[0-9]*");
+		altura.setPreventInvalidInput(true);
 		localidad = new TextField();
 		ciudad = new TextField();
 		pais = new TextField();
 		codPostal = new TextField();
 		dni = new TextField();
+		dni.setPattern("[0-9]*");
+		dni.setPreventInvalidInput(true);
 		fechaNacimiento = new DatePicker();
+		checkActivo = new Checkbox("Activo");
+		checkActivo.setVisible(false);
+		checkActivo.setValue(true);
 
 	}
 
@@ -71,6 +81,7 @@ public class ClienteForm extends Dialog {
 		form.addFormItem(pais, "País");
 		form.addFormItem(codPostal, "CP");
 		form.addFormItem(dni, "DNI");
+		form.addFormItem(checkActivo, "");
 	}
 
 	private void setLayouts() {
@@ -151,5 +162,7 @@ public class ClienteForm extends Dialog {
 		return codPostal;
 	}
 
-
+	public Checkbox getCheckActivo() {
+		return checkActivo;
+	}
 }

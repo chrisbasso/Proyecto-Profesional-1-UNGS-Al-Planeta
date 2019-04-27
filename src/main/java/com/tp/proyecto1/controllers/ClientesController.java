@@ -2,7 +2,9 @@ package com.tp.proyecto1.controllers;
 
 import com.tp.proyecto1.model.Cliente;
 import com.tp.proyecto1.services.ClienteService;
+import com.tp.proyecto1.utils.ConfirmationDialog;
 import com.tp.proyecto1.views.clientes.ClientesView;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -52,11 +54,15 @@ public class ClientesController {
 	}
 
 	private void deleteCliente(Cliente cliente) {
-		cliente.setActivo(false);
-		cliente.setFechaBaja(LocalDate.now());
-		clienteService.save(cliente);
-		Notification.show("Cliente fue dado de baja");
-		changeHandler.onChange();
+
+		ConfirmationDialog confirmationDialog = new ConfirmationDialog("¿Realmente desea dar de baja al Cliente?");
+		confirmationDialog.getConfirmButton().addClickListener(event -> {cliente.setActivo(false);
+			cliente.setFechaBaja(LocalDate.now());
+			clienteService.save(cliente);
+			Notification.show("Cliente fue dado de baja");
+			changeHandler.onChange();
+		});
+		confirmationDialog.open();
 	}
 
 	private Button createRemoveButton(Cliente cliente) {
