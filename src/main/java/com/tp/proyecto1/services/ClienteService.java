@@ -5,6 +5,7 @@ import com.tp.proyecto1.repository.ClienteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,11 @@ public class ClienteService {
 	@Transactional
 	public List<Cliente> findAll(){
 		return this.clienteRepository.findAll();
+	}
+
+	@Transactional
+	public List<Cliente> findClientes(Cliente cliente){
+		return clienteRepository.findAll(Example.of(cliente));
 	}
 
 	@Transactional

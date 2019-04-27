@@ -2,6 +2,7 @@ package com.tp.proyecto1.views.clientes;
 
 import com.tp.proyecto1.model.Cliente;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -17,6 +18,7 @@ public class ClientesView extends VerticalLayout {
 	private TextField nameFilter;
 	private TextField lastNameFilter;
 	private NumberField dniFilter;
+	private Checkbox activosCheck;
 	private Button searchButton;
 	private Button newClientButton;
 
@@ -36,6 +38,8 @@ public class ClientesView extends VerticalLayout {
 		this.searchButton.setMinWidth("130px");
 		this.newClientButton = new Button("Nuevo", VaadinIcon.PLUS.create());
 		this.newClientButton.setMinWidth("130px");
+		this.activosCheck = new Checkbox("Activos");
+		activosCheck.setValue(true);
 		nameFilter.setLabel("Nombre");
 		idFilter.setLabel("N° Cliente");
 		lastNameFilter.setLabel("Apellido");
@@ -45,20 +49,22 @@ public class ClientesView extends VerticalLayout {
 	private void setLayout() {
 		HorizontalLayout hlSpace = new HorizontalLayout();
 		hlSpace.setWidthFull();
-		HorizontalLayout actions = new HorizontalLayout(idFilter, nameFilter, lastNameFilter, dniFilter,hlSpace, searchButton, newClientButton);
+		HorizontalLayout actions = new HorizontalLayout(idFilter, nameFilter, lastNameFilter, dniFilter,activosCheck,hlSpace, searchButton, newClientButton);
 		this.add(actions, grid);
 		this.setSizeFull();
 		actions.setWidthFull();
-		actions.setVerticalComponentAlignment(Alignment.END, searchButton, newClientButton);
+		actions.setVerticalComponentAlignment(Alignment.END, searchButton, newClientButton, activosCheck);
 	}
 
 	private void setGrid() {
-		grid.setColumns("id", "nombre", "apellido", "dni");
+		grid.setColumns("id", "nombre", "apellido", "dni", "fechaAlta", "fechaBaja");
 		grid.getColumnByKey("id").setHeader("Nº");
 		grid.getColumnByKey("id").setWidth("70px").setFlexGrow(0);
 		grid.getColumnByKey("nombre").setHeader("Nombre");
 		grid.getColumnByKey("apellido").setHeader("Apellido");
 		grid.getColumnByKey("dni").setHeader("DNI");
+		grid.getColumnByKey("fechaAlta").setHeader("Fecha Alta");
+		grid.getColumnByKey("fechaBaja").setHeader("Fecha Baja");
 	}
 
 	public Grid<Cliente> getGrid() {
@@ -115,6 +121,14 @@ public class ClientesView extends VerticalLayout {
 
 	public void setNewClientButton(Button newClientButton) {
 		this.newClientButton = newClientButton;
+	}
+
+	public Checkbox getActivosCheck() {
+		return activosCheck;
+	}
+
+	public void setActivosCheck(Checkbox activosCheck) {
+		this.activosCheck = activosCheck;
 	}
 }
 

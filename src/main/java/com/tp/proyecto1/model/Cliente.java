@@ -20,11 +20,14 @@ public class Cliente {
 
 	private String email;
 	private String telefono;
+	private boolean isActivo;
+	private LocalDate fechaBaja;
+	private LocalDate fechaAlta;
 
 	public Cliente() {
 	}
 
-	public Cliente(String nombre, String apellido, String dni, LocalDate fechaNacimiento, Domicilio domicilio, String email, String telefono) {
+	public Cliente(String nombre, String apellido, String dni, LocalDate fechaNacimiento, Domicilio domicilio, String email, String telefono, boolean isActivo, LocalDate fechaBaja, LocalDate fechaAlta) {
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.dni = dni;
@@ -32,6 +35,9 @@ public class Cliente {
 		this.domicilio = domicilio;
 		this.email = email;
 		this.telefono = telefono;
+		this.isActivo = isActivo;
+		this.fechaBaja = fechaBaja;
+		this.fechaAlta = fechaAlta;
 	}
 
 	public Long getId() {
@@ -98,23 +104,50 @@ public class Cliente {
 		this.telefono = telefono;
 	}
 
+	public boolean isActivo() {
+		return isActivo;
+	}
+
+	public void setActivo(boolean activo) {
+		isActivo = activo;
+	}
+
+	public LocalDate getFechaBaja() {
+		return fechaBaja;
+	}
+
+	public void setFechaBaja(LocalDate fechaBaja) {
+		this.fechaBaja = fechaBaja;
+	}
+
+	public LocalDate getFechaAlta() {
+		return fechaAlta;
+	}
+
+	public void setFechaAlta(LocalDate fechaAlta) {
+		this.fechaAlta = fechaAlta;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Cliente cliente = (Cliente) o;
-		return Objects.equals(id, cliente.id) &&
+		return isActivo == cliente.isActivo &&
+				Objects.equals(id, cliente.id) &&
 				Objects.equals(nombre, cliente.nombre) &&
 				Objects.equals(apellido, cliente.apellido) &&
 				Objects.equals(dni, cliente.dni) &&
 				Objects.equals(fechaNacimiento, cliente.fechaNacimiento) &&
 				Objects.equals(domicilio, cliente.domicilio) &&
 				Objects.equals(email, cliente.email) &&
-				Objects.equals(telefono, cliente.telefono);
+				Objects.equals(telefono, cliente.telefono) &&
+				Objects.equals(fechaBaja, cliente.fechaBaja) &&
+				Objects.equals(fechaAlta, cliente.fechaAlta);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, nombre, apellido, dni, fechaNacimiento, domicilio, email, telefono);
+		return Objects.hash(id, nombre, apellido, dni, fechaNacimiento, domicilio, email, telefono, isActivo, fechaBaja, fechaAlta);
 	}
 }

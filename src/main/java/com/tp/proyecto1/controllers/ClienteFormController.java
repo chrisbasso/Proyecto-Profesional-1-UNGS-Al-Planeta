@@ -4,13 +4,11 @@ import com.tp.proyecto1.model.Cliente;
 import com.tp.proyecto1.model.Domicilio;
 import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.views.clientes.ClienteForm;
+import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.textfield.EmailField;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.Setter;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.function.SerializablePredicate;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -44,7 +42,7 @@ public class ClienteFormController {
 
 	private void setListeners() {
 		clienteForm.getSave().addClickListener(e->saveCliente(cliente));
-		clienteForm.getCancel().addClickListener(e->{clean();clienteForm.close();});
+		clienteForm.getCancel().addClickListener(e->clienteForm.close());
 	}
 
 	private void saveCliente(Cliente cliente) {
@@ -60,7 +58,6 @@ public class ClienteFormController {
 			clienteForm.close();
 			Notification.show("Cliente Guardado");
 			changeHandler.onChange();
-			clean();
 		}
 	}
 
@@ -78,7 +75,7 @@ public class ClienteFormController {
 		String pais = clienteForm.getPais().getValue();
 		String codPostal = clienteForm.getCodPostal().getValue();
 		Domicilio domicilio = new Domicilio(calle, altura, localidad, ciudad, pais, codPostal);
-		return new Cliente(nombre, apellido, dni, fechaNacimiento, domicilio, email, telefono);
+		return new Cliente(nombre, apellido,dni,fechaNacimiento,domicilio,email,telefono,true,null, LocalDate.now());
 	}
 
 	public void setComponentsValues(Cliente cliente) {
@@ -99,32 +96,31 @@ public class ClienteFormController {
 
 	private void setBinders() {
 
-		setBinderTextFieldCliente(clienteForm.getNombre(), Cliente::getNombre, Cliente::setNombre);
-		setBinderTextFieldCliente(clienteForm.getApellido(), Cliente::getApellido, Cliente::setApellido);
-		setBinderTextFieldCliente(clienteForm.getTelefono(), Cliente::getTelefono, Cliente::setTelefono);
-		setBinderEmailFieldCliente(clienteForm.getEmail(), Cliente::getEmail, Cliente::setEmail);
-		setBinderTextFieldDomicilio(clienteForm.getCalle(), Domicilio::getCalle, Domicilio::setCalle);
-		setBinderTextFieldDomicilio(clienteForm.getAltura(), Domicilio::getAltura, Domicilio::setAltura);
-		setBinderTextFieldDomicilio(clienteForm.getLocalidad(), Domicilio::getLocalidad, Domicilio::setLocalidad);
-		setBinderTextFieldDomicilio(clienteForm.getCiudad(), Domicilio::getCiudad, Domicilio::setCiudad);
-		setBinderTextFieldDomicilio(clienteForm.getPais(), Domicilio::getPais, Domicilio::setPais);
-		setBinderTextFieldDomicilio(clienteForm.getCodPostal(), Domicilio::getCodPostal, Domicilio::setCodPostal);
-		setBinderTextFieldCliente(clienteForm.getDni(), Cliente::getDni, Cliente::setDni);
+		setBinderFieldCliente(clienteForm.getNombre(), Cliente::getNombre, Cliente::setNombre);
+		setBinderFieldCliente(clienteForm.getApellido(), Cliente::getApellido, Cliente::setApellido);
+		setBinderFieldCliente(clienteForm.getTelefono(), Cliente::getTelefono, Cliente::setTelefono);
+		setBinderFieldCliente(clienteForm.getEmail(), Cliente::getEmail, Cliente::setEmail);
+		setBinderFieldDomicilio(clienteForm.getCalle(), Domicilio::getCalle, Domicilio::setCalle);
+		setBinderFieldDomicilio(clienteForm.getAltura(), Domicilio::getAltura, Domicilio::setAltura);
+		setBinderFieldDomicilio(clienteForm.getLocalidad(), Domicilio::getLocalidad, Domicilio::setLocalidad);
+		setBinderFieldDomicilio(clienteForm.getCiudad(), Domicilio::getCiudad, Domicilio::setCiudad);
+		setBinderFieldDomicilio(clienteForm.getPais(), Domicilio::getPais, Domicilio::setPais);
+		setBinderFieldDomicilio(clienteForm.getCodPostal(), Domicilio::getCodPostal, Domicilio::setCodPostal);
+		setBinderFieldCliente(clienteForm.getDni(), Cliente::getDni, Cliente::setDni);
 		setBinderDatePickerCliente(clienteForm.getFechaNacimiento(), Cliente::getFechaNacimiento, Cliente::setFechaNacimiento);
 
 	}
 
-	private void setBinderTextFieldCliente(TextField textField, ValueProvider<Cliente, String> valueProvider, Setter<Cliente, String> setter){
+	private void setBinderFieldCliente(AbstractField field, ValueProvider<Cliente, String> valueProvider, Setter<Cliente, String> setter){
 
-		textField.setValueChangeMode(ValueChangeMode.EAGER);
-		SerializablePredicate<String> predicate = value -> !textField
-				.getValue().trim().isEmpty();
+		SerializablePredicate<String> predicate = value -> !field.isEmpty();
 
-		Binder.Binding<Cliente, String> binding = binderCliente.forField(textField)
+		Binder.Binding<Cliente, String> binding = binderCliente.forField(field)
 				.withValidator(predicate, "El campo es obligatorio")
 				.bind(valueProvider, setter);
 		clienteForm.getSave().addClickListener(event -> binding.validate());
 	}
+
 	private void setBinderDatePickerCliente(DatePicker datePicker, ValueProvider<Cliente, LocalDate> valueProvider, Setter<Cliente, LocalDate> setter){
 
 		SerializablePredicate<LocalDate> predicate = value -> datePicker.getValue() != null;
@@ -135,29 +131,16 @@ public class ClienteFormController {
 		clienteForm.getSave().addClickListener(event -> binding.validate());
 	}
 
-	private void setBinderTextFieldDomicilio(TextField textField, ValueProvider<Domicilio, String> valueProvider,  Setter<Domicilio, String> setter){
+	private void setBinderFieldDomicilio(AbstractField field, ValueProvider<Domicilio, String> valueProvider, Setter<Domicilio, String> setter){
 
-		textField.setValueChangeMode(ValueChangeMode.EAGER);
-		SerializablePredicate<String> predicate = value -> !textField
-				.getValue().trim().isEmpty();
+		SerializablePredicate<String> predicate = value -> !field.isEmpty();
 
-		Binder.Binding<Domicilio, String> binding = binderDomicilio.forField(textField)
+		Binder.Binding<Domicilio, String> binding = binderDomicilio.forField(field)
 				.withValidator(predicate, "El campo es obligatorio")
 				.bind(valueProvider, setter);
 		clienteForm.getSave().addClickListener(event -> binding.validate());
 	}
 
-	private void setBinderEmailFieldCliente(EmailField emailField, ValueProvider<Cliente, String> valueProvider,  Setter<Cliente, String> setter){
-
-		emailField.setValueChangeMode(ValueChangeMode.EAGER);
-		SerializablePredicate<String> predicate = value -> !emailField
-				.getValue().trim().isEmpty();
-
-		Binder.Binding<Cliente, String> binding = binderCliente.forField(emailField)
-				.withValidator(predicate, "El campo es obligatorio")
-				.bind(valueProvider, setter);
-		clienteForm.getSave().addClickListener(event -> binding.validate());
-	}
 
 	public void clean() {
 		binderCliente.readBean(null);
