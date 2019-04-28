@@ -1,4 +1,4 @@
-package com.tp.proyecto1.model;
+package com.tp.proyecto1.model.viajes;
 
 import javax.persistence.*;
 import java.util.Objects;

@@ -1,7 +1,7 @@
 package com.tp.proyecto1.controllers;
 
-import com.tp.proyecto1.model.Cliente;
-import com.tp.proyecto1.model.Domicilio;
+import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.model.clientes.Domicilio;
 import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.views.clientes.ClienteForm;
 import com.vaadin.flow.component.AbstractField;

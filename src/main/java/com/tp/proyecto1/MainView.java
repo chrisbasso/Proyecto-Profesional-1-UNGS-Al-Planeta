@@ -2,6 +2,7 @@ package com.tp.proyecto1;
 
 import com.tp.proyecto1.controllers.ClientesController;
 import com.tp.proyecto1.controllers.LoginController;
+import com.tp.proyecto1.controllers.ViajesController;
 import com.tp.proyecto1.model.users.User;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -26,6 +27,9 @@ public class MainView extends VerticalLayout {
 
 	@Autowired
 	private LoginController loginController;
+
+	@Autowired
+	private ViajesController viajesController;
 
 	private VerticalLayout mainLayout;
 	private AppLayout appLayout;
@@ -75,8 +79,9 @@ public class MainView extends VerticalLayout {
 
 
 		menu.addMenuItems(
-				new AppLayoutMenuItem(VaadinIcon.AIRPLANE.create(),"Destinos"),
-				new AppLayoutMenuItem(VaadinIcon.TICKET.create(),"Pasajes"),
+				new AppLayoutMenuItem(VaadinIcon.AIRPLANE.create(),"Viajes",e->openViajesView()),
+				new AppLayoutMenuItem(VaadinIcon.TICKET.create(),"Ventas"),
+				new AppLayoutMenuItem(VaadinIcon.CALENDAR_CLOCK.create(),"Reservas"),
 				new AppLayoutMenuItem(VaadinIcon.GROUP.create(),"Clientes", e -> openClientesView()),
 				new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Contabilidad"),
 				new AppLayoutMenuItem(VaadinIcon.COGS.create(),"Configuración")
@@ -95,6 +100,11 @@ public class MainView extends VerticalLayout {
 
 		return new HorizontalLayout(logo, title);
 	}
+
+	private void openViajesView() {
+		appLayout.setContent(viajesController.getView());
+	}
+
 
 
 	private void openClientesView() {

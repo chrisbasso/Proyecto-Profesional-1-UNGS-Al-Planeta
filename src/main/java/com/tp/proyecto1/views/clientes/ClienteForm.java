@@ -65,6 +65,7 @@ public class ClienteForm extends Dialog {
 		checkActivo = new Checkbox("Activo");
 		checkActivo.setVisible(false);
 		checkActivo.setValue(true);
+		checkActivo.setWidth("140px");
 
 	}
 

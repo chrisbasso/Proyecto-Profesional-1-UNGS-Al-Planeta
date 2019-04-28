@@ -1,4 +1,4 @@
-package com.tp.proyecto1.model;
+package com.tp.proyecto1.model.clientes;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;

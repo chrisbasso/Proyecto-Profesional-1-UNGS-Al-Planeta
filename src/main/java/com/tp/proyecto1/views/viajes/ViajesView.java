@@ -1,8 +1,11 @@
 package com.tp.proyecto1.views.viajes;
 
-import com.tp.proyecto1.model.Cliente;
+import com.tp.proyecto1.model.viajes.TipoTransporte;
+import com.tp.proyecto1.model.viajes.Viaje;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -12,14 +15,19 @@ import com.vaadin.flow.component.textfield.TextField;
 
 public class ViajesView extends VerticalLayout {
 
-	private Grid<Cliente> grid;
+	private Grid<Viaje> grid;
 	private NumberField idFilter;
-	private TextField nameFilter;
-	private TextField lastNameFilter;
-	private NumberField dniFilter;
+	private TextField paisFilter;
+	private TextField ciudadFilter;
+	private TextField codTransporteFilter;
+	private ComboBox<TipoTransporte> transporteFilter;
+	private DatePicker fechaDesdeFilter;
+	private DatePicker fechaHastaFilter;
 	private Checkbox activosCheck;
 	private Button searchButton;
-	private Button newClientButton;
+	private Button newViajeButton;
+	private Button btnReservar;
+	private Button btnComprar;
 
 	public ViajesView() {
 		setComponents();
@@ -28,58 +36,62 @@ public class ViajesView extends VerticalLayout {
 	}
 
 	private void setComponents() {
-		this.grid = new Grid<>(Cliente.class);
-		this.idFilter = new NumberField();
-		this.nameFilter = new TextField();
-		this.lastNameFilter = new TextField();
-		this.dniFilter = new NumberField();
+		this.grid = new Grid<>(Viaje.class);
+		this.idFilter = new NumberField("Nº Viaje");
+		this.paisFilter = new TextField("País");
+		this.ciudadFilter = new TextField("Ciudad");
+		this.codTransporteFilter = new TextField("Cod. Transporte");
 		this.searchButton = new Button("Buscar", VaadinIcon.SEARCH.create());
 		this.searchButton.setMinWidth("130px");
-		this.newClientButton = new Button("Nuevo", VaadinIcon.PLUS.create());
-		this.newClientButton.setMinWidth("130px");
+		this.newViajeButton = new Button("Nuevo", VaadinIcon.PLUS.create());
+		this.newViajeButton.setMinWidth("130px");
 		this.activosCheck = new Checkbox("Solo Activos");
-		activosCheck.setValue(true);
-		nameFilter.setLabel("Nombre");
-		idFilter.setLabel("N° Cliente");
-		lastNameFilter.setLabel("Apellido");
-		dniFilter.setLabel("DNI");
+		this.transporteFilter = new ComboBox<>("Transporte");
+		this.transporteFilter.setItemLabelGenerator(TipoTransporte::getDescripcion);
+		this.fechaDesdeFilter = new DatePicker("Fecha Desde");
+		this.fechaHastaFilter = new DatePicker("Fecha Hasta");
+		this.btnComprar = new Button("Comprar");
+		this.btnReservar = new Button("Reservar");
+		this.activosCheck.setValue(true);
+		this.activosCheck.setMinWidth("140px");
 	}
 
 	private void setLayout() {
 		HorizontalLayout hlSpace = new HorizontalLayout();
+		HorizontalLayout hlButtons = new HorizontalLayout();
+		hlButtons.add(btnReservar, btnComprar);
 		hlSpace.setWidthFull();
-		HorizontalLayout actions = new HorizontalLayout(idFilter, nameFilter, lastNameFilter, dniFilter,activosCheck,hlSpace, searchButton, newClientButton);
-		this.add(actions, grid);
+		HorizontalLayout actions = new HorizontalLayout(idFilter, paisFilter, ciudadFilter, codTransporteFilter, transporteFilter,fechaDesdeFilter,fechaHastaFilter,activosCheck,hlSpace, searchButton, newViajeButton);
+		this.add(actions, grid, hlButtons);
 		this.setSizeFull();
 		actions.setWidthFull();
-		actions.setVerticalComponentAlignment(Alignment.END, searchButton, newClientButton, activosCheck);
+		actions.setVerticalComponentAlignment(Alignment.END, hlButtons);
+		actions.setVerticalComponentAlignment(Alignment.END, searchButton, newViajeButton, activosCheck);
 	}
 
 	private void setGrid() {
-		grid.setColumns("id", "nombre", "apellido", "dni", "fechaAlta", "fechaBaja");
+		grid.setColumns("id", "destino.ciudad","destino.pais", "transporte.codTransporte",
+				"transporte.tipo", "transporte.capacidad", "transporte.clase",
+				"fechaSalida", "horaSalida", "fechaLlegada", "horaLlegada", "precio");
 		grid.getColumnByKey("id").setHeader("Nº");
 		grid.getColumnByKey("id").setWidth("70px").setFlexGrow(0);
-		grid.getColumnByKey("nombre").setHeader("Nombre");
-		grid.getColumnByKey("apellido").setHeader("Apellido");
-		grid.getColumnByKey("dni").setHeader("DNI");
-		grid.getColumnByKey("fechaAlta").setHeader("Fecha Alta");
-		grid.getColumnByKey("fechaBaja").setHeader("Fecha Baja");
+
 	}
 
-	public Grid<Cliente> getGrid() {
+	public Grid<Viaje> getGrid() {
 		return grid;
 	}
 
-	public void setGrid(Grid<Cliente> grid) {
+	public void setGrid(Grid<Viaje> grid) {
 		this.grid = grid;
 	}
 
-	public TextField getNameFilter() {
-		return nameFilter;
+	public TextField getPaisFilter() {
+		return paisFilter;
 	}
 
-	public void setNameFilter(TextField nameFilter) {
-		this.nameFilter = nameFilter;
+	public void setPaisFilter(TextField paisFilter) {
+		this.paisFilter = paisFilter;
 	}
 
 	public Button getSearchButton() {
@@ -90,20 +102,20 @@ public class ViajesView extends VerticalLayout {
 		this.searchButton = searchButton;
 	}
 
-	public TextField getLastNameFilter() {
-		return lastNameFilter;
+	public TextField getCiudadFilter() {
+		return ciudadFilter;
 	}
 
-	public void setLastNameFilter(TextField lastNameFilter) {
-		this.lastNameFilter = lastNameFilter;
+	public void setCiudadFilter(TextField ciudadFilter) {
+		this.ciudadFilter = ciudadFilter;
 	}
 
-	public NumberField getDniFilter() {
-		return dniFilter;
+	public TextField getCodTransporteFilter() {
+		return codTransporteFilter;
 	}
 
-	public void setDniFilter(NumberField dniFilter) {
-		this.dniFilter = dniFilter;
+	public void setCodTransporteFilter(TextField codTransporteFilter) {
+		this.codTransporteFilter = codTransporteFilter;
 	}
 
 	public NumberField getIdFilter() {
@@ -114,12 +126,12 @@ public class ViajesView extends VerticalLayout {
 		this.idFilter = idFilter;
 	}
 
-	public Button getNewClientButton() {
-		return newClientButton;
+	public Button getNewViajeButton() {
+		return newViajeButton;
 	}
 
-	public void setNewClientButton(Button newClientButton) {
-		this.newClientButton = newClientButton;
+	public void setNewViajeButton(Button newViajeButton) {
+		this.newViajeButton = newViajeButton;
 	}
 
 	public Checkbox getActivosCheck() {
@@ -128,6 +140,46 @@ public class ViajesView extends VerticalLayout {
 
 	public void setActivosCheck(Checkbox activosCheck) {
 		this.activosCheck = activosCheck;
+	}
+
+	public ComboBox<TipoTransporte> getTransporteFilter() {
+		return transporteFilter;
+	}
+
+	public void setTransporteFilter(ComboBox<TipoTransporte> transporteFilter) {
+		this.transporteFilter = transporteFilter;
+	}
+
+	public DatePicker getFechaDesdeFilter() {
+		return fechaDesdeFilter;
+	}
+
+	public void setFechaDesdeFilter(DatePicker fechaDesdeFilter) {
+		this.fechaDesdeFilter = fechaDesdeFilter;
+	}
+
+	public DatePicker getFechaHastaFilter() {
+		return fechaHastaFilter;
+	}
+
+	public void setFechaHastaFilter(DatePicker fechaHastaFilter) {
+		this.fechaHastaFilter = fechaHastaFilter;
+	}
+
+	public Button getBtnReservar() {
+		return btnReservar;
+	}
+
+	public void setBtnReservar(Button btnReservar) {
+		this.btnReservar = btnReservar;
+	}
+
+	public Button getBtnComprar() {
+		return btnComprar;
+	}
+
+	public void setBtnComprar(Button btnComprar) {
+		this.btnComprar = btnComprar;
 	}
 }
 

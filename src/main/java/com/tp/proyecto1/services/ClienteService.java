@@ -1,7 +1,7 @@
 package com.tp.proyecto1.services;
 
-import com.tp.proyecto1.model.Cliente;
-import com.tp.proyecto1.repository.ClienteRepository;
+import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.repository.clientes.ClienteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

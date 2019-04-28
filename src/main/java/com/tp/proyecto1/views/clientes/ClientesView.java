@@ -1,6 +1,6 @@
 package com.tp.proyecto1.views.clientes;
 
-import com.tp.proyecto1.model.Cliente;
+import com.tp.proyecto1.model.clientes.Cliente;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
@@ -39,6 +39,7 @@ public class ClientesView extends VerticalLayout {
 		this.newClientButton = new Button("Nuevo", VaadinIcon.PLUS.create());
 		this.newClientButton.setMinWidth("130px");
 		this.activosCheck = new Checkbox("Solo Activos");
+		this.activosCheck.setMinWidth("140px");
 		activosCheck.setValue(true);
 		nameFilter.setLabel("Nombre");
 		idFilter.setLabel("N° Cliente");

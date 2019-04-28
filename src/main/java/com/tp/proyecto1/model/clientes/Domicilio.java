@@ -1,4 +1,4 @@
-package com.tp.proyecto1.model;
+package com.tp.proyecto1.model.clientes;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

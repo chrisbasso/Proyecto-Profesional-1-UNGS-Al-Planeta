@@ -1,10 +1,9 @@
 package com.tp.proyecto1.controllers;
 
-import com.tp.proyecto1.model.Cliente;
+import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.utils.ConfirmationDialog;
 import com.tp.proyecto1.views.clientes.ClientesView;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.icon.VaadinIcon;
