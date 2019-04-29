@@ -1,7 +1,6 @@
 package com.tp.proyecto1.controllers;
 
 import com.tp.proyecto1.model.clientes.Cliente;
-import com.tp.proyecto1.model.viajes.TipoTransporte;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.views.viajes.ViajesView;
 import com.vaadin.flow.component.button.Button;
@@ -10,7 +9,6 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import java.util.List;
 
 @Controller
 @UIScope
@@ -19,6 +17,8 @@ public class ViajesController {
     private ViajesView viajesView;
 
     private ViajeService viajeService;
+
+    private ViajeFormController viajeFormController;
 
     private ChangeHandler changeHandler;
 
@@ -40,14 +40,14 @@ public class ViajesController {
 
     private void setListeners() {
         setChangeHandler(this::listClientes);
-        viajesView.getNewViajeButton().addClickListener(e-> openNewClienteForm());
+        viajesView.getNewViajeButton().addClickListener(e-> openNewViajeForm());
         viajesView.getSearchButton().addClickListener(e-> listClientes());
     }
 
-    private void openNewClienteForm() {
-//        clienteFormController = new ClienteFormController(viajeService);
-//        clienteFormController.getClienteForm().open();
-//        clienteFormController.setChangeHandler(this::listClientes);
+    private void openNewViajeForm() {
+        viajeFormController = new ViajeFormController(viajeService);
+        viajeFormController.getViajeForm().open();
+        //viajeFormController.setChangeHandler(this::listClientes);
     }
 
     private void deleteCliente(Cliente cliente) {

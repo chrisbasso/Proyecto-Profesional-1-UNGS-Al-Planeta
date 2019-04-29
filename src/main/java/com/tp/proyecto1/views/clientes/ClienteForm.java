@@ -34,6 +34,7 @@ public class ClienteForm extends Dialog {
 	private Button save;
 	private Button cancel;
 
+
 	public ClienteForm() {
 
 		setComponents();
