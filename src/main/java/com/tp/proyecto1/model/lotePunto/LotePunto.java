@@ -1,4 +1,4 @@
-package com.tp.proyecto1.model.LotePunto;
+package com.tp.proyecto1.model.lotePunto;
 
 import java.time.LocalDate;
 

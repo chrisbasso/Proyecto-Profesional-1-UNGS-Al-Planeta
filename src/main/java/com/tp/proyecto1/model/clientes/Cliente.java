@@ -2,7 +2,7 @@ package com.tp.proyecto1.model.clientes;
 
 import javax.persistence.*;
 
-import com.tp.proyecto1.model.LotePunto.LotePunto;
+import com.tp.proyecto1.model.lotePunto.LotePunto;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
