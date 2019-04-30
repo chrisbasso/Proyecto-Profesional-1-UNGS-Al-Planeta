@@ -1,7 +1,12 @@
 package com.tp.proyecto1.model.clientes;
 
 import javax.persistence.*;
+
+import com.tp.proyecto1.model.LotePunto.LotePunto;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -25,6 +30,9 @@ public class Cliente {
 	private LocalDate fechaBaja;
 	private LocalDate fechaAlta;
 
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<LotePunto>puntos;
+	
 	public Cliente() {
 	}
 
@@ -39,6 +47,7 @@ public class Cliente {
 		this.isActivo = isActivo;
 		this.fechaBaja = fechaBaja;
 		this.fechaAlta = fechaAlta;
+		this.puntos = new ArrayList<LotePunto>();
 	}
 
 	public Long getId() {
@@ -127,6 +136,16 @@ public class Cliente {
 
 	public void setFechaAlta(LocalDate fechaAlta) {
 		this.fechaAlta = fechaAlta;
+	}
+
+	public List<LotePunto> getPuntos()
+	{
+		return puntos;
+	}
+
+	public void setPuntos(List<LotePunto> puntos)
+	{
+		this.puntos = puntos;
 	}
 
 	@Override
