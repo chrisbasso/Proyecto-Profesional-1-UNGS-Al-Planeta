@@ -27,3 +27,7 @@ HELP.md
 
 ### VS Code ###
 .vscode/
+
+### eclipse ###
+/bin/
+/src/main/java/META-INF/
