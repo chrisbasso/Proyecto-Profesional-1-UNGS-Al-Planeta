@@ -1,6 +1,5 @@
 package com.tp.proyecto1.model.reserva;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -16,9 +15,9 @@ public class Reserva {
 		@GeneratedValue
 		private Long id;
 
-		@OneToOne(cascade = CascadeType.ALL)
+		@OneToOne
 		private Viaje viaje;
-		@OneToOne(cascade = CascadeType.ALL)
+		@OneToOne
 		private Cliente cliente;
 		
 		public Reserva(Long id, Viaje viaje, Cliente cliente) {
