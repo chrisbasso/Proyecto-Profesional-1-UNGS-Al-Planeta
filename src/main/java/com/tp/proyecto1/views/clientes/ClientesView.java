@@ -4,6 +4,7 @@ import com.tp.proyecto1.model.clientes.Cliente;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -66,6 +67,8 @@ public class ClientesView extends VerticalLayout {
 		grid.getColumnByKey("dni").setHeader("DNI");
 		grid.getColumnByKey("fechaAlta").setHeader("Fecha Alta");
 		grid.getColumnByKey("fechaBaja").setHeader("Fecha Baja");
+		grid.addThemeVariants(GridVariant.MATERIAL_COLUMN_DIVIDERS);
+
 	}
 
 	public Grid<Cliente> getGrid() {

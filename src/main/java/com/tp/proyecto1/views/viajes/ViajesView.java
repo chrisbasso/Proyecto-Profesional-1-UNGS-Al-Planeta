@@ -2,16 +2,21 @@ package com.tp.proyecto1.views.viajes;
 
 import com.tp.proyecto1.model.viajes.TipoTransporte;
 import com.tp.proyecto1.model.viajes.Viaje;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.textfield.TextFieldVariant;
+import com.vaadin.flow.server.WebBrowser;
+import com.vaadin.flow.theme.Theme;
 
 public class ViajesView extends VerticalLayout {
 
@@ -38,22 +43,29 @@ public class ViajesView extends VerticalLayout {
 	private void setComponents() {
 		this.grid = new Grid<>(Viaje.class);
 		this.idFilter = new NumberField("Nº Viaje");
+		this.idFilter.setWidth("70px");
 		this.paisFilter = new TextField("País");
+		paisFilter.setWidth("100px");
 		this.ciudadFilter = new TextField("Ciudad");
+		ciudadFilter.setWidth("150px");
 		this.codTransporteFilter = new TextField("Cod. Transporte");
+		codTransporteFilter.setWidth("105px");
 		this.searchButton = new Button("Buscar", VaadinIcon.SEARCH.create());
-		this.searchButton.setMinWidth("130px");
+		this.searchButton.setMinWidth("105px");
 		this.newViajeButton = new Button("Nuevo", VaadinIcon.PLUS.create());
-		this.newViajeButton.setMinWidth("130px");
+		this.newViajeButton.setMinWidth("105px");
 		this.activosCheck = new Checkbox("Solo Activos");
 		this.transporteFilter = new ComboBox<>("Transporte");
+		this.transporteFilter.setWidth("130px");
 		this.transporteFilter.setItemLabelGenerator(TipoTransporte::getDescripcion);
 		this.fechaDesdeFilter = new DatePicker("Fecha Desde");
+		this.fechaDesdeFilter.setWidth("137px");
 		this.fechaHastaFilter = new DatePicker("Fecha Hasta");
+		this.fechaHastaFilter.setWidth("137px");
 		this.btnComprar = new Button("Comprar");
 		this.btnReservar = new Button("Reservar");
 		this.activosCheck.setValue(true);
-		this.activosCheck.setMinWidth("140px");
+		this.activosCheck.setMinWidth("135px");
 	}
 
 	private void setLayout() {
@@ -67,6 +79,7 @@ public class ViajesView extends VerticalLayout {
 		actions.setWidthFull();
 		actions.setVerticalComponentAlignment(Alignment.END, hlButtons);
 		actions.setVerticalComponentAlignment(Alignment.END, searchButton, newViajeButton, activosCheck);
+
 	}
 
 	private void setGrid() {
@@ -75,6 +88,7 @@ public class ViajesView extends VerticalLayout {
 				"fechaSalida", "horaSalida", "fechaLlegada", "horaLlegada", "precio");
 		grid.getColumnByKey("id").setHeader("Nº");
 		grid.getColumnByKey("id").setWidth("70px").setFlexGrow(0);
+		grid.addThemeVariants(GridVariant.MATERIAL_COLUMN_DIVIDERS);
 
 	}
 

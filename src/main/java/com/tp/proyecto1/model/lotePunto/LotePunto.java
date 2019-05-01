@@ -29,7 +29,19 @@ public class LotePunto
 		setFechaAlta(fechaAlta);
 		setFechaVencimiento(fechaVencimiento);
 		setCantidadPuntos(cantidadPuntos);
-		setIsActivo(isActivo);
+		setActivo(isActivo);
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public Boolean getActivo() {
+		return isActivo;
+	}
+
+	public void setActivo(Boolean activo) {
+		isActivo = activo;
 	}
 
 	public LocalDate getFechaAlta()
@@ -67,9 +79,5 @@ public class LotePunto
 		return isActivo;
 	}
 
-	public void setIsActivo(Boolean isActivo)
-	{
-		this.isActivo = isActivo;
-	}
-	
+
 }

@@ -47,7 +47,7 @@ public class Cliente {
 		this.isActivo = isActivo;
 		this.fechaBaja = fechaBaja;
 		this.fechaAlta = fechaAlta;
-		this.puntos = new ArrayList<LotePunto>();
+		this.puntos = new ArrayList<>();
 	}
 
 	public Long getId() {
