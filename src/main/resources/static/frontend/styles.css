@@ -9,3 +9,9 @@ h3 {
     font-family: sans-serif;
     color: midnightblue;
 }
+
+vaadin-grid-cell-content{
+    font-size: var(--lumo-font-size-xxs);
+    padding: var(--lumo-space-xs) var(--lumo-space-xs);
+}
+
