@@ -84,10 +84,11 @@ public class ViajesView extends VerticalLayout {
 
 	private void setGrid() {
 		grid.setColumns("id", "destino.ciudad","destino.pais", "transporte.codTransporte",
-				"transporte.tipo", "transporte.capacidad", "transporte.clase",
+				"transporte.tipo.descripcion", "transporte.capacidad", "transporte.clase",
 				"fechaSalida", "horaSalida", "fechaLlegada", "horaLlegada", "precio");
 		grid.getColumnByKey("id").setHeader("Nº");
 		grid.getColumnByKey("id").setWidth("70px").setFlexGrow(0);
+		grid.getColumnByKey("transporte.tipo.descripcion").setHeader("Tipo Transporte");
 		grid.addThemeVariants(GridVariant.MATERIAL_COLUMN_DIVIDERS);
 
 	}

@@ -15,13 +15,13 @@ public class Transporte {
 	@OneToOne
 	private TipoTransporte tipo;
 
-	private Integer capacidad;
+	private String capacidad;
 	private String clase;
 
 	public Transporte() {
 	}
 
-	public Transporte(String codTransporte, TipoTransporte tipo, Integer capacidad, String clase) {
+	public Transporte(String codTransporte, TipoTransporte tipo, String capacidad, String clase) {
 		this.codTransporte = codTransporte;
 		this.tipo = tipo;
 		this.capacidad = capacidad;
@@ -52,11 +52,11 @@ public class Transporte {
 		this.tipo = tipo;
 	}
 
-	public Integer getCapacidad() {
+	public String getCapacidad() {
 		return capacidad;
 	}
 
-	public void setCapacidad(Integer capacidad) {
+	public void setCapacidad(String capacidad) {
 		this.capacidad = capacidad;
 	}
 

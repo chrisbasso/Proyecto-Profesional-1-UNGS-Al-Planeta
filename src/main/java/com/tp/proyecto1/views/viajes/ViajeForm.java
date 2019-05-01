@@ -1,8 +1,8 @@
 package com.tp.proyecto1.views.viajes;
 
+import com.tp.proyecto1.model.viajes.TagDestino;
 import com.tp.proyecto1.model.viajes.TipoTransporte;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -31,7 +31,9 @@ public class ViajeForm extends Dialog {
     private DatePicker fechaLlegada;
     private TimePicker horaLlegada;
     private NumberField precio;
+    private ComboBox<TagDestino> tagDestino;
     private TextArea textAreaDescripcion;
+    private TextArea textAreaRecomendaciones;
 
     private Button btnSave;
     private Button btnCancel;
@@ -49,9 +51,14 @@ public class ViajeForm extends Dialog {
         btnSave = new Button("Guardar");
         btnCancel = new Button("Cancelar");
         transporte = new ComboBox<>();
+        transporte.setItemLabelGenerator(TipoTransporte::getDescripcion);
+        tagDestino = new ComboBox<>();
+        tagDestino.setItemLabelGenerator(TagDestino::getDescripcion);
         codTransporte = new TextField();
         clase = new TextField();
         capacidad = new TextField();
+        capacidad.setPattern("[0-9]*");
+        capacidad.setPreventInvalidInput(true);
         ciudad = new TextField();
         pais = new TextField();
         fechaSalida = new DatePicker();
@@ -59,9 +66,15 @@ public class ViajeForm extends Dialog {
         fechaLlegada = new DatePicker();
         horaLlegada = new TimePicker();
         precio = new NumberField();
-        textAreaDescripcion = new TextArea();
+        textAreaDescripcion = new TextArea("Descripción");
+        textAreaRecomendaciones = new TextArea("Recomendaciones");
 
         textAreaDescripcion.setHeight("100px");
+        textAreaDescripcion.setWidth("770px");
+        textAreaRecomendaciones.setHeight("100px");
+        textAreaRecomendaciones.setWidth("770px");
+        precio.setWidth("192px");
+        precio.setMin(0);
 
         precio.setPrefixComponent(new Span("$"));
 
@@ -79,7 +92,7 @@ public class ViajeForm extends Dialog {
         form.addFormItem(clase, "Clase");
         form.addFormItem(capacidad, "Capacidad");
         form.addFormItem(precio, "Precio");
-        form.addFormItem(textAreaDescripcion, "Descripción");
+        form.addFormItem(tagDestino, "Tag Destino");
 
     }
 
@@ -88,11 +101,11 @@ public class ViajeForm extends Dialog {
         actions.add(btnSave, btnCancel);
 
         mainLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
-        mainLayout.add(form, actions);
+        mainLayout.add(form,textAreaDescripcion, textAreaRecomendaciones, actions);
         mainLayout.setSizeFull();
 
         this.add(mainLayout);
-        this.setWidth("100%");
+        this.setWidth("800px");
         this.setHeight("100%");
 
     }
@@ -223,5 +236,21 @@ public class ViajeForm extends Dialog {
 
     public void setBtnCancel(Button btnCancel) {
         this.btnCancel = btnCancel;
+    }
+
+    public ComboBox<TagDestino> getTagDestino() {
+        return tagDestino;
+    }
+
+    public void setTagDestino(ComboBox<TagDestino> tagDestino) {
+        this.tagDestino = tagDestino;
+    }
+
+    public TextArea getTextAreaRecomendaciones() {
+        return textAreaRecomendaciones;
+    }
+
+    public void setTextAreaRecomendaciones(TextArea textAreaRecomendaciones) {
+        this.textAreaRecomendaciones = textAreaRecomendaciones;
     }
 }

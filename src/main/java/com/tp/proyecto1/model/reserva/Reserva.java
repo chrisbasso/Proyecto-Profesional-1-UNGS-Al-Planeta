@@ -11,47 +11,46 @@ import com.tp.proyecto1.model.viajes.Viaje;
 @Entity
 public class Reserva {
 
-		@Id
-		@GeneratedValue
-		private Long id;
+	@Id
+	@GeneratedValue
+	private Long id;
 
-		@OneToOne
-		private Viaje viaje;
-		@OneToOne
-		private Cliente cliente;
-		
-		public Reserva(Long id, Viaje viaje, Cliente cliente) {
-			this.id = id;
-			this.viaje = viaje;
-			this.cliente = cliente;
-		}
-		
-		public Reserva() {			
-		}
+	@OneToOne
+	private Viaje viaje;
+	@OneToOne
+	private Cliente cliente;
 
-		public Long getId() {
-			return id;
-		}
+	public Reserva(Viaje viaje, Cliente cliente) {
+		this.viaje = viaje;
+		this.cliente = cliente;
+	}
 
-		public void setId(Long id) {
-			this.id = id;
-		}
+	public Reserva() {
+	}
 
-		public Viaje getViaje() {
-			return viaje;
-		}
+	public Long getId() {
+		return id;
+	}
 
-		public void setViaje(Viaje viaje) {
-			this.viaje = viaje;
-		}
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-		public Cliente getCliente() {
-			return cliente;
-		}
+	public Viaje getViaje() {
+		return viaje;
+	}
 
-		public void setCliente(Cliente cliente) {
-			this.cliente = cliente;
-		}
+	public void setViaje(Viaje viaje) {
+		this.viaje = viaje;
+	}
 
-		
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+
 }

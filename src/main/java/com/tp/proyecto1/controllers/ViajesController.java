@@ -1,6 +1,7 @@
 package com.tp.proyecto1.controllers;
 
 import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.views.viajes.ViajesView;
 import com.vaadin.flow.component.button.Button;
@@ -29,7 +30,7 @@ public class ViajesController {
         this.viajeService = viajeService;
         setListeners();
         setComponents();
-        listClientes();
+        listViajes();
     }
 
     private void setComponents() {
@@ -39,15 +40,15 @@ public class ViajesController {
     }
 
     private void setListeners() {
-        setChangeHandler(this::listClientes);
+        setChangeHandler(this::listViajes);
         viajesView.getNewViajeButton().addClickListener(e-> openNewViajeForm());
-        viajesView.getSearchButton().addClickListener(e-> listClientes());
+        viajesView.getSearchButton().addClickListener(e-> listViajes());
     }
 
     private void openNewViajeForm() {
         viajeFormController = new ViajeFormController(viajeService);
         viajeFormController.getViajeForm().open();
-        //viajeFormController.setChangeHandler(this::listClientes);
+        viajeFormController.setChangeHandler(this::listViajes);
     }
 
     private void deleteCliente(Cliente cliente) {
@@ -75,34 +76,25 @@ public class ViajesController {
 ////            clienteFormController = new ClienteFormController(viajeService);
 ////            clienteFormController.setComponentsValues(cliente);
 ////            clienteFormController.getClienteForm().open();
-////            clienteFormController.setChangeHandler(this::listClientes);
+////            clienteFormController.setChangeHandler(this::listViajes);
 ////        });
 //    }
 
-    private void listClientes() {
-//        Cliente clienteBusqueda = new Cliente();
-//        if(checkFiltros()){
-//            setParametrosBusqueda(clienteBusqueda);
-//            viajesView.getGrid().setItems(viajeService.findClientes(clienteBusqueda));
-//        }else{
-//            viajesView.getGrid().setItems(viajeService.findAll());
-//        }
+    private void listViajes() {
+        Viaje viajeBusqueda = new Viaje();
+        if(checkFiltros()){
+            setParametrosBusqueda(viajeBusqueda);
+            viajesView.getGrid().setItems(viajeService.findViajes(viajeBusqueda));
+        }else{
+            viajesView.getGrid().setItems(viajeService.findAll());
+        }
     }
 
-    private void setParametrosBusqueda(Cliente clienteBusqueda) {
-//        if(!viajesView.getIdFilter().isEmpty()){
-//            clienteBusqueda.setId(viajesView.getIdFilter().getValue().longValue());
-//        }
-//        if (!viajesView.getCodTransporteFilter().isEmpty()) {
-//            clienteBusqueda.setDni(String.valueOf(viajesView.getCodTransporteFilter().getValue().intValue()));
-//        }
-//        if (!viajesView.getPaisFilter().isEmpty()) {
-//            clienteBusqueda.setNombre(viajesView.getPaisFilter().getValue());
-//        }
-//        if (!viajesView.getCiudadFilter().isEmpty()) {
-//            clienteBusqueda.setApellido(viajesView.getCiudadFilter().getValue());
-//        }
-//        clienteBusqueda.setActivo(viajesView.getActivosCheck().getValue());
+    private void setParametrosBusqueda(Viaje viajeBusqueda) {
+        if(!viajesView.getIdFilter().isEmpty()){
+            viajeBusqueda.setId(viajesView.getIdFilter().getValue().longValue());
+        }
+        viajeBusqueda.setActivo(viajesView.getActivosCheck().getValue());
     }
 
     private boolean checkFiltros() {
