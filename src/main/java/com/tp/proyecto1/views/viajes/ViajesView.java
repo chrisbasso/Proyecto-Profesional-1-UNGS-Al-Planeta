@@ -2,25 +2,20 @@ package com.tp.proyecto1.views.viajes;
 
 import com.tp.proyecto1.model.viajes.TipoTransporte;
 import com.tp.proyecto1.model.viajes.Viaje;
-import com.vaadin.flow.component.UI;
+import com.tp.proyecto1.utils.FilterGridLayout;
+import com.tp.proyecto1.utils.View;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.textfield.TextFieldVariant;
-import com.vaadin.flow.server.WebBrowser;
-import com.vaadin.flow.theme.Theme;
 
-public class ViajesView extends VerticalLayout {
+public class ViajesView extends FilterGridLayout<Viaje> implements View {
 
-	private Grid<Viaje> grid;
 	private NumberField idFilter;
 	private TextField paisFilter;
 	private TextField ciudadFilter;
@@ -35,13 +30,14 @@ public class ViajesView extends VerticalLayout {
 	private Button btnComprar;
 
 	public ViajesView() {
+		super(Viaje.class);
 		setComponents();
 		setLayout();
 		setGrid();
 	}
 
-	private void setComponents() {
-		this.grid = new Grid<>(Viaje.class);
+	public void setComponents() {
+
 		this.idFilter = new NumberField("Nº Viaje");
 		this.idFilter.setWidth("70px");
 		this.paisFilter = new TextField("País");
@@ -68,28 +64,20 @@ public class ViajesView extends VerticalLayout {
 		this.activosCheck.setMinWidth("135px");
 	}
 
-	private void setLayout() {
+	public void setLayout() {
 		HorizontalLayout hlSpace = new HorizontalLayout();
-		HorizontalLayout hlButtons = new HorizontalLayout();
-		hlButtons.add(btnReservar, btnComprar);
+		this.hlFooter.add(btnReservar, btnComprar);
 		hlSpace.setWidthFull();
-		HorizontalLayout actions = new HorizontalLayout(idFilter, paisFilter, ciudadFilter, codTransporteFilter, transporteFilter,fechaDesdeFilter,fechaHastaFilter,activosCheck,hlSpace, searchButton, newViajeButton);
-		this.add(actions, grid, hlButtons);
-		this.setSizeFull();
-		actions.setWidthFull();
-		actions.setVerticalComponentAlignment(Alignment.END, hlButtons);
-		actions.setVerticalComponentAlignment(Alignment.END, searchButton, newViajeButton, activosCheck);
-
+		this.hlActions.add(idFilter, paisFilter, ciudadFilter, codTransporteFilter, transporteFilter,fechaDesdeFilter,fechaHastaFilter,activosCheck,hlSpace, searchButton, newViajeButton);
 	}
 
-	private void setGrid() {
+	public void setGrid() {
 		grid.setColumns("id", "destino.ciudad","destino.pais", "transporte.codTransporte",
 				"transporte.tipo.descripcion", "transporte.capacidad", "transporte.clase",
 				"fechaSalida", "horaSalida", "fechaLlegada", "horaLlegada", "precio");
 		grid.getColumnByKey("id").setHeader("Nº");
 		grid.getColumnByKey("id").setWidth("70px").setFlexGrow(0);
 		grid.getColumnByKey("transporte.tipo.descripcion").setHeader("Tipo Transporte");
-		grid.addThemeVariants(GridVariant.MATERIAL_COLUMN_DIVIDERS);
 
 	}
 
