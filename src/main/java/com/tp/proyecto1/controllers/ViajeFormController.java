@@ -30,10 +30,8 @@ public class ViajeFormController {
     private ChangeHandler changeHandler;
 
     private Binder<Viaje> binderViaje = new Binder<>();
-    private Binder<TagDestino> binderTag = new Binder<>();
     private Binder<Destino> binderDestino = new Binder<>();
     private Binder<Transporte> binderTransporte = new Binder<>();
-    private Binder<TipoTransporte> binderTipoTransporte = new Binder<>();
 
     private Viaje viaje;
 
@@ -96,23 +94,13 @@ public class ViajeFormController {
         return viaje;
     }
 
-//    public void setComponentsValues(Cliente cliente) {
-//        this.cliente = cliente;
-//        clienteForm.getNombre().setValue(cliente.getNombre());
-//        clienteForm.getApellido().setValue(cliente.getApellido());
-//        clienteForm.getTelefono().setValue(cliente.getTelefono());
-//        clienteForm.getEmail().setValue(cliente.getEmail());
-//        clienteForm.getCalle().setValue(cliente.getDomicilio().getCalle());
-//        clienteForm.getAltura().setValue(cliente.getDomicilio().getAltura());
-//        clienteForm.getLocalidad().setValue(cliente.getDomicilio().getLocalidad());
-//        clienteForm.getCiudad().setValue(cliente.getDomicilio().getCiudad());
-//        clienteForm.getPais().setValue(cliente.getDomicilio().getPais());
-//        clienteForm.getCodPostal().setValue(cliente.getDomicilio().getCodPostal());
-//        clienteForm.getDni().setValue(cliente.getDni());
-//        clienteForm.getFechaNacimiento().setValue(cliente.getFechaNacimiento());
-//        clienteForm.getCheckActivo().setVisible(true);
-//        clienteForm.getCheckActivo().setValue(cliente.isActivo());
-//    }
+    public void setComponentsValues(Viaje viaje) {
+        this.viaje = viaje;
+        binderViaje.setBean(viaje);
+        binderDestino.setBean(viaje.getDestino());
+        binderTransporte.setBean(viaje.getTransporte());
+        setBinders();
+    }
 
     private void setBinders() {
 
@@ -131,6 +119,7 @@ public class ViajeFormController {
         setBinderFieldDestino(viajeForm.getTextAreaRecomendaciones(), Destino::getRecomendacion, Destino::setRecomendacion, false);
         setBinderFieldViaje(viajeForm.getTextAreaDescripcion(), Viaje::getDescripcion, Viaje::setDescripcion, false);
 
+        binderViaje.setBean(viaje);
     }
 
     private void setBinderFieldViaje(AbstractField field, ValueProvider<Viaje, String> valueProvider, Setter<Viaje, String> setter, boolean isRequiered){
@@ -264,26 +253,16 @@ public class ViajeFormController {
     }
 
 
-//    public void clean() {
-//        binderCliente.readBean(null);
-//        binderDomicilio.readBean(null);
-//        clienteForm.getNombre().setValue("");
-//        clienteForm.getApellido().setValue("");
-//        clienteForm.getTelefono().setValue("");
-//        clienteForm.getEmail().setValue("");
-//        clienteForm.getCalle().setValue("");
-//        clienteForm.getAltura().setValue("");
-//        clienteForm.getLocalidad().setValue("");
-//        clienteForm.getCiudad().setValue("");
-//        clienteForm.getPais().setValue("");
-//        clienteForm.getCodPostal().setValue("");
-//        clienteForm.getDni().setValue("");
-//        clienteForm.getFechaNacimiento().setValue(null);
-//    }
-
-
     public ViajeForm getViajeForm() {
         return viajeForm;
+    }
+
+    public Viaje getViaje() {
+        return viaje;
+    }
+
+    public void setViaje(Viaje viaje) {
+        this.viaje = viaje;
     }
 
     public interface ChangeHandler {

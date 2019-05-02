@@ -75,6 +75,7 @@ public class ViajeForm extends Dialog {
         textAreaRecomendaciones.setWidth("770px");
         precio.setWidth("192px");
         precio.setMin(0);
+        precio.setPreventInvalidInput(true);
 
         precio.setPrefixComponent(new Span("$"));
 

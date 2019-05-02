@@ -8,10 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ViajeService {
@@ -35,8 +39,15 @@ public class ViajeService {
     }
 
     @Transactional
-    public List<Viaje> findViajes(Viaje viaje){
-        return viajeRepository.findAll(Example.of(viaje));
+    public List<Viaje> findViajes(Viaje viaje, LocalDate fechaDesde, LocalDate fechaHasta){
+        List<Viaje> viajes = viajeRepository.findAll(Example.of(viaje));
+        if(fechaDesde!=null){
+            viajes = viajes.stream().filter(e-> e.getFechaSalida().isAfter(fechaDesde)).collect(Collectors.toList());
+        }
+        if(fechaHasta!=null){
+            viajes = viajes.stream().filter(e-> e.getFechaSalida().isBefore(fechaHasta)).collect(Collectors.toList());
+        }
+        return viajes;
     }
 
     @Transactional

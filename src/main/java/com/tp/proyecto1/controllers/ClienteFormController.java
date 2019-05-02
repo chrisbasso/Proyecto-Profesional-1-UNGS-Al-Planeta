@@ -86,20 +86,10 @@ public class ClienteFormController {
 
 	public void setComponentsValues(Cliente cliente) {
 		this.cliente = cliente;
-		clienteForm.getNombre().setValue(cliente.getNombre());
-		clienteForm.getApellido().setValue(cliente.getApellido());
-		clienteForm.getTelefono().setValue(cliente.getTelefono());
-		clienteForm.getEmail().setValue(cliente.getEmail());
-		clienteForm.getCalle().setValue(cliente.getDomicilio().getCalle());
-		clienteForm.getAltura().setValue(cliente.getDomicilio().getAltura());
-		clienteForm.getLocalidad().setValue(cliente.getDomicilio().getLocalidad());
-		clienteForm.getCiudad().setValue(cliente.getDomicilio().getCiudad());
-		clienteForm.getPais().setValue(cliente.getDomicilio().getPais());
-		clienteForm.getCodPostal().setValue(cliente.getDomicilio().getCodPostal());
-		clienteForm.getDni().setValue(cliente.getDni());
-		clienteForm.getFechaNacimiento().setValue(cliente.getFechaNacimiento());
+		binderCliente.setBean(cliente);
+		binderDomicilio.setBean(cliente.getDomicilio());
 		clienteForm.getCheckActivo().setVisible(true);
-		clienteForm.getCheckActivo().setValue(cliente.isActivo());
+		setBinders();
 	}
 
 	private void setBinders() {
