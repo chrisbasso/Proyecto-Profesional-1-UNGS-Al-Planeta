@@ -3,6 +3,7 @@ package com.tp.proyecto1.controllers;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.clientes.Domicilio;
 import com.tp.proyecto1.services.ClienteService;
+import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.views.clientes.ClienteForm;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -167,9 +168,6 @@ public class ClienteFormController {
 		return clienteForm;
 	}
 
-	public interface ChangeHandler {
-		void onChange();
-	}
 	public void setChangeHandler(ChangeHandler h) {
 		changeHandler = h;
 	}

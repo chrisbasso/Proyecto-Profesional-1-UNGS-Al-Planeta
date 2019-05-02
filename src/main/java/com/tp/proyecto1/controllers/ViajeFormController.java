@@ -2,6 +2,7 @@ package com.tp.proyecto1.controllers;
 
 import com.tp.proyecto1.model.viajes.*;
 import com.tp.proyecto1.services.ViajeService;
+import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.views.viajes.ViajeForm;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -265,9 +266,6 @@ public class ViajeFormController {
         this.viaje = viaje;
     }
 
-    public interface ChangeHandler {
-        void onChange();
-    }
     public void setChangeHandler(ChangeHandler h) {
         changeHandler = h;
     }

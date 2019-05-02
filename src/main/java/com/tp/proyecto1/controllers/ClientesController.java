@@ -2,6 +2,7 @@ package com.tp.proyecto1.controllers;
 
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.services.ClienteService;
+import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.ConfirmationDialog;
 import com.tp.proyecto1.views.clientes.ClientesView;
 import com.vaadin.flow.component.button.Button;
@@ -113,9 +114,6 @@ public class ClientesController {
 		clientesView.getActivosCheck().getValue();
 	}
 
-	public interface ChangeHandler {
-		void onChange();
-	}
 	private void setChangeHandler(ChangeHandler h) {
 		changeHandler = h;
 	}

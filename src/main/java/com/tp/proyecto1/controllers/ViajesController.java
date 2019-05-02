@@ -5,6 +5,7 @@ import com.tp.proyecto1.model.viajes.Destino;
 import com.tp.proyecto1.model.viajes.Transporte;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.ViajeService;
+import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.views.viajes.ViajesView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
@@ -16,7 +17,7 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 @UIScope
-public class ViajesController {
+public class ViajesController implements ChangeHandler {
 
     private ViajesView viajesView;
 
@@ -101,15 +102,17 @@ public class ViajesController {
                 viajesView.getFechaHastaFilter() != null;
     }
 
-    public interface ChangeHandler {
-        void onChange();
-    }
     private void setChangeHandler(ChangeHandler h) {
         changeHandler = h;
     }
+
     public ViajesView getView(){
         return viajesView;
     }
 
+    @Override
+    public void onChange() {
+
+    }
 }
 

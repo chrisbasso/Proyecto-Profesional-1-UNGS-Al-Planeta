@@ -2,6 +2,7 @@ package com.tp.proyecto1.controllers;
 
 import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.services.UserService;
+import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.views.LoginView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.login.AbstractLogin;
@@ -83,10 +84,7 @@ public class LoginController{
 		return loginView;
 	}
 
-	public interface ChangeHandler {
-		void onChange();
-	}
-	public void setChangeHandler(LoginController.ChangeHandler h) {
+	public void setChangeHandler(ChangeHandler h) {
 		changeHandler = h;
 	}
 
