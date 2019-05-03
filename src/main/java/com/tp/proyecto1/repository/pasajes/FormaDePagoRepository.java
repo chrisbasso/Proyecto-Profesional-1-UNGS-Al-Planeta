@@ -8,3 +8,4 @@ import com.tp.proyecto1.model.pasajes.FormaDePago;
 public interface FormaDePagoRepository extends JpaRepository<FormaDePago, Long> {
 		FormaDePago findByDescripcion(String descripcion);
 }
+//Seteo los componentes a utilizar

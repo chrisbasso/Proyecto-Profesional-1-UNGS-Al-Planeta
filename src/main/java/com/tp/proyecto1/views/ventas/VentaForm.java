@@ -49,7 +49,7 @@ public class VentaForm extends Dialog {
 	        setLayouts();
 
 	    }
-
+//Seteo los componentes a utilizar
 	    private void setComponents() {
 
 	    	btnFinalizarCompra = new Button("Finalizar Compra");

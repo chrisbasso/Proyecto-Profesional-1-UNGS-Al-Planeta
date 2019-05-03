@@ -41,7 +41,7 @@ public class VentaFormController {
         setComponents();
         setBinders();
 	}
-	
+	//Seteo los componentes a utilizar
 	private void setComponents() {
 		//ventaForm.getFormaPago().setItems(ventaService.findAllFomaDePagos()); AREGLAR!!!!!!!!!11		
 	}
