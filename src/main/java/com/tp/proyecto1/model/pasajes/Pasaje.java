@@ -1,9 +1,6 @@
 package com.tp.proyecto1.model.pasajes;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.viajes.Viaje;
@@ -12,7 +9,7 @@ import org.apache.tomcat.jni.Local;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@Entity
+@MappedSuperclass
 public abstract class Pasaje {
 
 	@Id
