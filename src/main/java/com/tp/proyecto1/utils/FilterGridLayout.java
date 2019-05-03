@@ -17,6 +17,7 @@ public class FilterGridLayout<T> extends VerticalLayout {
         this.grid = new Grid<>(parametricClass);
         this.add(hlActions, grid, hlFooter);
         this.grid.addThemeVariants(GridVariant.MATERIAL_COLUMN_DIVIDERS);
+        this.grid.setSelectionMode(Grid.SelectionMode.SINGLE);
         this.setSizeFull();
         this.hlActions.setWidthFull();
         this.setHorizontalComponentAlignment(Alignment.END, hlFooter);
