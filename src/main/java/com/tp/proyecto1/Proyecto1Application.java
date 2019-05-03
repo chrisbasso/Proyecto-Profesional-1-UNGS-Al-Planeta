@@ -2,6 +2,7 @@ package com.tp.proyecto1;
 
 import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.services.UserService;
+import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,7 @@ public class Proyecto1Application {
 	}
 
 	@Bean
-	public CommandLineRunner loadData(UserService userService, ViajeService viajeService) {
+	public CommandLineRunner loadData(UserService userService, ViajeService viajeService, VentaService ventaService) {
 		return args -> {
 			userService.createPrivilegeIfNotFound("READ_PRIVILEGE");
 			userService.createPrivilegeIfNotFound("WRITE_PRIVILEGE");
@@ -33,6 +34,9 @@ public class Proyecto1Application {
 			viajeService.createTipoTransporteIfNotExist("Tren");
 			viajeService.createTipoTransporteIfNotExist("Buque");
 			viajeService.createTipoTransporteIfNotExist("Crucero");
+			ventaService.createFormaDePagoIfNotExist("Efectivo");
+			ventaService.createFormaDePagoIfNotExist("Debito");
+			ventaService.createFormaDePagoIfNotExist("Credito");
 		};
 	}
 

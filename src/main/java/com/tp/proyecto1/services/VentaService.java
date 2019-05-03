@@ -26,10 +26,11 @@ public class VentaService {
     private static final Logger log = LoggerFactory.getLogger(VentaService.class);
     
     @Transactional
-    public void save(Venta viaje){
-        ventaRepository.save(viaje);
+    public void save(Venta venta){
+        ventaRepository.save(venta);
     }
     
+    @Transactional
     public List<Venta> findAll(){
     	return this.ventaRepository.findAll();
     }
@@ -61,11 +62,11 @@ public class VentaService {
         }
         return formaPago;
     }
-/*AREGLARRRRRRRRRRR!!!!!!!!!!!!111111
+
     @Transactional
     public List<FormaDePago> findAllFomaDePagos() {
 
         return formaDePagoRepository.findAll();
 
-    }*/
+    }
 }

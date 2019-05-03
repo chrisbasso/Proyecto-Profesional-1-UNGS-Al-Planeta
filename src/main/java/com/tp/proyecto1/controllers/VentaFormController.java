@@ -31,7 +31,7 @@ public class VentaFormController {
 
 	private Venta venta;
 
-	private Binder binderVenta;
+	private Binder<Venta> binderVenta;
 
 	@Autowired
 	public VentaFormController(VentaService ventaService,  Viaje viaje) {
@@ -43,14 +43,14 @@ public class VentaFormController {
 	}
 	//Seteo los componentes a utilizar
 	private void setComponents() {
-		//ventaForm.getFormaPago().setItems(ventaService.findAllFomaDePagos()); AREGLAR!!!!!!!!!11		
+		ventaForm.getFormaPago().setItems(ventaService.findAllFomaDePagos()); //AREGLAR!!!!!!!!!11		
 	}
 	
 	private void setListeners() {
 		ventaForm.getBtnSave().addClickListener(e-> saveVenta(venta));//en el modo edit
 		ventaForm.getBtnCancel().addClickListener(e->ventaForm.close());
 		ventaForm.getBtnFinalizarCompra().addClickListener(e-> newVenta(venta));//en el modo compra pasajes de viajes, 
-				//Hacer de que alguna manera sea invisible en modo edit e igual con el boton save a la hora de comprar!!!
+				//Hacer de que alguna manera sea invisible en modo edit e igual con el boton save a la hora de comprar o es al pedo y se le puede modificar de una manera mas sencilla!!!CRISTIAN
 	}
 	
 //si es una venta desplegada desde el boton comprar
