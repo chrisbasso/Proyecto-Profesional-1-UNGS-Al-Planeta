@@ -1,6 +1,7 @@
 package com.tp.proyecto1.model.lotePunto;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -78,6 +79,21 @@ public class LotePunto
 	{
 		return isActivo;
 	}
+	
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LotePunto lotePunto = (LotePunto) o;
+        return Objects.equals(id, lotePunto.id) &&
+                Objects.equals(cantidadPuntos, lotePunto.cantidadPuntos) &&
+                Objects.equals(fechaAlta, lotePunto.fechaAlta);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, cantidadPuntos, fechaAlta);
+    }
 
 
 }
