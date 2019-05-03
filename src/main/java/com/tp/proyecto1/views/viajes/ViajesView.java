@@ -35,8 +35,6 @@ public class ViajesView extends FilterGridLayout<Viaje> implements View {
 		setComponents();
 		setLayout();
 		setGrid();
-		grid.setSelectionMode(Grid.SelectionMode.SINGLE);
-		grid.asSingleSelect().getValue();
 	}
 
 	public void setComponents() {

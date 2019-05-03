@@ -18,7 +18,7 @@ import com.vaadin.flow.spring.annotation.UIScope;
 
 @Controller
 @UIScope
-public class ViajesController implements ChangeHandler {
+public class ViajesController {
 
     private ViajesView viajesView;
 
@@ -118,9 +118,6 @@ public class ViajesController implements ChangeHandler {
         return viajesView;
     }
 
-    @Override
-    public void onChange() {
 
-    }
 }
 
