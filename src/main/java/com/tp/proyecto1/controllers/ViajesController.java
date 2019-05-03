@@ -1,9 +1,12 @@
 package com.tp.proyecto1.controllers;
 
-import com.tp.proyecto1.model.clientes.Cliente;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
 import com.tp.proyecto1.model.viajes.Destino;
 import com.tp.proyecto1.model.viajes.Transporte;
 import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.services.ReservaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.views.viajes.ViajesView;
@@ -11,8 +14,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.spring.annotation.UIScope;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 
 
 @Controller
@@ -46,6 +47,7 @@ public class ViajesController implements ChangeHandler {
         setChangeHandler(this::listViajes);
         viajesView.getNewViajeButton().addClickListener(e-> openNewViajeForm());
         viajesView.getSearchButton().addClickListener(e-> listViajes());
+        viajesView.getBtnReservar().addClickListener(e-> openNewReservaForm());
     }
 
     private void openNewViajeForm() {
@@ -53,7 +55,13 @@ public class ViajesController implements ChangeHandler {
         viajeFormController.getViajeForm().open();
         viajeFormController.setChangeHandler(this::listViajes);
     }
-
+    
+    private void openNewReservaForm() {
+    	Viaje seleccionado = new Viaje();
+    	ReservaController reservaController = new ReservaController(new ReservaService(),seleccionado);    	
+        reservaController.getView().open();    	
+    }
+    
     private Button createEditButton(Viaje viaje) {
         return new Button(VaadinIcon.EDIT.create(), clickEvent -> {
             viajeFormController = new ViajeFormController(viajeService);

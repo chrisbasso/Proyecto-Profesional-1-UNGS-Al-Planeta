@@ -6,51 +6,18 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.model.pasajes.Pasaje;
 import com.tp.proyecto1.model.viajes.Viaje;
 
 @Entity
-public class Reserva {
+public class Reserva extends Pasaje{
 
-	@Id
-	@GeneratedValue
-	private Long id;
-
-	@OneToOne
-	private Viaje viaje;
-	@OneToOne
-	private Cliente cliente;
-
+	
 	public Reserva(Viaje viaje, Cliente cliente) {
-		this.viaje = viaje;
-		this.cliente = cliente;
+		setCliente(cliente);
+		setViaje(viaje);
 	}
 
 	public Reserva() {
 	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Viaje getViaje() {
-		return viaje;
-	}
-
-	public void setViaje(Viaje viaje) {
-		this.viaje = viaje;
-	}
-
-	public Cliente getCliente() {
-		return cliente;
-	}
-
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
-	}
-
-
 }
