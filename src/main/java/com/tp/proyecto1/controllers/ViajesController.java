@@ -57,9 +57,14 @@ public class ViajesController {
     }
     
     private void openNewReservaForm() {
-    	Viaje seleccionado = new Viaje();
-    	ReservaController reservaController = new ReservaController(new ReservaService(),seleccionado);    	
-        reservaController.getView().open();    	
+    	Viaje seleccionado = viajesView.getGrid().asSingleSelect().getValue();
+    	if(seleccionado!=null) {
+    		ReservaController reservaController = new ReservaController(new ReservaService(),seleccionado);    	
+            reservaController.getForm().open();    	
+    	}else {
+    		//TODO mostrar mensaje
+    	}
+    	
     }
     
     private Button createEditButton(Viaje viaje) {
