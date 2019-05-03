@@ -9,6 +9,7 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridSingleSelectionModel;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -34,6 +35,8 @@ public class ViajesView extends FilterGridLayout<Viaje> implements View {
 		setComponents();
 		setLayout();
 		setGrid();
+		grid.setSelectionMode(Grid.SelectionMode.SINGLE);
+		grid.asSingleSelect().getValue();
 	}
 
 	public void setComponents() {

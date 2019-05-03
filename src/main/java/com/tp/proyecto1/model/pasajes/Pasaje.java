@@ -7,34 +7,83 @@ import javax.persistence.OneToOne;
 
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.viajes.Viaje;
+import org.apache.tomcat.jni.Local;
+
+import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 public abstract class Pasaje {
 
 	@Id
 	@GeneratedValue
-	private Long id;
+	protected Long id;
 
 	@OneToOne
-	Viaje viaje;
+	protected Viaje viaje;
 	@OneToOne
-	Cliente cliente;
+	protected Cliente cliente;
 	@OneToOne
-	FormaDePago formaDePago;
-	
+	protected FormaDePago formaDePago;
+
+	protected LocalDate fechaPago;
+
+
+	public Pasaje() {
+	}
+
+	public Pasaje(Viaje viaje, Cliente cliente, FormaDePago formaDePago, LocalDate fechaPago) {
+		this.viaje = viaje;
+		this.cliente = cliente;
+		this.formaDePago = formaDePago;
+		this.fechaPago = fechaPago;
+	}
+
 	public Viaje getViaje() {
 		return viaje;
 	}
+
 	public void setViaje(Viaje viaje) {
 		this.viaje = viaje;
 	}
+
 	public Cliente getCliente() {
 		return cliente;
 	}
+
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
 	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public FormaDePago getFormaDePago() {
+		return formaDePago;
+	}
+
+	public void setFormaDePago(FormaDePago formaDePago) {
+		this.formaDePago = formaDePago;
+	}
+
 	public Long getId() {
 		return id;
-	}	
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Pasaje pasaje = (Pasaje) o;
+		return Objects.equals(id, pasaje.id) &&
+				Objects.equals(viaje, pasaje.viaje) &&
+				Objects.equals(cliente, pasaje.cliente) &&
+				Objects.equals(formaDePago, pasaje.formaDePago);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, viaje, cliente, formaDePago);
+	}
 }
