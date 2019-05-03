@@ -1,15 +1,17 @@
 package com.tp.proyecto1.model.pasajes;
 
-import javax.persistence.*;
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.viajes.Viaje;
-import org.apache.tomcat.jni.Local;
 
-import java.time.LocalDate;
-import java.util.Objects;
-
-@MappedSuperclass
+@Entity
 public abstract class Pasaje {
 
 	@Id
@@ -20,17 +22,13 @@ public abstract class Pasaje {
 	protected Viaje viaje;
 	@OneToOne
 	protected Cliente cliente;
-	@OneToOne
-	protected FormaDePago formaDePago;
-
-	protected LocalDate fechaPago;
-
+	@OneToMany(mappedBy = "pasaje")
+	protected List<Pago> pagos;
 
 	public Pasaje(Viaje viaje, Cliente cliente, FormaDePago formaDePago, LocalDate fechaPago) {
 		this.viaje = viaje;
 		this.cliente = cliente;
-		this.formaDePago = formaDePago;
-		this.fechaPago = fechaPago;
+		this.pagos = pagos;		
 	}
 
 	public Viaje getViaje() {
@@ -49,16 +47,12 @@ public abstract class Pasaje {
 		this.cliente = cliente;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public List<Pago> getPagos() {
+		return pagos;
 	}
 
-	public FormaDePago getFormaDePago() {
-		return formaDePago;
-	}
-
-	public void setFormaDePago(FormaDePago formaDePago) {
-		this.formaDePago = formaDePago;
+	public void setPagos(List <Pago> pagos) {
+		this.pagos = pagos;
 	}
 
 	public Long getId() {
@@ -91,4 +85,5 @@ public abstract class Pasaje {
 	public int hashCode() {
 		return Objects.hash(id, viaje, cliente, formaDePago);
 	}
+}
 }

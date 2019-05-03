@@ -30,4 +30,31 @@ public class ReservaController {
 	public ReservaForm getForm() {
 		return view;
 	}
+	
+	/* Se debe permitir reservar el pasaje sin necesidad de pagar,  
+	 * pero avisando al cliente que debe pagar al menos el 30% 
+	 * del valor total antes que finalice la fecha de la reserva.
+	 * 
+	 * El resto se debe pagar a lo sumo 5 días antes del viaje.
+	 */
+	public void guardarReserva() {
+		
+	}
+	
+	
+	public void guardarBorrador() {
+		
+	}
+	
+	public void emitirComprobante() {
+		
+	}
+	
+	public void enviarMail() {
+		
+	}
+	
+	public void modificarReserva() {
+		
+	}
 }

@@ -67,8 +67,7 @@ public class ViajesController {
             reservaController.getForm().open();    	
     	}else {
     		//TODO mostrar mensaje
-    	}
-    	
+    	}    	
     }
     
     private void openNewVentaForm() {

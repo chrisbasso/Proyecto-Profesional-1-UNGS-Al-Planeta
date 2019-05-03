@@ -15,36 +15,11 @@ import java.util.Objects;
 @Entity
 public class Reserva extends Pasaje{
 
-	private Double porcentajePagado;
-
 	public Reserva() {
 	}
 	
-	public Reserva(Viaje viaje, Cliente cliente, FormaDePago formaDePago, LocalDate fechaPago, Double porcentajePagado) {
-		super(viaje, cliente, formaDePago, fechaPago);
-		this.porcentajePagado = porcentajePagado;
-
-	}
-
-	public Double getPorcentajePagado() {
-		return porcentajePagado;
-	}
-
-	public void setPorcentajePagado(Double porcentajePagado) {
-		this.porcentajePagado = porcentajePagado;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		if (!super.equals(o)) return false;
-		Reserva reserva = (Reserva) o;
-		return Objects.equals(porcentajePagado, reserva.porcentajePagado);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(super.hashCode(), porcentajePagado);
+	public Reserva(Viaje viaje, Cliente cliente) {
+		this.viaje = viaje;
+		this.cliente = cliente;
 	}
 }

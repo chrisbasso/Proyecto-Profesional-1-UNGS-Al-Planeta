@@ -55,8 +55,8 @@ public class ReservaForm extends Dialog{
     	form.addFormItem(fechaDesde, "Fecha desde");
     	form.addFormItem(fechaHasta, "Fecha hasta");
 
-    	btnSave= new Button();
-		btnCancel= new Button();
+    	btnSave= new Button("Guardar");
+		btnCancel= new Button("Cancelar");
     	actions = new HorizontalLayout();
         actions.add(btnSave, btnCancel);
         
