@@ -26,9 +26,6 @@ public abstract class Pasaje {
 	protected LocalDate fechaPago;
 
 
-	public Pasaje() {
-	}
-
 	public Pasaje(Viaje viaje, Cliente cliente, FormaDePago formaDePago, LocalDate fechaPago) {
 		this.viaje = viaje;
 		this.cliente = cliente;
@@ -66,6 +63,17 @@ public abstract class Pasaje {
 
 	public Long getId() {
 		return id;
+	}
+
+	public LocalDate getFechaPago() {
+		return fechaPago;
+	}
+
+	public void setFechaPago(LocalDate fechaPago) {
+		this.fechaPago = fechaPago;
+	}
+
+	public Pasaje() {
 	}
 
 	@Override

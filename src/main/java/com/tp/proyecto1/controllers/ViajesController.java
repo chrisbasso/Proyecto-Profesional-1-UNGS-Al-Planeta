@@ -7,6 +7,7 @@ import com.tp.proyecto1.model.viajes.Destino;
 import com.tp.proyecto1.model.viajes.Transporte;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.ReservaService;
+import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.views.viajes.ViajesView;
@@ -25,6 +26,8 @@ public class ViajesController {
     private ViajeService viajeService;
 
     private ViajeFormController viajeFormController;
+    
+    private VentaFormController ventaFormController;
 
     private ChangeHandler changeHandler;
 
@@ -48,9 +51,10 @@ public class ViajesController {
         viajesView.getNewViajeButton().addClickListener(e-> openNewViajeForm());
         viajesView.getSearchButton().addClickListener(e-> listViajes());
         viajesView.getBtnReservar().addClickListener(e-> openNewReservaForm());
+        viajesView.getBtnComprar().addClickListener(e-> openNewVentaForm());
     }
 
-    private void openNewViajeForm() {
+	private void openNewViajeForm() {
         viajeFormController = new ViajeFormController(viajeService);
         viajeFormController.getViajeForm().open();
         viajeFormController.setChangeHandler(this::listViajes);
@@ -61,6 +65,12 @@ public class ViajesController {
     	ReservaController reservaController = new ReservaController(new ReservaService(),seleccionado);    	
         reservaController.getView().open();    	
     }
+    
+    private void openNewVentaForm() {
+    	Viaje viaje = this.viajesView.getGrid().asSingleSelect().getValue();
+    	ventaFormController = new VentaFormController(new VentaService(), viaje);
+		ventaFormController.getVentaForm().open();
+	}
     
     private Button createEditButton(Viaje viaje) {
         return new Button(VaadinIcon.EDIT.create(), clickEvent -> {
