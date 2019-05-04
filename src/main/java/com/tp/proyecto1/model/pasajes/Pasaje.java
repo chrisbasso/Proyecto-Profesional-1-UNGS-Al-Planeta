@@ -24,11 +24,13 @@ public abstract class Pasaje {
 	protected Cliente cliente;
 	@OneToMany(mappedBy = "pasaje")
 	protected List<Pago> pagos;
+	
+	public Pasaje() {
+	}
 
-	public Pasaje(Viaje viaje, Cliente cliente, FormaDePago formaDePago, LocalDate fechaPago) {
+	public Pasaje(Viaje viaje, Cliente cliente) {
 		this.viaje = viaje;
-		this.cliente = cliente;
-		this.pagos = pagos;		
+		this.cliente = cliente;			
 	}
 
 	public Viaje getViaje() {
@@ -58,32 +60,4 @@ public abstract class Pasaje {
 	public Long getId() {
 		return id;
 	}
-
-	public LocalDate getFechaPago() {
-		return fechaPago;
-	}
-
-	public void setFechaPago(LocalDate fechaPago) {
-		this.fechaPago = fechaPago;
-	}
-
-	public Pasaje() {
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Pasaje pasaje = (Pasaje) o;
-		return Objects.equals(id, pasaje.id) &&
-				Objects.equals(viaje, pasaje.viaje) &&
-				Objects.equals(cliente, pasaje.cliente) &&
-				Objects.equals(formaDePago, pasaje.formaDePago);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, viaje, cliente, formaDePago);
-	}
-}
 }
