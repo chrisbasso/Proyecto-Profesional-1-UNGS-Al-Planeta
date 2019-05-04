@@ -1,7 +1,10 @@
 package com.tp.proyecto1.views.reserva;
 
+import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.model.viajes.TipoTransporte;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -21,6 +24,7 @@ public class ReservaForm extends Dialog{
 	private TextField transporte;
 	private TextField fechaDesde;
 	private TextField fechaHasta;
+	private ComboBox<Cliente> cliente;
 	private Button btnSave;
     private Button btnCancel;
 
@@ -41,6 +45,7 @@ public class ReservaForm extends Dialog{
 		transporte= new TextField();
 		fechaDesde= new TextField();
 		fechaHasta= new TextField();
+		cliente = new ComboBox<Cliente>();
 	}
 
 	private void cargarValores(Viaje viaje) {
@@ -51,6 +56,8 @@ public class ReservaForm extends Dialog{
     	transporte.setValue(viaje.getTransporte().getTipo().toString());
     	fechaDesde.setValue(viaje.getFechaSalida().toString());
     	fechaHasta.setValue(viaje.getFechaLlegada().toString());
+    	
+    	cliente.setItemLabelGenerator(Cliente::getNombreyApellido);
 	}
     
     private void setReadOnly() {
@@ -105,5 +112,9 @@ public class ReservaForm extends Dialog{
 
 	public void setBtnCancel(Button btnCancel) {
 		this.btnCancel = btnCancel;
+	}
+	
+	public ComboBox<Cliente> getComboCliente() {
+		return cliente;
 	}
 }
