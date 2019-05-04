@@ -158,6 +158,10 @@ public class Cliente {
 		this.puntos = puntos;
 	}
 
+	public String getNombreyApellido() {
+		return nombre + " " + apellido;
+	}
+	
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

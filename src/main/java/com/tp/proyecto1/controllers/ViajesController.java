@@ -30,6 +30,8 @@ public class ViajesController {
     private ViajeFormController viajeFormController;
 
     private VentaFormController ventaFormController;
+    
+	private ReservaFormController reservaController; 
 
     private ChangeHandler changeHandler;
 
@@ -63,8 +65,8 @@ public class ViajesController {
     private void openNewReservaForm() {
     	Viaje seleccionado = viajesView.getGrid().asSingleSelect().getValue();
     	if(seleccionado!=null) {
-    		ReservaController reservaController = new ReservaController(new ReservaService(),seleccionado);    	
-            reservaController.getForm().open();    	
+    		reservaController = new ReservaFormController(new ReservaService(),seleccionado);    	
+            reservaController.getReservaForm().open();    	
     	}else {
     		//TODO mostrar mensaje
     	}    	

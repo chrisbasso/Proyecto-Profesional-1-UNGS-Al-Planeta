@@ -3,33 +3,44 @@ package com.tp.proyecto1.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.tp.proyecto1.model.viajes.Destino;
-import com.tp.proyecto1.model.viajes.Transporte;
 import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.services.ReservaService;
 import com.tp.proyecto1.views.reserva.ReservaForm;
 import com.vaadin.flow.spring.annotation.UIScope;
 
 @Controller
 @UIScope
-public class ReservaController {
+public class ReservaFormController {
 
-	private ReservaForm view;
+	private ReservaForm reservaForm;
 
 	private ReservaService service;
 
 	private Viaje viaje;
 
 	@Autowired
-	public ReservaController(ReservaService service, Viaje viaje) {
-		this.view = new ReservaForm(viaje);
+	public ReservaFormController(ReservaService service, Viaje viaje) { 
 		this.service = service;
 		this.viaje = viaje;
+		this.reservaForm = new ReservaForm(viaje);
+		setListeners();
+		loadComboCliente();
 	}
 	
-	public ReservaForm getForm() {
-		return view;
+	public ReservaForm getReservaForm() {
+		return reservaForm;
 	}
+	
+	private void loadComboCliente() {
+		reservaForm.getComboCliente().setItems(new ClienteService().findAll());
+	}
+	
+    private void setListeners() {
+        reservaForm.getBtnSave().addClickListener(e-> guardarReserva());
+        reservaForm.getBtnCancel().addClickListener(e->reservaForm.close());
+    }
+
 	
 	/* Se debe permitir reservar el pasaje sin necesidad de pagar,  
 	 * pero avisando al cliente que debe pagar al menos el 30% 
