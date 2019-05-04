@@ -20,8 +20,8 @@ public class ReservaForm extends Dialog{
 	private TextField codTransporte;
 	private TextField transporte;
 	private TextField fechaDesde;
-	private TextField fechaHasta;    
-    private Button btnSave;
+	private TextField fechaHasta;
+	private Button btnSave;
     private Button btnCancel;
 
     public ReservaForm(Viaje viaje) {
@@ -90,6 +90,20 @@ public class ReservaForm extends Dialog{
         this.setWidth("800px");
         this.setHeight("100%");
 	}
-	
-  
+
+    public Button getBtnSave() {
+		return btnSave;
+	}
+
+	public void setBtnSave(Button btnSave) {
+		this.btnSave = btnSave;
+	}
+
+	public Button getBtnCancel() {
+		return btnCancel;
+	}
+
+	public void setBtnCancel(Button btnCancel) {
+		this.btnCancel = btnCancel;
+	}
 }

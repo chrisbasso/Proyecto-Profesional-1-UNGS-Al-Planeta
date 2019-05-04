@@ -14,22 +14,29 @@ import com.vaadin.flow.spring.annotation.UIScope;
 @UIScope
 public class ReservaFormController {
 
-	private ReservaForm view;
+	private ReservaForm reservaForm;
 
 	private ReservaService service;
 
 	private Viaje viaje;
 
 	@Autowired
-	public ReservaFormController(ReservaService service, Viaje viaje) {
-		this.view = new ReservaForm(viaje);
+	public ReservaFormController(ReservaService service, Viaje viaje) { 
 		this.service = service;
 		this.viaje = viaje;
+		this.reservaForm = new ReservaForm(viaje);
+		setListeners();
 	}
 	
-	public ReservaForm getForm() {
-		return view;
+	public ReservaForm getReservaForm() {
+		return reservaForm;
 	}
+	
+    private void setListeners() {
+        reservaForm.getBtnSave().addClickListener(e-> guardarReserva());
+        reservaForm.getBtnCancel().addClickListener(e->reservaForm.close());
+    }
+
 	
 	/* Se debe permitir reservar el pasaje sin necesidad de pagar,  
 	 * pero avisando al cliente que debe pagar al menos el 30% 
