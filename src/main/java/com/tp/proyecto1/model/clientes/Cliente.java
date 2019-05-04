@@ -36,6 +36,12 @@ public class Cliente {
 	public Cliente() {
 	}
 
+	public Cliente(String nombre, String apellido, String dni) {
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.dni = dni;
+	}
+
 	public Cliente(String nombre, String apellido, String dni, LocalDate fechaNacimiento, Domicilio domicilio, String email, String telefono, boolean isActivo, LocalDate fechaBaja, LocalDate fechaAlta) {
 		this.nombre = nombre;
 		this.apellido = apellido;

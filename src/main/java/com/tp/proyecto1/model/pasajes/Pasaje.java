@@ -1,12 +1,9 @@
 package com.tp.proyecto1.model.pasajes;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.viajes.Viaje;
@@ -22,16 +19,19 @@ public abstract class Pasaje {
 	protected Viaje viaje;
 	@OneToOne
 	protected Cliente cliente;
-	@OneToMany(mappedBy = "pasaje")
-	protected List<Pago> pagos;
+	@OneToMany(mappedBy = "pasaje", cascade = CascadeType.ALL)
+	protected List<Pago> pagos = new ArrayList<>();
 	
 	public Pasaje() {
 	}
 
-	public Pasaje(Viaje viaje, Cliente cliente, List<Pago> pagos) {
+	public Pasaje(Viaje viaje, Cliente cliente) {
 		this.viaje = viaje;
-		this.cliente = cliente;			
-		this.pagos = pagos;
+		this.cliente = cliente;
+	}
+
+	public void agregarPago(Pago pago){
+		this.pagos.add(pago);
 	}
 
 	public Viaje getViaje() {

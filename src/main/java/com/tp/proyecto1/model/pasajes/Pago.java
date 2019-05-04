@@ -21,7 +21,6 @@ public class Pago {
 	@OneToOne
 	private Cliente cliente;
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_pasaje")
 	private Pasaje pasaje;
 	@OneToOne
 	private FormaDePago formaDePago;
