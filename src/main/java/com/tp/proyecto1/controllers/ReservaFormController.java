@@ -12,7 +12,7 @@ import com.vaadin.flow.spring.annotation.UIScope;
 
 @Controller
 @UIScope
-public class ReservaController {
+public class ReservaFormController {
 
 	private ReservaForm view;
 
@@ -21,7 +21,7 @@ public class ReservaController {
 	private Viaje viaje;
 
 	@Autowired
-	public ReservaController(ReservaService service, Viaje viaje) {
+	public ReservaFormController(ReservaService service, Viaje viaje) {
 		this.view = new ReservaForm(viaje);
 		this.service = service;
 		this.viaje = viaje;
