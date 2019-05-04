@@ -13,6 +13,7 @@ import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.views.ventas.VentaForm;
@@ -28,6 +29,9 @@ public class VentaFormController {
 
 	@Autowired
 	private VentaService ventaService;
+	
+	@Autowired
+	private ClienteService clienteService;
 	
 	private ChangeHandler changeHandler;
 
@@ -47,7 +51,9 @@ public class VentaFormController {
 	}
 	//Seteo los componentes a utilizar
 	private void setComponents() {
-		ventaForm.getFormaPago().setItems(ventaService.findAllFomaDePagos()); //AREGLAR!!!!!!!!!11		
+		ventaForm.getFormaPago().setItems(ventaService.findAllFomaDePagos());
+		
+		ventaForm.getCliente().setItems(clienteService.findAll());
 	}
 	
 	private void setListeners() {
@@ -96,7 +102,7 @@ public class VentaFormController {
 
 //        Transporte transporte = new Transporte(codTransporte,tipoTransporte, capacidad, clase);
 //        Destino destino = new Destino(ciudad, pais, recomendacion, tagDestino);
-		String nroDeCliente = ventaForm.getNroCliente().getValue();
+		//Long nroDeCliente = ventaForm.getCliente().getValue();
 		FormaDePago formaPago = ventaForm.getFormaPago().getValue();
 		Date fechaPago = new Date();  //revisar si sale fecha actual y darle formato aceptable
 		Viaje viaje = new Viaje();//ver la maneera de pasarle el viaje posta seleccionado 
@@ -112,7 +118,8 @@ public class VentaFormController {
 		
 	}
 	
-	public VentaForm getVentaForm() {
+	public VentaForm getVentaFormCompra() {
+		ventaForm.getBtnSave().setVisible(false);
 		return ventaForm;
 	}
 

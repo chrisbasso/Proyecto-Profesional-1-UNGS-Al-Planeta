@@ -60,6 +60,10 @@ public class Cliente {
 		return id;
 	}
 
+	public String getIdToString() {
+		return id.toString();
+	}
+	
 	public void setId(Long id) {
 		this.id = id;
 	}

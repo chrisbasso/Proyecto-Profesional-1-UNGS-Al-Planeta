@@ -71,9 +71,9 @@ public class ViajesController {
     }
     
     private void openNewVentaForm() {
-    	Viaje viaje = this.viajesView.getGrid().asSingleSelect().getValue();
-    	ventaFormController = new VentaFormController(viaje);
-		ventaFormController.getVentaForm().open();
+    	Viaje viajeSeleccionado = this.viajesView.getGrid().asSingleSelect().getValue();
+    	ventaFormController = new VentaFormController(viajeSeleccionado);
+		ventaFormController.getVentaFormCompra().open();
 	}
     
     private Button createEditButton(Viaje viaje) {
