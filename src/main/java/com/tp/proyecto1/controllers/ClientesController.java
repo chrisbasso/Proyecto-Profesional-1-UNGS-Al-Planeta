@@ -4,6 +4,7 @@ import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.ConfirmationDialog;
+import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.clientes.ClientesView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
@@ -23,14 +24,14 @@ public class ClientesController {
 
 	private ClienteFormController clienteFormController;
 
+	@Autowired
 	private ClienteService clienteService;
 
 	private ChangeHandler changeHandler;
 
-	@Autowired
-	public ClientesController(ClienteService clienteService) {
+	public ClientesController() {
+		Inject.Inject(this);
 		this.clientesView = new ClientesView();
-		this.clienteService = clienteService;
 		setListeners();
 		setComponents();
 		listClientes();
@@ -48,7 +49,7 @@ public class ClientesController {
 	}
 
 	private void openNewClienteForm() {
-		clienteFormController = new ClienteFormController(clienteService);
+		clienteFormController = new ClienteFormController();
 		clienteFormController.getClienteForm().open();
 		clienteFormController.setChangeHandler(this::listClientes);
 	}
@@ -75,7 +76,7 @@ public class ClientesController {
 
 	private Button createEditButton(Cliente cliente) {
 		return new Button(VaadinIcon.EDIT.create(), clickEvent -> {
-			clienteFormController = new ClienteFormController(clienteService);
+			clienteFormController = new ClienteFormController();
 			clienteFormController.setComponentsValues(cliente);
 			clienteFormController.getClienteForm().open();
 			clienteFormController.setChangeHandler(this::listClientes);

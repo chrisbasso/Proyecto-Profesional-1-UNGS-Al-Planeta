@@ -1,5 +1,6 @@
 package com.tp.proyecto1.controllers;
 
+import com.tp.proyecto1.utils.Inject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -23,22 +24,18 @@ public class ViajesController {
 
     private ViajesView viajesView;
 
+    @Autowired
     private ViajeService viajeService;
 
-    private VentaService ventaService;
-
     private ViajeFormController viajeFormController;
-    
+
     private VentaFormController ventaFormController;
 
     private ChangeHandler changeHandler;
 
-
-    @Autowired
-    public ViajesController(ViajeService viajeService, VentaService ventaService) {
+    public ViajesController() {
+        Inject.Inject(this);
         this.viajesView = new ViajesView();
-        this.viajeService = viajeService;
-        this.ventaService = ventaService;
         setListeners();
         setComponents();
         listViajes();
@@ -58,7 +55,7 @@ public class ViajesController {
     }
 
 	private void openNewViajeForm() {
-        viajeFormController = new ViajeFormController(viajeService);
+        viajeFormController = new ViajeFormController();
         viajeFormController.getViajeForm().open();
         viajeFormController.setChangeHandler(this::listViajes);
     }
@@ -75,13 +72,13 @@ public class ViajesController {
     
     private void openNewVentaForm() {
     	Viaje viaje = this.viajesView.getGrid().asSingleSelect().getValue();
-    	ventaFormController = new VentaFormController(ventaService, viaje);
+    	ventaFormController = new VentaFormController(viaje);
 		ventaFormController.getVentaForm().open();
 	}
     
     private Button createEditButton(Viaje viaje) {
         return new Button(VaadinIcon.EDIT.create(), clickEvent -> {
-            viajeFormController = new ViajeFormController(viajeService);
+            viajeFormController = new ViajeFormController();
             viajeFormController.setComponentsValues(viaje);
             viajeFormController.getViajeForm().open();
             viajeFormController.setChangeHandler(this::listViajes);

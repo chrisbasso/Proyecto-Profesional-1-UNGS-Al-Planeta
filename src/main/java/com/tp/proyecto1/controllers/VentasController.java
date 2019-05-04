@@ -2,6 +2,7 @@ package com.tp.proyecto1.controllers;
 
 import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.utils.ChangeHandler;
+import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.ventas.VentaView;
 
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -14,15 +15,14 @@ public class VentasController {
 
     private VentaView ventaView;
 
+    @Autowired
     private VentaService ventaService;
 
     private ChangeHandler changeHandler;
 
-
-    @Autowired
-    public VentasController(VentaService ventaService) {
+    public VentasController() {
+        Inject.Inject(this);
         this.ventaView = new VentaView();
-        this.ventaService = ventaService;
         setListeners();
         setComponents();
         listVentas();

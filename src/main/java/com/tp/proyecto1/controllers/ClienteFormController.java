@@ -4,6 +4,7 @@ import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.clientes.Domicilio;
 import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.utils.ChangeHandler;
+import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.clientes.ClienteForm;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -25,6 +26,7 @@ public class ClienteFormController {
 
 	private ClienteForm clienteForm;
 
+	@Autowired
 	private ClienteService clienteService;
 
 	private ChangeHandler changeHandler;
@@ -34,9 +36,8 @@ public class ClienteFormController {
 	private Binder<Cliente> binderCliente = new Binder<>();
 	private Binder<Domicilio> binderDomicilio = new Binder<>();
 
-	@Autowired
-	public ClienteFormController(ClienteService clienteService) {
-		this.clienteService = clienteService;
+	public ClienteFormController() {
+		Inject.Inject(this);
 		this.clienteForm = new ClienteForm();
 		setListeners();
 		setBinders();

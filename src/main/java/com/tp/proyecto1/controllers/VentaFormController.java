@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
 
+import com.tp.proyecto1.utils.Inject;
 import org.hibernate.type.LocalDateType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
@@ -24,19 +25,22 @@ import com.vaadin.flow.spring.annotation.*;
 public class VentaFormController {
 	
 	private VentaForm ventaForm;
-	
+
+	@Autowired
 	private VentaService ventaService;
 	
 	private ChangeHandler changeHandler;
 
 	private Venta venta;
 
+	private Viaje viaje;
+
 	private Binder<Venta> binderVenta;
 
-	@Autowired
-	public VentaFormController(VentaService ventaService,  Viaje viaje) {
+	public VentaFormController(Viaje viaje) {
+		Inject.Inject(this);
+		this.viaje = viaje;
 		this.ventaForm = new VentaForm(viaje);
-		this.ventaService = ventaService;
 		setListeners();
         setComponents();
         setBinders();
