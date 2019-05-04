@@ -31,7 +31,7 @@ public class Cliente {
 	private LocalDate fechaAlta;
 
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<LotePunto>puntos;
+	private List<LotePunto>puntos = new ArrayList<>();
 	
 	public Cliente() {
 	}

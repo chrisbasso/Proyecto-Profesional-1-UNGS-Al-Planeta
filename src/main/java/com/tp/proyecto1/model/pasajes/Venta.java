@@ -15,4 +15,5 @@ public class Venta extends Pasaje {
     public Venta(Viaje viaje, Cliente cliente) {
     	super(viaje, cliente);
     }
+
 }

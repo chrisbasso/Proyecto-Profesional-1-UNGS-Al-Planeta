@@ -9,6 +9,7 @@ import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.viajes.Viaje;
 
 @Entity
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 public abstract class Pasaje {
 
 	@Id
@@ -19,7 +20,7 @@ public abstract class Pasaje {
 	protected Viaje viaje;
 	@OneToOne
 	protected Cliente cliente;
-	@OneToMany(mappedBy = "pasaje", cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	protected List<Pago> pagos = new ArrayList<>();
 	
 	public Pasaje() {

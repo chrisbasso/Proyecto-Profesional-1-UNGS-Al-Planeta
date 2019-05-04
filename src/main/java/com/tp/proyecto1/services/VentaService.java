@@ -36,9 +36,8 @@ public class VentaService {
     }
 
     @Transactional
-    public List<Venta> findViajes(Venta viaje, LocalDate fechaDesde, LocalDate fechaHasta){
-        List<Venta> ventas = ventaRepository.findAll(Example.of(viaje));
-
+    public List<Venta> findVentas(Venta venta){
+        List<Venta> ventas = ventaRepository.findAll(Example.of(venta));
         return ventas;
     }
 
