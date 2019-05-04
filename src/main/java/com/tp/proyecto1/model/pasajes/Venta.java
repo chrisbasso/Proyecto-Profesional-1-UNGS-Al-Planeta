@@ -1,6 +1,7 @@
 package com.tp.proyecto1.model.pasajes;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 
@@ -14,7 +15,7 @@ public class Venta extends Pasaje {
     public Venta() {
     }
     
-    public Venta(Viaje viaje, Cliente cliente, ArrayList<Pago> pagos) {        
+    public Venta(Viaje viaje, Cliente cliente, List<Pago> pagos) {
     	super(viaje, cliente, pagos);
     }
 }

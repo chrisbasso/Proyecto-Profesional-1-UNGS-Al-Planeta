@@ -25,6 +25,8 @@ public class ViajesController {
 
     private ViajeService viajeService;
 
+    private VentaService ventaService;
+
     private ViajeFormController viajeFormController;
     
     private VentaFormController ventaFormController;
@@ -33,9 +35,10 @@ public class ViajesController {
 
 
     @Autowired
-    public ViajesController(ViajeService viajeService) {
+    public ViajesController(ViajeService viajeService, VentaService ventaService) {
         this.viajesView = new ViajesView();
         this.viajeService = viajeService;
+        this.ventaService = ventaService;
         setListeners();
         setComponents();
         listViajes();
@@ -72,7 +75,7 @@ public class ViajesController {
     
     private void openNewVentaForm() {
     	Viaje viaje = this.viajesView.getGrid().asSingleSelect().getValue();
-    	ventaFormController = new VentaFormController(new VentaService(), viaje);
+    	ventaFormController = new VentaFormController(ventaService, viaje);
 		ventaFormController.getVentaForm().open();
 	}
     

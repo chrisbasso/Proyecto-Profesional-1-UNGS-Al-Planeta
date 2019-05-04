@@ -38,12 +38,7 @@ public class VentaService {
     @Transactional
     public List<Venta> findViajes(Venta viaje, LocalDate fechaDesde, LocalDate fechaHasta){
         List<Venta> ventas = ventaRepository.findAll(Example.of(viaje));
-        if(fechaDesde!=null){
-            ventas = ventas.stream().filter(e-> e.getFechaPago().isAfter(fechaDesde)).collect(Collectors.toList());
-        }
-        if(fechaHasta!=null){
-            ventas = ventas.stream().filter(e-> e.getFechaPago().isBefore(fechaHasta)).collect(Collectors.toList());
-        }
+
         return ventas;
     }
 

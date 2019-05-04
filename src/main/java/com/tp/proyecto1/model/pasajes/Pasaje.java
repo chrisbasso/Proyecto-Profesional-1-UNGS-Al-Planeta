@@ -28,9 +28,10 @@ public abstract class Pasaje {
 	public Pasaje() {
 	}
 
-	public Pasaje(Viaje viaje, Cliente cliente) {
+	public Pasaje(Viaje viaje, Cliente cliente, List<Pago> pagos) {
 		this.viaje = viaje;
 		this.cliente = cliente;			
+		this.pagos = pagos;
 	}
 
 	public Viaje getViaje() {
