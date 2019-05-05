@@ -1,12 +1,10 @@
 package com.tp.proyecto1.views.reserva;
 
-import com.tp.proyecto1.model.clientes.Cliente;
-import com.tp.proyecto1.model.viajes.TipoTransporte;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -24,7 +22,8 @@ public class ReservaForm extends Dialog{
 	private TextField transporte;
 	private TextField fechaDesde;
 	private TextField fechaHasta;
-	private ComboBox<Cliente> cliente;
+	private TextField cliente;
+	private Button btnCliente;
 	private Button btnSave;
     private Button btnCancel;
 
@@ -45,7 +44,9 @@ public class ReservaForm extends Dialog{
 		transporte= new TextField();
 		fechaDesde= new TextField();
 		fechaHasta= new TextField();
-		cliente = new ComboBox<Cliente>();
+		cliente= new TextField();
+		btnCliente = new Button("Buscar", VaadinIcon.SEARCH.create());
+		btnCliente.setMaxWidth("20px");
 	}
 
 	private void cargarValores(Viaje viaje) {
@@ -56,8 +57,6 @@ public class ReservaForm extends Dialog{
     	transporte.setValue(viaje.getTransporte().getTipo().toString());
     	fechaDesde.setValue(viaje.getFechaSalida().toString());
     	fechaHasta.setValue(viaje.getFechaLlegada().toString());
-    	
-    	cliente.setItemLabelGenerator(Cliente::getNombreyApellido);
 	}
     
     private void setReadOnly() {
@@ -78,6 +77,8 @@ public class ReservaForm extends Dialog{
     	form.addFormItem(transporte, "Transporte");
     	form.addFormItem(fechaDesde, "Fecha desde");
     	form.addFormItem(fechaHasta, "Fecha hasta");
+    	form.addFormItem(cliente, "Cliente");
+    	form.addFormItem(btnCliente,"");
 	}
 
 	private void inicializarActions() {
@@ -114,7 +115,7 @@ public class ReservaForm extends Dialog{
 		this.btnCancel = btnCancel;
 	}
 	
-	public ComboBox<Cliente> getComboCliente() {
-		return cliente;
+	public Button getBtnCliente() {
+		return btnCliente;
 	}
 }

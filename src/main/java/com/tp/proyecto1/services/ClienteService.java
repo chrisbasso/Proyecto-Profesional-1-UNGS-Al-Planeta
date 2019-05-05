@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClienteService {
@@ -39,5 +40,9 @@ public class ClienteService {
 		clienteRepository.delete(cliente);
 	}
 
+	@Transactional
+	public Optional<Cliente> findById(Long id) {		
+		return clienteRepository.findById(id);
+	}
 }
 
