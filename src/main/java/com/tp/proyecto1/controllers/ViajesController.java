@@ -75,6 +75,7 @@ public class ViajesController {
     private void openNewVentaForm() {
     	Viaje viajeSeleccionado = this.viajesView.getGrid().asSingleSelect().getValue();
     	ventaFormController = new VentaFormController(viajeSeleccionado);
+    	ventaFormController.setComponentsValues(viajeSeleccionado);
 		ventaFormController.getVentaFormCompra().open();
 	}
     

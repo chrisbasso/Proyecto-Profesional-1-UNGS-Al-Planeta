@@ -2,13 +2,10 @@ package com.tp.proyecto1.views.ventas;
 
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.FormaDePago;
-import com.tp.proyecto1.model.viajes.TagDestino;
-import com.tp.proyecto1.model.viajes.TipoTransporte;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.FormItem;
@@ -17,9 +14,6 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
-import com.vaadin.flow.component.textfield.TextArea;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.timepicker.TimePicker;
 
 public class VentaForm extends Dialog {
 		private VerticalLayout mainLayout = new VerticalLayout();
@@ -28,21 +22,8 @@ public class VentaForm extends Dialog {
 		private ComboBox<FormaDePago> formaPago;
 	    private NumberField cantidadPasaje;
 	    private Checkbox usoPuntosCheck;
-	    private TextField saldoPagar;
+	    private NumberField saldoPagar;
 	    private NumberField subtotal;
-/*	    private TextField pais;//info
-	    private TextField ciudad;//info
-	    private ComboBox<TipoTransporte> transporte;
-	    private TextField codTransporte;
-	    private TextField clase;
- 		private TextField capacidad;
-	    private DatePicker fechaSalida;
-	    private TimePicker horaSalida;
-	    private DatePicker fechaLlegada;
-	    private TimePicker horaLlegada;
-	    private ComboBox<TagDestino> tagDestino;
-	    private TextArea textAreaDescripcion;
-	    private TextArea textAreaRecomendaciones;*/
 
 	    private Button btnSave;
 	    private Button btnCancel;
@@ -55,19 +36,17 @@ public class VentaForm extends Dialog {
 	        setLayouts();
 
 	    }
-//Seteo los componentes a utilizar
+
 	    private void setComponents() {
 
 	    	btnFinalizarCompra = new Button("Finalizar Compra");
 	    	btnSave	  = new Button("Guardar");
 	    	btnCancel = new Button("Cancelar");
-//	        transporte = new ComboBox<>();
 	        formaPago = new ComboBox<>();
 	        formaPago.setItemLabelGenerator(FormaDePago::getDescripcion);
 	        cliente = new ComboBox<>();
 	        cliente.setItemLabelGenerator(Cliente::getIdToString);
 	        cantidadPasaje = new NumberField();
-	        //cantidadPasaje.setValue(1d);
 	        cantidadPasaje.setMin(1);
 	        cantidadPasaje.setMax(6);
 	        cantidadPasaje.setValue((double) 1);
@@ -75,35 +54,14 @@ public class VentaForm extends Dialog {
 	        usoPuntosCheck = new Checkbox("Uso de Puntos");
 	        usoPuntosCheck.setValue(true);
 	        usoPuntosCheck.setMinWidth("135px");
-	        saldoPagar = new TextField();
+	        saldoPagar = new NumberField();
+	        saldoPagar.setPrefixComponent(new Span("$"));
+	        saldoPagar.setPreventInvalidInput(true);
+	        saldoPagar.setEnabled(false);
 	        subtotal = new NumberField();
-//	        transporte.setItemLabelGenerator(TipoTransporte::getDescripcion);
-//	        tagDestino = new ComboBox<>();
-//	        tagDestino.setItemLabelGenerator(TagDestino::getDescripcion);
-//	        codTransporte = new TextField();
-//	        clase = new TextField();
-//	        capacidad = new TextField();
-//	        capacidad.setPattern("[0-9]*");
-//	        capacidad.setPreventInvalidInput(true);
-//	        ciudad = new TextField();
-//	        pais = new TextField();
-//	        fechaSalida = new DatePicker();
-//	        horaSalida = new TimePicker();
-//	        fechaLlegada = new DatePicker();
-//	        horaLlegada = new TimePicker();
-//	        precio = new NumberField();
-//	        textAreaDescripcion = new TextArea("Descripción");
-//	        textAreaRecomendaciones = new TextArea("Recomendaciones");
-//
-//	        textAreaDescripcion.setHeight("100px");
-//	        textAreaDescripcion.setWidth("770px");
-//	        textAreaRecomendaciones.setHeight("100px");
-//	        textAreaRecomendaciones.setWidth("770px");
-//	        precio.setWidth("192px");
-//	        precio.setMin(0);
-//
-//	        precio.setPrefixComponent(new Span("$"));
-
+	        subtotal.setPrefixComponent(new Span("$"));
+	        subtotal.setPreventInvalidInput(true);
+	        subtotal.setEnabled(false);
 	    }
 
 	    private void setForm() {
@@ -113,21 +71,6 @@ public class VentaForm extends Dialog {
 	    	totalItem.add(usoPuntosCheck);
 	    	form.addFormItem(formaPago, "Forma de Pago");
 	    	form.addFormItem(saldoPagar, "Saldo a Pagar");
-	    	
-	    	
-/*	        form.addFormItem(pais, "País");
-	        form.addFormItem(ciudad, "Ciudad");
-	        form.addFormItem(fechaSalida, "Fecha Salida");
-	        form.addFormItem(horaSalida, "Hora Salida");
-	        form.addFormItem(fechaLlegada, "Fecha Llegada");
-	        form.addFormItem(horaLlegada, "Hora Llegada");
-	        form.addFormItem(transporte, "Transporte");
-	        form.addFormItem(codTransporte, "Cod. Transporte");
-	        form.addFormItem(clase, "Clase");
-	        form.addFormItem(capacidad, "Capacidad");
-	        form.addFormItem(precio, "Precio");
-	        form.addFormItem(tagDestino, "Tag Destino");
-*/
 	    }
 
 	    private void setLayouts() {
@@ -176,6 +119,40 @@ public class VentaForm extends Dialog {
 			this.cliente = cliente;
 		}
 		
+		public NumberField getCantidadPasaje() {
+			return cantidadPasaje;
+		}
+		public void setCantidadPasaje(NumberField cantidadPasaje) {
+			this.cantidadPasaje = cantidadPasaje;
+		}
+		public Checkbox getUsoPuntosCheck() {
+			return usoPuntosCheck;
+		}
+		public void setUsoPuntosCheck(Checkbox usoPuntosCheck) {
+			this.usoPuntosCheck = usoPuntosCheck;
+		}
+		public NumberField getSaldoPagar() {
+			return saldoPagar;
+		}
+		public void setSaldoPagar(NumberField saldoPagar) {
+			this.saldoPagar = saldoPagar;
+		}
+		
+		public void setSaldoPagarDouble(Double saldoPagar) {
+			this.saldoPagar.setValue(saldoPagar);
+		}
+		
+		public NumberField getSubtotal() {
+			return subtotal;
+		}
+		public void setSubtotal(NumberField subtotal) {
+			this.subtotal = subtotal;
+		}
+			
+		public void setSubtotalDouble(Double subtotal) {
+			this.subtotal.setValue(subtotal);
+		}
+		
 		public Button getBtnSave() {
 	        return btnSave;
 	    }
@@ -199,117 +176,4 @@ public class VentaForm extends Dialog {
 		public void setBtnFinalizarCompra(Button btnFinalizarCompra) {
 			this.btnFinalizarCompra = btnFinalizarCompra;
 		}
-//	    public TextField getPais() {
-//	        return pais;
-//	    }
-//
-//	    public void setPais(TextField pais) {
-//	        this.pais = pais;
-//	    }
-//
-//	    public TextField getCiudad() {
-//	        return ciudad;
-//	    }
-//
-//	    public void setCiudad(TextField ciudad) {
-//	        this.ciudad = ciudad;
-//	    }
-//
-//	    public ComboBox<TipoTransporte> getTransporte() {
-//	        return transporte;
-//	    }
-//
-//	    public void setTransporte(ComboBox<TipoTransporte> transporte) {
-//	        this.transporte = transporte;
-//	    }
-//
-//	    public TextField getCodTransporte() {
-//	        return codTransporte;
-//	    }
-//
-//	    public void setCodTransporte(TextField codTransporte) {
-//	        this.codTransporte = codTransporte;
-//	    }
-
-//	    public TextField getClase() {
-//	        return clase;
-//	    }
-//
-//	    public void setClase(TextField clase) {
-//	        this.clase = clase;
-//	    }
-
-//	    public TextField getCapacidad() {
-//	        return capacidad;
-//	    }
-//
-//	    public void setCapacidad(TextField capacidad) {
-//	        this.capacidad = capacidad;
-//	    }
-
-//	    public DatePicker getFechaSalida() {
-//	        return fechaSalida;
-//	    }
-//
-//	    public void setFechaSalida(DatePicker fechaSalida) {
-//	        this.fechaSalida = fechaSalida;
-//	    }
-//
-//	    public TimePicker getHoraSalida() {
-//	        return horaSalida;
-//	    }
-//
-//	    public void setHoraSalida(TimePicker horaSalida) {
-//	        this.horaSalida = horaSalida;
-//	    }
-//
-//	    public DatePicker getFechaLlegada() {
-//	        return fechaLlegada;
-//	    }
-//
-//	    public void setFechaLlegada(DatePicker fechaLlegada) {
-//	        this.fechaLlegada = fechaLlegada;
-//	    }
-//
-//	    public TimePicker getHoraLlegada() {
-//	        return horaLlegada;
-//	    }
-//
-//	    public void setHoraLlegada(TimePicker horaLlegada) {
-//	        this.horaLlegada = horaLlegada;
-//	    }
-//
-//	    public NumberField getPrecio() {
-//	        return precio;
-//	    }
-//
-//	    public void setPrecio(NumberField precio) {
-//	        this.precio = precio;
-//	    }
-//
-//	    public TextArea getTextAreaDescripcion() {
-//	        return textAreaDescripcion;
-//	    }
-//
-//	    public void setTextAreaDescripcion(TextArea textAreaDescripcion) {
-//	        this.textAreaDescripcion = textAreaDescripcion;
-//	    }
-
-	  
-
-//	    public ComboBox<TagDestino> getTagDestino() {
-//	        return tagDestino;
-//	    }
-//
-//	    public void setTagDestino(ComboBox<TagDestino> tagDestino) {
-//	        this.tagDestino = tagDestino;
-//	    }
-//
-//	    public TextArea getTextAreaRecomendaciones() {
-//	        return textAreaRecomendaciones;
-//	    }
-//
-//	    public void setTextAreaRecomendaciones(TextArea textAreaRecomendaciones) {
-//	        this.textAreaRecomendaciones = textAreaRecomendaciones;
-//	    }
 }
