@@ -1,19 +1,6 @@
 package com.tp.proyecto1;
 
 
-import com.tp.proyecto1.model.clientes.Cliente;
-import com.tp.proyecto1.model.pasajes.*;
-import com.tp.proyecto1.model.users.User;
-import com.tp.proyecto1.model.viajes.TipoTransporte;
-import com.tp.proyecto1.model.viajes.Transporte;
-import com.tp.proyecto1.model.viajes.Viaje;
-import com.tp.proyecto1.repository.clientes.ClienteRepository;
-import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
-import com.tp.proyecto1.repository.pasajes.ReservaRepository;
-import com.tp.proyecto1.repository.pasajes.VentaRepository;
-import com.tp.proyecto1.services.UserService;
-import com.tp.proyecto1.services.VentaService;
-import com.tp.proyecto1.services.ViajeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -21,7 +8,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.time.LocalDate;
+import com.tp.proyecto1.model.configuraciones.Configuracion;
+import com.tp.proyecto1.model.users.User;
+import com.tp.proyecto1.repository.clientes.ClienteRepository;
+import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
+import com.tp.proyecto1.repository.pasajes.ReservaRepository;
+import com.tp.proyecto1.repository.pasajes.VentaRepository;
+import com.tp.proyecto1.services.ConfiguracionService;
+import com.tp.proyecto1.services.UserService;
+import com.tp.proyecto1.services.VentaService;
+import com.tp.proyecto1.services.ViajeService;
 
 
 @SpringBootApplication
@@ -37,6 +33,7 @@ public class Proyecto1Application {
 	public CommandLineRunner loadData(UserService userService,
 									  ViajeService viajeService,
 									  VentaService ventaService,
+									  ConfiguracionService configuracionService,
 									  ReservaRepository reservaRepository,
 									  ClienteRepository clienteRepository,
 									  FormaDePagoRepository formaDePagoRepository,
@@ -55,6 +52,7 @@ public class Proyecto1Application {
 			ventaService.createFormaDePagoIfNotExist("Efectivo");
 			ventaService.createFormaDePagoIfNotExist("Débito");
 			ventaService.createFormaDePagoIfNotExist("Crédito");
+			configuracionService.createConfiguracionIfNotExist("reserva_fecha_maxima","5");
 //
 //			Cliente cliente = new Cliente("Alberto Carlos","Bustos", "854445");
 //			Transporte transporte = new Transporte();

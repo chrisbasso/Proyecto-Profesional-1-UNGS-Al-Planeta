@@ -2,6 +2,7 @@ package com.tp.proyecto1.controllers;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,7 @@ import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.ClienteService;
+import com.tp.proyecto1.services.ConfiguracionService;
 import com.tp.proyecto1.services.ReservaService;
 import com.tp.proyecto1.views.clientes.ClientesSearch;
 import com.tp.proyecto1.views.reserva.ReservaForm;
@@ -20,17 +22,21 @@ import com.vaadin.flow.spring.annotation.UIScope;
 public class ReservaFormController {
 
 	private ReservaForm reservaForm;
-	private ReservaService service;
+	private ReservaService reservaService;
 	private Viaje viaje;	
 	private Reserva reserva;
+	private Cliente cliente;
 	@Autowired
 	private ClienteService clienteService;
+	@Autowired
+	private ConfiguracionService configService;
 
 	public ReservaFormController(ReservaService service, Viaje viaje) { 
-		this.service = service;
+		this.reservaService = service;
 		this.viaje = viaje;
 		reservaForm = new ReservaForm(viaje);
 		reserva = new Reserva();
+		cliente = new Cliente();
 		setListeners();
 	}
 	
@@ -40,7 +46,7 @@ public class ReservaFormController {
 	
     private void setListeners() {
         reservaForm.getBtnCliente().addClickListener(e-> buscarCliente());
-        reservaForm.getBtnSave().addClickListener(e-> guardarReserva(reservaForm.getCliente()));
+        reservaForm.getBtnSave().addClickListener(e-> guardarReserva(reservaForm.getIdCliente()));
         reservaForm.getBtnCancel().addClickListener(e->reservaForm.close());
     }
 
@@ -54,28 +60,32 @@ public class ReservaFormController {
 	 * 
 	 * El resto se debe pagar a lo sumo 5 días antes del viaje.
 	 */
-	private void guardarReserva(Cliente cliente) {
-		if(!verificarCliente(cliente)) {
+	private void guardarReserva(String id) {
+		if(!verificarCliente(Long.parseLong(id))) {
 			//TODO mensaje de cliente no válido
 		}
 		
 		if(controlarFechaViaje()) {
 			reserva.setCliente(cliente);
+		}else {
+			//TODO mensaje de fecha excedida
 		}
 	}
 	
-	private boolean verificarCliente(Cliente cliente) {
-		return clienteService.findById(cliente.getId()).isPresent();		
+	private boolean verificarCliente(Long id) {
+		Optional<Cliente> optCliente = clienteService.findById(id);  
+		if(optCliente.isPresent()) {
+			cliente = optCliente.get();
+			return true;
+		}
+		return false;		
 	}
 	
 	private boolean controlarFechaViaje() {
 		LocalDateTime presente = LocalDate.now().atStartOfDay();
 		LocalDateTime fechaViaje = viaje.getFechaSalida().atStartOfDay();
-		return fechaViaje.minusDays(5).isBefore(presente);		
-	}
-	
-	private boolean controlarCliente() {
-		
+		int fecha_maxima = Integer.parseInt(configService.findValueByKey("reserva_fecha_maxima"));
+		return fechaViaje.minusDays(fecha_maxima).isBefore(presente);		
 	}
 	
 	public void guardarBorrador() {

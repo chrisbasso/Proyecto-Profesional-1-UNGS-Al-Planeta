@@ -118,4 +118,8 @@ public class ReservaForm extends Dialog{
 	public Button getBtnCliente() {
 		return btnCliente;
 	}
+
+	public String getIdCliente() {
+		return cliente.getValue();
+	}
 }
