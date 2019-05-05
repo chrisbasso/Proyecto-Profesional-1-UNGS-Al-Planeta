@@ -1,13 +1,16 @@
 package com.tp.proyecto1;
 
+
 import com.tp.proyecto1.model.clientes.Cliente;
-import com.tp.proyecto1.model.pasajes.FormaDePago;
-import com.tp.proyecto1.model.pasajes.Pago;
-import com.tp.proyecto1.model.pasajes.Reserva;
+import com.tp.proyecto1.model.pasajes.*;
 import com.tp.proyecto1.model.users.User;
+import com.tp.proyecto1.model.viajes.TipoTransporte;
+import com.tp.proyecto1.model.viajes.Transporte;
+import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.repository.clientes.ClienteRepository;
 import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
 import com.tp.proyecto1.repository.pasajes.ReservaRepository;
+import com.tp.proyecto1.repository.pasajes.VentaRepository;
 import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
@@ -36,7 +39,8 @@ public class Proyecto1Application {
 									  VentaService ventaService,
 									  ReservaRepository reservaRepository,
 									  ClienteRepository clienteRepository,
-									  FormaDePagoRepository formaDePagoRepository) {
+									  FormaDePagoRepository formaDePagoRepository,
+									  VentaRepository ventaRepository) {
 		return args -> {
 			userService.createPrivilegeIfNotFound("READ_PRIVILEGE");
 			userService.createPrivilegeIfNotFound("WRITE_PRIVILEGE");
@@ -51,11 +55,30 @@ public class Proyecto1Application {
 			ventaService.createFormaDePagoIfNotExist("Efectivo");
 			ventaService.createFormaDePagoIfNotExist("Debito");
 			ventaService.createFormaDePagoIfNotExist("Credito");
-
+//
 //			Cliente cliente = new Cliente("Alberto Carlos","Bustos", "854445");
+//			Transporte transporte = new Transporte();
+//			transporte.setTipo(viajeService.findAllTipoTransportes().get(0));
 //			clienteRepository.save(cliente);
 //			Reserva reserva = new Reserva();
 //			FormaDePago formaDePago = formaDePagoRepository.findByDescripcion("Efectivo");
+//			Venta venta = new Venta();
+//			Viaje viaje = new Viaje();
+//			viaje.setTransporte(transporte);
+//
+//			viajeService.save(viaje);
+//
+//			Pago pago1 = new Pago(cliente, venta, formaDePago,500.50, LocalDate.now());
+//			Pago pago2 = new Pago(cliente, venta, formaDePago,800.00, LocalDate.now());
+//			venta.setViaje(viaje);
+//			venta.setCliente(cliente);
+//
+//			venta.agregarPago(pago1);
+//
+//			ventaRepository.save(venta);
+
+			//log.info(ventaRepository.findAll().toString());
+
 //			Pago pago1 = new Pago(cliente, reserva, formaDePago,500.50, LocalDate.now());
 //			Pago pago2 = new Pago(cliente, reserva, formaDePago,800.00, LocalDate.now());
 //			reserva.agregarPago(pago1);

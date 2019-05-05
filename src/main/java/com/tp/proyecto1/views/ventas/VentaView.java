@@ -1,10 +1,12 @@
 package com.tp.proyecto1.views.ventas;
 
+import com.tp.proyecto1.model.pasajes.Pasaje;
 import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.tp.proyecto1.utils.View;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -70,6 +72,10 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
 
     public void setNumeroClienteFilter(NumberField numeroClienteFilter) {
         this.numeroClienteFilter = numeroClienteFilter;
+    }
+
+    public Grid<Venta> getGrid(){
+        return grid;
     }
 
     public TextField getPaisFilter() {

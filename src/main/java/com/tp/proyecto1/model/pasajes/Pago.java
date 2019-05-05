@@ -20,7 +20,7 @@ public class Pago {
 	private Long id;	
 	@OneToOne
 	private Cliente cliente;
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	private Pasaje pasaje;
 	@OneToOne
 	private FormaDePago formaDePago;
