@@ -1,6 +1,8 @@
 package com.tp.proyecto1.controllers;
 
 import java.time.LocalDate;
+
+import com.tp.proyecto1.model.pasajes.Pasajero;
 import com.tp.proyecto1.utils.Inject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
@@ -46,12 +48,28 @@ public class VentaFormController {
 	public VentaFormController(Viaje viaje) {
 		Inject.Inject(this);
 		this.viaje = viaje;
-		this.ventaForm = new VentaForm(viaje);
+		this.ventaForm = new VentaForm();
 		setListeners();
         setComponents();
+        setComponentesLectura();
        // setBinders(); no lo uso!!
 	}
-	
+
+	private void setComponentesLectura() {
+		ventaForm.getPais().setValue(viaje.getDestino().getPais());
+		ventaForm.getCiudad().setValue(viaje.getDestino().getCiudad());
+		ventaForm.getCodTransporte().setValue(viaje.getTransporte().getCodTransporte());
+		ventaForm.getTransporte().setValue(viaje.getTransporte().getTipo().getDescripcion());
+		ventaForm.getFechaSalida().setValue(viaje.getFechaSalida().toString());
+		ventaForm.getHoraSalida().setValue(viaje.getHoraSalida().toString());
+		ventaForm.getPais().setReadOnly(true);
+		ventaForm.getCiudad().setReadOnly(true);
+		ventaForm.getCodTransporte().setReadOnly(true);
+		ventaForm.getTransporte().setReadOnly(true);
+		ventaForm.getFechaSalida().setReadOnly(true);
+		ventaForm.getHoraSalida().setReadOnly(true);
+	}
+
 	private void setComponents() {
 		ventaForm.getFormaPago().setItems(ventaService.findAllFomaDePagos());
 		ventaForm.getCliente().setItems(clienteService.findAll());
@@ -60,31 +78,25 @@ public class VentaFormController {
 	private void setListeners() {
 		ventaForm.getBtnSave().addClickListener(e-> saveVenta(venta));//en el modo edit
 		ventaForm.getBtnCancel().addClickListener(e->ventaForm.close());
-		ventaForm.getBtnFinalizarCompra().addClickListener(e-> newVenta(venta));//en el modo compra pasajes de viajes, 
-		ventaForm.getCantidadPasaje().addValueChangeListener(e->modificarSaldoaPagar());
+		ventaForm.getBtnFinalizarCompra().addClickListener(e-> newVenta());//en el modo compra pasajes de viajes,
+		ventaForm.getPasajerosGridComponent().getGrid().getEditor().addCloseListener(e->modificarSaldoaPagar());
 	}
 	
 	//Incrementa o decrementa los campos de saldo a pagar y subtotal dependiendo la cant. de pasajeros
 	private void modificarSaldoaPagar() {
 		Double precio = viaje.getPrecio();
-		ventaForm.getSaldoPagar().setValue(precio * ventaForm.getCantidadPasaje().getValue());
-		ventaForm.getSubtotal().setValue(precio * ventaForm.getCantidadPasaje().getValue());
-		
+		ventaForm.getSaldoPagar().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
+		ventaForm.getSubtotal().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
 	}
 	
 //una venta realizada desde el boton comprar de viajes
-	private void newVenta(Venta venta) {
-		if (venta == null) {
-			venta = setNewVenta(true);
-		}		
-        ventaService.save(venta);
-         
-        //GENERA LOS PASAJES RESTANTEs, SOLO EL PRIMER PASAJE VA A ESTAR LINKEADO AL PAGO, VER ESTO DE DEJARLO ASI O NO, ES MEDIO CHOTO
-        for(int i = 1; i < ventaForm.getCantidadPasaje().getValue();i++) {
-        	venta = setNewVenta(false);
-        	ventaService.save(venta); 
-        }
-        
+	private void newVenta() {
+
+		ventaForm.getPasajerosGridComponent().getPasajerosList().stream().forEach(pasajero->{
+			Venta venta = setNewVenta(pasajero);
+			ventaService.save(venta);
+		});
+
         //se resta la cantidad de pasajes seleccionados a la capacidad del transporte
         restarCapacidadTransporte();
         
@@ -97,7 +109,7 @@ public class VentaFormController {
 
 	private void restarCapacidadTransporte() {
 		Integer capacidadTransporte = Integer.parseInt(viaje.getTransporte().getCapacidad());
-		Integer cantPasajes = ventaForm.getCantidadPasaje().getValue().intValue();
+		Integer cantPasajes = ventaForm.getPasajerosGridComponent().getPasajerosList().size();
 		Integer capacidadActual = capacidadTransporte - cantPasajes;
 		
 		viaje.getTransporte().setCapacidad(capacidadActual.toString());
@@ -116,33 +128,25 @@ public class VentaFormController {
         }
 	}
 
-	private Venta setNewVenta(Boolean unPasaje) {
+	private Venta setNewVenta(Pasajero pasajero) {
 		Venta venta;
-		if(unPasaje) {
-			//el primer o unico pasaje
-			Double importe = ventaForm.getSaldoPagar().getValue();
-			Cliente cliente = ventaForm.getCliente().getValue();
-			FormaDePago formaPago = ventaForm.getFormaPago().getValue();
-	        venta = new Venta(viaje, cliente);
-	             
-	        Pago pago = new Pago(cliente, venta, formaPago, importe,  LocalDate.now());
-	        venta.agregarPago(pago);
-	        
-		}
-		else{
-			//va a entrar hasta que genere la cant de pasajes necesarios menos uno
-			Cliente cliente = ventaForm.getCliente().getValue();
-	        venta = new Venta(viaje, cliente);
-	        
-		}        
-        return venta;
+
+		Cliente cliente = ventaForm.getCliente().getValue();
+		FormaDePago formaPago = ventaForm.getFormaPago().getValue();
+		venta = new Venta(viaje, cliente);
+
+		Pago pago = new Pago(cliente, venta, formaPago, viaje.getPrecio(),  LocalDate.now());
+		venta.agregarPago(pago);
+		venta.setPasajero(pasajero);
+
+		return venta;
 	}
 	
 	//llevo los datos de de importe de viaje a este form, no hago binders, 
 	//me resulta mas rapido esto, sé q no tengo las validaciones pero en este caso son campos en disabled
     public void setComponentsValues() {
-	        ventaForm.setSaldoPagarDouble(viaje.getPrecio());  
-	        ventaForm.setSubtotalDouble(viaje.getPrecio());
+//	        ventaForm.setSaldoPagarDouble(viaje.getPrecio());
+//	        ventaForm.setSubtotalDouble(viaje.getPrecio());
     }
 	
     //NO USO ESTA PODEROSA TECNICA

@@ -31,7 +31,7 @@ public class VentasController {
         setListeners();
         setComponents();
         listVentas();
-        //ventaView.getGrid().setItems(ventaService.findAll());
+
     }
 
     private void setComponents() {
@@ -39,30 +39,30 @@ public class VentasController {
     }
 
     private void setListeners() {
-
     	setChangeHandler(this::listVentas);
     	ventaView.getSearchButton().addClickListener(e->listVentas());
     }
 
 
-
     private void listVentas() {
         Venta ventaBusqueda = new Venta();
-//        if(checkFiltros()){
-//            setParametrosBusqueda(ventaBusqueda);
-//            ventaView.getGrid().setItems(ventaService.findVentas(ventaBusqueda));
-      //  }else {
-			//System.out.println(ventaService.findAll());
+        if(checkFiltros()){
+            setParametrosBusqueda(ventaBusqueda);
+            ventaView.getGrid().setItems(ventaService.findVentas(ventaBusqueda));
+        }else {
             ventaView.getGrid().setItems(ventaService.findAll());
-       // }
+        }
     }
 
     private void setParametrosBusqueda(Venta ventaBusqueda) {
-        ventaBusqueda.setCliente(new Cliente());
+    	Cliente cliente = new Cliente();
+    	cliente.setActivo(true);
+        ventaBusqueda.setCliente(cliente);
         Transporte transporte = new Transporte();
         Viaje viaje = new Viaje();
         viaje.setDestino(new Destino());
         viaje.setTransporte(transporte);
+        viaje.setActivo(true);
         ventaBusqueda.setViaje(viaje);
         if(!ventaView.getNumeroClienteFilter().isEmpty()){
             ventaBusqueda.getCliente().setId(ventaView.getNumeroClienteFilter().getValue().longValue());
@@ -84,14 +84,18 @@ public class VentasController {
     private boolean checkFiltros() {
         return !ventaView.getPaisFilter().isEmpty() || !ventaView.getCiudadFilter().isEmpty() ||
                 !ventaView.getCodTransporteFilter().isEmpty() || !ventaView.getNumeroClienteFilter().isEmpty() ||
-                 ventaView.getFechaFilter()!=null;
+                 !ventaView.getFechaFilter().isEmpty();
     }
 
     private void setChangeHandler(ChangeHandler h) {
         changeHandler = h;
     }
 
-    public VentaView getView(){
+	public ChangeHandler getChangeHandler() {
+		return changeHandler;
+	}
+
+	public VentaView getView(){
         return ventaView;
     }
 }

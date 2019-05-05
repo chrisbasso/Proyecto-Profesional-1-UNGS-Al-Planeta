@@ -2,6 +2,7 @@ package com.tp.proyecto1.model.pasajes;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.*;
 
@@ -22,6 +23,9 @@ public abstract class Pasaje {
 	protected Cliente cliente;
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	protected List<Pago> pagos = new ArrayList<>();
+
+	@OneToOne(cascade = CascadeType.ALL)
+	protected Pasajero pasajero;
 	
 	public Pasaje() {
 	}
@@ -61,5 +65,34 @@ public abstract class Pasaje {
 
 	public Long getId() {
 		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Pasajero getPasajero() {
+		return pasajero;
+	}
+
+	public void setPasajero(Pasajero pasajero) {
+		this.pasajero = pasajero;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Pasaje pasaje = (Pasaje) o;
+		return Objects.equals(id, pasaje.id) &&
+				Objects.equals(viaje, pasaje.viaje) &&
+				Objects.equals(cliente, pasaje.cliente) &&
+				Objects.equals(pagos, pasaje.pagos) &&
+				Objects.equals(pasajero, pasaje.pasajero);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, viaje, cliente, pagos, pasajero);
 	}
 }

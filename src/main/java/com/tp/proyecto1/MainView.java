@@ -111,6 +111,7 @@ public class MainView extends VerticalLayout {
 
 	private void openVentasView() {
 		appLayout.setContent(ventasController.getView());
+		ventasController.getChangeHandler().onChange();
 	}
 
 	private void openClientesView() {
