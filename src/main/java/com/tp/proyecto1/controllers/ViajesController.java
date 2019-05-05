@@ -15,6 +15,7 @@ import com.tp.proyecto1.views.viajes.ViajesView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
 
 
@@ -74,9 +75,14 @@ public class ViajesController {
     
     private void openNewVentaForm() {
     	Viaje viajeSeleccionado = this.viajesView.getGrid().asSingleSelect().getValue();
-    	ventaFormController = new VentaFormController(viajeSeleccionado);
-    	ventaFormController.setComponentsValues(viajeSeleccionado);
-		ventaFormController.getVentaFormCompra().open();
+    	if (viajeSeleccionado != null) {
+	    	ventaFormController = new VentaFormController(viajeSeleccionado);
+	    	ventaFormController.setComponentsValues();
+			ventaFormController.getVentaFormCompra().open();
+    	}
+    	else {
+    			Notification.show("Seleccione un Viaje");
+    	}
 	}
     
     private Button createEditButton(Viaje viaje) {

@@ -53,8 +53,8 @@ public class Proyecto1Application {
 			viajeService.createTipoTransporteIfNotExist("Buque");
 			viajeService.createTipoTransporteIfNotExist("Crucero");
 			ventaService.createFormaDePagoIfNotExist("Efectivo");
-			ventaService.createFormaDePagoIfNotExist("Debito");
-			ventaService.createFormaDePagoIfNotExist("Credito");
+			ventaService.createFormaDePagoIfNotExist("Débito");
+			ventaService.createFormaDePagoIfNotExist("Crédito");
 //
 //			Cliente cliente = new Cliente("Alberto Carlos","Bustos", "854445");
 //			Transporte transporte = new Transporte();
