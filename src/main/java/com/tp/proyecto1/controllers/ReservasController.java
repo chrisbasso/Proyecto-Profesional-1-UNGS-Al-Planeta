@@ -13,6 +13,10 @@ import com.tp.proyecto1.services.ReservaService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.reserva.ReservaView;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.ColumnTextAlign;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
 
 @Controller
@@ -20,10 +24,10 @@ import com.vaadin.flow.spring.annotation.UIScope;
 public class ReservasController {
 
     private ReservaView reservaView;
-
     @Autowired
     private ReservaService reservaService;
-
+    private ReservaFormController reservaFormController;
+    
     private ChangeHandler changeHandler;
 
     public ReservasController() {
@@ -36,14 +40,25 @@ public class ReservasController {
     }
 
     private void setComponents() {
-
+        reservaView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
     }
-
+    
+    private Button createEditButton(Reserva reserva) {
+        return new Button(VaadinIcon.EDIT.create(), clickEvent -> {
+            reservaFormController = new ReservaFormController(reserva.getViaje());
+            if(reservaFormController.esReservablePorFecha()) {    			    	
+                reservaFormController.getReservaForm().open();    			
+    		}else {
+    			Notification.show("Por la política de fechas el viaje selecionado solo se puede comprar.");
+    		};
+            reservaFormController.setChangeHandler(this::listReservas);
+        });
+    }
+    
     private void setListeners() {
     	setChangeHandler(this::listReservas);
     	reservaView.getSearchButton().addClickListener(e->listReservas());
     }
-
 
     private void listReservas() {
         Reserva reservaBusqueda = new Reserva();

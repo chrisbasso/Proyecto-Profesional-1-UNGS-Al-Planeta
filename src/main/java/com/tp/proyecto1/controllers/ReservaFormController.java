@@ -15,9 +15,10 @@ import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.services.ConfiguracionService;
 import com.tp.proyecto1.services.ReservaService;
 import com.tp.proyecto1.services.VentaService;
+import com.tp.proyecto1.services.ViajeService;
+import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.reserva.ReservaForm;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
 
@@ -26,7 +27,8 @@ import com.vaadin.flow.spring.annotation.UIScope;
 public class ReservaFormController {
 	private static String MSJ_RESERVA_GUARDADA = "Reserva guardada con éxito.";
 	private static String MSJ_ERROR_FECHA = "Por la fecha del viaje solo es posible comprar.";
-	
+
+    private ChangeHandler changeHandler;
 	private ReservaForm reservaForm;
 	private Viaje viaje;	
 	private Reserva reserva;
@@ -35,7 +37,9 @@ public class ReservaFormController {
 	@Autowired
 	private ClienteService clienteService;
 	@Autowired
-	private VentaService ventaService;	
+	private VentaService ventaService;
+	@Autowired
+	private ViajeService viajeService;
 	@Autowired
 	private ConfiguracionService ConfigService;
 	
@@ -86,7 +90,7 @@ public class ReservaFormController {
 				}else {
 					Notification.show(MSJ_RESERVA_GUARDADA); 
 				}
-				
+				actualizarCapacidadTransporte();
 				reservaForm.close();
 			}else {
 				Notification.show(MSJ_ERROR_FECHA);
@@ -94,6 +98,14 @@ public class ReservaFormController {
 			}
 	}
 	
+	private void actualizarCapacidadTransporte() {
+		double capacidadTransporte = Double.parseDouble(viaje.getTransporte().getCapacidad());
+		double pasajesReservados = reservaForm.getCantidadPasajes().getValue();
+		double saldoCapacidad = capacidadTransporte - pasajesReservados;		
+		viaje.getTransporte().setCapacidad(Double.toString(saldoCapacidad));
+		viajeService.save(viaje);
+	}
+
 	private void actualizarPrecioTotal(){
 		double pasajes = reservaForm.getCantidadPasajes().getValue();
 		double precioTotal = viaje.getPrecio() * pasajes;
@@ -129,5 +141,10 @@ public class ReservaFormController {
 	
 	private void modificarReserva() {
 		
-	}	
+	}
+	
+    public void setChangeHandler(ChangeHandler h) {
+        changeHandler = h;
+    }
+
 }
