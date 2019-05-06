@@ -15,10 +15,9 @@ import com.tp.proyecto1.repository.pasajes.ReservaRepository;
 
 @Service
 public class ReservaService {
+	
 	@Autowired
 	private ReservaRepository reservaRepository;
-
-	private static final Logger log = LoggerFactory.getLogger(ReservaService.class);
 
 	@Transactional
 	public void save(Reserva reserva){

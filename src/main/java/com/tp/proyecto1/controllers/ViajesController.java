@@ -66,14 +66,14 @@ public class ViajesController {
     private void openNewReservaForm() {
     	Viaje seleccionado = viajesView.getGrid().asSingleSelect().getValue();
     	if(seleccionado!=null) {
-    		if(ReservaFormController.esReservablePorFecha(seleccionado)) {
-    			reservaFormController = new ReservaFormController(new ReservaService(),seleccionado);    	
+    		reservaFormController = new ReservaFormController(seleccionado);
+    		if(reservaFormController.esReservablePorFecha()) {    			    	
                 reservaFormController.getReservaForm().open();    			
     		}else {
     			Notification.show("Por la política de fechas el viaje selecionado solo se puede comprar.");
     		}
     	}else {
-    		Notification.show("Seleccione un Viaje");
+    		Notification.show("Seleccione un viaje a reservar.");
     	}    	
     }
     

@@ -15,56 +15,57 @@ import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.services.ConfiguracionService;
 import com.tp.proyecto1.services.ReservaService;
 import com.tp.proyecto1.services.VentaService;
+import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.reserva.ReservaForm;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
 
 @Controller
 @UIScope
 public class ReservaFormController {
-//  Se comenta el codigo ya que cambio a combo seleccionable para cliente	
-//	private static String MSJ_CLIENTE_INEXISTENTE = "El código de cliente ingresado no existe en la base de datos.";
 	private static String MSJ_RESERVA_GUARDADA = "Reserva guardada con éxito.";
 	private static String MSJ_ERROR_FECHA = "Por la fecha del viaje solo es posible comprar.";
-	@Autowired
-	private static ConfiguracionService staticConfigService; 
-
+	
 	private ReservaForm reservaForm;
-	private ReservaService reservaService;
 	private Viaje viaje;	
 	private Reserva reserva;
-	private Dialog mensaje;
+	@Autowired
+	private ReservaService reservaService;
 	@Autowired
 	private ClienteService clienteService;
 	@Autowired
-	private VentaService ventaService;
-
-	public ReservaFormController(ReservaService service, Viaje viaje) { 
-		this.reservaService = service;
-		this.viaje = viaje;
-		reservaForm = new ReservaForm(viaje);
-		reservaForm.getComboCliente().setItems(clienteService.findAll());
-		reservaForm.getFormaPago().setItems(ventaService.findAllFomaDePagos());
-		mensaje = new Dialog();
-		setListeners();
+	private VentaService ventaService;	
+	@Autowired
+	private ConfiguracionService ConfigService;
+	
+	public ReservaFormController(Viaje viaje) {
+		Inject.Inject(this);
+		this.viaje = viaje;	
 	}
 
 	public ReservaForm getReservaForm() {
+		reservaForm = new ReservaForm(viaje);
+		reservaForm.getComboCliente().setItems(clienteService.findAll());
+		reservaForm.getFormaPago().setItems(ventaService.findAllFomaDePagos());
+		setListeners();
 		return reservaForm;
 	}
 	
+	public boolean esReservablePorFecha() {
+		LocalDateTime presente = LocalDate.now().atStartOfDay();
+		LocalDateTime fechaViaje = viaje.getFechaSalida().atStartOfDay();
+		int fecha_maxima = Integer.parseInt(ConfigService.findValueByKey("reserva_fecha_maxima"));
+		return fechaViaje.minusDays(fecha_maxima).isAfter(presente);		
+	}
+	
     private void setListeners() {
-//        reservaForm.getBtnBuscarCliente().addClickListener(e-> buscarCliente());
         reservaForm.getBtnSave().addClickListener(e-> guardarReserva(reservaForm.getClienteSeleccionado(),reservaForm.getFormaPagoSeleccionada(),reservaForm.getPago().getValue()));
         reservaForm.getBtnCancel().addClickListener(e->reservaForm.close());
         reservaForm.getCantidadPasajes().addValueChangeListener(e->actualizarPrecioTotal());
+        reservaForm.getPago().addValueChangeListener(e->actualizarPago());
     }
 
-//	private void buscarCliente() {		
-//		ClientesSearch cs = new ClientesSearch();
-//		cs.open();
-//	}
-    
 	/* Se debe permitir reservar el pasaje sin necesidad de pagar,  
 	 * pero avisando al cliente que debe pagar al menos el 30% 
 	 * del valor total antes que finalice la fecha de la reserva.
@@ -72,46 +73,26 @@ public class ReservaFormController {
 	 * El resto se debe pagar a lo sumo 5 días antes del viaje.
 	 */
 	private void guardarReserva(Cliente cliente, FormaDePago fdp, Double pagado) {
-//		if(!verificarCliente(Long.parseLong(id))) {			
-//			mensaje.add(MSJ_CLIENTE_INEXISTENTE);
-//			mensaje.open();
-//		}else {		
-			if(esReservablePorFecha(viaje)) {
+			if(esReservablePorFecha()) {
 				reserva = new Reserva(viaje, cliente);
-				Pago pago = new Pago(cliente, reserva, fdp, pagado, LocalDate.now());
-				reserva.agregarPago(pago);
+				if(pagado != null && pagado>0) {
+					Pago pago = new Pago(cliente, reserva, fdp, pagado, LocalDate.now());
+					reserva.agregarPago(pago);
+				}				
 				reservaService.save(reserva);
 				Long idGuardada = reservaService.findReservaId(reserva);
-				mensaje.add(MSJ_RESERVA_GUARDADA + "\n Número de reserva: " + idGuardada.toString());
-				mensaje.open();
-				while(mensaje.isOpened()) {
-					/*	Esperamos que se cierre el mensaje
-					 * 	antes de cerrar el form de reserva
-					 */					
+				if(idGuardada > -1) {
+					Notification.show(MSJ_RESERVA_GUARDADA + "\n Número de reserva: " + idGuardada.toString());	
+				}else {
+					Notification.show(MSJ_RESERVA_GUARDADA); 
 				}
+				
 				reservaForm.close();
 			}else {
-				mensaje.add(MSJ_ERROR_FECHA);
-				mensaje.open();
-				while(mensaje.isOpened()) {
-					/*	Esperamos que se cierre el mensaje
-					 * 	antes de cerrar el form de reserva
-					 */
-					
-				}
+				Notification.show(MSJ_ERROR_FECHA);
 				reservaForm.close();
 			}
-//		}
 	}
-	
-//	private boolean verificarCliente(Long id) {
-//		Optional<Cliente> optCliente = clienteService.findById(id);  
-//		if(optCliente.isPresent()) {
-//			cliente = optCliente.get();
-//			return true;
-//		}
-//		return false;		
-//	}
 	
 	private void actualizarPrecioTotal(){
 		double pasajes = reservaForm.getCantidadPasajes().getValue();
@@ -121,6 +102,19 @@ public class ReservaFormController {
 		reservaForm.getPrecioTotal().setReadOnly(true);		
 	}
 	
+	private void actualizarPago(){
+		if(reservaForm.getPrecioTotal().getValue() < reservaForm.getPago().getValue()) {
+			Notification.show("El total a pagar es menor que el pago ingresado.");
+			reservaForm.getPago().setReadOnly(false);
+			reservaForm.getPago().setValue(0.0);
+			reservaForm.getPago().setReadOnly(true);
+		}else {
+			reservaForm.getSaldoPagar().setReadOnly(false);
+			reservaForm.getSaldoPagar().setValue(reservaForm.getPrecioTotal().getValue() - reservaForm.getPago().getValue());
+			reservaForm.getSaldoPagar().setReadOnly(true);	
+		}		
+	}
+
 	private void guardarBorrador() {
 		
 	}
@@ -135,12 +129,5 @@ public class ReservaFormController {
 	
 	private void modificarReserva() {
 		
-	}	
-	
-	public static boolean esReservablePorFecha(Viaje viaje) {
-		LocalDateTime presente = LocalDate.now().atStartOfDay();
-		LocalDateTime fechaViaje = viaje.getFechaSalida().atStartOfDay();		
-		int fecha_maxima = Integer.parseInt(staticConfigService.findValueByKey("reserva_fecha_maxima"));
-		return fechaViaje.minusDays(fecha_maxima).isBefore(presente);		
 	}	
 }

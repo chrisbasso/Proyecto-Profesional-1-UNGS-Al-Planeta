@@ -29,9 +29,7 @@ public class ReservaForm extends Dialog{
 	private NumberField precioUnitario;
 	private NumberField precioTotal;
 	private ComboBox<Cliente> cliente;
-//	private TextField cliente;
 	private NumberField cantidadPasajes;
-//	private Button btnBuscarCliente;
 	private ComboBox<FormaDePago> formaPago;
 	private NumberField pago;
 	private NumberField saldoPagar;
@@ -61,8 +59,6 @@ public class ReservaForm extends Dialog{
 		fechaDesde= new TextField();
 		fechaHasta= new TextField();
 		precioUnitario= new NumberField();
-		//cliente= new TextField();
-		//cliente.setAutoselect(true);
 		cliente= new ComboBox<Cliente>();
 		cantidadPasajes= new NumberField();		
 		cantidadPasajes.setValue(1d);
@@ -74,8 +70,6 @@ public class ReservaForm extends Dialog{
 		formaPago = new ComboBox<FormaDePago>();
 		pago = new NumberField();
 		saldoPagar = new NumberField();
-//		btnBuscarCliente = new Button("Buscar", VaadinIcon.SEARCH.create());
-//		btnBuscarCliente.setMaxWidth("20px");
 	}
 
 	private void cargarValores(Viaje viaje) {
@@ -117,7 +111,6 @@ public class ReservaForm extends Dialog{
     	form.addFormItem(formaPago, "Forma de pago");
     	form.addFormItem(pago, "Pago actual");
     	form.addFormItem(saldoPagar, "Saldo");    	
-//  	form.addFormItem(btnBuscarCliente,"");
 	}
 
 	private void inicializarActions() {
@@ -154,13 +147,6 @@ public class ReservaForm extends Dialog{
 		this.btnCancel = btnCancel;
 	}
 	
-//	public Button getBtnBuscarCliente() {
-//		return btnBuscarCliente;
-//	}
-
-//	public String getIdCliente() {
-//		return cliente.getValue();
-//	}
 	public ComboBox<Cliente> getComboCliente() {
 		return cliente;
 	}
@@ -192,5 +178,4 @@ public class ReservaForm extends Dialog{
 	public NumberField getSaldoPagar() {
 		return saldoPagar;
 	}
-
 }
