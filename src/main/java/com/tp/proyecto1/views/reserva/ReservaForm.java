@@ -8,6 +8,7 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 
 public class ReservaForm extends Dialog{
@@ -15,6 +16,7 @@ public class ReservaForm extends Dialog{
     private VerticalLayout mainLayout;
     private FormLayout form;
     private HorizontalLayout actions;
+    private Viaje viaje;
     private TextField id;
 	private TextField pais;
 	private TextField ciudad;
@@ -22,13 +24,17 @@ public class ReservaForm extends Dialog{
 	private TextField transporte;
 	private TextField fechaDesde;
 	private TextField fechaHasta;
+	private NumberField precioUnitario;
+	private NumberField precioTotal;
 	private TextField cliente;
-	private Button btnCliente;
+	private NumberField cantidadPasajes;
+	private Button btnBuscarCliente;
 	private Button btnSave;
     private Button btnCancel;
 
     public ReservaForm(Viaje viaje) {
     	if(viaje != null) {
+    		this.viaje = viaje;
     		iniciliazarCampos();
     		cargarValores(viaje);
         	setReadOnly(); 
@@ -48,9 +54,19 @@ public class ReservaForm extends Dialog{
 		transporte= new TextField();
 		fechaDesde= new TextField();
 		fechaHasta= new TextField();
+		precioUnitario= new NumberField();
 		cliente= new TextField();
-		btnCliente = new Button("Buscar", VaadinIcon.SEARCH.create());
-		btnCliente.setMaxWidth("20px");
+		cliente.setAutoselect(true);
+		
+		cantidadPasajes= new NumberField();		
+		cantidadPasajes.setValue(1d);
+		cantidadPasajes.setMin(1);
+		cantidadPasajes.setMax(Double.parseDouble(viaje.getTransporte().getCapacidad()));
+		cantidadPasajes.setHasControls(true);		
+		
+		precioTotal= new NumberField();
+		btnBuscarCliente = new Button("Buscar", VaadinIcon.SEARCH.create());
+		btnBuscarCliente.setMaxWidth("20px");
 	}
 
 	private void cargarValores(Viaje viaje) {
@@ -61,6 +77,7 @@ public class ReservaForm extends Dialog{
     	transporte.setValue(viaje.getTransporte().getTipo().toString());
     	fechaDesde.setValue(viaje.getFechaSalida().toString());
     	fechaHasta.setValue(viaje.getFechaLlegada().toString());
+    	precioUnitario.setValue(viaje.getPrecio());
 	}
     
     private void setReadOnly() {
@@ -71,6 +88,8 @@ public class ReservaForm extends Dialog{
 		transporte.setReadOnly(true);  
 		fechaDesde.setReadOnly(true);  
 		fechaHasta.setReadOnly(true);
+		precioUnitario.setReadOnly(true);
+		precioTotal.setReadOnly(true);
     }
 
 	private void inicializarForm() {
@@ -82,7 +101,10 @@ public class ReservaForm extends Dialog{
     	form.addFormItem(fechaDesde, "Fecha desde");
     	form.addFormItem(fechaHasta, "Fecha hasta");
     	form.addFormItem(cliente, "Cliente");
-    	form.addFormItem(btnCliente,"");
+    	form.addFormItem(cantidadPasajes, "Cantidad de pasajes");
+    	form.addFormItem(precioUnitario, "Precio unitario");
+    	form.addFormItem(precioTotal, "Precio Total");
+    	form.addFormItem(btnBuscarCliente,"");
 	}
 
 	private void inicializarActions() {
@@ -119,11 +141,19 @@ public class ReservaForm extends Dialog{
 		this.btnCancel = btnCancel;
 	}
 	
-	public Button getBtnCliente() {
-		return btnCliente;
+	public Button getBtnBuscarCliente() {
+		return btnBuscarCliente;
 	}
 
 	public String getIdCliente() {
 		return cliente.getValue();
+	}
+	
+	public NumberField getCantidadPasajes() {
+		return cantidadPasajes;
+	}
+	
+	public NumberField getPrecioTotal() {
+		return precioTotal;
 	}
 }

@@ -42,8 +42,6 @@ public class ReservaFormController {
 		this.reservaService = service;
 		this.viaje = viaje;
 		reservaForm = new ReservaForm(viaje);
-		reserva = new Reserva();
-		cliente = new Cliente();
 		mensaje = new Dialog();
 		setListeners();
 	}
@@ -53,9 +51,10 @@ public class ReservaFormController {
 	}
 	
     private void setListeners() {
-        reservaForm.getBtnCliente().addClickListener(e-> buscarCliente());
+        reservaForm.getBtnBuscarCliente().addClickListener(e-> buscarCliente());
         reservaForm.getBtnSave().addClickListener(e-> guardarReserva(reservaForm.getIdCliente()));
         reservaForm.getBtnCancel().addClickListener(e->reservaForm.close());
+        reservaForm.getCantidadPasajes().addValueChangeListener(e->actualizarPrecioTotal());
     }
 
 	private void buscarCliente() {		
@@ -74,7 +73,7 @@ public class ReservaFormController {
 			mensaje.open();
 		}else {		
 			if(controlarFechaViaje()) {
-				reserva.setCliente(cliente);
+				reserva = new Reserva(viaje, cliente);				
 				reservaService.save(reserva);
 				Long idGuardada = reservaService.findReservaId(reserva);
 				mensaje.add(MSJ_RESERVA_GUARDADA + "\n Número de reserva: " + idGuardada.toString());
@@ -115,19 +114,27 @@ public class ReservaFormController {
 		return fechaViaje.minusDays(fecha_maxima).isBefore(presente);		
 	}
 	
-	public void guardarBorrador() {
+	private void actualizarPrecioTotal(){
+		double pasajes = reservaForm.getCantidadPasajes().getValue();
+		double precioTotal = viaje.getPrecio() * pasajes;
+		reservaForm.getPrecioTotal().setReadOnly(false);
+		reservaForm.getPrecioTotal().setValue(precioTotal);
+		reservaForm.getPrecioTotal().setReadOnly(true);		
+	}
+	
+	private void guardarBorrador() {
 		
 	}
 	
-	public void emitirComprobante() {
+	private void emitirComprobante() {
 		
 	}
 	
-	public void enviarMail() {
+	private void enviarMail() {
 		
 	}
 	
-	public void modificarReserva() {
+	private void modificarReserva() {
 		
 	}
 }
