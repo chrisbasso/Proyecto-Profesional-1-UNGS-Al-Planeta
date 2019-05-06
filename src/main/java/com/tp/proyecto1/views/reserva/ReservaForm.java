@@ -1,10 +1,12 @@
 package com.tp.proyecto1.views.reserva;
 
+import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -26,9 +28,13 @@ public class ReservaForm extends Dialog{
 	private TextField fechaHasta;
 	private NumberField precioUnitario;
 	private NumberField precioTotal;
-	private TextField cliente;
+	private ComboBox<Cliente> cliente;
+//	private TextField cliente;
 	private NumberField cantidadPasajes;
-	private Button btnBuscarCliente;
+//	private Button btnBuscarCliente;
+	private ComboBox<FormaDePago> formaPago;
+	private NumberField pago;
+	private NumberField saldoPagar;
 	private Button btnSave;
     private Button btnCancel;
 
@@ -55,9 +61,9 @@ public class ReservaForm extends Dialog{
 		fechaDesde= new TextField();
 		fechaHasta= new TextField();
 		precioUnitario= new NumberField();
-		cliente= new TextField();
-		cliente.setAutoselect(true);
-		
+		//cliente= new TextField();
+		//cliente.setAutoselect(true);
+		cliente= new ComboBox<Cliente>();
 		cantidadPasajes= new NumberField();		
 		cantidadPasajes.setValue(1d);
 		cantidadPasajes.setMin(1);
@@ -65,8 +71,11 @@ public class ReservaForm extends Dialog{
 		cantidadPasajes.setHasControls(true);		
 		
 		precioTotal= new NumberField();
-		btnBuscarCliente = new Button("Buscar", VaadinIcon.SEARCH.create());
-		btnBuscarCliente.setMaxWidth("20px");
+		formaPago = new ComboBox<FormaDePago>();
+		pago = new NumberField();
+		saldoPagar = new NumberField();
+//		btnBuscarCliente = new Button("Buscar", VaadinIcon.SEARCH.create());
+//		btnBuscarCliente.setMaxWidth("20px");
 	}
 
 	private void cargarValores(Viaje viaje) {
@@ -90,6 +99,7 @@ public class ReservaForm extends Dialog{
 		fechaHasta.setReadOnly(true);
 		precioUnitario.setReadOnly(true);
 		precioTotal.setReadOnly(true);
+		saldoPagar.setReadOnly(true);
     }
 
 	private void inicializarForm() {
@@ -104,7 +114,10 @@ public class ReservaForm extends Dialog{
     	form.addFormItem(cantidadPasajes, "Cantidad de pasajes");
     	form.addFormItem(precioUnitario, "Precio unitario");
     	form.addFormItem(precioTotal, "Precio Total");
-    	form.addFormItem(btnBuscarCliente,"");
+    	form.addFormItem(formaPago, "Forma de pago");
+    	form.addFormItem(pago, "Pago actual");
+    	form.addFormItem(saldoPagar, "Saldo");    	
+//  	form.addFormItem(btnBuscarCliente,"");
 	}
 
 	private void inicializarActions() {
@@ -141,14 +154,21 @@ public class ReservaForm extends Dialog{
 		this.btnCancel = btnCancel;
 	}
 	
-	public Button getBtnBuscarCliente() {
-		return btnBuscarCliente;
-	}
+//	public Button getBtnBuscarCliente() {
+//		return btnBuscarCliente;
+//	}
 
-	public String getIdCliente() {
-		return cliente.getValue();
+//	public String getIdCliente() {
+//		return cliente.getValue();
+//	}
+	public ComboBox<Cliente> getComboCliente() {
+		return cliente;
 	}
 	
+	public Cliente getClienteSeleccionado() {
+		return cliente.getValue();
+	}
+		
 	public NumberField getCantidadPasajes() {
 		return cantidadPasajes;
 	}
@@ -156,4 +176,21 @@ public class ReservaForm extends Dialog{
 	public NumberField getPrecioTotal() {
 		return precioTotal;
 	}
+	
+	public ComboBox<FormaDePago> getFormaPago(){
+		return formaPago;
+	}
+	
+	public FormaDePago getFormaPagoSeleccionada(){
+		return formaPago.getValue();
+	}
+	
+	public NumberField getPago() {
+		return pago;
+	}
+	
+	public NumberField getSaldoPagar() {
+		return saldoPagar;
+	}
+
 }
