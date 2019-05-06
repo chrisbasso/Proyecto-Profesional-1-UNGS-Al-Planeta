@@ -14,31 +14,31 @@ public class Configuracion {
 	private Long id;
 
 	@NaturalId
-	private String key;
-	private String value;
+	private String clave;
+	private String valor;
 
 	public Configuracion() {
 		
 	}
 	
-	public Configuracion(String key, String value) {
-		this.key = key;
-		this.value = value;
+	public Configuracion(String clave, String valor) {
+		this.clave = clave;
+		this.valor = valor;
 	}
-
-	public String getKey() {
-		return key;
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
+	
 	public Long getId() {
 		return id;
+	}
+
+	public String getClave() {
+		return clave;
+	}
+
+	public String getValor() {
+		return valor;
+	}
+
+	public void setValor(String valor) {
+		this.valor = valor;
 	}
 }

@@ -10,22 +10,29 @@ import org.springframework.stereotype.Controller;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.repository.pasajes.ReservaRepository;
 import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.services.ConfiguracionService;
 import com.tp.proyecto1.services.ReservaService;
 import com.tp.proyecto1.views.clientes.ClientesSearch;
 import com.tp.proyecto1.views.reserva.ReservaForm;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.spring.annotation.UIScope;
 
 @Controller
 @UIScope
 public class ReservaFormController {
-
+	
+	private static String MSJ_CLIENTE_INEXISTENTE = "El código de cliente ingresado no existe en la base de datos.";
+	private static String MSJ_RESERVA_GUARDADA = "Reserva guardada con éxito.";
+	private static String MSJ_ERROR_FECHA = "Por la fecha del viaje solo es posible comprar.";
+	
 	private ReservaForm reservaForm;
 	private ReservaService reservaService;
 	private Viaje viaje;	
 	private Reserva reserva;
 	private Cliente cliente;
+	private Dialog mensaje;
 	@Autowired
 	private ClienteService clienteService;
 	@Autowired
@@ -37,6 +44,7 @@ public class ReservaFormController {
 		reservaForm = new ReservaForm(viaje);
 		reserva = new Reserva();
 		cliente = new Cliente();
+		mensaje = new Dialog();
 		setListeners();
 	}
 	
@@ -61,14 +69,33 @@ public class ReservaFormController {
 	 * El resto se debe pagar a lo sumo 5 días antes del viaje.
 	 */
 	private void guardarReserva(String id) {
-		if(!verificarCliente(Long.parseLong(id))) {
-			//TODO mensaje de cliente no válido
-		}
-		
-		if(controlarFechaViaje()) {
-			reserva.setCliente(cliente);
-		}else {
-			//TODO mensaje de fecha excedida
+		if(!verificarCliente(Long.parseLong(id))) {			
+			mensaje.add(MSJ_CLIENTE_INEXISTENTE);
+			mensaje.open();
+		}else {		
+			if(controlarFechaViaje()) {
+				reserva.setCliente(cliente);
+				reservaService.save(reserva);
+				Long idGuardada = reservaService.findReservaId(reserva);
+				mensaje.add(MSJ_RESERVA_GUARDADA + "\n Número de reserva: " + idGuardada.toString());
+				mensaje.open();
+				while(mensaje.isOpened()) {
+					/*	Esperamos que se cierre el mensaje
+					 * 	antes de cerrar el form de reserva
+					 */					
+				}
+				reservaForm.close();
+			}else {
+				mensaje.add(MSJ_ERROR_FECHA);
+				mensaje.open();
+				while(mensaje.isOpened()) {
+					/*	Esperamos que se cierre el mensaje
+					 * 	antes de cerrar el form de reserva
+					 */
+					
+				}
+				reservaForm.close();
+			}
 		}
 	}
 	

@@ -28,12 +28,16 @@ public class ReservaForm extends Dialog{
     private Button btnCancel;
 
     public ReservaForm(Viaje viaje) {
-		iniciliazarCampos();
-		cargarValores(viaje);
-    	setReadOnly(); 
-    	inicializarForm();
-    	inicializarActions();        
-    	inicializarMainLayout();
+    	if(viaje != null) {
+    		iniciliazarCampos();
+    		cargarValores(viaje);
+        	setReadOnly(); 
+        	inicializarForm();
+        	inicializarActions();        
+        	inicializarMainLayout();	
+    	}else {
+    		// Prevenir que invoquen el form sin un viaje
+    	}		
     }
 
 	private void iniciliazarCampos() {

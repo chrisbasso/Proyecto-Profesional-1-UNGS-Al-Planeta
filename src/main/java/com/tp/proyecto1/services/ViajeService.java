@@ -1,21 +1,22 @@
 package com.tp.proyecto1.services;
 
-import com.tp.proyecto1.model.viajes.TipoTransporte;
-import com.tp.proyecto1.model.viajes.Viaje;
-import com.tp.proyecto1.repository.viajes.TipoTransporteRepository;
-import com.tp.proyecto1.repository.viajes.ViajeRepository;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.chrono.ChronoLocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.tp.proyecto1.model.viajes.TagDestino;
+import com.tp.proyecto1.model.viajes.TipoTransporte;
+import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.repository.viajes.TagDestinoRepository;
+import com.tp.proyecto1.repository.viajes.TipoTransporteRepository;
+import com.tp.proyecto1.repository.viajes.ViajeRepository;
 
 @Service
 public class ViajeService {
@@ -25,6 +26,9 @@ public class ViajeService {
 
     @Autowired
     private TipoTransporteRepository tipoTransporteRepository;
+
+    @Autowired
+    private TagDestinoRepository tagDestinoRepository;
 
     private static final Logger log = LoggerFactory.getLogger(ViajeService.class);
 
@@ -71,6 +75,11 @@ public class ViajeService {
 
         return tipoTransporteRepository.findAll();
 
+    }
+    
+    @Transactional
+    public void saveTagDestino(TagDestino tag) {
+    	tagDestinoRepository.save(tag);
     }
 }
 
