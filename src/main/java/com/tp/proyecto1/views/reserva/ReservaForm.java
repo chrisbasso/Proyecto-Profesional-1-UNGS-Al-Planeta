@@ -1,13 +1,16 @@
 package com.tp.proyecto1.views.reserva;
 
+import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 
 public class ReservaForm extends Dialog{
@@ -15,6 +18,7 @@ public class ReservaForm extends Dialog{
     private VerticalLayout mainLayout;
     private FormLayout form;
     private HorizontalLayout actions;
+    private Viaje viaje;
     private TextField id;
 	private TextField pais;
 	private TextField ciudad;
@@ -22,18 +26,28 @@ public class ReservaForm extends Dialog{
 	private TextField transporte;
 	private TextField fechaDesde;
 	private TextField fechaHasta;
-	private TextField cliente;
-	private Button btnCliente;
+	private NumberField precioUnitario;
+	private NumberField precioTotal;
+	private ComboBox<Cliente> cliente;
+	private NumberField cantidadPasajes;
+	private ComboBox<FormaDePago> formaPago;
+	private NumberField pago;
+	private NumberField saldoPagar;
 	private Button btnSave;
     private Button btnCancel;
 
     public ReservaForm(Viaje viaje) {
-		iniciliazarCampos();
-		cargarValores(viaje);
-    	setReadOnly(); 
-    	inicializarForm();
-    	inicializarActions();        
-    	inicializarMainLayout();
+    	if(viaje != null) {
+    		this.viaje = viaje;
+    		iniciliazarCampos();
+    		cargarValores(viaje);
+        	setReadOnly(); 
+        	inicializarForm();
+        	inicializarActions();        
+        	inicializarMainLayout();	
+    	}else {
+    		// Prevenir que invoquen el form sin un viaje
+    	}		
     }
 
 	private void iniciliazarCampos() {
@@ -44,9 +58,18 @@ public class ReservaForm extends Dialog{
 		transporte= new TextField();
 		fechaDesde= new TextField();
 		fechaHasta= new TextField();
-		cliente= new TextField();
-		btnCliente = new Button("Buscar", VaadinIcon.SEARCH.create());
-		btnCliente.setMaxWidth("20px");
+		precioUnitario= new NumberField();
+		cliente= new ComboBox<Cliente>();
+		cantidadPasajes= new NumberField();		
+		cantidadPasajes.setValue(1d);
+		cantidadPasajes.setMin(1);
+		cantidadPasajes.setMax(Double.parseDouble(viaje.getTransporte().getCapacidad()));
+		cantidadPasajes.setHasControls(true);		
+		
+		precioTotal= new NumberField();
+		formaPago = new ComboBox<FormaDePago>();
+		pago = new NumberField();
+		saldoPagar = new NumberField();
 	}
 
 	private void cargarValores(Viaje viaje) {
@@ -57,6 +80,7 @@ public class ReservaForm extends Dialog{
     	transporte.setValue(viaje.getTransporte().getTipo().toString());
     	fechaDesde.setValue(viaje.getFechaSalida().toString());
     	fechaHasta.setValue(viaje.getFechaLlegada().toString());
+    	precioUnitario.setValue(viaje.getPrecio());
 	}
     
     private void setReadOnly() {
@@ -67,6 +91,9 @@ public class ReservaForm extends Dialog{
 		transporte.setReadOnly(true);  
 		fechaDesde.setReadOnly(true);  
 		fechaHasta.setReadOnly(true);
+		precioUnitario.setReadOnly(true);
+		precioTotal.setReadOnly(true);
+		saldoPagar.setReadOnly(true);
     }
 
 	private void inicializarForm() {
@@ -78,7 +105,12 @@ public class ReservaForm extends Dialog{
     	form.addFormItem(fechaDesde, "Fecha desde");
     	form.addFormItem(fechaHasta, "Fecha hasta");
     	form.addFormItem(cliente, "Cliente");
-    	form.addFormItem(btnCliente,"");
+    	form.addFormItem(cantidadPasajes, "Cantidad de pasajes");
+    	form.addFormItem(precioUnitario, "Precio unitario");
+    	form.addFormItem(precioTotal, "Precio Total");
+    	form.addFormItem(formaPago, "Forma de pago");
+    	form.addFormItem(pago, "Pago actual");
+    	form.addFormItem(saldoPagar, "Saldo");    	
 	}
 
 	private void inicializarActions() {
@@ -115,11 +147,35 @@ public class ReservaForm extends Dialog{
 		this.btnCancel = btnCancel;
 	}
 	
-	public Button getBtnCliente() {
-		return btnCliente;
+	public ComboBox<Cliente> getComboCliente() {
+		return cliente;
 	}
-
-	public String getIdCliente() {
+	
+	public Cliente getClienteSeleccionado() {
 		return cliente.getValue();
+	}
+		
+	public NumberField getCantidadPasajes() {
+		return cantidadPasajes;
+	}
+	
+	public NumberField getPrecioTotal() {
+		return precioTotal;
+	}
+	
+	public ComboBox<FormaDePago> getFormaPago(){
+		return formaPago;
+	}
+	
+	public FormaDePago getFormaPagoSeleccionada(){
+		return formaPago.getValue();
+	}
+	
+	public NumberField getPago() {
+		return pago;
+	}
+	
+	public NumberField getSaldoPagar() {
+		return saldoPagar;
 	}
 }

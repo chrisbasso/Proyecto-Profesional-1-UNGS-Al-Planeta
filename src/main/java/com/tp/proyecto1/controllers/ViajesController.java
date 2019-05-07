@@ -32,7 +32,7 @@ public class ViajesController {
 
     private VentaFormController ventaFormController;
     
-	private ReservaFormController reservaController; 
+	private ReservaFormController reservaFormController; 
 
     private ChangeHandler changeHandler;
 
@@ -66,10 +66,14 @@ public class ViajesController {
     private void openNewReservaForm() {
     	Viaje seleccionado = viajesView.getGrid().asSingleSelect().getValue();
     	if(seleccionado!=null) {
-    		reservaController = new ReservaFormController(new ReservaService(),seleccionado);    	
-            reservaController.getReservaForm().open();    	
+    		reservaFormController = new ReservaFormController(seleccionado);
+    		if(reservaFormController.esReservablePorFecha()) {    			    	
+                reservaFormController.getReservaForm().open();    			
+    		}else {
+    			Notification.show("Por la política de fechas el viaje selecionado solo se puede comprar.");
+    		}
     	}else {
-    		//TODO mostrar mensaje
+    		Notification.show("Seleccione un viaje a reservar.");
     	}    	
     }
     

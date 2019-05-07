@@ -1,7 +1,10 @@
 package com.tp.proyecto1;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.tp.proyecto1.controllers.ClientesController;
 import com.tp.proyecto1.controllers.LoginController;
+import com.tp.proyecto1.controllers.ReservasController;
 import com.tp.proyecto1.controllers.VentasController;
 import com.tp.proyecto1.controllers.ViajesController;
 import com.tp.proyecto1.model.users.User;
@@ -17,7 +20,6 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Route
 @StyleSheet("styles.css")
@@ -34,6 +36,9 @@ public class MainView extends VerticalLayout {
 
 	@Autowired
 	private VentasController ventasController;
+
+	@Autowired
+	private ReservasController reservasController;
 
 	private VerticalLayout mainLayout;
 	private AppLayout appLayout;
@@ -85,7 +90,7 @@ public class MainView extends VerticalLayout {
 		menu.addMenuItems(
 				new AppLayoutMenuItem(VaadinIcon.AIRPLANE.create(),"Viajes",e->openViajesView()),
 				new AppLayoutMenuItem(VaadinIcon.TICKET.create(),"Ventas", e->openVentasView()),
-				new AppLayoutMenuItem(VaadinIcon.CALENDAR_CLOCK.create(),"Reservas"),
+				new AppLayoutMenuItem(VaadinIcon.CALENDAR_CLOCK.create(),"Reservas", e->openReservasView()),
 				new AppLayoutMenuItem(VaadinIcon.GROUP.create(),"Clientes", e -> openClientesView()),
 				new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Contabilidad"),
 				new AppLayoutMenuItem(VaadinIcon.COGS.create(),"Configuración")
@@ -112,6 +117,11 @@ public class MainView extends VerticalLayout {
 	private void openVentasView() {
 		appLayout.setContent(ventasController.getView());
 		ventasController.getChangeHandler().onChange();
+	}
+	
+	private void openReservasView() {
+		appLayout.setContent(reservasController.getView());
+		reservasController.getChangeHandler().onChange();
 	}
 
 	private void openClientesView() {
