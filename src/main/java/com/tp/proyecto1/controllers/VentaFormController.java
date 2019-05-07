@@ -1,6 +1,8 @@
 package com.tp.proyecto1.controllers;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.tp.proyecto1.model.pasajes.*;
 import com.tp.proyecto1.utils.Inject;
@@ -16,6 +18,9 @@ import com.tp.proyecto1.views.ventas.VentaForm;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.*;
+
+import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
 
 @Controller
 @UIScope
@@ -52,6 +57,8 @@ public class VentaFormController {
         setComponentesLectura();
        // setBinders(); no lo uso!!
 	}
+
+
 
 	private void setComponentesLectura() {
 		ventaForm.getPais().setValue(viaje.getDestino().getPais());
@@ -106,13 +113,13 @@ public class VentaFormController {
 	}
 
 	private void saveVenta(Venta venta) {
-		if (binderVenta.writeBeanIfValid(venta) ) {
+
             ventaService.save(venta);
             ventaForm.close();
             //agregar el lote de puntos con el id del cliente(calculo de puntos)cada 1000, 100 ptos para la  PROX VERSIOON O LA DE PUNTOS!!!!!!!!!!!!!!!!!
             Notification.show("PasajeVenta Guardado");
             changeHandler.onChange();
-        }
+
 	}
 
 	private Venta setNewVenta() {
@@ -138,13 +145,28 @@ public class VentaFormController {
 
 		return venta;
 	}
-	
-	//llevo los datos de de importe de viaje a este form, no hago binders, 
-	//me resulta mas rapido esto, sé q no tengo las validaciones pero en este caso son campos en disabled
-    public void setComponentsValues() {
-//	        ventaForm.setSaldoPagarDouble(viaje.getPrecio());
-//	        ventaForm.setSubtotalDouble(viaje.getPrecio());
-    }
+	public void setComponentsValues(Venta venta) {
+
+		this.venta = venta;
+
+		ventaForm.getPais().setValue(venta.getViaje().getDestino().getPais());
+		ventaForm.getCiudad().setValue(venta.getViaje().getDestino().getCiudad());
+		ventaForm.getHoraSalida().setValue(venta.getViaje().getHoraSalida().toString());
+		ventaForm.getFechaSalida().setValue(venta.getViaje().getFechaSalida().toString());
+		ventaForm.getTransporte().setValue(venta.getViaje().getTransporte().getTipo().getDescripcion());
+		ventaForm.getCodTransporte().setValue(venta.getViaje().getTransporte().getCodTransporte());
+		ventaForm.getFormaPago().setValue(venta.getPagos().get(0).getFormaDePago());
+		ventaForm.getSubtotal().setValue(venta.getImporteTotal());
+		ventaForm.getSaldoPagar().setValue(venta.getImporteTotal());
+		ventaForm.getCliente().setValue(venta.getCliente());
+		List<Pasajero> pasajeros = venta.getPasajes().stream().map(e-> e.getPasajero()).collect(Collectors.toList());
+		ventaForm.getPasajerosGridComponent().setPasajerosList(pasajeros);
+		ventaForm.getPasajerosGridComponent().setGrid();
+		ventaForm.getPasajerosGridComponent().setModoConsulta();
+		ventaForm.getCliente().setReadOnly(true);
+		ventaForm.getFormaPago().setReadOnly(true);
+
+	}
 	
     //NO USO ESTA PODEROSA TECNICA
 	private void setBinders() {
@@ -160,6 +182,14 @@ public class VentaFormController {
 	public VentaForm getVentaFormEdit() {
 		ventaForm.getBtnFinalizarCompra().setVisible(false);
 		return ventaForm;
+	}
+
+	public void setChangeHandler(ChangeHandler h) {
+		changeHandler = h;
+	}
+
+	public ChangeHandler getChangeHandler() {
+		return changeHandler;
 	}
 
 	public void setVentaForm(VentaForm ventaForm) {

@@ -22,7 +22,7 @@ public abstract class Pasaje {
 	@OneToOne
 	protected Cliente cliente;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	protected Pasajero pasajero;
 	
 	public Pasaje() {

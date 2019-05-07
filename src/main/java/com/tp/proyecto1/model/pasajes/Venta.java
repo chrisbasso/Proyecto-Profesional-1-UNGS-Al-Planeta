@@ -2,6 +2,8 @@ package com.tp.proyecto1.model.pasajes;
 
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.viajes.Viaje;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -15,10 +17,11 @@ public class Venta {
 	@GeneratedValue
 	private Long id;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
 	private List<PasajeVenta> pasajes =  new ArrayList<>();
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	protected List<Pago> pagos = new ArrayList<>();
 
 	private Double importeTotal;

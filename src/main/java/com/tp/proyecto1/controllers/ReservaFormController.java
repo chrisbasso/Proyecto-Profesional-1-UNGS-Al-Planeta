@@ -79,10 +79,10 @@ public class ReservaFormController {
 	private void guardarReserva(Cliente cliente, FormaDePago fdp, Double pagado) {
 			if(esReservablePorFecha()) {
 				reserva = new Reserva(viaje, cliente);
-				if(pagado != null && pagado>0) {
-					Pago pago = new Pago(cliente, reserva, fdp, pagado, LocalDate.now());
-					reserva.agregarPago(pago);
-				}				
+//				if(pagado != null && pagado>0) {
+//					Pago pago = new Pago(cliente, reserva, fdp, pagado, LocalDate.now());
+//					reserva.agregarPago(pago);
+//				}
 				reservaService.save(reserva);
 				Long idGuardada = reservaService.findReservaId(reserva);
 				if(idGuardada > -1) {

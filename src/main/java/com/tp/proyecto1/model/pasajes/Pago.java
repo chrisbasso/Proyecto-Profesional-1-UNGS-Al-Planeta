@@ -22,7 +22,7 @@ public class Pago {
 	private Cliente cliente;
 	@ManyToOne
 	private Venta venta;
-	@OneToOne
+	@OneToOne(fetch = FetchType.EAGER)
 	private FormaDePago formaDePago;
 
 	private Double importe;
