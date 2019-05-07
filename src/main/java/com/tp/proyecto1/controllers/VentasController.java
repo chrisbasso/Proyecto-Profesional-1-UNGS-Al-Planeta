@@ -1,6 +1,7 @@
 package com.tp.proyecto1.controllers;
 
 import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.model.pasajes.PasajeVenta;
 import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.model.viajes.Destino;
 import com.tp.proyecto1.model.viajes.Transporte;
@@ -50,34 +51,34 @@ public class VentasController {
             setParametrosBusqueda(ventaBusqueda);
             ventaView.getGrid().setItems(ventaService.findVentas(ventaBusqueda));
         }else {
-            ventaView.getGrid().setItems(ventaService.findAll());
+            ventaView.getGrid().setItems(ventaService.findAllVentas());
         }
     }
 
-    private void setParametrosBusqueda(Venta ventaBusqueda) {
+    private void setParametrosBusqueda(Venta venta) {
     	Cliente cliente = new Cliente();
     	cliente.setActivo(true);
-        ventaBusqueda.setCliente(cliente);
+        venta.setCliente(cliente);
         Transporte transporte = new Transporte();
         Viaje viaje = new Viaje();
         viaje.setDestino(new Destino());
         viaje.setTransporte(transporte);
         viaje.setActivo(true);
-        ventaBusqueda.setViaje(viaje);
+        venta.setViaje(viaje);
         if(!ventaView.getNumeroClienteFilter().isEmpty()){
-            ventaBusqueda.getCliente().setId(ventaView.getNumeroClienteFilter().getValue().longValue());
+            venta.getCliente().setId(ventaView.getNumeroClienteFilter().getValue().longValue());
         }
         if(!ventaView.getCiudadFilter().isEmpty()){
-            ventaBusqueda.getViaje().getDestino().setCiudad(ventaView.getCiudadFilter().getValue());
+            venta.getViaje().getDestino().setCiudad(ventaView.getCiudadFilter().getValue());
         }
         if(!ventaView.getPaisFilter().isEmpty()){
-            ventaBusqueda.getViaje().getDestino().setPais(ventaView.getPaisFilter().getValue());
+            venta.getViaje().getDestino().setPais(ventaView.getPaisFilter().getValue());
         }
         if(!ventaView.getCodTransporteFilter().isEmpty()){
-            ventaBusqueda.getViaje().getTransporte().setCodTransporte(ventaView.getCodTransporteFilter().getValue());
+            venta.getViaje().getTransporte().setCodTransporte(ventaView.getCodTransporteFilter().getValue());
         }
         if(!ventaView.getFechaFilter().isEmpty()){
-            ventaBusqueda.getViaje().setFechaSalida(ventaView.getFechaFilter().getValue());
+            venta.getViaje().setFechaSalida(ventaView.getFechaFilter().getValue());
         }
     }
 

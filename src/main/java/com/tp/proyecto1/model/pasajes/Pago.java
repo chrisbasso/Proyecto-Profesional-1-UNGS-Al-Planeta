@@ -21,7 +21,7 @@ public class Pago {
 	@OneToOne
 	private Cliente cliente;
 	@ManyToOne
-	private Pasaje pasaje;
+	private Venta venta;
 	@OneToOne
 	private FormaDePago formaDePago;
 
@@ -31,9 +31,9 @@ public class Pago {
 	public Pago() {		
 	}
 	
-	public Pago(Cliente cliente, Pasaje pasaje, FormaDePago formaDePago, Double importe, LocalDate fechaDePago) {
+	public Pago(Cliente cliente, Venta venta, FormaDePago formaDePago, Double importe, LocalDate fechaDePago) {
 		this.cliente = cliente;
-		this.pasaje = pasaje;
+		this.venta = venta;
 		this.formaDePago = formaDePago;
 		this.importe = importe;
 		this.fechaDePago = fechaDePago;
@@ -47,12 +47,16 @@ public class Pago {
 		this.cliente = cliente;
 	}
 
-	public Pasaje getPasaje() {
-		return pasaje;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public void setPasaje(Pasaje pasaje) {
-		this.pasaje = pasaje;
+	public Venta getVenta() {
+		return venta;
+	}
+
+	public void setVenta(Venta venta) {
+		this.venta = venta;
 	}
 
 	public FormaDePago getFormaDePago() {

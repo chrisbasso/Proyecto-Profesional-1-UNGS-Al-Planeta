@@ -14,20 +14,20 @@ public class Configuracion {
 	private Long id;
 
 	@NaturalId
-	private String key;
+	private String clave;
 	private String value;
 
 	public Configuracion() {
-		
+
 	}
-	
-	public Configuracion(String key, String value) {
-		this.key = key;
+
+	public Configuracion(String clave, String value) {
+		this.clave = clave;
 		this.value = value;
 	}
 
-	public String getKey() {
-		return key;
+	public String getClave() {
+		return clave;
 	}
 
 	public String getValue() {

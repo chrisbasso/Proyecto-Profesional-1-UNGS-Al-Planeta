@@ -8,12 +8,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import com.tp.proyecto1.model.configuraciones.Configuracion;
 import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.repository.clientes.ClienteRepository;
 import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
 import com.tp.proyecto1.repository.pasajes.ReservaRepository;
-import com.tp.proyecto1.repository.pasajes.VentaRepository;
+import com.tp.proyecto1.repository.pasajes.PasajeVentaRepository;
 import com.tp.proyecto1.services.ConfiguracionService;
 import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.services.VentaService;
@@ -37,7 +36,7 @@ public class Proyecto1Application {
 									  ReservaRepository reservaRepository,
 									  ClienteRepository clienteRepository,
 									  FormaDePagoRepository formaDePagoRepository,
-									  VentaRepository ventaRepository) {
+									  PasajeVentaRepository pasajeVentaRepository) {
 		return args -> {
 			userService.createPrivilegeIfNotFound("READ_PRIVILEGE");
 			userService.createPrivilegeIfNotFound("WRITE_PRIVILEGE");
@@ -52,7 +51,7 @@ public class Proyecto1Application {
 			ventaService.createFormaDePagoIfNotExist("Efectivo");
 			ventaService.createFormaDePagoIfNotExist("Débito");
 			ventaService.createFormaDePagoIfNotExist("Crédito");
-			configuracionService.createConfiguracionIfNotExist("reserva_fecha_maxima","5");
+			//configuracionService.createConfiguracionIfNotExist("reserva_fecha_maxima","5");
 //
 //			Cliente cliente = new Cliente("Alberto Carlos","Bustos", "854445");
 //			Transporte transporte = new Transporte();
@@ -60,7 +59,7 @@ public class Proyecto1Application {
 //			clienteRepository.save(cliente);
 //			Reserva reserva = new Reserva();
 //			FormaDePago formaDePago = formaDePagoRepository.findByDescripcion("Efectivo");
-//			Venta venta = new Venta();
+//			PasajeVenta venta = new PasajeVenta();
 //			Viaje viaje = new Viaje();
 //			viaje.setTransporte(transporte);
 //
@@ -75,7 +74,7 @@ public class Proyecto1Application {
 //
 //			ventaRepository.save(venta);
 
-			//log.info(ventaRepository.findAll().toString());
+			//log.info(ventaRepository.findAllPasajeVentas().toString());
 
 //			Pago pago1 = new Pago(cliente, reserva, formaDePago,500.50, LocalDate.now());
 //			Pago pago2 = new Pago(cliente, reserva, formaDePago,800.00, LocalDate.now());

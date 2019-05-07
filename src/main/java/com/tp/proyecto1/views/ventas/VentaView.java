@@ -1,6 +1,6 @@
 package com.tp.proyecto1.views.ventas;
 
-import com.tp.proyecto1.model.pasajes.Pasaje;
+import com.tp.proyecto1.model.pasajes.PasajeVenta;
 import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.tp.proyecto1.utils.View;
@@ -59,10 +59,9 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
     @Override
     public void setGrid() {
 
-        grid.setColumns("cliente.id", "cliente.nombre", "cliente.apellido", "cliente.dni","pasajero.nombreCompleto", "viaje.destino.ciudad",
-                "viaje.destino.pais", "viaje.transporte.codTransporte", "viaje.fechaSalida","viaje.precio");
+        grid.setColumns("cliente.id", "cliente.nombre", "cliente.apellido", "cliente.dni", "viaje.destino.ciudad",
+                "viaje.destino.pais", "viaje.transporte.codTransporte", "viaje.fechaSalida","importeTotal");
         grid.getColumnByKey("cliente.id").setHeader("Nº Cliente");
-        grid.getColumnByKey("pasajero.nombreCompleto").setHeader("Pasajero");
         grid.getColumnByKey("cliente.id").setWidth("100px").setFlexGrow(0);
 
     }

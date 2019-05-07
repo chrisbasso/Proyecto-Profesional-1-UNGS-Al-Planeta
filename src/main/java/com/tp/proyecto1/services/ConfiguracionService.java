@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tp.proyecto1.model.configuraciones.Configuracion;
-import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.tp.proyecto1.repository.configuraciones.ConfiguracionRepository;
 
 @Service
@@ -51,7 +50,7 @@ public class ConfiguracionService {
 		@Transactional
 		public String findValueByKey(String key) {		
 			for(Configuracion config : findAll()) {
-				if(config.getKey().equals(key)) {
+				if(config.getClave().equals(key)) {
 					return config.getValue();
 				}
 			}
