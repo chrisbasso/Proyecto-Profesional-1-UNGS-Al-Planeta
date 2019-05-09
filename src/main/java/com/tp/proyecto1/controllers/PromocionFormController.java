@@ -1,7 +1,7 @@
 package com.tp.proyecto1.controllers;
 
 import com.tp.proyecto1.model.viajes.*;
-import com.tp.proyecto1.services.ViajeService;
+import com.tp.proyecto1.services.PromocionService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.viajes.ViajeForm;
@@ -23,12 +23,12 @@ import java.time.LocalTime;
 
 @Controller
 @UIScope
-public class ViajeFormController {
+public class PromocionFormController {
 
     private ViajeForm viajeForm;
 
     @Autowired
-    private ViajeService viajeService;
+    private PromocionService viajeService;
 
     private ChangeHandler changeHandler;
 
@@ -38,7 +38,7 @@ public class ViajeFormController {
 
     private Viaje viaje;
 
-    public ViajeFormController() {
+    public PromocionFormController() {
         Inject.Inject(this);
         this.viajeForm = new ViajeForm();
         setListeners();
@@ -47,7 +47,7 @@ public class ViajeFormController {
     }
 
     private void setComponents() {
-        viajeForm.getTransporte().setItems(viajeService.findAllTipoTransportes());
+       // viajeForm.getTransporte().setItems(viajeService.findAllTipoTransportes());
     }
 
     private void setListeners() {
@@ -65,7 +65,7 @@ public class ViajeFormController {
                 binderTransporte.writeBeanIfValid(viaje.getTransporte()) &&
                 binderDestino.writeBeanIfValid(viaje.getDestino())) {
 
-            viajeService.save(viaje);
+          //  viajeService.save(viaje);
             viajeForm.close();
             Notification.show("Viaje Guardado");
             changeHandler.onChange();
@@ -271,3 +271,4 @@ public class ViajeFormController {
         changeHandler = h;
     }
 }
+

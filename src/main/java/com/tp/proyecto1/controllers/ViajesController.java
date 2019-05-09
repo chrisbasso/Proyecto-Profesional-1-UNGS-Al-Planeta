@@ -7,8 +7,6 @@ import org.springframework.stereotype.Controller;
 import com.tp.proyecto1.model.viajes.Destino;
 import com.tp.proyecto1.model.viajes.Transporte;
 import com.tp.proyecto1.model.viajes.Viaje;
-import com.tp.proyecto1.services.ReservaService;
-import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.views.viajes.ViajesView;
@@ -146,4 +144,3 @@ public class ViajesController {
 
 
 }
-
