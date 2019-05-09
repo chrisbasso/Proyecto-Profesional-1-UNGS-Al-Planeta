@@ -59,7 +59,7 @@ public class ViajesView extends FilterGridLayout<Viaje> implements View {
 		this.fechaDesdeFilter.setWidth("137px");
 		this.fechaHastaFilter = new DatePicker("Fecha Hasta");
 		this.fechaHastaFilter.setWidth("137px");
-		this.btnComprar = new Button("Comprar");
+		this.btnComprar = new Button("Vender");
 		this.btnReservar = new Button("Reservar");
 		this.activosCheck.setValue(true);
 		this.activosCheck.setMinWidth("135px");

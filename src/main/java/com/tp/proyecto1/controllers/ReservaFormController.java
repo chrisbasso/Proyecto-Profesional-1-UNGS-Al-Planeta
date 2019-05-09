@@ -2,6 +2,8 @@ package com.tp.proyecto1.controllers;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -9,7 +11,9 @@ import org.springframework.stereotype.Controller;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.tp.proyecto1.model.pasajes.Pago;
+import com.tp.proyecto1.model.pasajes.PasajeVenta;
 import com.tp.proyecto1.model.pasajes.Reserva;
+import com.tp.proyecto1.model.pasajes.Transaccion;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.services.ConfiguracionService;
@@ -28,7 +32,6 @@ public class ReservaFormController {
 	private static String MSJ_RESERVA_GUARDADA = "Reserva guardada con éxito.";
 	private static String MSJ_ERROR_FECHA = "Por la fecha del viaje solo es posible comprar.";
 
-    private ChangeHandler changeHandler;
 	private ReservaForm reservaForm;
 	private Viaje viaje;	
 	private Reserva reserva;
@@ -42,7 +45,9 @@ public class ReservaFormController {
 	private ViajeService viajeService;
 	@Autowired
 	private ConfiguracionService ConfigService;
-	
+
+    private ChangeHandler changeHandler;
+
 	public ReservaFormController(Viaje viaje) {
 		Inject.Inject(this);
 		this.viaje = viaje;	
@@ -59,13 +64,18 @@ public class ReservaFormController {
 	public boolean esReservablePorFecha() {
 		LocalDateTime presente = LocalDate.now().atStartOfDay();
 		LocalDateTime fechaViaje = viaje.getFechaSalida().atStartOfDay();
-		int fecha_maxima = Integer.parseInt(ConfigService.findValueByKey("reserva_fecha_maxima"));
-		return fechaViaje.minusDays(fecha_maxima).isAfter(presente);		
+		
+		String fechaMaxima = ConfigService.findValueByKey("reserva_fecha_maxima");
+		if(fechaMaxima != null) {
+			int fecha_maxima = Integer.parseInt(fechaMaxima);
+			return fechaViaje.minusDays(fecha_maxima).isAfter(presente);
+		}
+		return true;
 	}
 	
     private void setListeners() {
         reservaForm.getBtnSave().addClickListener(e-> guardarReserva(reservaForm.getClienteSeleccionado(),reservaForm.getFormaPagoSeleccionada(),reservaForm.getPago().getValue()));
-        reservaForm.getBtnSaveDraft().addClickListener(e-> guardarBorrador(reservaForm.getClienteSeleccionado(),reservaForm.getFormaPagoSeleccionada(),reservaForm.getPago().getValue()));
+//      reservaForm.getBtnSaveDraft().addClickListener(e-> guardarBorrador(reservaForm.getClienteSeleccionado(),reservaForm.getFormaPagoSeleccionada(),reservaForm.getPago().getValue()));
         reservaForm.getBtnCancel().addClickListener(e->reservaForm.close());
         reservaForm.getCantidadPasajes().addValueChangeListener(e->actualizarPrecioTotal());
         reservaForm.getPago().addValueChangeListener(e->actualizarPago());
@@ -79,11 +89,14 @@ public class ReservaFormController {
 	 */
 	private void guardarReserva(Cliente cliente, FormaDePago fdp, Double pagado) {
 			if(esReservablePorFecha()) {
-				reserva = new Reserva(viaje, cliente);
-//				if(pagado != null && pagado>0) {
-//					Pago pago = new Pago(cliente, reserva, fdp, pagado, LocalDate.now());
-//					reserva.agregarPago(pago);
-//				}
+				List<PasajeVenta> pasajes = new ArrayList<PasajeVenta> ();
+				List<Pago> pagos = new ArrayList<Pago> ();
+				Double importeTotal = 1.2;
+				reserva = new Reserva(pasajes, pagos, importeTotal, cliente);
+				if(pagado != null && pagado>0) {
+					Pago pago = new Pago(cliente, reserva, fdp, pagado, LocalDate.now());
+					reserva.agregarPago(pago);
+				}
 				reservaService.save(reserva);
 				Long idGuardada = reservaService.findReservaId(reserva);
 				if(idGuardada > -1) {
@@ -99,27 +112,27 @@ public class ReservaFormController {
 			}
 	}
 	
-	private void guardarBorrador(Cliente cliente, FormaDePago fdp, Double pagado) {
-		if(esReservablePorFecha()) {
-			reserva = new Reserva(viaje, cliente);
-			if(pagado != null && pagado>0) {
-				Pago pago = new Pago(cliente, reserva, fdp, pagado, LocalDate.now());
-				reserva.agregarPago(pago);
-			}				
-			reservaService.save(reserva);
-			Long idGuardada = reservaService.findReservaId(reserva);
-			if(idGuardada > -1) {
-				Notification.show(MSJ_RESERVA_GUARDADA + "\n Número de reserva: " + idGuardada.toString());	
-			}else {
-				Notification.show(MSJ_RESERVA_GUARDADA); 
-			}
-			actualizarCapacidadTransporte();
-			reservaForm.close();
-		}else {
-			Notification.show(MSJ_ERROR_FECHA);
-			reservaForm.close();
-		}
-	}
+//	private void guardarBorrador(Cliente cliente, FormaDePago fdp, Double pagado) {
+//		if(esReservablePorFecha()) {
+//			reserva = new Reserva(viaje, cliente);
+//			if(pagado != null && pagado>0) {
+//				Pago pago = new Pago(cliente, reserva, fdp, pagado, LocalDate.now());
+//				reserva.agregarPago(pago);
+//			}				
+//			reservaService.save(reserva);
+//			Long idGuardada = reservaService.findReservaId(reserva);
+//			if(idGuardada > -1) {
+//				Notification.show(MSJ_RESERVA_GUARDADA + "\n Número de reserva: " + idGuardada.toString());	
+//			}else {
+//				Notification.show(MSJ_RESERVA_GUARDADA); 
+//			}
+//			actualizarCapacidadTransporte();
+//			reservaForm.close();
+//		}else {
+//			Notification.show(MSJ_ERROR_FECHA);
+//			reservaForm.close();
+//		}
+//	}
 	
 	private void actualizarCapacidadTransporte() {
 		double capacidadTransporte = Double.parseDouble(viaje.getTransporte().getCapacidad());

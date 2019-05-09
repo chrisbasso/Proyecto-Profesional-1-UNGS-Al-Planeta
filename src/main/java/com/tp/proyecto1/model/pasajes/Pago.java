@@ -21,7 +21,7 @@ public class Pago {
 	@OneToOne
 	private Cliente cliente;
 	@ManyToOne
-	private Venta venta;
+	private Transaccion transaccion;
 	@OneToOne(fetch = FetchType.EAGER)
 	private FormaDePago formaDePago;
 
@@ -31,9 +31,9 @@ public class Pago {
 	public Pago() {		
 	}
 	
-	public Pago(Cliente cliente, Venta venta, FormaDePago formaDePago, Double importe, LocalDate fechaDePago) {
+	public Pago(Cliente cliente, Transaccion transaccion , FormaDePago formaDePago, Double importe, LocalDate fechaDePago) {
 		this.cliente = cliente;
-		this.venta = venta;
+		this.transaccion = transaccion;
 		this.formaDePago = formaDePago;
 		this.importe = importe;
 		this.fechaDePago = fechaDePago;
@@ -51,12 +51,12 @@ public class Pago {
 		this.id = id;
 	}
 
-	public Venta getVenta() {
-		return venta;
+	public Transaccion getTransaccion () {
+		return transaccion;
 	}
 
-	public void setVenta(Venta venta) {
-		this.venta = venta;
+	public void setTransaccion(Transaccion transaccion) {
+		this.transaccion = transaccion;
 	}
 
 	public FormaDePago getFormaDePago() {

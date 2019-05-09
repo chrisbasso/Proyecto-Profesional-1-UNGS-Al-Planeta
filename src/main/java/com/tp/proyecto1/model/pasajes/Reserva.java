@@ -1,25 +1,19 @@
 package com.tp.proyecto1.model.pasajes;
 
+import java.util.List;
+
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
 
 import com.tp.proyecto1.model.clientes.Cliente;
-import com.tp.proyecto1.model.pasajes.Pasaje;
-import com.tp.proyecto1.model.viajes.Viaje;
-
-import java.time.LocalDate;
-import java.util.Objects;
 
 @Entity
-public class Reserva extends Pasaje{
+public class Reserva extends Transaccion{
+	
+	public Reserva() {		
+	}
 
-	public Reserva() {
+	public Reserva(List<PasajeVenta> pasajes, List<Pago> pagos, Double importeTotal, Cliente cliente) {
+		super(pasajes,pagos,importeTotal,cliente);
 	}
 	
-	public Reserva(Viaje viaje, Cliente cliente) {
-		this.viaje = viaje;
-		this.cliente = cliente;
-	}
 }
