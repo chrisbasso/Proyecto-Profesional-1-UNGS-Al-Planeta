@@ -7,26 +7,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tp.proyecto1.model.viajes.Promocion;
-import com.tp.proyecto1.repository.viajes.PromocionRepository;
+import com.tp.proyecto1.model.viajes.PromocionPuntos;
+import com.tp.proyecto1.repository.viajes.PromocionPuntosRepository;
 
 @Service
-public class PromocionService
+public class PromocionPuntosService
 {
 
 	@Autowired
-	private PromocionRepository promocionRepository;
+	private PromocionPuntosRepository promocionRepository;
 	
-	private static final Logger log = LoggerFactory.getLogger(PromocionService.class);
+	private static final Logger log = LoggerFactory.getLogger(PromocionPuntosService.class);
 	 
 	 
 	@Transactional
-	public void save(Promocion promocion)
+	public void save(PromocionPuntos promocion)
 	{
 		promocionRepository.save(promocion);
 	}
 	
 	@Transactional
-	public void delete(Promocion promocion)
+	public void delete(PromocionPuntos promocion)
 	{
 		promocionRepository.delete(promocion);
 	}
