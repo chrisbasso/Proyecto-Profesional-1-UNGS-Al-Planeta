@@ -24,17 +24,22 @@ public abstract class Promocion
 	
 	protected String codigoPromocion;
 	
+	protected Double doubleValue;
+	
+	protected String tipoPromocion;
+	
 	public Promocion()
 	{
 		
 	}
 	
-	public Promocion(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion)
+	public Promocion(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion,Double doubleValue)
 	{
 		setNombrePromocion(nombrePromocion);
 		setDescripcion(descripcion);
 		setFechaVencimiento(fechaVencimiento);
-		this.codigoPromocion = codigoPromocion;
+		setCodigoPromocion(codigoPromocion);
+		setDoubleValue(doubleValue);
 	}
 	
 	public Long getId()
@@ -85,6 +90,26 @@ public abstract class Promocion
 	public void setCodigoPromocion(String codigoPromocion)
 	{
 		this.codigoPromocion = codigoPromocion;
+	}
+	
+	public Double getDoubleValue()
+	{
+		return doubleValue;
+	}
+
+	public void setDoubleValue(Double doubleValue)
+	{
+		this.doubleValue = doubleValue;
+	}
+	
+	public String getTipoPromocion()
+	{
+		return tipoPromocion;
+	}
+	
+	public void setTipoPromocion(String tipoPromocion)
+	{
+		this.tipoPromocion = tipoPromocion;
 	}
 	    
 }

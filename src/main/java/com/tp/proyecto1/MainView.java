@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tp.proyecto1.controllers.ClientesController;
 import com.tp.proyecto1.controllers.LoginController;
+import com.tp.proyecto1.controllers.PromocionesController;
 import com.tp.proyecto1.controllers.ReservasController;
 import com.tp.proyecto1.controllers.VentasController;
 import com.tp.proyecto1.controllers.ViajesController;
@@ -39,6 +40,9 @@ public class MainView extends VerticalLayout {
 
 	@Autowired
 	private ReservasController reservasController;
+	
+	@Autowired
+	private PromocionesController promocionesController;
 
 	private VerticalLayout mainLayout;
 	private AppLayout appLayout;
@@ -89,6 +93,7 @@ public class MainView extends VerticalLayout {
 
 		menu.addMenuItems(
 				new AppLayoutMenuItem(VaadinIcon.AIRPLANE.create(),"Viajes",e->openViajesView()),
+				new AppLayoutMenuItem(VaadinIcon.COGS.create(),"Promociones",e->openPromocionesView()),
 				new AppLayoutMenuItem(VaadinIcon.TICKET.create(),"Ventas", e->openVentasView()),
 				new AppLayoutMenuItem(VaadinIcon.CALENDAR_CLOCK.create(),"Reservas", e->openReservasView()),
 				new AppLayoutMenuItem(VaadinIcon.GROUP.create(),"Clientes", e -> openClientesView()),
@@ -112,6 +117,10 @@ public class MainView extends VerticalLayout {
 
 	private void openViajesView() {
 		appLayout.setContent(viajesController.getView());
+	}
+	
+	private void openPromocionesView() {
+		appLayout.setContent(promocionesController.getView());
 	}
 
 	private void openVentasView() {

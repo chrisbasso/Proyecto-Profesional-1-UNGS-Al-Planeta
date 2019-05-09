@@ -2,30 +2,22 @@ package com.tp.proyecto1.model.viajes;
 
 import java.time.LocalDate;
 
+import javax.persistence.Entity;
+
+@Entity
 public class PromocionPuntos extends Promocion
 {
 
-	Float multiplicadorPuntos;
-	
 	public PromocionPuntos()
 	{
 		
 	}
 	
-	public PromocionPuntos(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion, Float multiplicadorPuntos)
+	public PromocionPuntos(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion, Double doubleValue)
 	{
-		super(nombrePromocion, descripcion, fechaVencimiento, codigoPromocion);
-		setMultiplicadorPuntos(multiplicadorPuntos);
+		super(nombrePromocion, descripcion, fechaVencimiento, codigoPromocion,doubleValue);
+		setTipoPromocion("Puntos");
 	}
 	
-	public Float getMultiplicadorPuntos()
-	{
-		return multiplicadorPuntos;
-	}
-
-	private void setMultiplicadorPuntos(Float multiplicadorPuntos)
-	{
-		this.multiplicadorPuntos = multiplicadorPuntos;
-	}
 	
 }

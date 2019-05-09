@@ -2,30 +2,23 @@ package com.tp.proyecto1.model.viajes;
 
 import java.time.LocalDate;
 
+import javax.persistence.Entity;
+
+@Entity
 public class PromocionDescuento extends Promocion
 {
 
-	Float porcentajeDescuento;
-	
 	public PromocionDescuento()
 	{
 		
 	}
 	
-	public PromocionDescuento(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion, Float porcentajeDescuento)
+	public PromocionDescuento(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion, Double doubleValue)
 	{
-		super(nombrePromocion, descripcion, fechaVencimiento, codigoPromocion);
-		setPorcentajeDescuento(porcentajeDescuento);
+		super(nombrePromocion, descripcion, fechaVencimiento, codigoPromocion,doubleValue);
+		setTipoPromocion("Descuento");
+
 	}
 	
-	public Float getPorcentajeDescuento()
-	{
-		return porcentajeDescuento;
-	}
-
-	private void setPorcentajeDescuento(Float multiplicadorPuntos)
-	{
-		this.porcentajeDescuento = multiplicadorPuntos;
-	}
 	
 }

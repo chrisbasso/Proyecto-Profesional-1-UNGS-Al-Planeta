@@ -5,10 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.tp.proyecto1.model.viajes.Destino;
+import com.tp.proyecto1.model.viajes.Promocion;
 import com.tp.proyecto1.model.viajes.Transporte;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.PromocionService;
 import com.tp.proyecto1.utils.ChangeHandler;
+import com.tp.proyecto1.views.promociones.PromocionView;
 import com.tp.proyecto1.views.viajes.ViajesView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
@@ -18,62 +20,62 @@ import com.vaadin.flow.spring.annotation.UIScope;
 
 @Controller
 @UIScope
-public class PromocionController {
+public class PromocionesController {
 
-    private ViajesView promocionView;
+    private PromocionView promocionView;
 
     @Autowired
     private PromocionService promocionService;
 
-    private PromocionFormController PromocionFormController;
+    private PromocionFormController promocionFormController;
     
     private ChangeHandler changeHandler;
 
-    public PromocionController() {
+    public PromocionesController() {
         Inject.Inject(this);
-        this.promocionView = new ViajesView();
+        this.promocionView = new PromocionView();
         setListeners();
         setComponents();
-        listViajes();
+        listPromociones();
     }
 
     private void setComponents() {
         //viajesView.getTransporteFilter().setItems(viajeService.findAllTipoTransportes());
-        this.promocionView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
+       this.promocionView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
     }
 
     private void setListeners() {
-        setChangeHandler(this::listViajes);
-        promocionView.getNewViajeButton().addClickListener(e-> openNewViajeForm());
-        promocionView.getSearchButton().addClickListener(e-> listViajes());
+        setChangeHandler(this::listPromociones);
+        promocionView.getNewPromocionButton().addClickListener(e-> openNewPromocionForm());
+        promocionView.getSearchButton().addClickListener(e-> listPromociones());
         /*promocionView.getBtnReservar().addClickListener(e-> openNewReservaForm());
         promocionView.getBtnComprar().addClickListener(e-> openNewVentaForm());*/
     }
 
-	private void openNewViajeForm() {
-        PromocionFormController = new PromocionFormController();
-        PromocionFormController.getViajeForm().open();
-        PromocionFormController.setChangeHandler(this::listViajes);
+	private void openNewPromocionForm() {
+        promocionFormController = new PromocionFormController();
+        promocionFormController.getPromocionForm().open();
+        promocionFormController.setChangeHandler(this::listPromociones);
     }
     
     
-    private Button createEditButton(Viaje viaje) {
+    private Button createEditButton(Promocion promocion) {
         return new Button(VaadinIcon.EDIT.create(), clickEvent -> {
-            PromocionFormController = new PromocionFormController();
-            PromocionFormController.setComponentsValues(viaje);
-            PromocionFormController.getViajeForm().open();
-            PromocionFormController.setChangeHandler(this::listViajes);
+            promocionFormController = new PromocionFormController();
+            promocionFormController.setComponentsValues(promocion);
+            promocionFormController.getPromocionForm().open();
+            promocionFormController.setChangeHandler(this::listPromociones);
         });
     }
 
-    private void listViajes() {
-        Viaje viajeBusqueda = new Viaje();
+    private void listPromociones() {
+        /*Promocion viajeBusqueda = new Promocion();
         if(checkFiltros()){
             setParametrosBusqueda(viajeBusqueda);
-         //   viajesView.getGrid().setItems(viajeService.findViajes(viajeBusqueda, viajesView.getFechaDesdeFilter().getValue(), viajesView.getFechaHastaFilter().getValue()));
-        }else{
-          //  viajesView.getGrid().setItems(viajeService.findAll());
-        }
+         //   promocionView.getGrid().setItems(viajeService.findViajes(viajeBusqueda, viajesView.getFechaDesdeFilter().getValue(), viajesView.getFechaHastaFilter().getValue()));
+        }else{*/
+         promocionView.getGrid().setItems(promocionService.findAll());
+       // }
     }
 
     private void setParametrosBusqueda(Viaje viajeBusqueda) {
@@ -88,18 +90,18 @@ public class PromocionController {
         if(!promocionView.getPaisFilter().isEmpty()){
             viajeBusqueda.getDestino().setPais(promocionView.getPaisFilter().getValue());
         }
-        if(!promocionView.getCodTransporteFilter().isEmpty()){
+       /* if(!promocionView.getCodTransporteFilter().isEmpty()){
             viajeBusqueda.getTransporte().setCodTransporte(promocionView.getCodTransporteFilter().getValue());
         }
-        if(!promocionView.getTransporteFilter().isEmpty()){
+       /* if(!promocionView.getTransporteFilter().isEmpty()){
             viajeBusqueda.getTransporte().setTipo(promocionView.getTransporteFilter().getValue());
         }
-
+*/
         viajeBusqueda.setActivo(promocionView.getActivosCheck().getValue());
     }
 
     private boolean checkFiltros() {
-        return !promocionView.getIdFilter().isEmpty() || !promocionView.getCodTransporteFilter().isEmpty() ||
+        return !promocionView.getIdFilter().isEmpty() || /*!promocionView.getCodTransporteFilter().isEmpty()||*/ 
                 !promocionView.getPaisFilter().isEmpty() || !promocionView.getCiudadFilter().isEmpty() ||
                 promocionView.getActivosCheck().getValue() || promocionView.getFechaDesdeFilter()!=null ||
                 promocionView.getFechaHastaFilter() != null;
@@ -109,7 +111,7 @@ public class PromocionController {
         changeHandler = h;
     }
 
-    public ViajesView getView(){
+    public PromocionView getView(){
         return promocionView;
     }
 

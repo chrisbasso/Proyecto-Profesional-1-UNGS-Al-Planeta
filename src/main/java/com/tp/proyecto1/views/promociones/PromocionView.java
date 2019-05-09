@@ -22,13 +22,13 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 	private NumberField idFilter;
 	private TextField paisFilter;
 	private TextField ciudadFilter;
-	private TextField codTransporteFilter;
+	//private TextField codTransporteFilter;
 	/*private ComboBox<TipoTransporte> transporteFilter;*/
 	private DatePicker fechaDesdeFilter;
 	private DatePicker fechaHastaFilter;
 	private Checkbox activosCheck;
 	private Button searchButton;
-	private Button newViajeButton;
+	private Button newPromocionButton;
 	/*private Button btnReservar;
 	private Button btnComprar;*/
 
@@ -41,18 +41,16 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 
 	public void setComponents() {
 
-		this.idFilter = new NumberField("Nº Viaje");
+		this.idFilter = new NumberField("Nº promocion");
 		this.idFilter.setWidth("70px");
-		this.paisFilter = new TextField("País");
+		this.paisFilter = new TextField("Nombre promocion");
 		paisFilter.setWidth("100px");
-		this.ciudadFilter = new TextField("Ciudad");
+		this.ciudadFilter = new TextField("Cod. promocion");
 		ciudadFilter.setWidth("150px");
-		this.codTransporteFilter = new TextField("Cod. Transporte");
-		codTransporteFilter.setWidth("105px");
 		this.searchButton = new Button("Buscar", VaadinIcon.SEARCH.create());
 		this.searchButton.setMinWidth("105px");
-		this.newViajeButton = new Button("Nuevo", VaadinIcon.PLUS.create());
-		this.newViajeButton.setMinWidth("105px");
+		this.newPromocionButton = new Button("Nuevo", VaadinIcon.PLUS.create());
+		this.newPromocionButton.setMinWidth("105px");
 		this.activosCheck = new Checkbox("Solo Activos");
 		/*this.transporteFilter = new ComboBox<>("Transporte");
 		this.transporteFilter.setWidth("130px");
@@ -71,16 +69,14 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 		HorizontalLayout hlSpace = new HorizontalLayout();
 		//this.hlFooter.add(btnReservar, btnComprar);
 		hlSpace.setWidthFull();
-		this.hlActions.add(idFilter, paisFilter, ciudadFilter, codTransporteFilter, /*transporteFilter,*/fechaDesdeFilter,fechaHastaFilter,activosCheck,hlSpace, searchButton, newViajeButton);
+		this.hlActions.add(idFilter, paisFilter, ciudadFilter, /*codTransporteFilter, transporteFilter,*/fechaDesdeFilter,fechaHastaFilter,activosCheck,hlSpace, searchButton, newPromocionButton);
 	}
 
 	public void setGrid() {
-		grid.setColumns("id", "destino.ciudad","destino.pais", "transporte.codTransporte",
-				"transporte.tipo.descripcion", "transporte.capacidad", "transporte.clase",
-				"fechaSalida", "horaSalida", "fechaLlegada", "horaLlegada", "precio");
+		grid.setColumns("id", "nombrePromocion","descripcion","tipoPromocion", "fechaVencimiento",
+				"codigoPromocion");
 		grid.getColumnByKey("id").setHeader("Nº");
 		grid.getColumnByKey("id").setWidth("70px").setFlexGrow(0);
-		grid.getColumnByKey("transporte.tipo.descripcion").setHeader("Tipo Transporte");
 
 	}
 
@@ -115,6 +111,8 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 	public void setCiudadFilter(TextField ciudadFilter) {
 		this.ciudadFilter = ciudadFilter;
 	}
+	
+	/*
 
 	public TextField getCodTransporteFilter() {
 		return codTransporteFilter;
@@ -122,7 +120,7 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 
 	public void setCodTransporteFilter(TextField codTransporteFilter) {
 		this.codTransporteFilter = codTransporteFilter;
-	}
+	}*/
 
 	public NumberField getIdFilter() {
 		return idFilter;
@@ -132,12 +130,12 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 		this.idFilter = idFilter;
 	}
 
-	public Button getNewViajeButton() {
-		return newViajeButton;
+	public Button getNewPromocionButton() {
+		return newPromocionButton;
 	}
 
-	public void setNewViajeButton(Button newViajeButton) {
-		this.newViajeButton = newViajeButton;
+	public void setNewPromocionButton(Button newPromocionButton) {
+		this.newPromocionButton = newPromocionButton;
 	}
 
 	public Checkbox getActivosCheck() {

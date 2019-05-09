@@ -4,12 +4,11 @@ import com.tp.proyecto1.model.viajes.*;
 import com.tp.proyecto1.services.PromocionService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
-import com.tp.proyecto1.views.viajes.ViajeForm;
+import com.tp.proyecto1.views.promociones.PromocionForm;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.Setter;
 import com.vaadin.flow.function.SerializablePredicate;
@@ -19,28 +18,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Controller
 @UIScope
 public class PromocionFormController {
 
-    private ViajeForm viajeForm;
+    private PromocionForm promocionForm;
 
     @Autowired
-    private PromocionService viajeService;
+    private PromocionService promocionService;
 
     private ChangeHandler changeHandler;
 
-    private Binder<Viaje> binderViaje = new Binder<>();
-    private Binder<Destino> binderDestino = new Binder<>();
-    private Binder<Transporte> binderTransporte = new Binder<>();
-
-    private Viaje viaje;
+    private Binder<Promocion> binderPromocion = new Binder<>();
+    
+    private Promocion promocion;
 
     public PromocionFormController() {
         Inject.Inject(this);
-        this.viajeForm = new ViajeForm();
+        this.promocionForm = new PromocionForm();
         setListeners();
         setComponents();
         setBinders();
@@ -51,220 +47,136 @@ public class PromocionFormController {
     }
 
     private void setListeners() {
-        viajeForm.getBtnSave().addClickListener(e-> saveViaje(viaje));
-        viajeForm.getBtnCancel().addClickListener(e->viajeForm.close());
+    	promocionForm.getBtnSave().addClickListener(e-> savePromocion(promocion));
+    	promocionForm.getBtnSave().addClickListener(e->promocionForm.close());
     }
-
-    private void saveViaje(Viaje viaje) {
-
-        if(viaje==null){
-            viaje = setNewViaje();
+    
+    private void savePromocion(Promocion promocion)
+    {
+    	if(promocion==null){
+            promocion = setNewPromocion();
         }
 
-        if (binderViaje.writeBeanIfValid(viaje) &&
-                binderTransporte.writeBeanIfValid(viaje.getTransporte()) &&
-                binderDestino.writeBeanIfValid(viaje.getDestino())) {
+        if (binderPromocion.writeBeanIfValid(promocion)) {
 
-          //  viajeService.save(viaje);
-            viajeForm.close();
-            Notification.show("Viaje Guardado");
+            promocionService.save(promocion);
+        	promocionForm.close();
+            Notification.show("Promocion Guardada");
             changeHandler.onChange();
         }
     }
 
-    private Viaje setNewViaje() {
-
-        String pais = viajeForm.getPais().getValue();
-        String ciudad = viajeForm.getCiudad().getValue();
-        LocalDate fechaSalida = viajeForm.getFechaSalida().getValue();
-        LocalTime horaSalida = viajeForm.getHoraSalida().getValue();
-        LocalDate fechaLlegada = viajeForm.getFechaLlegada().getValue();
-        LocalTime horaLlegada = viajeForm.getHoraLlegada().getValue();
-        TipoTransporte tipoTransporte = viajeForm.getTransporte().getValue();
-        String codTransporte = viajeForm.getCodTransporte().getValue();
-        String clase = viajeForm.getClase().getValue();
-        String capacidad = viajeForm.getCapacidad().getValue();
-        Double precio = viajeForm.getPrecio().getValue();
-        TagDestino tagDestino = viajeForm.getTagDestino().getValue();
-        String descipcion = viajeForm.getTextAreaDescripcion().getValue();
-        String recomendacion = viajeForm.getTextAreaRecomendaciones().getValue();
-
-        Transporte transporte = new Transporte(codTransporte,tipoTransporte, capacidad, clase);
-        Destino destino = new Destino(ciudad, pais, recomendacion, tagDestino);
-        Viaje viaje = new Viaje(destino,transporte,fechaSalida,horaSalida,fechaLlegada,horaLlegada,precio,descipcion, true);
-
-        return viaje;
+    private Promocion setNewPromocion()
+    {
+    	String nombrePromocion = promocionForm.getNombre().getValue();
+    	String descripcion = promocionForm.getTextAreaDescripcion().getValue();
+    	LocalDate fechaVencimiento = promocionForm.getFechaVencimiento().getValue();
+    	Double nroFloat = promocionForm.getNroFloat().getValue();
+    	if (promocionForm.getTipoPromocion().getValue()=="Descuento")
+    		return new PromocionDescuento(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat);
+    	else
+    		return new PromocionPuntos(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat);
     }
 
-    public void setComponentsValues(Viaje viaje) {
-        this.viaje = viaje;
-        binderViaje.setBean(viaje);
-        binderDestino.setBean(viaje.getDestino());
-        binderTransporte.setBean(viaje.getTransporte());
+    public void setComponentsValues(Promocion promocion) {
+        this.promocion = promocion;
+        binderPromocion.setBean(promocion);
         setBinders();
     }
 
     private void setBinders() {
 
-        setBinderFieldDestino(viajeForm.getPais(), Destino::getPais, Destino::setPais, true);
-        setBinderFieldDestino(viajeForm.getCiudad(), Destino::getCiudad, Destino::setCiudad, true);
-        setBinderDatePickerViaje(viajeForm.getFechaSalida(), Viaje::getFechaSalida, Viaje::setFechaSalida, true);
-        setBinderTimePickerViaje(viajeForm.getHoraSalida(), Viaje::getHoraSalida, Viaje::setHoraSalida, true);
-        setBinderDatePickerViaje(viajeForm.getFechaLlegada(), Viaje::getFechaLlegada, Viaje::setFechaLlegada, true);
-        setBinderTimePickerViaje(viajeForm.getHoraLlegada(), Viaje::getHoraLlegada, Viaje::setHoraLlegada, true);
-        setBinderComboTipoTransporte(viajeForm.getTransporte(), Transporte::getTipo, Transporte::setTipo, true);
-        setBinderFieldTransporte(viajeForm.getCodTransporte(), Transporte::getCodTransporte, Transporte::setCodTransporte, true);
-        setBinderFieldTransporte(viajeForm.getClase(), Transporte::getClase, Transporte::setClase, true);
-        setBinderFieldIntegerTransporte(viajeForm.getCapacidad(), Transporte::getCapacidad, Transporte::setCapacidad, true);
-        setBinderFieldDoubleViaje(viajeForm.getPrecio(), Viaje::getPrecio, Viaje::setPrecio, true);
-        setBinderComboTagDestino(viajeForm.getTagDestino(), Destino::getTagDestino, Destino::setTagDestino, false);
-        setBinderFieldDestino(viajeForm.getTextAreaRecomendaciones(), Destino::getRecomendacion, Destino::setRecomendacion, false);
-        setBinderFieldViaje(viajeForm.getTextAreaDescripcion(), Viaje::getDescripcion, Viaje::setDescripcion, false);
-
-        binderViaje.setBean(viaje);
+    	setBinderFieldNombrePromocion(promocionForm.getNombre(), Promocion::getNombrePromocion, Promocion::setNombrePromocion, true);
+    	setBinderDatePickerFechaVencimiento(promocionForm.getFechaVencimiento(), Promocion::getFechaVencimiento, Promocion::setFechaVencimiento, true);
+    	setBinderFieldDescripcion(promocionForm.getTextAreaDescripcion(), Promocion::getDescripcion, Promocion::setDescripcion, false);
+    	setBinderComboTipoPromocion(promocionForm.getTipoPromocion(), Promocion::getTipoPromocion, Promocion::setTipoPromocion, true);
+    	setBinderFieldDoubleValue(promocionForm.getNroFloat(), Promocion::getDoubleValue, Promocion::setDoubleValue, true);
+         
+    	binderPromocion.setBean(promocion);
     }
+    
+    private void setBinderDatePickerFechaVencimiento(DatePicker datePicker, ValueProvider<Promocion, LocalDate> valueProvider, Setter<Promocion, LocalDate> setter, boolean isRequiered){
 
-    private void setBinderFieldViaje(AbstractField field, ValueProvider<Viaje, String> valueProvider, Setter<Viaje, String> setter, boolean isRequiered){
-
-        SerializablePredicate<String> predicate = value -> !field.isEmpty();
-        Binder.Binding<Viaje, String> binding;
+        SerializablePredicate<LocalDate> predicate = value -> datePicker.getValue() != null;
+        Binder.Binding<Promocion, LocalDate> binding;
         if(isRequiered){
-           binding = binderViaje.forField(field)
+            binding = binderPromocion.forField(datePicker)
                     .withValidator(predicate, "El campo es obligatorio")
                     .bind(valueProvider, setter);
         }else{
-            binding = binderViaje.forField(field).bind(valueProvider, setter);
+            binding = binderPromocion.forField(datePicker).bind(valueProvider, setter);
         }
-        viajeForm.getBtnSave().addClickListener(event -> binding.validate());
+        promocionForm.getBtnSave().addClickListener(event -> binding.validate());
     }
 
-    private void setBinderFieldDoubleViaje(AbstractField field, ValueProvider<Viaje, Double> valueProvider, Setter<Viaje, Double> setter, boolean isRequiered){
+    private void setBinderFieldDescripcion(AbstractField field, ValueProvider<Promocion, String> valueProvider, Setter<Promocion, String> setter, boolean isRequiered){
+
+        SerializablePredicate<String> predicate = value -> !field.isEmpty();
+        Binder.Binding<Promocion, String> binding;
+        if(isRequiered){
+           binding = binderPromocion.forField(field)
+                    .withValidator(predicate, "El campo es obligatorio")
+                    .bind(valueProvider, setter);
+        }else{
+            binding = binderPromocion.forField(field).bind(valueProvider, setter);
+        }
+        promocionForm.getBtnSave().addClickListener(event -> binding.validate());
+    }
+    
+    private void setBinderFieldNombrePromocion(AbstractField field, ValueProvider<Promocion, String> valueProvider, Setter<Promocion, String> setter, boolean isRequiered){
+
+        SerializablePredicate<String> predicate = value -> !field.isEmpty();
+        Binder.Binding<Promocion, String> binding;
+        if(isRequiered){
+           binding = binderPromocion.forField(field)
+                    .withValidator(predicate, "El campo es obligatorio")
+                    .bind(valueProvider, setter);
+        }else{
+            binding = binderPromocion.forField(field).bind(valueProvider, setter);
+        }
+        promocionForm.getBtnSave().addClickListener(event -> binding.validate());
+    }
+    
+    private void setBinderFieldDoubleValue(AbstractField field, ValueProvider<Promocion, Double> valueProvider, Setter<Promocion, Double> setter, boolean isRequiered){
 
         SerializablePredicate<Double> predicate = value -> !field.isEmpty();
-        Binder.Binding<Viaje, Double> binding;
-
+        Binder.Binding<Promocion, Double> binding;
         if(isRequiered){
-            binding = binderViaje.forField(field)
+           binding = binderPromocion.forField(field)
                     .withValidator(predicate, "El campo es obligatorio")
                     .bind(valueProvider, setter);
         }else{
-            binding = binderViaje.forField(field).bind(valueProvider, setter);
+            binding = binderPromocion.forField(field).bind(valueProvider, setter);
         }
-        viajeForm.getBtnSave().addClickListener(event -> binding.validate());
+        promocionForm.getBtnSave().addClickListener(event -> binding.validate());
     }
+    
+    private void setBinderComboTipoPromocion(ComboBox combo, ValueProvider<Promocion, String> valueProvider, Setter<Promocion, String> setter, boolean isRequiered){
 
-    private void setBinderFieldTransporte(AbstractField field, ValueProvider<Transporte, String> valueProvider, Setter<Transporte, String> setter, boolean isRequiered){
-
-        SerializablePredicate<String> predicate = value -> !field.isEmpty();
-        Binder.Binding<Transporte, String> binding;
-        if(isRequiered){
-            binding = binderTransporte.forField(field)
-                    .withValidator(predicate, "El campo es obligatorio")
-                    .bind(valueProvider, setter);
-        }else{
-            binding = binderTransporte.forField(field).bind(valueProvider, setter);
-        }
-        viajeForm.getBtnSave().addClickListener(event -> binding.validate());
-    }
-
-    private void setBinderFieldIntegerTransporte(AbstractField field, ValueProvider<Transporte, String> valueProvider, Setter<Transporte, String> setter, boolean isRequiered){
-
-        SerializablePredicate<String> predicate = value -> !field.isEmpty();
-        Binder.Binding<Transporte, String> binding;
-        if(isRequiered){
-            binding = binderTransporte.forField(field)
-                    .withValidator(predicate, "El campo es obligatorio")
-                    .bind(valueProvider, setter);
-        }else{
-            binding = binderTransporte.forField(field).bind(valueProvider, setter);
-        }
-        viajeForm.getBtnSave().addClickListener(event -> binding.validate());
-    }
-
-    private void setBinderFieldDestino(AbstractField field, ValueProvider<Destino, String> valueProvider, Setter<Destino, String> setter, boolean isRequiered){
-
-        SerializablePredicate<String> predicate = value -> !field.isEmpty();
-        Binder.Binding<Destino, String> binding;
-
-        if(isRequiered){
-            binding = binderDestino.forField(field)
-                    .withValidator(predicate, "El campo es obligatorio")
-                    .bind(valueProvider, setter);
-        }else{
-            binding = binderDestino.forField(field).bind(valueProvider, setter);
-        }
-        viajeForm.getBtnSave().addClickListener(event -> binding.validate());
-    }
-
-    private void setBinderComboTipoTransporte(ComboBox combo, ValueProvider<Transporte, TipoTransporte> valueProvider, Setter<Transporte, TipoTransporte> setter, boolean isRequiered){
-
-        SerializablePredicate<TipoTransporte> predicate = value -> combo.getValue() != null;
+        SerializablePredicate<String> predicate = value -> combo.getValue() != null;
 
         Binder.Binding<Transporte, TipoTransporte> binding;
 
         if(isRequiered){
-            binding = binderTransporte.forField(combo)
+            binding = binderPromocion.forField(combo)
                     .withValidator(predicate, "El campo es obligatorio")
                     .bind(valueProvider, setter);
         }else{
-            binding = binderTransporte.forField(combo).bind(valueProvider, setter);
+            binding = binderPromocion.forField(combo).bind(valueProvider, setter);
         }
-        viajeForm.getBtnSave().addClickListener(event -> binding.validate());
+        promocionForm.getBtnSave().addClickListener(event -> binding.validate());
+    }
+    
+    public PromocionForm getPromocionForm() {
+        return promocionForm;
     }
 
-    private void setBinderComboTagDestino(ComboBox combo, ValueProvider<Destino, TagDestino> valueProvider, Setter<Destino, TagDestino> setter, boolean isRequiered){
-
-        SerializablePredicate<TagDestino> predicate = value -> combo.getValue() != null;
-        Binder.Binding<Destino, TagDestino> binding;
-        if(isRequiered){
-            binding = binderDestino.forField(combo)
-                    .withValidator(predicate, "El campo es obligatorio")
-                    .bind(valueProvider, setter);
-        }else{
-            binding = binderDestino.forField(combo).bind(valueProvider, setter);
-        }
-        viajeForm.getBtnSave().addClickListener(event -> binding.validate());
+    public Promocion getPromocion() {
+        return promocion;
     }
 
-    private void setBinderDatePickerViaje(DatePicker datePicker, ValueProvider<Viaje, LocalDate> valueProvider, Setter<Viaje, LocalDate> setter, boolean isRequiered){
-
-        SerializablePredicate<LocalDate> predicate = value -> datePicker.getValue() != null;
-        Binder.Binding<Viaje, LocalDate> binding;
-        if(isRequiered){
-            binding = binderViaje.forField(datePicker)
-                    .withValidator(predicate, "El campo es obligatorio")
-                    .bind(valueProvider, setter);
-        }else{
-            binding = binderViaje.forField(datePicker).bind(valueProvider, setter);
-        }
-        viajeForm.getBtnSave().addClickListener(event -> binding.validate());
-    }
-
-    private void setBinderTimePickerViaje(TimePicker timePicker, ValueProvider<Viaje, LocalTime> valueProvider, Setter<Viaje, LocalTime> setter, boolean isRequiered){
-
-        SerializablePredicate<LocalTime> predicate = value -> timePicker.getValue() != null;
-        Binder.Binding<Viaje, LocalTime> binding;
-        if(isRequiered){
-            binding = binderViaje.forField(timePicker)
-                    .withValidator(predicate, "El campo es obligatorio")
-                    .bind(valueProvider, setter);
-        }else{
-            binding = binderViaje.forField(timePicker).bind(valueProvider, setter);
-        }
-        viajeForm.getBtnSave().addClickListener(event -> binding.validate());
-    }
-
-
-    public ViajeForm getViajeForm() {
-        return viajeForm;
-    }
-
-    public Viaje getViaje() {
-        return viaje;
-    }
-
-    public void setViaje(Viaje viaje) {
-        this.viaje = viaje;
+    public void setPromocion(Promocion promocion) {
+        this.promocion = promocion;
     }
 
     public void setChangeHandler(ChangeHandler h) {
