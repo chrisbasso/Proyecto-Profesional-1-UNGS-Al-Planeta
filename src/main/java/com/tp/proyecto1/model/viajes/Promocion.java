@@ -5,33 +5,36 @@ import java.time.LocalDate;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 
 @Entity
-public class Promocion
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
+public abstract class Promocion
 {
 	@Id
     @GeneratedValue
-    private Long id;
+    protected Long id;
 	
-	private String nombrePromocion;
+	protected String nombrePromocion;
 	
-	private String descripcion;
+	protected String descripcion;
 	
-	private LocalDate fechaVencimiento;
+	protected LocalDate fechaVencimiento;
 	
-	private Float multiplicadorPuntos;
+	protected String codigoPromocion;
 	
 	public Promocion()
 	{
 		
 	}
 	
-	public Promocion(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, Float multiplicadorPuntos)
+	public Promocion(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion)
 	{
 		setNombrePromocion(nombrePromocion);
 		setDescripcion(descripcion);
 		setFechaVencimiento(fechaVencimiento);
-		setMultiplicadorPuntos(multiplicadorPuntos);
+		this.codigoPromocion = codigoPromocion;
 	}
 	
 	public Long getId()
@@ -73,16 +76,15 @@ public class Promocion
 	{
 		this.fechaVencimiento = fechaVencimiento;
 	}
-
-	public Float getMultiplicadorPuntos()
+	
+	public String getCodigoPromocion()
 	{
-		return multiplicadorPuntos;
+		return codigoPromocion;
 	}
 
-	public void setMultiplicadorPuntos(Float multiplicadorPuntos)
+	public void setCodigoPromocion(String codigoPromocion)
 	{
-		this.multiplicadorPuntos = multiplicadorPuntos;
+		this.codigoPromocion = codigoPromocion;
 	}
-		    
 	    
 }
