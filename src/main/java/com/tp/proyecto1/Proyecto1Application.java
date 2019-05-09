@@ -13,6 +13,7 @@ import com.tp.proyecto1.repository.clientes.ClienteRepository;
 import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
 import com.tp.proyecto1.repository.pasajes.ReservaRepository;
 import com.tp.proyecto1.repository.viajes.PromocionDescuentoRepository;
+import com.tp.proyecto1.repository.viajes.PromocionRepository;
 import com.tp.proyecto1.repository.pasajes.PasajeVentaRepository;
 import com.tp.proyecto1.services.ConfiguracionService;
 import com.tp.proyecto1.services.UserService;
@@ -38,8 +39,9 @@ public class Proyecto1Application {
 									  ClienteRepository clienteRepository,
 									  FormaDePagoRepository formaDePagoRepository,
 									  PasajeVentaRepository pasajeVentaRepository,
-									  PromocionDescuentoRepository promocionDescuentosRepository,
-									  PromocionDescuentoRepository promocionPuntosRepository) {
+									  PromocionRepository promocionRepository
+									  /*PromocionDescuentoRepository promocionDescuentosRepository,
+									  PromocionDescuentoRepository promocionPuntosRepository*/) {
 		return args -> {
 			userService.createPrivilegeIfNotFound("READ_PRIVILEGE");
 			userService.createPrivilegeIfNotFound("WRITE_PRIVILEGE");

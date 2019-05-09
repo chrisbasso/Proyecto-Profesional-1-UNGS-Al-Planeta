@@ -22,6 +22,7 @@ public class PromocionForm extends Dialog
 	private VerticalLayout mainLayout = new VerticalLayout();
     private FormLayout form = new FormLayout();
     private TextField nombre;
+    private NumberField cantidadPasajes;
     private ComboBox<String> tipoPromocion;
     private DatePicker fechaVencimiento;
     private NumberField nroFloat;
@@ -59,14 +60,20 @@ public class PromocionForm extends Dialog
         textAreaDescripcion = new TextArea("Descripción");
         textAreaDescripcion.setHeight("100px");
         textAreaDescripcion.setWidth("770px");
+        
+        cantidadPasajes = new NumberField();
+        cantidadPasajes.setPattern("[0-9]*");
+        cantidadPasajes.setMin(0);
+        cantidadPasajes.setPreventInvalidInput(true);
        
     }
 
     private void setForm() {
         form.addFormItem(nombre, "Nombre");
         form.addFormItem(fechaVencimiento, "Fecha Vencimiento");
+        form.addFormItem(cantidadPasajes, "Cantidad de pasajes");
         form.addFormItem(tipoPromocion, "Promocion");
-        form.addFormItem(nroFloat, "Valor");
+        form.addFormItem(nroFloat, "Bonificador");
 
     }
 
@@ -156,5 +163,13 @@ public class PromocionForm extends Dialog
     public void setBtnCancel(Button btnCancel) {
         this.btnCancel = btnCancel;
     }
+
+	public NumberField getCantidadPasajes() {
+		return cantidadPasajes;
+	}
+
+	public void setCantidadPasajes(NumberField cantidadPasajes) {
+		this.cantidadPasajes = cantidadPasajes;
+	}
 
 }

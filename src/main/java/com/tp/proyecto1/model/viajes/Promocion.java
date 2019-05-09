@@ -28,18 +28,21 @@ public abstract class Promocion
 	
 	protected String tipoPromocion;
 	
+	protected Double cantidadPasajes;
+	
 	public Promocion()
 	{
 		
 	}
 	
-	public Promocion(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion,Double doubleValue)
+	public Promocion(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion,Double doubleValue, Double cantidadPasajes2)
 	{
 		setNombrePromocion(nombrePromocion);
 		setDescripcion(descripcion);
 		setFechaVencimiento(fechaVencimiento);
 		setCodigoPromocion(codigoPromocion);
 		setDoubleValue(doubleValue);
+		setCantidadPasajes(cantidadPasajes2);
 	}
 	
 	public Long getId()
@@ -110,6 +113,16 @@ public abstract class Promocion
 	public void setTipoPromocion(String tipoPromocion)
 	{
 		this.tipoPromocion = tipoPromocion;
+	}
+	
+	public Double getCantidadPasajes()
+	{
+		return cantidadPasajes;
+	}
+	
+	public void setCantidadPasajes(Double cantidadPasajes2)
+	{
+		this.cantidadPasajes = cantidadPasajes2;
 	}
 	    
 }

@@ -1,5 +1,8 @@
 package com.tp.proyecto1.views.promociones;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import com.tp.proyecto1.model.viajes.Promocion;
 import com.tp.proyecto1.model.viajes.TipoTransporte;
 import com.tp.proyecto1.model.viajes.Viaje;
@@ -20,13 +23,13 @@ import com.vaadin.flow.component.textfield.TextField;
 public class PromocionView extends FilterGridLayout<Promocion> implements View {
 
 	private NumberField idFilter;
-	private TextField paisFilter;
-	private TextField ciudadFilter;
+	private TextField nombreFilter;
+	private TextField codigoPromoFilter;
 	//private TextField codTransporteFilter;
-	/*private ComboBox<TipoTransporte> transporteFilter;*/
+	private ComboBox<String> tipoPromoFilter;
 	private DatePicker fechaDesdeFilter;
 	private DatePicker fechaHastaFilter;
-	private Checkbox activosCheck;
+	//private Checkbox activosCheck;
 	private Button searchButton;
 	private Button newPromocionButton;
 	/*private Button btnReservar;
@@ -42,42 +45,45 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 	public void setComponents() {
 
 		this.idFilter = new NumberField("Nº promocion");
-		this.idFilter.setWidth("70px");
-		this.paisFilter = new TextField("Nombre promocion");
-		paisFilter.setWidth("100px");
-		this.ciudadFilter = new TextField("Cod. promocion");
-		ciudadFilter.setWidth("150px");
+		this.idFilter.setWidth("115px");
+		this.nombreFilter = new TextField("Nombre promocion");
+		nombreFilter.setWidth("120px");
+		this.codigoPromoFilter = new TextField("Cod. promocion");
+		codigoPromoFilter.setWidth("150px");
 		this.searchButton = new Button("Buscar", VaadinIcon.SEARCH.create());
 		this.searchButton.setMinWidth("105px");
 		this.newPromocionButton = new Button("Nuevo", VaadinIcon.PLUS.create());
 		this.newPromocionButton.setMinWidth("105px");
-		this.activosCheck = new Checkbox("Solo Activos");
-		/*this.transporteFilter = new ComboBox<>("Transporte");
-		this.transporteFilter.setWidth("130px");
-		this.transporteFilter.setItemLabelGenerator(TipoTransporte::getDescripcion);*/
+	//	this.activosCheck = new Checkbox("Solo Activos");
+		tipoPromoFilter = new ComboBox<>("Tipo de promocion");
+        Collection<String> items = new ArrayList<String>();
+        items.add("Descuento");
+        items.add("Puntos");
+        tipoPromoFilter.setItems(items);
 		this.fechaDesdeFilter = new DatePicker("Fecha Desde");
 		this.fechaDesdeFilter.setWidth("137px");
 		this.fechaHastaFilter = new DatePicker("Fecha Hasta");
 		this.fechaHastaFilter.setWidth("137px");
 		/*this.btnComprar = new Button("Vender");
 		this.btnReservar = new Button("Reservar");*/
-		this.activosCheck.setValue(true);
-		this.activosCheck.setMinWidth("135px");
+	//	this.activosCheck.setValue(true);
+	//	this.activosCheck.setMinWidth("135px");
 	}
 
 	public void setLayout() {
 		HorizontalLayout hlSpace = new HorizontalLayout();
 		//this.hlFooter.add(btnReservar, btnComprar);
 		hlSpace.setWidthFull();
-		this.hlActions.add(idFilter, paisFilter, ciudadFilter, /*codTransporteFilter, transporteFilter,*/fechaDesdeFilter,fechaHastaFilter,activosCheck,hlSpace, searchButton, newPromocionButton);
+		this.hlActions.add(idFilter, nombreFilter, codigoPromoFilter, /*codTransporteFilter, */tipoPromoFilter,fechaDesdeFilter,fechaHastaFilter/*,activosCheck(*/,hlSpace, searchButton, newPromocionButton);
 	}
 
 	public void setGrid() {
-		grid.setColumns("id", "nombrePromocion","descripcion","tipoPromocion", "fechaVencimiento",
+		grid.setColumns("id", "nombrePromocion","descripcion","cantidadPasajes","tipoPromocion","doubleValue", "fechaVencimiento",
 				"codigoPromocion");
 		grid.getColumnByKey("id").setHeader("Nº");
 		grid.getColumnByKey("id").setWidth("70px").setFlexGrow(0);
-
+		grid.getColumnByKey("doubleValue").setHeader("Bonificador");
+		grid.getColumnByKey("cantidadPasajes").setHeader("Cantidad de pasajes");
 	}
 
 	public Grid<Promocion> getGrid() {
@@ -88,12 +94,12 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 		this.grid = grid;
 	}
 
-	public TextField getPaisFilter() {
-		return paisFilter;
+	public TextField getNombreFilter() {
+		return nombreFilter;
 	}
 
-	public void setPaisFilter(TextField paisFilter) {
-		this.paisFilter = paisFilter;
+	public void setNombreFilter(TextField nombreFilter) {
+		this.nombreFilter = nombreFilter;
 	}
 
 	public Button getSearchButton() {
@@ -104,12 +110,12 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 		this.searchButton = searchButton;
 	}
 
-	public TextField getCiudadFilter() {
-		return ciudadFilter;
+	public TextField getCodigoPromoFilter() {
+		return codigoPromoFilter;
 	}
 
-	public void setCiudadFilter(TextField ciudadFilter) {
-		this.ciudadFilter = ciudadFilter;
+	public void setCodigoPromoFilter(TextField codigoPromoFilter) {
+		this.codigoPromoFilter = codigoPromoFilter;
 	}
 	
 	/*
@@ -138,21 +144,21 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 		this.newPromocionButton = newPromocionButton;
 	}
 
-	public Checkbox getActivosCheck() {
+	/*public Checkbox getActivosCheck() {
 		return activosCheck;
 	}
 
 	public void setActivosCheck(Checkbox activosCheck) {
 		this.activosCheck = activosCheck;
-	}
-
-	/*public ComboBox<TipoTransporte> getTransporteFilter() {
-		return transporteFilter;
-	}
-
-	public void setTransporteFilter(ComboBox<TipoTransporte> transporteFilter) {
-		this.transporteFilter = transporteFilter;
 	}*/
+
+	public ComboBox<String> getTipoPromoFilter() {
+		return tipoPromoFilter;
+	}
+
+	public void setTipoPromoFilter(ComboBox<String> tipoPromoFilter) {
+		this.tipoPromoFilter = tipoPromoFilter;
+	}
 
 	public DatePicker getFechaDesdeFilter() {
 		return fechaDesdeFilter;

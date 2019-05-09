@@ -78,17 +78,17 @@ public class PromocionesController {
        // }
     }
 
-    private void setParametrosBusqueda(Viaje viajeBusqueda) {
-        viajeBusqueda.setDestino(new Destino());
-        viajeBusqueda.setTransporte(new Transporte());
+    private void setParametrosBusqueda(Promocion promocionBusqueda) {
+       // promocionBusqueda.setDestino(new Destino());
+       // promocionBusqueda.setTransporte(new Transporte());
         if(!promocionView.getIdFilter().isEmpty()){
-            viajeBusqueda.setId(promocionView.getIdFilter().getValue().longValue());
+            promocionBusqueda.setId(promocionView.getIdFilter().getValue().longValue());
         }
-        if(!promocionView.getCiudadFilter().isEmpty()){
-            viajeBusqueda.getDestino().setCiudad(promocionView.getCiudadFilter().getValue());
+        if(!promocionView.getNombreFilter().isEmpty()){
+            promocionBusqueda.setNombrePromocion(promocionView.getNombreFilter().getValue());
         }
-        if(!promocionView.getPaisFilter().isEmpty()){
-            viajeBusqueda.getDestino().setPais(promocionView.getPaisFilter().getValue());
+        if(!promocionView.getCodigoPromoFilter().isEmpty()){
+            promocionBusqueda.setCodigoPromocion(promocionView.getCodigoPromoFilter().getValue());
         }
        /* if(!promocionView.getCodTransporteFilter().isEmpty()){
             viajeBusqueda.getTransporte().setCodTransporte(promocionView.getCodTransporteFilter().getValue());
@@ -97,13 +97,13 @@ public class PromocionesController {
             viajeBusqueda.getTransporte().setTipo(promocionView.getTransporteFilter().getValue());
         }
 */
-        viajeBusqueda.setActivo(promocionView.getActivosCheck().getValue());
+       // viajeBusqueda.setActivo(promocionView.getActivosCheck().getValue());
     }
 
     private boolean checkFiltros() {
         return !promocionView.getIdFilter().isEmpty() || /*!promocionView.getCodTransporteFilter().isEmpty()||*/ 
-                !promocionView.getPaisFilter().isEmpty() || !promocionView.getCiudadFilter().isEmpty() ||
-                promocionView.getActivosCheck().getValue() || promocionView.getFechaDesdeFilter()!=null ||
+                !promocionView.getNombreFilter().isEmpty() || !promocionView.getCodigoPromoFilter().isEmpty() ||
+                /*promocionView.getActivosCheck().getValue() ||*/ promocionView.getFechaDesdeFilter()!=null ||
                 promocionView.getFechaHastaFilter() != null;
     }
 

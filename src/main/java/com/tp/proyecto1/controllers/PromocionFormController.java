@@ -72,10 +72,11 @@ public class PromocionFormController {
     	String descripcion = promocionForm.getTextAreaDescripcion().getValue();
     	LocalDate fechaVencimiento = promocionForm.getFechaVencimiento().getValue();
     	Double nroFloat = promocionForm.getNroFloat().getValue();
+    	Double cantidadPasajes = promocionForm.getCantidadPasajes().getValue();
     	if (promocionForm.getTipoPromocion().getValue()=="Descuento")
-    		return new PromocionDescuento(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat);
+    		return new PromocionDescuento(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
     	else
-    		return new PromocionPuntos(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat);
+    		return new PromocionPuntos(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
     }
 
     public void setComponentsValues(Promocion promocion) {
@@ -91,7 +92,8 @@ public class PromocionFormController {
     	setBinderFieldDescripcion(promocionForm.getTextAreaDescripcion(), Promocion::getDescripcion, Promocion::setDescripcion, false);
     	setBinderComboTipoPromocion(promocionForm.getTipoPromocion(), Promocion::getTipoPromocion, Promocion::setTipoPromocion, true);
     	setBinderFieldDoubleValue(promocionForm.getNroFloat(), Promocion::getDoubleValue, Promocion::setDoubleValue, true);
-         
+    	setBinderFieldCantidadPasajes(promocionForm.getCantidadPasajes(), Promocion::getCantidadPasajes, Promocion::setCantidadPasajes, true);
+    	
     	binderPromocion.setBean(promocion);
     }
     
@@ -138,6 +140,20 @@ public class PromocionFormController {
     }
     
     private void setBinderFieldDoubleValue(AbstractField field, ValueProvider<Promocion, Double> valueProvider, Setter<Promocion, Double> setter, boolean isRequiered){
+
+        SerializablePredicate<Double> predicate = value -> !field.isEmpty();
+        Binder.Binding<Promocion, Double> binding;
+        if(isRequiered){
+           binding = binderPromocion.forField(field)
+                    .withValidator(predicate, "El campo es obligatorio")
+                    .bind(valueProvider, setter);
+        }else{
+            binding = binderPromocion.forField(field).bind(valueProvider, setter);
+        }
+        promocionForm.getBtnSave().addClickListener(event -> binding.validate());
+    }
+    
+    private void setBinderFieldCantidadPasajes(AbstractField field, ValueProvider<Promocion, Double> valueProvider, Setter<Promocion, Double> setter, boolean isRequiered){
 
         SerializablePredicate<Double> predicate = value -> !field.isEmpty();
         Binder.Binding<Promocion, Double> binding;

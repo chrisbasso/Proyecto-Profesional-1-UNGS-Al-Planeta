@@ -13,9 +13,9 @@ public class PromocionPuntos extends Promocion
 		
 	}
 	
-	public PromocionPuntos(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion, Double doubleValue)
+	public PromocionPuntos(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion, Double doubleValue, Double cantidadPasajes)
 	{
-		super(nombrePromocion, descripcion, fechaVencimiento, codigoPromocion,doubleValue);
+		super(nombrePromocion, descripcion, fechaVencimiento, codigoPromocion,doubleValue,cantidadPasajes);
 		setTipoPromocion("Puntos");
 	}
 	
