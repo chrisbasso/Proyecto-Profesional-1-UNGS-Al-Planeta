@@ -6,27 +6,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tp.proyecto1.model.viajes.Promocion;
+import com.tp.proyecto1.model.viajes.PromocionDescuento;
 import com.tp.proyecto1.model.viajes.PromocionPuntos;
+import com.tp.proyecto1.repository.viajes.PromocionDescuentoRepository;
 import com.tp.proyecto1.repository.viajes.PromocionPuntosRepository;
 
 @Service
-public class PromocionPuntosService
+public class PromocionDescuentoService
 {
 
 	@Autowired
-	private PromocionPuntosRepository promocionRepository;
+	private PromocionDescuentoRepository promocionRepository;
 	
-	private static final Logger log = LoggerFactory.getLogger(PromocionPuntosService.class);
+	private static final Logger log = LoggerFactory.getLogger(PromocionDescuentoService.class);
 	 
 	 
 	@Transactional
-	public void save(PromocionPuntos promocion)
+	public void save(PromocionDescuento promocion)
 	{
 		promocionRepository.save(promocion);
 	}
 	
 	@Transactional
-	public void delete(PromocionPuntos promocion)
+	public void delete(PromocionDescuento promocion)
 	{
 		promocionRepository.delete(promocion);
 	}
