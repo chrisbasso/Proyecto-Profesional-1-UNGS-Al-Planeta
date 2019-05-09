@@ -15,30 +15,30 @@ public class Configuracion {
 
 	@NaturalId
 	private String clave;
-	private String valor;
+	private String value;
 
 	public Configuracion() {
-		
+
 	}
-	
-	public Configuracion(String clave, String valor) {
+
+	public Configuracion(String clave, String value) {
 		this.clave = clave;
-		this.valor = valor;
-	}
-	
-	public Long getId() {
-		return id;
+		this.value = value;
 	}
 
 	public String getClave() {
 		return clave;
 	}
 
-	public String getValor() {
-		return valor;
+	public String getValue() {
+		return value;
 	}
 
-	public void setValor(String valor) {
-		this.valor = valor;
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public Long getId() {
+		return id;
 	}
 }

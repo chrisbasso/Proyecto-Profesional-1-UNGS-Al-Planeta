@@ -81,7 +81,6 @@ public class ViajesController {
     	Viaje viajeSeleccionado = this.viajesView.getGrid().asSingleSelect().getValue();
     	if (viajeSeleccionado != null) {
 	    	ventaFormController = new VentaFormController(viajeSeleccionado);
-	    	ventaFormController.setComponentsValues();
 			ventaFormController.getVentaFormCompra().open();
     	}
     	else {

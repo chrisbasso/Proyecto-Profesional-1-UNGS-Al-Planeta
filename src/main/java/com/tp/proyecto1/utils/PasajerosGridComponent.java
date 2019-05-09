@@ -52,6 +52,7 @@ public class PasajerosGridComponent extends VerticalLayout {
 		}
 	}
 
+
 	private void setLayout() {
 		this.setSizeFull();
 		this.add(new HorizontalLayout(newPasajero, removeLastButton), grid);
@@ -59,13 +60,14 @@ public class PasajerosGridComponent extends VerticalLayout {
 		removeLastButton.addThemeVariants(ButtonVariant.LUMO_SMALL);
 	}
 
-	private void setGrid() {
+	public void setGrid() {
 		grid.setWidthFull();
 
 		grid.setHeight("170px");
 
 		grid.setItems(pasajerosList);
 
+		grid.removeAllColumns();
 
 		Grid.Column<Pasajero> columnNombre = grid.addColumn(Pasajero::getNombreCompleto)
 				.setHeader("Nombre y Apellido");
@@ -133,7 +135,11 @@ public class PasajerosGridComponent extends VerticalLayout {
 		Div buttons = new Div(save, cancel);
 		editorColumn.setEditorComponent(buttons);
 
+	}
 
+	public void setModoConsulta(){
+		newPasajero.setVisible(false);
+		removeLastButton.setVisible(false);
 	}
 
 	public Button getNewPasajero() {
@@ -166,5 +172,6 @@ public class PasajerosGridComponent extends VerticalLayout {
 
 	public void setPasajerosList(List<Pasajero> pasajerosList) {
 		this.pasajerosList = pasajerosList;
+		grid.getDataProvider().refreshAll();
 	}
 }

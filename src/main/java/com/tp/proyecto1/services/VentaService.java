@@ -1,12 +1,14 @@
 package com.tp.proyecto1.services;
 
 import com.tp.proyecto1.model.pasajes.FormaDePago;
+import com.tp.proyecto1.model.pasajes.PasajeVenta;
 import com.tp.proyecto1.model.pasajes.Venta;
-import com.tp.proyecto1.repository.pasajes.VentaRepository;
+import com.tp.proyecto1.repository.pasajes.PasajeVentaRepository;
 import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
-import java.time.LocalDate;
+
 import java.util.List;
-import java.util.stream.Collectors;
+
+import com.tp.proyecto1.repository.pasajes.VentaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,21 +20,41 @@ import org.springframework.transaction.annotation.Transactional;
 public class VentaService {
 
     @Autowired
-    private VentaRepository ventaRepository;
+    private PasajeVentaRepository pasajeVentaRepository;
     
     @Autowired
     private FormaDePagoRepository formaDePagoRepository;
+
+    @Autowired
+    private VentaRepository ventaRepository;
     
     private static final Logger log = LoggerFactory.getLogger(VentaService.class);
     
+    @Transactional
+    public void save(PasajeVenta pasajeVenta){
+        pasajeVentaRepository.save(pasajeVenta);
+    }
+
     @Transactional
     public void save(Venta venta){
         ventaRepository.save(venta);
     }
     
     @Transactional
-    public List<Venta> findAll(){
-    	return this.ventaRepository.findAll();
+    public List<PasajeVenta> findAllPasajeVentas(){
+    	return this.pasajeVentaRepository.findAll();
+    }
+
+    @Transactional
+    public List<PasajeVenta> findPasajesVentas(PasajeVenta pasajeVenta){
+        List<PasajeVenta> pasajeVentas = pasajeVentaRepository.findAll(Example.of(pasajeVenta));
+        return pasajeVentas;
+    }
+
+    @Transactional
+    public List<Venta> findAllVentas(){
+
+        return this.ventaRepository.findAll();
     }
 
     @Transactional
@@ -42,8 +64,8 @@ public class VentaService {
     }
 
     @Transactional
-    public void delete(Venta venta) {
-        ventaRepository.delete(venta);
+    public void delete(PasajeVenta pasajeVenta) {
+        pasajeVentaRepository.delete(pasajeVenta);
     }
 
     @Transactional

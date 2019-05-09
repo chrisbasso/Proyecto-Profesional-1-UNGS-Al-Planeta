@@ -21,10 +21,8 @@ public abstract class Pasaje {
 	protected Viaje viaje;
 	@OneToOne
 	protected Cliente cliente;
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	protected List<Pago> pagos = new ArrayList<>();
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	protected Pasajero pasajero;
 	
 	public Pasaje() {
@@ -35,9 +33,6 @@ public abstract class Pasaje {
 		this.cliente = cliente;
 	}
 
-	public void agregarPago(Pago pago){
-		this.pagos.add(pago);
-	}
 
 	public Viaje getViaje() {
 		return viaje;
@@ -53,14 +48,6 @@ public abstract class Pasaje {
 
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
-	}
-
-	public List<Pago> getPagos() {
-		return pagos;
-	}
-
-	public void setPagos(List <Pago> pagos) {
-		this.pagos = pagos;
 	}
 
 	public Long getId() {
@@ -87,12 +74,11 @@ public abstract class Pasaje {
 		return Objects.equals(id, pasaje.id) &&
 				Objects.equals(viaje, pasaje.viaje) &&
 				Objects.equals(cliente, pasaje.cliente) &&
-				Objects.equals(pagos, pasaje.pagos) &&
 				Objects.equals(pasajero, pasaje.pasajero);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, viaje, cliente, pagos, pasajero);
+		return Objects.hash(id, viaje, cliente, pasajero);
 	}
 }
