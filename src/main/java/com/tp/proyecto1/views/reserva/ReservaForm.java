@@ -33,6 +33,7 @@ public class ReservaForm extends Dialog{
 	private ComboBox<FormaDePago> formaPago;
 	private NumberField pago;
 	private NumberField saldoPagar;
+	private Button btnSaveDraft;
 	private Button btnSave;
     private Button btnCancel;
 
@@ -76,8 +77,8 @@ public class ReservaForm extends Dialog{
 		id.setValue(viaje.getId().toString());
     	pais.setValue(viaje.getDestino().getPais());
     	ciudad.setValue(viaje.getDestino().getCiudad());
-    	codTransporte.setValue(viaje.getTransporte().getCodTransporte());
-    	transporte.setValue(viaje.getTransporte().getTipo().toString());
+    	codTransporte.setValue(viaje.getTransporte().getCodTransporte().toString());
+    	transporte.setValue(viaje.getTransporte().getTipo().getDescripcion());
     	fechaDesde.setValue(viaje.getFechaSalida().toString());
     	fechaHasta.setValue(viaje.getFechaLlegada().toString());
     	precioUnitario.setValue(viaje.getPrecio());
@@ -115,9 +116,10 @@ public class ReservaForm extends Dialog{
 
 	private void inicializarActions() {
 		btnSave= new Button("Guardar");
+		btnSaveDraft= new Button("Guardar borrador");
 		btnCancel= new Button("Cancelar");
     	actions = new HorizontalLayout();
-        actions.add(btnSave, btnCancel);
+        actions.add(btnSave, btnSaveDraft, btnCancel);
 	}
 
 	private void inicializarMainLayout() {
@@ -137,6 +139,14 @@ public class ReservaForm extends Dialog{
 
 	public void setBtnSave(Button btnSave) {
 		this.btnSave = btnSave;
+	}
+	
+    public Button getBtnSaveDraft() {
+		return btnSaveDraft;
+	}
+
+	public void setBtnSaveDraft(Button btnSaveDraft) {
+		this.btnSaveDraft = btnSaveDraft;
 	}
 
 	public Button getBtnCancel() {

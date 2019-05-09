@@ -65,6 +65,7 @@ public class ReservaFormController {
 	
     private void setListeners() {
         reservaForm.getBtnSave().addClickListener(e-> guardarReserva(reservaForm.getClienteSeleccionado(),reservaForm.getFormaPagoSeleccionada(),reservaForm.getPago().getValue()));
+        reservaForm.getBtnSaveDraft().addClickListener(e-> guardarBorrador(reservaForm.getClienteSeleccionado(),reservaForm.getFormaPagoSeleccionada(),reservaForm.getPago().getValue()));
         reservaForm.getBtnCancel().addClickListener(e->reservaForm.close());
         reservaForm.getCantidadPasajes().addValueChangeListener(e->actualizarPrecioTotal());
         reservaForm.getPago().addValueChangeListener(e->actualizarPago());
@@ -96,6 +97,28 @@ public class ReservaFormController {
 				Notification.show(MSJ_ERROR_FECHA);
 				reservaForm.close();
 			}
+	}
+	
+	private void guardarBorrador(Cliente cliente, FormaDePago fdp, Double pagado) {
+		if(esReservablePorFecha()) {
+			reserva = new Reserva(viaje, cliente);
+			if(pagado != null && pagado>0) {
+				Pago pago = new Pago(cliente, reserva, fdp, pagado, LocalDate.now());
+				reserva.agregarPago(pago);
+			}				
+			reservaService.save(reserva);
+			Long idGuardada = reservaService.findReservaId(reserva);
+			if(idGuardada > -1) {
+				Notification.show(MSJ_RESERVA_GUARDADA + "\n Número de reserva: " + idGuardada.toString());	
+			}else {
+				Notification.show(MSJ_RESERVA_GUARDADA); 
+			}
+			actualizarCapacidadTransporte();
+			reservaForm.close();
+		}else {
+			Notification.show(MSJ_ERROR_FECHA);
+			reservaForm.close();
+		}
 	}
 	
 	private void actualizarCapacidadTransporte() {
