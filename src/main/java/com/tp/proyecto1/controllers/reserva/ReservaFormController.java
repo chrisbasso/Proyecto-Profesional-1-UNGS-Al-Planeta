@@ -1,4 +1,4 @@
-package com.tp.proyecto1.controllers;
+package com.tp.proyecto1.controllers.reserva;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,6 +21,7 @@ import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
+import com.tp.proyecto1.views.reserva.AgregarPagoForm;
 import com.tp.proyecto1.views.reserva.ReservaForm;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -42,7 +43,8 @@ public class ReservaFormController {
 	private ViajeService viajeService;
 	@Autowired
 	private ConfiguracionService ConfigService;
-
+	@Autowired
+	private PagoFormController pagoFormController;
 	private ChangeHandler changeHandler;
 	
 	public ReservaFormController(Viaje viaje) {
@@ -152,7 +154,8 @@ public class ReservaFormController {
 	}
 	
 	public void agregarPago() {
-		
+		double saldoReserva = 0.0;
+		pagoFormController.mostrarForm(saldoReserva);
 	}
 	
 	private void emitirComprobante() {

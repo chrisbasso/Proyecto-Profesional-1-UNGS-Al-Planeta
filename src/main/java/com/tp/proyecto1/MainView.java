@@ -1,6 +1,8 @@
 package com.tp.proyecto1;
 
 import com.tp.proyecto1.controllers.*;
+import com.tp.proyecto1.controllers.reserva.ReservasController;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tp.proyecto1.model.users.User;
