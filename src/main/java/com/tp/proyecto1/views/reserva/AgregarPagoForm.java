@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -90,19 +92,22 @@ public class AgregarPagoForm extends Dialog{
 	}
 	
 	public void activarBtnGuardar() {
-		boolean estadoValido = true;
-		estadoValido = estadoValido && (cmbFormaPago.getValue() != null);
-		estadoValido = estadoValido && pago.getValue()>0;		
-		if(estadoValido) {
-			btnSave.setEnabled(true);
-		}		
+		btnSave.setEnabled(true);		
 	}
 	
 	public void desactivarBtnGuardar() {
 		btnSave.setEnabled(false);
 	}
 	
-	public void cerrar() {
-		this.close();
+	public boolean opcionesSeleccionadas() {
+		return pago.getValue()>0 && (cmbFormaPago.getValue()!= null);	
+	}
+	
+	public void setListenerBtnGuardar(ComponentEventListener<ClickEvent<Button>> e){
+		btnSave.addClickListener(e);
+	}
+	
+	public void setListenerBtnCancelar(ComponentEventListener<ClickEvent<Button>> e){
+		btnCancel.addClickListener(e);
 	}
 }
