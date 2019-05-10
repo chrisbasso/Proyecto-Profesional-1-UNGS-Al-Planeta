@@ -13,7 +13,6 @@ import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.tp.proyecto1.model.pasajes.Pago;
 import com.tp.proyecto1.model.pasajes.PasajeVenta;
 import com.tp.proyecto1.model.pasajes.Reserva;
-import com.tp.proyecto1.model.pasajes.Transaccion;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.services.ConfiguracionService;
@@ -29,8 +28,6 @@ import com.vaadin.flow.spring.annotation.UIScope;
 @Controller
 @UIScope
 public class ReservaFormController {
-	private static String MSJ_RESERVA_GUARDADA = "Reserva guardada con éxito.";
-	private static String MSJ_ERROR_FECHA = "Por la fecha del viaje solo es posible comprar.";
 
 	private ReservaForm reservaForm;
 	private Viaje viaje;	
@@ -46,8 +43,8 @@ public class ReservaFormController {
 	@Autowired
 	private ConfiguracionService ConfigService;
 
-    private ChangeHandler changeHandler;
-
+	private ChangeHandler changeHandler;
+	
 	public ReservaFormController(Viaje viaje) {
 		Inject.Inject(this);
 		this.viaje = viaje;	
@@ -55,115 +52,106 @@ public class ReservaFormController {
 
 	public ReservaForm getReservaForm() {
 		reservaForm = new ReservaForm(viaje);
-		reservaForm.getComboCliente().setItems(clienteService.findAll());
-		reservaForm.getFormaPago().setItems(ventaService.findAllFomaDePagos());
+		reservaForm.cargarClientes(clienteService.findAll());
+		reservaForm.cargarFormasDePago(ventaService.findAllFomaDePagos());
 		setListeners();
 		return reservaForm;
 	}
 	
-	public boolean esReservablePorFecha() {
-		LocalDateTime presente = LocalDate.now().atStartOfDay();
-		LocalDateTime fechaViaje = viaje.getFechaSalida().atStartOfDay();
-		
-		String fechaMaxima = ConfigService.findValueByKey("reserva_fecha_maxima");
-		if(fechaMaxima != null) {
-			int fecha_maxima = Integer.parseInt(fechaMaxima);
-			return fechaViaje.minusDays(fecha_maxima).isAfter(presente);
-		}
-		return true;
-	}
-	
     private void setListeners() {
-        reservaForm.getBtnSave().addClickListener(e-> guardarReserva(reservaForm.getClienteSeleccionado(),reservaForm.getFormaPagoSeleccionada(),reservaForm.getPago().getValue()));
-//      reservaForm.getBtnSaveDraft().addClickListener(e-> guardarBorrador(reservaForm.getClienteSeleccionado(),reservaForm.getFormaPagoSeleccionada(),reservaForm.getPago().getValue()));
+        reservaForm.listenerCantPasajes(e->actualizarPrecioTotal());
+        reservaForm.getPago().addValueChangeListener(e->actualizarPago());        
+        reservaForm.getBtnSave().addClickListener(e->guardarReserva());
         reservaForm.getBtnCancel().addClickListener(e->reservaForm.close());
-        reservaForm.getCantidadPasajes().addValueChangeListener(e->actualizarPrecioTotal());
-        reservaForm.getPago().addValueChangeListener(e->actualizarPago());
     }
-
-	/* Se debe permitir reservar el pasaje sin necesidad de pagar,  
-	 * pero avisando al cliente que debe pagar al menos el 30% 
-	 * del valor total antes que finalice la fecha de la reserva.
-	 * 
-	 * El resto se debe pagar a lo sumo 5 días antes del viaje.
-	 */
-	private void guardarReserva(Cliente cliente, FormaDePago fdp, Double pagado) {
-			if(esReservablePorFecha()) {
-				List<PasajeVenta> pasajes = new ArrayList<PasajeVenta> ();
-				List<Pago> pagos = new ArrayList<Pago> ();
-				Double importeTotal = 1.2;
-				reserva = new Reserva(pasajes, pagos, importeTotal, cliente);
-				if(pagado != null && pagado>0) {
-					Pago pago = new Pago(cliente, reserva, fdp, pagado, LocalDate.now());
-					reserva.agregarPago(pago);
-				}
-				reservaService.save(reserva);
-				Long idGuardada = reservaService.findReservaId(reserva);
-				if(idGuardada > -1) {
-					Notification.show(MSJ_RESERVA_GUARDADA + "\n Número de reserva: " + idGuardada.toString());	
-				}else {
-					Notification.show(MSJ_RESERVA_GUARDADA); 
-				}
-				actualizarCapacidadTransporte();
-				reservaForm.close();
-			}else {
-				Notification.show(MSJ_ERROR_FECHA);
-				reservaForm.close();
-			}
+    
+	private void actualizarPrecioTotal(){
+		int pasajes = reservaForm.cantidadPasajesSeleccionados();
+		double precioTotal = viaje.getPrecio() * pasajes;		
+		reservaForm.actualizarPrecioTotal(precioTotal);
+		reservaForm.actualizarSaldo();
+		actualizarPago(); //Caso del usuario jugando*
 	}
-	
-//	private void guardarBorrador(Cliente cliente, FormaDePago fdp, Double pagado) {
-//		if(esReservablePorFecha()) {
-//			reserva = new Reserva(viaje, cliente);
-//			if(pagado != null && pagado>0) {
-//				Pago pago = new Pago(cliente, reserva, fdp, pagado, LocalDate.now());
-//				reserva.agregarPago(pago);
-//			}				
-//			reservaService.save(reserva);
-//			Long idGuardada = reservaService.findReservaId(reserva);
-//			if(idGuardada > -1) {
-//				Notification.show(MSJ_RESERVA_GUARDADA + "\n Número de reserva: " + idGuardada.toString());	
-//			}else {
-//				Notification.show(MSJ_RESERVA_GUARDADA); 
-//			}
-//			actualizarCapacidadTransporte();
-//			reservaForm.close();
-//		}else {
-//			Notification.show(MSJ_ERROR_FECHA);
-//			reservaForm.close();
-//		}
-//	}
-	
+
+	private void actualizarPago(){
+		if(reservaForm.pagoEsMayorQueTotal()) {
+			Notification.show("El total a pagar es menor que el pago ingresado.");
+			reservaForm.reiniciarPagoIngresado();
+		}else {
+			reservaForm.actualizarSaldo();
+		}
+	}
+
+	private void guardarReserva() {
+		Cliente cliente = reservaForm.getClienteSeleccionado();
+		FormaDePago fdp = reservaForm.getFormaPagoSeleccionada();
+		Double pagado = reservaForm.getPagoIngresado();
+		Double importeTotal = reservaForm.getPrecioTotal();
+		int cantidadPasajes = reservaForm.cantidadPasajesSeleccionados();
+		
+		if(esReservablePorFecha()) {
+			List<PasajeVenta> pasajes = new ArrayList<PasajeVenta> ();
+			for (int i = 0; i < cantidadPasajes; i++) {
+				pasajes.add(new PasajeVenta());
+			}
+			
+			List<Pago> pagos = new ArrayList<Pago> ();
+			reserva = new Reserva(pasajes, pagos, importeTotal, cliente);
+			// Se debe permitir reservar el pasaje sin necesidad de pagar
+			if(pagado != null && pagado>0) {
+				Pago pago = new Pago(cliente, reserva, fdp, pagado, LocalDate.now());
+				pagos.add(pago);
+			}
+			reservaService.save(reserva);
+			mensajeReservaGuardada();
+			actualizarCapacidadTransporte();
+			reservaForm.close();
+		}else {
+			Notification.show("Por la fecha del viaje solo es posible comprar.");
+			reservaForm.close();
+		}
+	}
+
+	private void mensajeReservaGuardada() {
+		Long idGuardada = reservaService.findReservaId(reserva);
+		if(idGuardada > -1) {
+			Notification.show("Reserva guardada con éxito." + "\n Número de reserva: " + idGuardada.toString());	
+		}else {
+			Notification.show("Reserva guardada con éxito."); 
+		}
+		// pero avisando al cliente que debe pagar al menos el 30%
+		// del valor total antes que finalice la fecha de la reserva.
+		double pago = reservaForm.getPago().getValue();
+		double porcentaje = reservaForm.getPrecioTotal() * 0.3; 
+		String fechaMaxima = ConfigService.findValueByKey("reserva_fecha_maxima");
+		if(pago < porcentaje) {
+			if (fechaMaxima != null) {
+				Notification.show("Recuerde que debe abonar $" + porcentaje + 
+						" antes de la fecha fin de la reserva, que es " +
+						fechaMaxima + " días antes de la fecha del viaje.");	
+			}else {
+				Notification.show("Recuerde que debe abonar $" + porcentaje + 
+						" antes de la fecha fin de la reserva.");
+			}			
+		}
+	}
+		
 	private void actualizarCapacidadTransporte() {
 		double capacidadTransporte = Double.parseDouble(viaje.getTransporte().getCapacidad());
-		double pasajesReservados = reservaForm.getCantidadPasajes().getValue();
+		double pasajesReservados = reservaForm.cantidadPasajesSeleccionados();
 		double saldoCapacidad = capacidadTransporte - pasajesReservados;		
 		viaje.getTransporte().setCapacidad(Double.toString(saldoCapacidad));
 		viajeService.save(viaje);
 	}
-
-	private void actualizarPrecioTotal(){
-		double pasajes = reservaForm.getCantidadPasajes().getValue();
-		double precioTotal = viaje.getPrecio() * pasajes;
-		reservaForm.getPrecioTotal().setReadOnly(false);
-		reservaForm.getPrecioTotal().setValue(precioTotal);
-		reservaForm.getPrecioTotal().setReadOnly(true);		
+	
+	public ReservaForm formModificacionReserva(Reserva reserva) {
+		reservaForm = new ReservaForm(reserva.getViaje());
+		reservaForm.setModoModificacion(reserva.getPasajes().size(), reserva.getCliente(), reserva.getImporteTotal());
+		setListeners();
+		return reservaForm;		
 	}
 	
-	private void actualizarPago(){
-		if(reservaForm.getPrecioTotal().getValue() < reservaForm.getPago().getValue()) {
-			Notification.show("El total a pagar es menor que el pago ingresado.");
-			reservaForm.getPago().setReadOnly(false);
-			reservaForm.getPago().setValue(0.0);
-			reservaForm.getPago().setReadOnly(true);
-		}else {
-			reservaForm.getSaldoPagar().setReadOnly(false);
-			reservaForm.getSaldoPagar().setValue(reservaForm.getPrecioTotal().getValue() - reservaForm.getPago().getValue());
-			reservaForm.getSaldoPagar().setReadOnly(true);	
-		}		
-	}
-
-	private void guardarBorrador() {
+	public void agregarPago() {
 		
 	}
 	
@@ -175,12 +163,20 @@ public class ReservaFormController {
 		
 	}
 	
-	private void modificarReserva() {
-		
+	public boolean esReservablePorFecha() {
+		LocalDateTime presente = LocalDate.now().atStartOfDay();
+		LocalDateTime fechaViaje = viaje.getFechaSalida().atStartOfDay();		
+		String fechaMaxima = ConfigService.findValueByKey("reserva_fecha_maxima");
+		if(fechaMaxima != null) {
+			int fecha_maxima = Integer.parseInt(fechaMaxima);
+			return fechaViaje.minusDays(fecha_maxima).isAfter(presente);
+		}
+		// Si no hay configuración de fecha maxima no interrumpo la 
+		// operación comercial.
+		return true; 
 	}
 	
-    public void setChangeHandler(ChangeHandler h) {
-        changeHandler = h;
-    }
-
+	public void setChangeHandler(ChangeHandler ch) {
+		changeHandler = ch;
+	}
 }

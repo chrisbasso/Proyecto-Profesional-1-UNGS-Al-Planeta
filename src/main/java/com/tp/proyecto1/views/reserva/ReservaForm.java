@@ -1,12 +1,18 @@
 package com.tp.proyecto1.views.reserva;
 
+import java.util.List;
+
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.tp.proyecto1.model.viajes.Viaje;
+import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
+import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -28,26 +34,27 @@ public class ReservaForm extends Dialog{
 	private TextField fechaHasta;
 	private NumberField precioUnitario;
 	private NumberField precioTotal;
-	private ComboBox<Cliente> cliente;
+	private ComboBox<Cliente> cmbCliente;
 	private NumberField cantidadPasajes;
-	private ComboBox<FormaDePago> formaPago;
+	private ComboBox<FormaDePago> cmbFormaPago;
 	private NumberField pago;
 	private NumberField saldoPagar;
-	private Button btnSaveDraft;
 	private Button btnSave;
     private Button btnCancel;
+    private Button btnComprar;
 
     public ReservaForm(Viaje viaje) {
     	if(viaje != null) {
     		this.viaje = viaje;
     		iniciliazarCampos();
-    		cargarValores(viaje);
+    		cargarValores();
         	setReadOnly(); 
         	inicializarForm();
         	inicializarActions();        
         	inicializarMainLayout();	
     	}else {
     		// Prevenir que invoquen el form sin un viaje
+    		Notification.show("Error al invocar ReservaForm.");
     	}		
     }
 
@@ -60,20 +67,25 @@ public class ReservaForm extends Dialog{
 		fechaDesde= new TextField();
 		fechaHasta= new TextField();
 		precioUnitario= new NumberField();
-		cliente= new ComboBox<Cliente>();
+		precioUnitario.setPrefixComponent(new Span("$"));
+		cmbCliente= new ComboBox<Cliente>();
 		cantidadPasajes= new NumberField();		
 		cantidadPasajes.setValue(1d);
 		cantidadPasajes.setMin(1);
 		cantidadPasajes.setMax(Double.parseDouble(viaje.getTransporte().getCapacidad()));
-		cantidadPasajes.setHasControls(true);		
-		
+		cantidadPasajes.setHasControls(true);
 		precioTotal= new NumberField();
-		formaPago = new ComboBox<FormaDePago>();
-		pago = new NumberField();
+		precioTotal.setPrefixComponent(new Span("$"));
+		cmbFormaPago = new ComboBox<FormaDePago>();
+		pago = new NumberField();		
+		pago.setPrefixComponent(new Span("$"));
+		pago.setMin(0.0);
 		saldoPagar = new NumberField();
+		saldoPagar.setPrefixComponent(new Span("$"));
+		saldoPagar.setMin(0.0);
 	}
 
-	private void cargarValores(Viaje viaje) {
+	private void cargarValores() {
 		id.setValue(viaje.getId().toString());
     	pais.setValue(viaje.getDestino().getPais());
     	ciudad.setValue(viaje.getDestino().getCiudad());
@@ -82,6 +94,8 @@ public class ReservaForm extends Dialog{
     	fechaDesde.setValue(viaje.getFechaSalida().toString());
     	fechaHasta.setValue(viaje.getFechaLlegada().toString());
     	precioUnitario.setValue(viaje.getPrecio());
+    	precioTotal.setValue(viaje.getPrecio());
+    	saldoPagar.setValue(viaje.getPrecio());
 	}
     
     private void setReadOnly() {
@@ -105,21 +119,21 @@ public class ReservaForm extends Dialog{
     	form.addFormItem(transporte, "Transporte");
     	form.addFormItem(fechaDesde, "Fecha desde");
     	form.addFormItem(fechaHasta, "Fecha hasta");
-    	form.addFormItem(cliente, "Cliente");
+    	form.addFormItem(cmbCliente, "Cliente");
     	form.addFormItem(cantidadPasajes, "Cantidad de pasajes");
     	form.addFormItem(precioUnitario, "Precio unitario");
     	form.addFormItem(precioTotal, "Precio Total");
-    	form.addFormItem(formaPago, "Forma de pago");
+    	form.addFormItem(cmbFormaPago, "Forma de pago");
     	form.addFormItem(pago, "Pago actual");
     	form.addFormItem(saldoPagar, "Saldo");    	
 	}
 
 	private void inicializarActions() {
 		btnSave= new Button("Guardar");
-		btnSaveDraft= new Button("Guardar borrador");
 		btnCancel= new Button("Cancelar");
+		btnComprar= new Button("Comprar");
     	actions = new HorizontalLayout();
-        actions.add(btnSave, btnSaveDraft, btnCancel);
+        actions.add(btnSave, btnCancel, btnComprar);
 	}
 
 	private void inicializarMainLayout() {
@@ -132,60 +146,86 @@ public class ReservaForm extends Dialog{
         this.setWidth("800px");
         this.setHeight("100%");
 	}
-
-    public Button getBtnSave() {
-		return btnSave;
-	}
-
-	public void setBtnSave(Button btnSave) {
-		this.btnSave = btnSave;
+	
+	public void cargarClientes(List <Cliente> clientes) {
+		cmbCliente.setItems(clientes);
 	}
 	
-    public Button getBtnSaveDraft() {
-		return btnSaveDraft;
+	public void cargarFormasDePago(List <FormaDePago> fdp) {
+		cmbFormaPago.setItems(fdp);
 	}
 
-	public void setBtnSaveDraft(Button btnSaveDraft) {
-		this.btnSaveDraft = btnSaveDraft;
+	public NumberField getCantidadPasajes() {
+		return cantidadPasajes;
+	}
+
+	public NumberField getPago() {
+		return pago;
+	}
+
+	public Button getBtnSave() {
+		return btnSave;
 	}
 
 	public Button getBtnCancel() {
 		return btnCancel;
 	}
-
-	public void setBtnCancel(Button btnCancel) {
-		this.btnCancel = btnCancel;
-	}
-	
-	public ComboBox<Cliente> getComboCliente() {
-		return cliente;
-	}
 	
 	public Cliente getClienteSeleccionado() {
-		return cliente.getValue();
-	}
-		
-	public NumberField getCantidadPasajes() {
-		return cantidadPasajes;
+		return cmbCliente.getValue();
 	}
 	
-	public NumberField getPrecioTotal() {
-		return precioTotal;
+	public FormaDePago getFormaPagoSeleccionada() {
+		return cmbFormaPago.getValue();
 	}
 	
-	public ComboBox<FormaDePago> getFormaPago(){
-		return formaPago;
+	public double getPagoIngresado() {
+		return pago.getValue();
 	}
 	
-	public FormaDePago getFormaPagoSeleccionada(){
-		return formaPago.getValue();
+	public double getPrecioTotal() {
+		return precioTotal.getValue();
+	}
+	public int cantidadPasajesSeleccionados() {
+		return cantidadPasajes.getValue().intValue();
 	}
 	
-	public NumberField getPago() {
-		return pago;
+	public void actualizarPrecioTotal(double nuevoPrecTotal) {
+		precioTotal.setReadOnly(false); 
+		precioTotal.setValue(nuevoPrecTotal); 
+		precioTotal.setReadOnly(true);
+	}	
+	
+	public boolean pagoEsMayorQueTotal() {
+		if(pago.getValue() != null) {
+			return pago.getValue() > precioTotal.getValue();
+		}else {
+			return false;
+		}		
 	}
 	
-	public NumberField getSaldoPagar() {
-		return saldoPagar;
+	public void reiniciarPagoIngresado() {
+		pago.setReadOnly(false);
+		pago.setValue(0.0);
+		pago.setReadOnly(true);
 	}
+	
+	public void actualizarSaldo() {
+		saldoPagar.setReadOnly(false);
+		saldoPagar.setValue(precioTotal.getValue() - pago.getValue());
+		saldoPagar.setReadOnly(true);
+	}
+	
+	public void setModoModificacion(double pasajes, Cliente cliente, double pago) {
+		cmbCliente.setValue(cliente);
+		cmbCliente.setReadOnly(true);
+		cantidadPasajes.setValue(pasajes);	
+		precioTotal.setValue(pasajes * viaje.getPrecio());
+		this.pago.setValue(pago);
+		actualizarSaldo();
+	}
+	
+	public void listenerCantPasajes(ValueChangeListener<? super ComponentValueChangeEvent<NumberField, Double>> e) {
+		cantidadPasajes.addValueChangeListener(e);
+	}	
 }
