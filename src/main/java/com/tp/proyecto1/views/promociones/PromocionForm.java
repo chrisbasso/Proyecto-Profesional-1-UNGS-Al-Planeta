@@ -88,7 +88,6 @@ public class PromocionForm extends Dialog
         form.addFormItem(cantidadPasajes, "Cantidad de pasajes");
         form.addFormItem(tipoPromocion, "Tipo de promocion");
         form.addFormItem(nroFloat, "Bonificador");
-        form.addFormItem(nroFloat, "Bonificador");
         form.addFormItem(destinos, "Destinos afectados");
         form.addFormItem(viajes, "Viajes afectados");
         form.addFormItem(tagsDestino, "Tags afectados");
