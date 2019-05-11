@@ -83,7 +83,7 @@ public class ViajeFormController {
         TipoTransporte tipoTransporte = viajeForm.getTransporte().getValue();
         String codTransporte = viajeForm.getCodTransporte().getValue();
         String clase = viajeForm.getClase().getValue();
-        String capacidad = viajeForm.getCapacidad().getValue();
+        double capacidad = viajeForm.getCapacidad().getValue();
         Double precio = viajeForm.getPrecio().getValue();
         TagDestino tagDestino = viajeForm.getTagDestino().getValue();
         String descipcion = viajeForm.getTextAreaDescripcion().getValue();
@@ -115,7 +115,7 @@ public class ViajeFormController {
         setBinderComboTipoTransporte(viajeForm.getTransporte(), Transporte::getTipo, Transporte::setTipo, true);
         setBinderFieldTransporte(viajeForm.getCodTransporte(), Transporte::getCodTransporte, Transporte::setCodTransporte, true);
         setBinderFieldTransporte(viajeForm.getClase(), Transporte::getClase, Transporte::setClase, true);
-        setBinderFieldIntegerTransporte(viajeForm.getCapacidad(), Transporte::getCapacidad, Transporte::setCapacidad, true);
+        setBinderFieldDoubleTransporte(viajeForm.getCapacidad(), Transporte::getCapacidad, Transporte::setCapacidad, true);
         setBinderFieldDoubleViaje(viajeForm.getPrecio(), Viaje::getPrecio, Viaje::setPrecio, true);
         setBinderComboTagDestino(viajeForm.getTagDestino(), Destino::getTagDestino, Destino::setTagDestino, false);
         setBinderFieldDestino(viajeForm.getTextAreaRecomendaciones(), Destino::getRecomendacion, Destino::setRecomendacion, false);
@@ -167,10 +167,10 @@ public class ViajeFormController {
         viajeForm.getBtnSave().addClickListener(event -> binding.validate());
     }
 
-    private void setBinderFieldIntegerTransporte(AbstractField field, ValueProvider<Transporte, String> valueProvider, Setter<Transporte, String> setter, boolean isRequiered){
+    private void setBinderFieldDoubleTransporte(AbstractField field, ValueProvider<Transporte, Double> valueProvider, Setter<Transporte, Double> setter, boolean isRequiered){
 
-        SerializablePredicate<String> predicate = value -> !field.isEmpty();
-        Binder.Binding<Transporte, String> binding;
+        SerializablePredicate<Double> predicate = value -> !field.isEmpty();
+        Binder.Binding<Transporte, Double> binding;
         if(isRequiered){
             binding = binderTransporte.forField(field)
                     .withValidator(predicate, "El campo es obligatorio")

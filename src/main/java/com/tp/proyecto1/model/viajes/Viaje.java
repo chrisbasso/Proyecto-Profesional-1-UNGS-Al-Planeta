@@ -40,6 +40,14 @@ public class Viaje {
 		this.descripcion = descripcion;
 		this.activo = activo;
 	}
+	
+	public double getPasajesRestantes() {
+		return transporte.pasajesRestantes();
+	}
+	
+	public void restarPasajes(double cantPasajes) {
+		transporte.restarPasajes(cantPasajes);
+	}
 
 	public Long getId() {
 		return id;
@@ -48,17 +56,13 @@ public class Viaje {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
+	
 	public Destino getDestino() {
 		return destino;
 	}
 
 	public void setDestino(Destino destino) {
 		this.destino = destino;
-	}
-
-	public Transporte getTransporte() {
-		return transporte;
 	}
 
 	public void setTransporte(Transporte transporte) {
@@ -141,5 +145,9 @@ public class Viaje {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, destino, transporte, fechaSalida, horaSalida, fechaLlegada, horaLlegada, precio, descripcion, activo);
+	}
+
+	public Transporte getTransporte() {
+		return transporte;
 	}
 }

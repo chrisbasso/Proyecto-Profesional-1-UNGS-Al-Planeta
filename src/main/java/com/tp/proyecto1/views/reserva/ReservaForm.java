@@ -75,7 +75,7 @@ public class ReservaForm extends Dialog{
 		cantidadPasajes= new NumberField();		
 		cantidadPasajes.setValue(1d);
 		cantidadPasajes.setMin(1);
-		cantidadPasajes.setMax(Double.parseDouble(viaje.getTransporte().getCapacidad()));
+		cantidadPasajes.setMax(viaje.getPasajesRestantes());
 		cantidadPasajes.setHasControls(true);
 		precioTotal= new NumberField();
 		precioTotal.setPrefixComponent(new Span("$"));
@@ -93,8 +93,8 @@ public class ReservaForm extends Dialog{
 		id.setValue(viaje.getId().toString());
     	pais.setValue(viaje.getDestino().getPais());
     	ciudad.setValue(viaje.getDestino().getCiudad());
-    	codTransporte.setValue(viaje.getTransporte().getCodTransporte().toString());
-    	transporte.setValue(viaje.getTransporte().getTipo().getDescripcion());
+//    	codTransporte.setValue(viaje.getTransporte().getCodTransporte().toString());
+//    	transporte.setValue(viaje.getTransporte().getTipo().getDescripcion());
     	fechaDesde.setValue(viaje.getFechaSalida().toString());
     	fechaHasta.setValue(viaje.getFechaLlegada().toString());
     	precioUnitario.setValue(viaje.getPrecio());

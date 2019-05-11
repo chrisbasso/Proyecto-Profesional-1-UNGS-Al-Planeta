@@ -25,7 +25,7 @@ public class ViajeForm extends Dialog {
     private ComboBox<TipoTransporte> transporte;
     private TextField codTransporte;
     private TextField clase;
-    private TextField capacidad;
+    private NumberField capacidad;
     private DatePicker fechaSalida;
     private TimePicker horaSalida;
     private DatePicker fechaLlegada;
@@ -56,7 +56,7 @@ public class ViajeForm extends Dialog {
         tagDestino.setItemLabelGenerator(TagDestino::getDescripcion);
         codTransporte = new TextField();
         clase = new TextField();
-        capacidad = new TextField();
+        capacidad = new NumberField();
         capacidad.setPattern("[0-9]*");
         capacidad.setPreventInvalidInput(true);
         ciudad = new TextField();
@@ -167,11 +167,11 @@ public class ViajeForm extends Dialog {
         this.clase = clase;
     }
 
-    public TextField getCapacidad() {
+    public NumberField getCapacidad() {
         return capacidad;
     }
 
-    public void setCapacidad(TextField capacidad) {
+    public void setCapacidad(NumberField capacidad) {
         this.capacidad = capacidad;
     }
 

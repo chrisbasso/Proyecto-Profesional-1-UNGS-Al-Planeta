@@ -87,9 +87,9 @@ public class ReservasController {
         if(!reservaView.getPaisFilter().equals("")){
             reservaBusqueda.getViaje().getDestino().setPais(reservaView.getPaisFilter());
         }
-        if(!reservaView.getCodTransporteFilter().equals("")){
-            reservaBusqueda.getViaje().getTransporte().setCodTransporte(reservaView.getCodTransporteFilter());
-        }
+//        if(!reservaView.getCodTransporteFilter().equals("")){
+//            reservaBusqueda.getViaje().getTransporte().setCodTransporte(reservaView.getCodTransporteFilter());
+//        }
         if(reservaView.getFechaFilter() != null){
             reservaBusqueda.getViaje().setFechaSalida(reservaView.getFechaFilter());
         }
