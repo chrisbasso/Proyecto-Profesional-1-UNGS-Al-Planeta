@@ -1,9 +1,7 @@
 package com.tp.proyecto1.services;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,11 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tp.proyecto1.model.viajes.Promocion;
-import com.tp.proyecto1.model.viajes.PromocionDescuento;
 import com.tp.proyecto1.model.viajes.PromocionPuntos;
-import com.tp.proyecto1.model.viajes.Viaje;
-import com.tp.proyecto1.repository.viajes.PromocionDescuentoRepository;
-import com.tp.proyecto1.repository.viajes.PromocionPuntosRepository;
 import com.tp.proyecto1.repository.viajes.PromocionRepository;
 
 @Service

@@ -1,12 +1,18 @@
 package com.tp.proyecto1.model.viajes;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
+
+import com.vaadin.flow.component.dialog.Dialog;
 
 @Entity
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
@@ -30,6 +36,15 @@ public abstract class Promocion
 	
 	protected Double cantidadPasajes;
 	
+	@OneToMany
+	protected List<Viaje> viajesAfectados;
+	
+	@OneToMany
+	protected List<Destino> destinosAfectados;
+	
+	@OneToMany
+	protected List<TagDestino> tagsDestinoAfectados;
+	
 	public Promocion()
 	{
 		
@@ -43,6 +58,10 @@ public abstract class Promocion
 		setCodigoPromocion(codigoPromocion);
 		setDoubleValue(doubleValue);
 		setCantidadPasajes(cantidadPasajes2);
+		viajesAfectados = new ArrayList<Viaje>();
+		destinosAfectados = new ArrayList<Destino>();
+		tagsDestinoAfectados = new ArrayList<TagDestino>();
+		
 	}
 	
 	public Long getId()
@@ -123,6 +142,36 @@ public abstract class Promocion
 	public void setCantidadPasajes(Double cantidadPasajes2)
 	{
 		this.cantidadPasajes = cantidadPasajes2;
+	}
+
+	public List<Destino> getDestinosAfectados()
+	{
+		return destinosAfectados;
+	}
+	
+	public void setDestinosAfectados(List<Destino> destinosAfectados)
+	{
+		this.destinosAfectados = destinosAfectados;
+	}
+	
+	public List<Viaje> getViajesAfectados()
+	{
+		return viajesAfectados;
+	}
+	
+	public void setViajesAfectados(List<Viaje> viajesAfectados)
+	{
+		this.viajesAfectados = viajesAfectados;
+	}
+	
+	public List<TagDestino> getTagsDestinoAfectados()
+	{
+		return tagsDestinoAfectados;
+	}
+	
+	public void setTagsDestinoAfectados(List<TagDestino> tagsDestinoAfectados)
+	{
+		this.tagsDestinoAfectados = tagsDestinoAfectados;
 	}
 	    
 }
