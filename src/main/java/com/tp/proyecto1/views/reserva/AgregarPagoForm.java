@@ -7,6 +7,8 @@ import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasValue.ValueChangeListener;
+import com.vaadin.flow.component.InputEvent;
+import com.vaadin.flow.component.KeyUpEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -64,7 +66,6 @@ public class AgregarPagoForm extends Dialog{
     	mainLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         mainLayout.add(form,actions);
         mainLayout.setSizeFull();
-        
     	this.add(mainLayout);
         this.setWidth("800px");
         this.setHeight("100%");
@@ -80,15 +81,11 @@ public class AgregarPagoForm extends Dialog{
 	}
 	
 	public double getPagoIngresado() {
-		return pago.getValue();
-	}
-	
-	public void setListenerImporte(ValueChangeListener<? super ComponentValueChangeEvent<NumberField, Double>> e) {
-		pago.addValueChangeListener(e);
-	}
-	
-	public void setListenerFDP(ValueChangeListener<? super ComponentValueChangeEvent<ComboBox<FormaDePago>, FormaDePago>> e) {
-		cmbFormaPago.addValueChangeListener(e);
+		if(pago.getValue() == null) {
+			return 0.00;
+		}else {
+			return pago.getValue();
+		}
 	}
 	
 	public void activarBtnGuardar() {
@@ -99,8 +96,12 @@ public class AgregarPagoForm extends Dialog{
 		btnSave.setEnabled(false);
 	}
 	
-	public boolean opcionesSeleccionadas() {
-		return pago.getValue()>0 && (cmbFormaPago.getValue()!= null);	
+	public void setListenerImporte(ValueChangeListener<? super ComponentValueChangeEvent<NumberField, Double>> e) {
+		pago.addValueChangeListener(e);
+	}
+	
+	public void setListenerFDP(ValueChangeListener<? super ComponentValueChangeEvent<ComboBox<FormaDePago>, FormaDePago>> e) {
+		cmbFormaPago.addValueChangeListener(e);
 	}
 	
 	public void setListenerBtnGuardar(ComponentEventListener<ClickEvent<Button>> e){

@@ -3,12 +3,14 @@ package com.tp.proyecto1.views.reserva;
 import java.util.List;
 
 import com.tp.proyecto1.model.clientes.Cliente;
-import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Span;
@@ -36,9 +38,9 @@ public class ReservaForm extends Dialog{
 	private NumberField precioTotal;
 	private ComboBox<Cliente> cmbCliente;
 	private NumberField cantidadPasajes;
-	private ComboBox<FormaDePago> cmbFormaPago;
-	private NumberField pago;
+	private NumberField sumaDePagos;
 	private NumberField saldoPagar;
+	private Button btnAgregarPago;
 	private Button btnSave;
     private Button btnCancel;
     private Button btnComprar;
@@ -67,6 +69,7 @@ public class ReservaForm extends Dialog{
 		fechaDesde= new TextField();
 		fechaHasta= new TextField();
 		precioUnitario= new NumberField();
+		precioUnitario.setClassName(".v-numberfield");
 		precioUnitario.setPrefixComponent(new Span("$"));
 		cmbCliente= new ComboBox<Cliente>();
 		cantidadPasajes= new NumberField();		
@@ -76,13 +79,14 @@ public class ReservaForm extends Dialog{
 		cantidadPasajes.setHasControls(true);
 		precioTotal= new NumberField();
 		precioTotal.setPrefixComponent(new Span("$"));
-		cmbFormaPago = new ComboBox<FormaDePago>();
-		pago = new NumberField();		
-		pago.setPrefixComponent(new Span("$"));
-		pago.setMin(0.0);
+		sumaDePagos = new NumberField();		
+		sumaDePagos.setPrefixComponent(new Span("$"));
+		sumaDePagos.setMin(0.0);
 		saldoPagar = new NumberField();
 		saldoPagar.setPrefixComponent(new Span("$"));
 		saldoPagar.setMin(0.0);
+		btnAgregarPago = new Button("Agregar pago");
+		btnAgregarPago.setEnabled(false);
 	}
 
 	private void cargarValores() {
@@ -108,10 +112,14 @@ public class ReservaForm extends Dialog{
 		fechaHasta.setReadOnly(true);
 		precioUnitario.setReadOnly(true);
 		precioTotal.setReadOnly(true);
+		sumaDePagos.setReadOnly(true);
 		saldoPagar.setReadOnly(true);
     }
 
 	private void inicializarForm() {
+		HorizontalLayout pagos = new HorizontalLayout();
+		pagos.add(sumaDePagos, btnAgregarPago);
+		
 		form = new FormLayout();    	
     	form.addFormItem(pais, "País");
     	form.addFormItem(ciudad, "Ciudad");
@@ -123,9 +131,8 @@ public class ReservaForm extends Dialog{
     	form.addFormItem(cantidadPasajes, "Cantidad de pasajes");
     	form.addFormItem(precioUnitario, "Precio unitario");
     	form.addFormItem(precioTotal, "Precio Total");
-    	form.addFormItem(cmbFormaPago, "Forma de pago");
-    	form.addFormItem(pago, "Pago actual");
-    	form.addFormItem(saldoPagar, "Saldo");    	
+    	form.addFormItem(saldoPagar, "Saldo");
+    	form.addFormItem(pagos, "Pagos");    	
 	}
 
 	private void inicializarActions() {
@@ -141,7 +148,6 @@ public class ReservaForm extends Dialog{
     	mainLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         mainLayout.add(form,actions);
         mainLayout.setSizeFull();
-        
     	this.add(mainLayout);
         this.setWidth("800px");
         this.setHeight("100%");
@@ -151,41 +157,14 @@ public class ReservaForm extends Dialog{
 		cmbCliente.setItems(clientes);
 	}
 	
-	public void cargarFormasDePago(List <FormaDePago> fdp) {
-		cmbFormaPago.setItems(fdp);
-	}
-
-	public NumberField getCantidadPasajes() {
-		return cantidadPasajes;
-	}
-
-	public NumberField getPago() {
-		return pago;
-	}
-
-	public Button getBtnSave() {
-		return btnSave;
-	}
-
-	public Button getBtnCancel() {
-		return btnCancel;
-	}
-	
 	public Cliente getClienteSeleccionado() {
 		return cmbCliente.getValue();
-	}
-	
-	public FormaDePago getFormaPagoSeleccionada() {
-		return cmbFormaPago.getValue();
-	}
-	
-	public double getPagoIngresado() {
-		return pago.getValue();
 	}
 	
 	public double getPrecioTotal() {
 		return precioTotal.getValue();
 	}
+	
 	public int cantidadPasajesSeleccionados() {
 		return cantidadPasajes.getValue().intValue();
 	}
@@ -194,26 +173,44 @@ public class ReservaForm extends Dialog{
 		precioTotal.setReadOnly(false); 
 		precioTotal.setValue(nuevoPrecTotal); 
 		precioTotal.setReadOnly(true);
+	}
+	
+	public void actualizarPagos(double nuevoPagos) {
+		sumaDePagos.setReadOnly(false); 
+		sumaDePagos.setValue(nuevoPagos); 
+		sumaDePagos.setReadOnly(true);
 	}	
 	
 	public boolean pagoEsMayorQueTotal() {
-		if(pago.getValue() != null) {
-			return pago.getValue() > precioTotal.getValue();
+		if(sumaDePagos.getValue() != null) {
+			return sumaDePagos.getValue() > precioTotal.getValue();
 		}else {
 			return false;
 		}		
 	}
 	
 	public void reiniciarPagoIngresado() {
-		pago.setReadOnly(false);
-		pago.setValue(0.0);
-		pago.setReadOnly(true);
+		sumaDePagos.setReadOnly(false);
+		sumaDePagos.setValue(0.0);
+		sumaDePagos.setReadOnly(true);
 	}
 	
-	public void actualizarSaldo() {
+	public void actualizarSaldo(double saldo) {
 		saldoPagar.setReadOnly(false);
-		saldoPagar.setValue(precioTotal.getValue() - pago.getValue());
+		saldoPagar.setValue(saldo);
 		saldoPagar.setReadOnly(true);
+	}
+	
+	public void habilitarBtnAgregarPago() {
+		btnAgregarPago.setEnabled(true);
+	}
+	
+	public void deshabilitarBtnAgregarPago() {
+		btnAgregarPago.setEnabled(false);
+	}
+	
+	public void inhabilitarClientes(){
+		cmbCliente.setReadOnly(true);
 	}
 	
 	public void setModoModificacion(double pasajes, Cliente cliente, double pago) {
@@ -221,11 +218,26 @@ public class ReservaForm extends Dialog{
 		cmbCliente.setReadOnly(true);
 		cantidadPasajes.setValue(pasajes);	
 		precioTotal.setValue(pasajes * viaje.getPrecio());
-		this.pago.setValue(pago);
-		actualizarSaldo();
+		this.sumaDePagos.setValue(pago);
 	}
 	
-	public void listenerCantPasajes(ValueChangeListener<? super ComponentValueChangeEvent<NumberField, Double>> e) {
+	public void setListenerCliente(ValueChangeListener<? super ComponentValueChangeEvent<ComboBox<Cliente>, Cliente>> e) {
+		cmbCliente.addValueChangeListener(e);
+	}
+	
+	public void setListenerCantPasajes(ValueChangeListener<? super ComponentValueChangeEvent<NumberField, Double>> e) {
 		cantidadPasajes.addValueChangeListener(e);
+	}
+	
+	public void setListenerBtnNuevoPago(ComponentEventListener<ClickEvent<Button>> e) {
+		btnAgregarPago.addClickListener(e);
+	}	
+
+	public void setListenerBtnSave(ComponentEventListener<ClickEvent<Button>> e) {
+		btnSave.addClickListener(e);
+	}	
+	
+	public void setListenerBtnCancel(ComponentEventListener<ClickEvent<Button>> e) {
+		btnCancel.addClickListener(e);
 	}	
 }

@@ -47,4 +47,9 @@ public class FormaDePago {
 		public int hashCode() {
 			return Objects.hash(id, descripcion);
 		}
+
+		@Override
+		public String toString() {
+			return descripcion;
+		}	
 	}

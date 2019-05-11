@@ -184,4 +184,9 @@ public class Cliente {
 	public int hashCode() {
 		return Objects.hash(id, nombre, apellido, dni, fechaNacimiento, domicilio, email, telefono, isActivo, fechaBaja, fechaAlta);
 	}
+
+	@Override
+	public String toString() {
+		return getNombreyApellido();
+	}
 }

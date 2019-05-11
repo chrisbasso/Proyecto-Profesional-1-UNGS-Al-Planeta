@@ -2,7 +2,6 @@ package com.tp.proyecto1.controllers.reserva;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.tp.proyecto1.model.pasajes.FormaDePago;
@@ -14,7 +13,6 @@ import com.vaadin.flow.spring.annotation.UIScope;
 public class PagoFormController {
 
 	private AgregarPagoForm form;
-	@Autowired
 	private ReservaFormController observer;
 
 	public PagoFormController(ReservaFormController observer) {
@@ -28,40 +26,16 @@ public class PagoFormController {
 	}
 	
 	private void setListeners() {
-		setListenerImporte();
-		setListenerFDP();	
-		setListenerBtnGuardar();
-		setListenerBtnCancelar();
-	}
-	
-	private void setListenerImporte() {
-		form.setListenerImporte(e->cambioImporte());
-	}
-	
-	private void cambioImporte() {
-		activarBtnGuardar();
-	}
-	
-	private void setListenerFDP() {
-		form.setListenerFDP(e->cambioFormaPago());
-	}
-	
-	private void cambioFormaPago() {
-		activarBtnGuardar();
-	}
-	
-	private void setListenerBtnGuardar() {
-		form.setListenerBtnGuardar(e->finalizarConPago());
-	}
-	
-	private void setListenerBtnCancelar() {
+		form.setListenerImporte(e->activarBtnGuardar());
+		form.setListenerFDP(e->activarBtnGuardar());
+		form.setListenerBtnGuardar(e->finalizarConPago());	
 		form.setListenerBtnCancelar(e->finalizar());
 	}
 	
 	private void activarBtnGuardar() {
-		if(form.opcionesSeleccionadas()) {
+		if(form.getFormaPagoSeleccionada() != null && form.getPagoIngresado() > 0) {
 			form.activarBtnGuardar();
-		}else {
+		}else{
 			desactivarBtnGuardar(); 
 		}
 	}

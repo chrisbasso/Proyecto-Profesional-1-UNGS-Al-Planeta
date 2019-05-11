@@ -21,7 +21,6 @@ import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
-import com.tp.proyecto1.views.reserva.AgregarPagoForm;
 import com.tp.proyecto1.views.reserva.ReservaForm;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -30,9 +29,6 @@ import com.vaadin.flow.spring.annotation.UIScope;
 @UIScope
 public class ReservaFormController {
 
-	private ReservaForm reservaForm;
-	private Viaje viaje;	
-	private Reserva reserva;
 	@Autowired
 	private ReservaService reservaService;
 	@Autowired
@@ -43,67 +39,74 @@ public class ReservaFormController {
 	private ViajeService viajeService;
 	@Autowired
 	private ConfiguracionService ConfigService;
-	@Autowired
+
+	private ReservaForm reservaForm;
+	private Viaje viaje;	
+	private Reserva reserva;
 	private PagoFormController pagoFormController;
+	private ArrayList <Pago> listaDePagos;
 	private ChangeHandler changeHandler;
 	
 	public ReservaFormController(Viaje viaje) {
 		Inject.Inject(this);
 		this.viaje = viaje;	
+		this.listaDePagos = new ArrayList<Pago>(); 
 	}
 
 	public ReservaForm getReservaForm() {
 		reservaForm = new ReservaForm(viaje);
 		reservaForm.cargarClientes(clienteService.findAll());
-		reservaForm.cargarFormasDePago(ventaService.findAllFomaDePagos());
 		setListeners();
 		return reservaForm;
 	}
 	
     private void setListeners() {
-        reservaForm.listenerCantPasajes(e->actualizarPrecioTotal());
-        reservaForm.getPago().addValueChangeListener(e->actualizarPago());        
-        reservaForm.getBtnSave().addClickListener(e->guardarReserva());
-        reservaForm.getBtnCancel().addClickListener(e->reservaForm.close());
+        reservaForm.setListenerCantPasajes(e->actualizarImportes());
+        reservaForm.setListenerCliente(e->habilitarPagos());
+        reservaForm.setListenerBtnNuevoPago(e->formNuevoPago());        
+        reservaForm.setListenerBtnSave(e->guardarReserva());
+        reservaForm.setListenerBtnCancel(e->reservaForm.close());
     }
     
-	private void actualizarPrecioTotal(){
+	private void actualizarImportes(){
+		reservaForm.actualizarPrecioTotal(getPrecioTotal());
+		reservaForm.actualizarSaldo(getSaldo());
+		reservaForm.actualizarPagos(getSumatoriaPagos());
+	}
+	
+	private double getPrecioTotal() {
 		int pasajes = reservaForm.cantidadPasajesSeleccionados();
-		double precioTotal = viaje.getPrecio() * pasajes;		
-		reservaForm.actualizarPrecioTotal(precioTotal);
-		reservaForm.actualizarSaldo();
-		actualizarPago(); //Caso del usuario jugando*
+		return viaje.getPrecio() * pasajes;
 	}
-
-	private void actualizarPago(){
-		if(reservaForm.pagoEsMayorQueTotal()) {
-			Notification.show("El total a pagar es menor que el importe de pago ingresado.");
-			reservaForm.reiniciarPagoIngresado();
-		}else {
-			reservaForm.actualizarSaldo();
+	
+	private double getSumatoriaPagos() {
+		double sumatoria = 0.0;
+		if(listaDePagos.size()>0) {
+			for (Pago pago : listaDePagos) {
+				sumatoria += pago.getImporte();
+			}
 		}
+		return sumatoria;
 	}
-
+	
+	private double getSaldo() {
+		return getPrecioTotal() - getSumatoriaPagos();
+	}
+	
+	private void habilitarPagos() {
+		reservaForm.habilitarBtnAgregarPago();
+	}
+	
 	private void guardarReserva() {
-		Cliente cliente = reservaForm.getClienteSeleccionado();
-		FormaDePago fdp = reservaForm.getFormaPagoSeleccionada();
-		Double pagado = reservaForm.getPagoIngresado();
-		Double importeTotal = reservaForm.getPrecioTotal();
-		int cantidadPasajes = reservaForm.cantidadPasajesSeleccionados();
-		
 		if(esReservablePorFecha()) {
+			Cliente cliente = reservaForm.getClienteSeleccionado();
+			Double importeTotal = reservaForm.getPrecioTotal();
+			int cantidadPasajes = reservaForm.cantidadPasajesSeleccionados();			
 			List<PasajeVenta> pasajes = new ArrayList<PasajeVenta> ();
 			for (int i = 0; i < cantidadPasajes; i++) {
 				pasajes.add(new PasajeVenta());
-			}
-			
-			List<Pago> pagos = new ArrayList<Pago> ();
-			reserva = new Reserva(pasajes, pagos, importeTotal, cliente);
-			// Se debe permitir reservar el pasaje sin necesidad de pagar
-			if(pagado != null && pagado>0) {
-				Pago pago = new Pago(cliente, reserva, fdp, pagado, LocalDate.now());
-				pagos.add(pago);
-			}
+			}			
+			reserva = new Reserva(pasajes, listaDePagos, importeTotal, cliente);
 			reservaService.save(reserva);
 			mensajeReservaGuardada();
 			mensajeSaldoViaje(); 
@@ -122,13 +125,12 @@ public class ReservaFormController {
 		}else {
 			Notification.show("Reserva guardada con éxito."); 
 		}
-
 	}
 	
 	private void mensajeSaldoViaje() {
 		// pero avisando al cliente que debe pagar al menos el 30%
 		// del valor total antes que finalice la fecha de la reserva.
-		double pago = reservaForm.getPago().getValue();
+		double pago = getSumatoriaPagos();
 		double porcentaje = reservaForm.getPrecioTotal() * 0.3; 
 		String fechaMaxima = ConfigService.findValueByKey("reserva_fecha_maxima");
 		if(pago < porcentaje) {
@@ -151,15 +153,18 @@ public class ReservaFormController {
 		viajeService.save(viaje);
 	}
 	
-	public void formNuevoPago() {
-		double saldoReserva = 0.0;
+	private void formNuevoPago() {
+		double saldoReserva = getSaldo();
+		pagoFormController = new PagoFormController(this);
 		pagoFormController.mostrarForm(saldoReserva, ventaService.findAllFomaDePagos());
 	}
 	
 	public void agregarPago(FormaDePago fdp, double importe) {
-		Pago nuevoPago = new Pago(reserva.getCliente(), reserva, fdp, importe,LocalDate.now()); 
-		reserva.agregarPago(nuevoPago);
-		reservaService.save(reserva);
+		Cliente cliente = reservaForm.getClienteSeleccionado();
+		Pago nuevoPago = new Pago(cliente, null, fdp, importe, LocalDate.now()); 
+		listaDePagos.add(nuevoPago);
+		reservaForm.inhabilitarClientes();
+		actualizarImportes();
 	}
 	
 	private void emitirComprobante() {
@@ -183,7 +188,7 @@ public class ReservaFormController {
 		return true; 
 	}
 	
-	public ReservaForm formModificacionReserva(Reserva reserva) {
+	public ReservaForm getFormModificacionReserva(Reserva reserva) {
 		reservaForm = new ReservaForm(reserva.getViaje());
 		reservaForm.setModoModificacion(reserva.getPasajes().size(), reserva.getCliente(), reserva.getImporteTotal());
 		setListeners();
