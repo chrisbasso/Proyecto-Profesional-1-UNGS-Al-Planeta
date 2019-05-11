@@ -23,24 +23,22 @@ import com.vaadin.flow.spring.annotation.UIScope;
 @UIScope
 public class ReservasController {
 
-    private ReservaView reservaView;
     @Autowired
     private ReservaService reservaService;
     private ReservaFormController reservaFormController;
-    
+    private ReservaView reservaView;
     private ChangeHandler changeHandler;
 
     public ReservasController() {
         Inject.Inject(this);
-        this.reservaView = new ReservaView();
+        this.reservaView = new ReservaView();        
+//        agregarBotonesEdicion();
         setListeners();
-        setComponents();
         listReservas();
-
     }
 
-    private void setComponents() {
-        reservaView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
+    private void agregarBotonesEdicion() {
+        reservaView.agregarColumnaEdicion(this::createEditButton);
     }
     
     private Button createEditButton(Reserva reserva) {
@@ -57,16 +55,16 @@ public class ReservasController {
     
     private void setListeners() {
     	setChangeHandler(this::listReservas);
-    	reservaView.getSearchButton().addClickListener(e->listReservas());
+    	reservaView.setBtnBuscarListener(e->listReservas());
     }
 
     private void listReservas() {
         Reserva reservaBusqueda = new Reserva();
         if(checkFiltros()){
             setParametrosBusqueda(reservaBusqueda);
-            reservaView.getGrid().setItems(reservaService.findReservas(reservaBusqueda));
+            reservaView.cargarReservas(reservaService.findReservas(reservaBusqueda));
         }else {
-            reservaView.getGrid().setItems(reservaService.findAll());
+            reservaView.cargarReservas(reservaService.findAll());
         }
     }
 
@@ -80,27 +78,27 @@ public class ReservasController {
         viaje.setTransporte(transporte);
         viaje.setActivo(true);
         reservaBusqueda.setViaje(viaje);
-        if(!reservaView.getNumeroClienteFilter().isEmpty()){
-            reservaBusqueda.getCliente().setId(reservaView.getNumeroClienteFilter().getValue().longValue());
+        if(reservaView.getNumeroClienteFilter() >= 0){
+            reservaBusqueda.getCliente().setId(reservaView.getNumeroClienteFilter());
         }
-        if(!reservaView.getCiudadFilter().isEmpty()){
-            reservaBusqueda.getViaje().getDestino().setCiudad(reservaView.getCiudadFilter().getValue());
+        if(!reservaView.getCiudadFilter().equals("")){
+            reservaBusqueda.getViaje().getDestino().setCiudad(reservaView.getCiudadFilter());
         }
-        if(!reservaView.getPaisFilter().isEmpty()){
-            reservaBusqueda.getViaje().getDestino().setPais(reservaView.getPaisFilter().getValue());
+        if(!reservaView.getPaisFilter().equals("")){
+            reservaBusqueda.getViaje().getDestino().setPais(reservaView.getPaisFilter());
         }
-        if(!reservaView.getCodTransporteFilter().isEmpty()){
-            reservaBusqueda.getViaje().getTransporte().setCodTransporte(reservaView.getCodTransporteFilter().getValue());
+        if(!reservaView.getCodTransporteFilter().equals("")){
+            reservaBusqueda.getViaje().getTransporte().setCodTransporte(reservaView.getCodTransporteFilter());
         }
-        if(!reservaView.getFechaFilter().isEmpty()){
-            reservaBusqueda.getViaje().setFechaSalida(reservaView.getFechaFilter().getValue());
+        if(reservaView.getFechaFilter() != null){
+            reservaBusqueda.getViaje().setFechaSalida(reservaView.getFechaFilter());
         }
     }
 
     private boolean checkFiltros() {
-        return !reservaView.getPaisFilter().isEmpty() || !reservaView.getCiudadFilter().isEmpty() ||
-                !reservaView.getCodTransporteFilter().isEmpty() || !reservaView.getNumeroClienteFilter().isEmpty() ||
-                 !reservaView.getFechaFilter().isEmpty();
+        return !reservaView.getPaisFilter().equals("") || !reservaView.getCiudadFilter().equals("")  ||
+                !reservaView.getCodTransporteFilter().equals("") || !reservaView.getNumeroClienteFilter().equals("")  ||
+                 reservaView.getFechaFilter() != null;
     }
 
     private void setChangeHandler(ChangeHandler h) {
