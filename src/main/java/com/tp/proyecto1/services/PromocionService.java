@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,9 +73,28 @@ public class PromocionService
         return ret;*/
     }
 
-	public Collection<Promocion> findPromocion(Promocion promocionBusqueda, LocalDate value, LocalDate value2) {
-		// TODO Auto-generated method stub
-		return null;
+	public Collection<Promocion> findPromociones(Promocion promocionBusqueda, LocalDate vencimientoMayorA)
+	{
+		List<Promocion> promociones; 
+		promociones = promocionRepository.findAll(Example.of(promocionBusqueda));
+		if (promocionBusqueda.getTipoPromocion()==null)
+		{			
+			
+			Promocion promocionBusqueda2 = new PromocionPuntos();
+			promocionBusqueda2.setId(promocionBusqueda.getId());
+			promocionBusqueda2.setNombrePromocion(promocionBusqueda.getNombrePromocion());
+			promocionBusqueda2.setDescripcion(promocionBusqueda.getDescripcion());
+			promocionBusqueda2.setFechaVencimiento(promocionBusqueda.getFechaVencimiento());
+			promocionBusqueda2.setCodigoPromocion(promocionBusqueda.getCodigoPromocion());
+			promocionBusqueda2.setDoubleValue(promocionBusqueda.getDoubleValue());
+			promocionBusqueda2.setCantidadPasajes(promocionBusqueda.getCantidadPasajes());
+			for (Promocion promoPuntos : promocionRepository.findAll(Example.of(promocionBusqueda2)))
+				promociones.add(promoPuntos);
+		}
+        if(vencimientoMayorA!=null)
+            promociones = promociones.stream().filter(e-> e.getFechaVencimiento().isBefore(vencimientoMayorA)).collect(Collectors.toList());
+        
+	   return promociones;
 	}
 	
 }

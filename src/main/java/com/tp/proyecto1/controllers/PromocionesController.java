@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 
 import com.tp.proyecto1.model.viajes.Destino;
 import com.tp.proyecto1.model.viajes.Promocion;
+import com.tp.proyecto1.model.viajes.PromocionDescuento;
+import com.tp.proyecto1.model.viajes.PromocionPuntos;
 import com.tp.proyecto1.model.viajes.Transporte;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.PromocionService;
@@ -69,42 +71,55 @@ public class PromocionesController {
     }
 
     private void listPromociones() {
-        /*Promocion viajeBusqueda = new Promocion();
-        if(checkFiltros()){
-            setParametrosBusqueda(viajeBusqueda);
-         //   promocionView.getGrid().setItems(viajeService.findViajes(viajeBusqueda, viajesView.getFechaDesdeFilter().getValue(), viajesView.getFechaHastaFilter().getValue()));
-        }else{*/
+
+        if(checkFiltros())
+        {
+        	System.out.println("filtros On");
+            promocionView.getGrid().setItems(promocionService.findPromociones(setPromocionBusqueda(), promocionView.getVencimientoMenorAFilter().getValue()));
+        }
+        else
+        {
          promocionView.getGrid().setItems(promocionService.findAll());
-       // }
+       }
     }
 
-    private void setParametrosBusqueda(Promocion promocionBusqueda) {
-       // promocionBusqueda.setDestino(new Destino());
-       // promocionBusqueda.setTransporte(new Transporte());
-        if(!promocionView.getIdFilter().isEmpty()){
+    private Promocion setPromocionBusqueda()
+    {
+    	Promocion promocionBusqueda;
+    	
+        if(!promocionView.getTipoPromoFilter().isEmpty())
+        {
+        	if (promocionView.getTipoPromoFilter().getValue().equals("Puntos"))
+        	{
+        		promocionBusqueda = new PromocionPuntos();
+        		promocionBusqueda.setTipoPromocion("Puntos");
+        	}
+        	else
+        	{
+        		promocionBusqueda = new PromocionDescuento();
+        		promocionBusqueda.setTipoPromocion("Descuento");
+        	}
+        }
+        else
+        {
+        	promocionBusqueda = new PromocionDescuento();
+        }
+    	
+        if(!promocionView.getIdFilter().isEmpty())
             promocionBusqueda.setId(promocionView.getIdFilter().getValue().longValue());
-        }
-        if(!promocionView.getNombreFilter().isEmpty()){
+        
+        if(!promocionView.getNombreFilter().isEmpty())
             promocionBusqueda.setNombrePromocion(promocionView.getNombreFilter().getValue());
-        }
-        if(!promocionView.getCodigoPromoFilter().isEmpty()){
+        
+        if(!promocionView.getCodigoPromoFilter().isEmpty())
             promocionBusqueda.setCodigoPromocion(promocionView.getCodigoPromoFilter().getValue());
-        }
-       /* if(!promocionView.getCodTransporteFilter().isEmpty()){
-            viajeBusqueda.getTransporte().setCodTransporte(promocionView.getCodTransporteFilter().getValue());
-        }
-       /* if(!promocionView.getTransporteFilter().isEmpty()){
-            viajeBusqueda.getTransporte().setTipo(promocionView.getTransporteFilter().getValue());
-        }
-*/
-       // viajeBusqueda.setActivo(promocionView.getActivosCheck().getValue());
+        return promocionBusqueda;
     }
 
     private boolean checkFiltros() {
-        return !promocionView.getIdFilter().isEmpty() || /*!promocionView.getCodTransporteFilter().isEmpty()||*/ 
+        return !promocionView.getIdFilter().isEmpty() || !promocionView.getTipoPromoFilter().isEmpty() ||
                 !promocionView.getNombreFilter().isEmpty() || !promocionView.getCodigoPromoFilter().isEmpty() ||
-                /*promocionView.getActivosCheck().getValue() ||*/ promocionView.getFechaDesdeFilter()!=null ||
-                promocionView.getFechaHastaFilter() != null;
+                !promocionView.getVencimientoMenorAFilter().isEmpty();
     }
 
     private void setChangeHandler(ChangeHandler h) {

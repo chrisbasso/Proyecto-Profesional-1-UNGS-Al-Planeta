@@ -48,7 +48,7 @@ public class PromocionFormController {
 
     private void setListeners() {
     	promocionForm.getBtnSave().addClickListener(e-> savePromocion(promocion));
-    	promocionForm.getBtnSave().addClickListener(e->promocionForm.close());
+    	promocionForm.getBtnCancel().addClickListener(e->promocionForm.close());
     }
     
     private void savePromocion(Promocion promocion)

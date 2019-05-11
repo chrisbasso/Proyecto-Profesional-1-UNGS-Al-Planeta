@@ -27,8 +27,8 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 	private TextField codigoPromoFilter;
 	//private TextField codTransporteFilter;
 	private ComboBox<String> tipoPromoFilter;
-	private DatePicker fechaDesdeFilter;
-	private DatePicker fechaHastaFilter;
+	//private DatePicker fechaDesdeFilter;
+	private DatePicker vencimientoMenorAFilter;
 	//private Checkbox activosCheck;
 	private Button searchButton;
 	private Button newPromocionButton;
@@ -60,10 +60,10 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
         items.add("Descuento");
         items.add("Puntos");
         tipoPromoFilter.setItems(items);
-		this.fechaDesdeFilter = new DatePicker("Fecha Desde");
-		this.fechaDesdeFilter.setWidth("137px");
-		this.fechaHastaFilter = new DatePicker("Fecha Hasta");
-		this.fechaHastaFilter.setWidth("137px");
+		/*this.fechaDesdeFilter = new DatePicker("Fecha Desde");
+		this.fechaDesdeFilter.setWidth("137px");*/
+		this.vencimientoMenorAFilter = new DatePicker("Vencimiento menor a");
+		this.vencimientoMenorAFilter.setWidth("170px");
 		/*this.btnComprar = new Button("Vender");
 		this.btnReservar = new Button("Reservar");*/
 	//	this.activosCheck.setValue(true);
@@ -74,7 +74,7 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 		HorizontalLayout hlSpace = new HorizontalLayout();
 		//this.hlFooter.add(btnReservar, btnComprar);
 		hlSpace.setWidthFull();
-		this.hlActions.add(idFilter, nombreFilter, codigoPromoFilter, /*codTransporteFilter, */tipoPromoFilter,fechaDesdeFilter,fechaHastaFilter/*,activosCheck(*/,hlSpace, searchButton, newPromocionButton);
+		this.hlActions.add(idFilter, nombreFilter, codigoPromoFilter, /*codTransporteFilter, */tipoPromoFilter,/*fechaDesdeFilter,*/vencimientoMenorAFilter/*,activosCheck(*/,hlSpace, searchButton, newPromocionButton);
 	}
 
 	public void setGrid() {
@@ -160,20 +160,20 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 		this.tipoPromoFilter = tipoPromoFilter;
 	}
 
-	public DatePicker getFechaDesdeFilter() {
+	/*public DatePicker getFechaDesdeFilter() {
 		return fechaDesdeFilter;
 	}
 
 	public void setFechaDesdeFilter(DatePicker fechaDesdeFilter) {
 		this.fechaDesdeFilter = fechaDesdeFilter;
+	}*/
+
+	public DatePicker getVencimientoMenorAFilter() {
+		return vencimientoMenorAFilter;
 	}
 
-	public DatePicker getFechaHastaFilter() {
-		return fechaHastaFilter;
-	}
-
-	public void setFechaHastaFilter(DatePicker fechaHastaFilter) {
-		this.fechaHastaFilter = fechaHastaFilter;
+	public void setVencimientoMenorAFilter(DatePicker vencimientoMenorAFilter) {
+		this.vencimientoMenorAFilter = vencimientoMenorAFilter;
 	}
 
 	/*public Button getBtnReservar() {
