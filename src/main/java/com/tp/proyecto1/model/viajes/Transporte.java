@@ -67,6 +67,11 @@ public class Transporte {
 	public void setClase(String clase) {
 		this.clase = clase;
 	}
+	
+	public TipoTransporte getTipoTransporte()
+	{
+		return tipo;
+	}
 
 	@Override
 	public boolean equals(Object o) {

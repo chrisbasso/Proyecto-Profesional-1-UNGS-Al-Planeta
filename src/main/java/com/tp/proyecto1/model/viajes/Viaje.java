@@ -142,4 +142,10 @@ public class Viaje {
 	public int hashCode() {
 		return Objects.hash(id, destino, transporte, fechaSalida, horaSalida, fechaLlegada, horaLlegada, precio, descripcion, activo);
 	}
+	
+	@Override
+	public String toString()
+	{
+		return destino.toString() + ", " + fechaSalida.toString() + " "  +  horaSalida.toString() + ", " + transporte.getTipoTransporte().getDescripcion();
+	}
 }
