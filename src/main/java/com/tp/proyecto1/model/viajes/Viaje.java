@@ -65,6 +65,10 @@ public class Viaje {
 		this.destino = destino;
 	}
 
+	public Transporte getTransporte() {
+		return transporte;
+	}
+
 	public void setTransporte(Transporte transporte) {
 		this.transporte = transporte;
 	}
@@ -146,8 +150,10 @@ public class Viaje {
 	public int hashCode() {
 		return Objects.hash(id, destino, transporte, fechaSalida, horaSalida, fechaLlegada, horaLlegada, precio, descripcion, activo);
 	}
-
-	public Transporte getTransporte() {
-		return transporte;
+	
+	@Override
+	public String toString()
+	{
+		return destino.toString() + ", " + fechaSalida.toString() + " "  +  horaSalida.toString() + ", " + transporte.getTipoTransporte().getDescripcion();
 	}
 }

@@ -3,6 +3,10 @@ package com.tp.proyecto1.views.promociones;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.tp.proyecto1.model.viajes.Destino;
+import com.tp.proyecto1.model.viajes.TagDestino;
+import com.tp.proyecto1.model.viajes.TipoTransporte;
+import com.tp.proyecto1.model.viajes.Viaje;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -27,7 +31,10 @@ public class PromocionForm extends Dialog
     private DatePicker fechaVencimiento;
     private NumberField nroFloat;
     private TextArea textAreaDescripcion;
-
+    private ComboBox<Destino> destinos;
+    private ComboBox<Viaje> viajes;
+    private ComboBox<TagDestino> tagsDestino;
+    
     private Button btnSave;
     private Button btnCancel;
 
@@ -66,15 +73,24 @@ public class PromocionForm extends Dialog
         cantidadPasajes.setMin(0);
         cantidadPasajes.setPreventInvalidInput(true);
        
+        destinos = new ComboBox<>();
+        destinos.setItemLabelGenerator(Destino::toString);
+        viajes = new ComboBox<>();
+        viajes.setItemLabelGenerator(Viaje::toString);
+        tagsDestino = new ComboBox<>();
+        tagsDestino.setItemLabelGenerator(TagDestino::getDescripcion);
+        
     }
 
     private void setForm() {
         form.addFormItem(nombre, "Nombre");
         form.addFormItem(fechaVencimiento, "Fecha Vencimiento");
         form.addFormItem(cantidadPasajes, "Cantidad de pasajes");
-        form.addFormItem(tipoPromocion, "Promocion");
+        form.addFormItem(tipoPromocion, "Tipo de promocion");
         form.addFormItem(nroFloat, "Bonificador");
-
+        form.addFormItem(destinos, "Destinos afectados");
+        form.addFormItem(viajes, "Viajes afectados");
+        form.addFormItem(tagsDestino, "Tags afectados");
     }
 
     private void setLayouts() {
@@ -170,6 +186,30 @@ public class PromocionForm extends Dialog
 
 	public void setCantidadPasajes(NumberField cantidadPasajes) {
 		this.cantidadPasajes = cantidadPasajes;
+	}
+
+	public ComboBox<Destino> getDestinos() {
+		return destinos;
+	}
+
+	public void setDestinos(ComboBox<Destino> destinos) {
+		this.destinos = destinos;
+	}
+
+	public ComboBox<Viaje> getViajes() {
+		return viajes;
+	}
+
+	public void setViajes(ComboBox<Viaje> viajes) {
+		this.viajes = viajes;
+	}
+
+	public ComboBox<TagDestino> getTagsDestino() {
+		return tagsDestino;
+	}
+
+	public void setTagsDestino(ComboBox<TagDestino> tagsDestino) {
+		this.tagsDestino = tagsDestino;
 	}
 
 }

@@ -1,7 +1,10 @@
 package com.tp.proyecto1.controllers;
 
 import com.tp.proyecto1.model.viajes.*;
+import com.tp.proyecto1.services.DestinoService;
 import com.tp.proyecto1.services.PromocionService;
+import com.tp.proyecto1.services.TagDestinoService;
+import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.promociones.PromocionForm;
@@ -18,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 @UIScope
@@ -27,7 +31,16 @@ public class PromocionFormController {
 
     @Autowired
     private PromocionService promocionService;
+    
+    @Autowired
+    private ViajeService viajesService;
 
+    @Autowired
+    private TagDestinoService tagsDestinoService;
+    
+    @Autowired
+    private DestinoService destinosService;
+    
     private ChangeHandler changeHandler;
 
     private Binder<Promocion> binderPromocion = new Binder<>();
@@ -43,12 +56,14 @@ public class PromocionFormController {
     }
 
     private void setComponents() {
-       // viajeForm.getTransporte().setItems(viajeService.findAllTipoTransportes());
+    	promocionForm.getDestinos().setItems(destinosService.findAll());
+    	promocionForm.getViajes().setItems(viajesService.findAll());
+    	promocionForm.getTagsDestino().setItems(tagsDestinoService.findAll());
     }
 
     private void setListeners() {
     	promocionForm.getBtnSave().addClickListener(e-> savePromocion(promocion));
-    	promocionForm.getBtnSave().addClickListener(e->promocionForm.close());
+    	promocionForm.getBtnCancel().addClickListener(e->promocionForm.close());
     }
     
     private void savePromocion(Promocion promocion)
@@ -73,10 +88,25 @@ public class PromocionFormController {
     	LocalDate fechaVencimiento = promocionForm.getFechaVencimiento().getValue();
     	Double nroFloat = promocionForm.getNroFloat().getValue();
     	Double cantidadPasajes = promocionForm.getCantidadPasajes().getValue();
+    	/*List<Destino>*/ Destino destinos = promocionForm.getDestinos().getValue();
+    	/*List<Viaje>*/ Viaje viajes = promocionForm.getViajes().getValue();
+    	/*List<TagDestino>*/ TagDestino tags = promocionForm.getTagsDestino().getValue();
+    	Promocion promocionToAdd;
     	if (promocionForm.getTipoPromocion().getValue()=="Descuento")
-    		return new PromocionDescuento(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
+    		promocionToAdd = new PromocionDescuento(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
     	else
-    		return new PromocionPuntos(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
+    		promocionToAdd = new PromocionPuntos(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
+    	/*
+    	 * promocionToAdd.setDestinosAfectados(destinos);
+    	 * promocionToAdd.setViajesAfectados(viajes);
+    	 * promocionToAdd.setTagsDestinoAfectados(tags);
+    	*/
+    	promocionToAdd.getDestinosAfectados().add(destinos);
+    	promocionToAdd.getViajesAfectados().add(viajes);
+    	promocionToAdd.getTagsDestinoAfectados().add(tags);
+    	
+    	return promocionToAdd;
+    	
     }
 
     public void setComponentsValues(Promocion promocion) {

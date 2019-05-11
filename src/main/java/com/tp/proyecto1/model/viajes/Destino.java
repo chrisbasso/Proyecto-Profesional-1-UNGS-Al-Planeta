@@ -85,4 +85,10 @@ public class Destino {
     public int hashCode() {
         return Objects.hash(id, ciudad, pais);
     }
+    
+    @Override
+    public String toString()
+    {
+    	return ciudad+", "+pais;
+    }
 }
