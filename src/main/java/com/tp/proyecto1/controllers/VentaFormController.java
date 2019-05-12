@@ -64,8 +64,8 @@ public class VentaFormController {
 	private void setComponentesLectura() {
 		ventaForm.getPais().setValue(viaje.getDestino().getPais());
 		ventaForm.getCiudad().setValue(viaje.getDestino().getCiudad());
-//		ventaForm.getCodTransporte().setValue(viaje.getTransporte().getCodTransporte());
-//		ventaForm.getTransporte().setValue(viaje.getTransporte().getTipo().getDescripcion());
+		ventaForm.getCodTransporte().setValue(viaje.getTransporte().getCodTransporte());
+		ventaForm.getTransporte().setValue(viaje.getTransporte().getTipo().getDescripcion());
 		ventaForm.getFechaSalida().setValue(viaje.getFechaSalida().toString());
 		ventaForm.getHoraSalida().setValue(viaje.getHoraSalida().toString());
 		ventaForm.getPais().setReadOnly(true);
@@ -97,20 +97,20 @@ public class VentaFormController {
 	private void newVenta() {
 
 		ventaService.save(setNewVenta());
-//        restarCapacidadTransporte();
+        restarCapacidadTransporte();
         ventaForm.close();
         Notification.show("PasajeVenta Guardada");
 		
 	}
 
-//	private void restarCapacidadTransporte() {
-//		Integer capacidadTransporte = Integer.parseInt(viaje.getTransporte().getCapacidad());
-//		Integer cantPasajes = ventaForm.getPasajerosGridComponent().getPasajerosList().size();
-//		Integer capacidadActual = capacidadTransporte - cantPasajes;
-//
-//		viaje.getTransporte().setCapacidad(capacidadActual.toString());
-//		viajeService.save(viaje);
-//	}
+	private void restarCapacidadTransporte() {
+		Integer capacidadTransporte = viaje.getTransporte().getCapacidad();
+		Integer cantPasajes = ventaForm.getPasajerosGridComponent().getPasajerosList().size();
+		Integer capacidadActual = capacidadTransporte - cantPasajes;
+
+		viaje.getTransporte().setCapacidad(capacidadActual);
+		viajeService.save(viaje);
+	}
 
 	private void saveVenta(Venta venta) {
 
@@ -139,7 +139,7 @@ public class VentaFormController {
 
 		Pago pago = new Pago(cliente, venta, formaPago, viaje.getPrecio(),  LocalDate.now());
 		venta.getPagos().add(pago);
-		viaje.restarPasajes(Double.valueOf(venta.getPasajes().size()));
+		viaje.restarPasajes(venta.getPasajes().size());
 		venta.setViaje(viaje);
 
 		venta.setImporteTotal(ventaForm.getSaldoPagar().getValue());
@@ -154,8 +154,8 @@ public class VentaFormController {
 		ventaForm.getCiudad().setValue(venta.getViaje().getDestino().getCiudad());
 		ventaForm.getHoraSalida().setValue(venta.getViaje().getHoraSalida().toString());
 		ventaForm.getFechaSalida().setValue(venta.getViaje().getFechaSalida().toString());
-//		ventaForm.getTransporte().setValue(venta.getViaje().getTransporte().getTipo().getDescripcion());
-//		ventaForm.getCodTransporte().setValue(venta.getViaje().getTransporte().getCodTransporte());
+		ventaForm.getTransporte().setValue(venta.getViaje().getTransporte().getTipo().getDescripcion());
+		ventaForm.getCodTransporte().setValue(venta.getViaje().getTransporte().getCodTransporte());
 		ventaForm.getFormaPago().setValue(venta.getPagos().get(0).getFormaDePago());
 		ventaForm.getSubtotal().setValue(venta.getImporteTotal());
 		ventaForm.getSaldoPagar().setValue(venta.getImporteTotal());
