@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 
 import com.tp.proyecto1.model.pasajes.FormaDePago;
+import com.tp.proyecto1.model.pasajes.Pago;
 import com.tp.proyecto1.views.reserva.AgregarPagoForm;
 import com.vaadin.flow.spring.annotation.UIScope;
 
@@ -19,9 +20,10 @@ public class PagoFormController {
 		this.observer = observer;			
 	}
 	
-	public void mostrarForm(double importeMaximo, List <FormaDePago> fdp) {		
+	public void mostrarForm(double importeMaximo, List <FormaDePago> fdp, List <Pago> pagos) {		
 		form = new AgregarPagoForm(importeMaximo);
 		form.cargarFormasDePago(fdp);
+		form.cargarPagosAnteriores(pagos);
 		setListeners();	
 	}
 	

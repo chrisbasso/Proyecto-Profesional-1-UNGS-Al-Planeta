@@ -3,16 +3,17 @@ package com.tp.proyecto1.views.reserva;
 import java.util.List;
 
 import com.tp.proyecto1.model.pasajes.FormaDePago;
+import com.tp.proyecto1.model.pasajes.Pago;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasValue.ValueChangeListener;
-import com.vaadin.flow.component.InputEvent;
-import com.vaadin.flow.component.KeyUpEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -27,7 +28,8 @@ public class AgregarPagoForm extends Dialog{
     
 	private ComboBox<FormaDePago> cmbFormaPago;
 	private NumberField pago;
-	private double importeMaximo;	
+	private double importeMaximo;
+	private Grid <Pago> pagosAnteriores;
 	private Button btnSave;
     private Button btnCancel;
     
@@ -36,7 +38,8 @@ public class AgregarPagoForm extends Dialog{
 		iniciliazarCampos();
     	inicializarForm();
     	inicializarActions();        
-    	inicializarMainLayout();    			
+    	inicializarMainLayout();
+    	inicializarGridPagos();
     }
 
 	private void iniciliazarCampos() {		
@@ -60,11 +63,17 @@ public class AgregarPagoForm extends Dialog{
     	actions = new HorizontalLayout();
         actions.add(btnSave, btnCancel);
 	}
+	
+	private void inicializarGridPagos() {
+		pagosAnteriores = new Grid<Pago>();
+		pagosAnteriores.addThemeVariants(GridVariant.MATERIAL_COLUMN_DIVIDERS);
+		pagosAnteriores.setSelectionMode(Grid.SelectionMode.SINGLE);		
+	}
 
 	private void inicializarMainLayout() {
 		mainLayout = new VerticalLayout();
     	mainLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
-        mainLayout.add(form,actions);
+        mainLayout.add(form,actions, pagosAnteriores);
         mainLayout.setSizeFull();
     	this.add(mainLayout);
         this.setWidth("800px");
@@ -74,6 +83,10 @@ public class AgregarPagoForm extends Dialog{
 	
 	public void cargarFormasDePago(List <FormaDePago> fdp) {
 		cmbFormaPago.setItems(fdp);
+	}
+	
+	public void cargarPagosAnteriores(List <Pago> pagos) {
+		pagosAnteriores.setItems(pagos);
 	}
 
 	public FormaDePago getFormaPagoSeleccionada() {

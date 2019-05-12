@@ -70,7 +70,7 @@ public class MainView extends VerticalLayout {
 	private void openMain() {
 		Button btnSignIn = new Button("Ingresar");
 		Button btnSignUp = new Button("Registrarse");
-		mainLayout.add(btnSignIn, btnSignUp);
+		mainLayout.add(getLogo(), btnSignIn, btnSignUp);
 		btnSignIn.addClickListener(e->openLoginView());
 	}
 
@@ -106,6 +106,8 @@ public class MainView extends VerticalLayout {
 				"Logout " + ((User) UI.getCurrent().getSession().getAttribute("usuarioLogueado")).getUser()),
 				e->loginController.logout());
 
+		//Cargamos la lista de viajes en la página inicial
+		openViajesView();
 	}
 
 	private HorizontalLayout getLogo() {

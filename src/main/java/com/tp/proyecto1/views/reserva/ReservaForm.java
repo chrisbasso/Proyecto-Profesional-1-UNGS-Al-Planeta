@@ -93,8 +93,8 @@ public class ReservaForm extends Dialog{
 		id.setValue(viaje.getId().toString());
     	pais.setValue(viaje.getDestino().getPais());
     	ciudad.setValue(viaje.getDestino().getCiudad());
-//    	codTransporte.setValue(viaje.getTransporte().getCodTransporte().toString());
-//    	transporte.setValue(viaje.getTransporte().getTipo().getDescripcion());
+    	codTransporte.setValue(viaje.getTransporte().getCodTransporte().toString());
+    	transporte.setValue(viaje.getTransporte().getTipo().getDescripcion());
     	fechaDesde.setValue(viaje.getFechaSalida().toString());
     	fechaHasta.setValue(viaje.getFechaLlegada().toString());
     	precioUnitario.setValue(viaje.getPrecio());
@@ -214,6 +214,8 @@ public class ReservaForm extends Dialog{
 	}
 	
 	public void setModoModificacion(double pasajes, Cliente cliente, double pago) {
+		cmbCliente.setReadOnly(false);
+		cmbCliente.clear();
 		cmbCliente.setValue(cliente);
 		cmbCliente.setReadOnly(true);
 		cantidadPasajes.setValue(pasajes);	
