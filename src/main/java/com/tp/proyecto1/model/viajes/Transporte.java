@@ -79,7 +79,12 @@ public class Transporte {
 		this.clase = clase;
 	}
 	
+<<<<<<< HEAD
 	public TipoTransporte getTipoTransporte(){
+=======
+	public TipoTransporte getTipoTransporte()
+	{
+>>>>>>> refs/heads/master
 		return tipo;
 	}
 
