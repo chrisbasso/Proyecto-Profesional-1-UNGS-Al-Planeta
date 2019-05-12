@@ -148,7 +148,11 @@ public class ReservaFormController {
 	private void formNuevoPago() {
 		double saldoReserva = getSaldo();
 		pagoFormController = new PagoFormController(this);
-		pagoFormController.mostrarForm(saldoReserva, ventaService.findAllFomaDePagos());
+		if(reserva != null) {
+			pagoFormController.mostrarForm(saldoReserva, ventaService.findAllFomaDePagos(),reserva.getPagos());
+		}else {
+			pagoFormController.mostrarForm(saldoReserva, ventaService.findAllFomaDePagos(),new ArrayList<Pago>());
+		}
 	}
 	
 	public void agregarPago(FormaDePago fdp, double importe) {
