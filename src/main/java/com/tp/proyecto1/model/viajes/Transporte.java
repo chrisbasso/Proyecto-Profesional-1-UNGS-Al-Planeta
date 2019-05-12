@@ -79,15 +79,6 @@ public class Transporte {
 		this.clase = clase;
 	}
 	
-<<<<<<< HEAD
-	public TipoTransporte getTipoTransporte(){
-=======
-	public TipoTransporte getTipoTransporte()
-	{
->>>>>>> refs/heads/master
-		return tipo;
-	}
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
