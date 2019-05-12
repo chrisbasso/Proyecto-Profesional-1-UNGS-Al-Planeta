@@ -3,6 +3,7 @@ package com.tp.proyecto1.views.ventas;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.utils.BuscadorClientesComponent;
 import com.tp.proyecto1.utils.PasajerosGridComponent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -10,6 +11,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.formlayout.FormLayout.FormItem;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -21,7 +23,8 @@ public class VentaForm extends Dialog {
 
 	private VerticalLayout mainLayout = new VerticalLayout();
 	private FormLayout form = new FormLayout();
-	private ComboBox<Cliente> cliente;
+	private BuscadorClientesComponent cliente;
+	private Label descripcionCliente;
 	private ComboBox<FormaDePago> formaPago;
 	private NumberField cantidadPasaje;
 	private Checkbox usoPuntosCheck;
@@ -64,8 +67,9 @@ public class VentaForm extends Dialog {
 		btnCancel = new Button("Cancelar");
 		formaPago = new ComboBox<>();
 		formaPago.setItemLabelGenerator(FormaDePago::getDescripcion);
-		cliente = new ComboBox<>();
-		cliente.setItemLabelGenerator(Cliente::getIdToString);
+		descripcionCliente = new Label();
+
+		cliente = new BuscadorClientesComponent(descripcionCliente);
 		cantidadPasaje = new NumberField();
 		cantidadPasaje.setMin(1);
 		cantidadPasaje.setMax(6);
@@ -95,6 +99,7 @@ public class VentaForm extends Dialog {
 		form.addFormItem(fechaSalida, "Fecha Salida");
 		form.addFormItem(horaSalida, "Hora Salida");
 		form.addFormItem(cliente, "Nro de Cliente");
+		form.addFormItem(descripcionCliente, "Descripción");
 		//form.addFormItem(cantidadPasaje, "Cantidad de Pasajes");
 		FormItem totalItem = form.addFormItem(subtotal, "Subtotal");
 		totalItem.add(usoPuntosCheck);
@@ -141,10 +146,10 @@ public class VentaForm extends Dialog {
 		this.formaPago = formaPago;
 	}
 
-	public ComboBox<Cliente> getCliente() {
+	public BuscadorClientesComponent getCliente() {
 		return cliente;
 	}
-	public void setCliente(ComboBox<Cliente> cliente) {
+	public void setCliente(BuscadorClientesComponent cliente) {
 		this.cliente = cliente;
 	}
 

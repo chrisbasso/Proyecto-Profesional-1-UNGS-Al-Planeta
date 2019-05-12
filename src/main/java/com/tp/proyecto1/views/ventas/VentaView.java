@@ -1,6 +1,5 @@
 package com.tp.proyecto1.views.ventas;
 
-import com.tp.proyecto1.model.pasajes.PasajeVenta;
 import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.tp.proyecto1.utils.View;

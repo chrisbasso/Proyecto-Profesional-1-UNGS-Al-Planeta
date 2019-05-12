@@ -146,10 +146,10 @@ public class ReservaFormController {
 	}
 		
 	private void actualizarCapacidadTransporte() {
-		double capacidadTransporte = Double.parseDouble(viaje.getTransporte().getCapacidad());
-		double pasajesReservados = reservaForm.cantidadPasajesSeleccionados();
-		double saldoCapacidad = capacidadTransporte - pasajesReservados;		
-		viaje.getTransporte().setCapacidad(Double.toString(saldoCapacidad));
+		Double capacidadTransporte = viaje.getTransporte().getCapacidad().doubleValue();
+		Double pasajesReservados = reservaForm.cantidadPasajesSeleccionados().doubleValue();
+		Double saldoCapacidad = capacidadTransporte - pasajesReservados;
+		viaje.getTransporte().setCapacidad(saldoCapacidad.intValue());
 		viajeService.save(viaje);
 	}
 	

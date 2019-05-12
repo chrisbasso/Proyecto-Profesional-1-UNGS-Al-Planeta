@@ -6,6 +6,7 @@ import com.tp.proyecto1.model.users.User;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 @Entity
 @Inheritance(strategy= InheritanceType.TABLE_PER_CLASS)
@@ -22,6 +23,8 @@ public abstract class Evento {
 	private Cliente cliente;
 	@OneToOne
 	private User usuarioLogueado;
+
+	private String prioridad;
 
 	public Evento() {
 	}
@@ -72,5 +75,32 @@ public abstract class Evento {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getPrioridad() {
+		return prioridad;
+	}
+
+	public void setPrioridad(String prioridad) {
+		this.prioridad = prioridad;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Evento evento = (Evento) o;
+		return Objects.equals(id, evento.id) &&
+				Objects.equals(mensaje, evento.mensaje) &&
+				Objects.equals(fecha, evento.fecha) &&
+				Objects.equals(hora, evento.hora) &&
+				Objects.equals(cliente, evento.cliente) &&
+				Objects.equals(usuarioLogueado, evento.usuarioLogueado) &&
+				Objects.equals(prioridad, evento.prioridad);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, mensaje, fecha, hora, cliente, usuarioLogueado, prioridad);
 	}
 }

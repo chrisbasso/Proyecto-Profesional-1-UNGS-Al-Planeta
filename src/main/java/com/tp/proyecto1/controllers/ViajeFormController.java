@@ -12,6 +12,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.Setter;
+import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.function.SerializablePredicate;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -83,7 +84,7 @@ public class ViajeFormController {
         TipoTransporte tipoTransporte = viajeForm.getTransporte().getValue();
         String codTransporte = viajeForm.getCodTransporte().getValue();
         String clase = viajeForm.getClase().getValue();
-        String capacidad = viajeForm.getCapacidad().getValue();
+        Integer capacidad = Integer.parseInt(viajeForm.getCapacidad().getValue());
         Double precio = viajeForm.getPrecio().getValue();
         TagDestino tagDestino = viajeForm.getTagDestino().getValue();
         String descipcion = viajeForm.getTextAreaDescripcion().getValue();
@@ -167,13 +168,14 @@ public class ViajeFormController {
         viajeForm.getBtnSave().addClickListener(event -> binding.validate());
     }
 
-    private void setBinderFieldIntegerTransporte(AbstractField field, ValueProvider<Transporte, String> valueProvider, Setter<Transporte, String> setter, boolean isRequiered){
+    private void setBinderFieldIntegerTransporte(AbstractField field, ValueProvider<Transporte, Integer> valueProvider, Setter<Transporte, Integer> setter, boolean isRequiered){
 
         SerializablePredicate<String> predicate = value -> !field.isEmpty();
-        Binder.Binding<Transporte, String> binding;
+        Binder.Binding<Transporte, Integer> binding;
         if(isRequiered){
             binding = binderTransporte.forField(field)
                     .withValidator(predicate, "El campo es obligatorio")
+                    .withConverter(new StringToIntegerConverter("Debe ingresar un numero"))
                     .bind(valueProvider, setter);
         }else{
             binding = binderTransporte.forField(field).bind(valueProvider, setter);

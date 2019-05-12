@@ -18,6 +18,7 @@ import com.tp.proyecto1.views.ventas.VentaForm;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.*;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
@@ -77,7 +78,6 @@ public class VentaFormController {
 
 	private void setComponents() {
 		ventaForm.getFormaPago().setItems(ventaService.findAllFomaDePagos());
-		ventaForm.getCliente().setItems(clienteService.findAll());
 	}
 	
 	private void setListeners() {
@@ -104,11 +104,11 @@ public class VentaFormController {
 	}
 
 	private void restarCapacidadTransporte() {
-		Integer capacidadTransporte = Integer.parseInt(viaje.getTransporte().getCapacidad());
+		Integer capacidadTransporte = viaje.getTransporte().getCapacidad();
 		Integer cantPasajes = ventaForm.getPasajerosGridComponent().getPasajerosList().size();
 		Integer capacidadActual = capacidadTransporte - cantPasajes;
 		
-		viaje.getTransporte().setCapacidad(capacidadActual.toString());
+		viaje.getTransporte().setCapacidad(capacidadActual);
 		viajeService.save(viaje);
 	}
 
@@ -126,7 +126,7 @@ public class VentaFormController {
 
 		Venta venta = new Venta();
 
-		Cliente cliente = ventaForm.getCliente().getValue();
+		Cliente cliente = ventaForm.getCliente().getCliente();
 		FormaDePago formaPago = ventaForm.getFormaPago().getValue();
 
 		ventaForm.getPasajerosGridComponent().getPasajerosList().stream().forEach(pasajero->{
@@ -158,12 +158,13 @@ public class VentaFormController {
 		ventaForm.getFormaPago().setValue(venta.getPagos().get(0).getFormaDePago());
 		ventaForm.getSubtotal().setValue(venta.getImporteTotal());
 		ventaForm.getSaldoPagar().setValue(venta.getImporteTotal());
-		ventaForm.getCliente().setValue(venta.getCliente());
+		ventaForm.getCliente().getFiltro().setValue(venta.getCliente().getId().toString());
 		List<Pasajero> pasajeros = venta.getPasajes().stream().map(e-> e.getPasajero()).collect(Collectors.toList());
 		ventaForm.getPasajerosGridComponent().setPasajerosList(pasajeros);
 		ventaForm.getPasajerosGridComponent().setGrid();
 		ventaForm.getPasajerosGridComponent().setModoConsulta();
-		ventaForm.getCliente().setReadOnly(true);
+		ventaForm.getCliente().getFiltro().setReadOnly(true);
+		ventaForm.getCliente().getSearchButton().setVisible(false);
 		ventaForm.getFormaPago().setReadOnly(true);
 
 	}

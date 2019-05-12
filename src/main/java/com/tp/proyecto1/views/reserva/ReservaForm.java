@@ -75,7 +75,7 @@ public class ReservaForm extends Dialog{
 		cantidadPasajes= new NumberField();		
 		cantidadPasajes.setValue(1d);
 		cantidadPasajes.setMin(1);
-		cantidadPasajes.setMax(Double.parseDouble(viaje.getTransporte().getCapacidad()));
+		cantidadPasajes.setMax(viaje.getTransporte().getCapacidad().doubleValue());
 		cantidadPasajes.setHasControls(true);
 		precioTotal= new NumberField();
 		precioTotal.setPrefixComponent(new Span("$"));
@@ -165,7 +165,7 @@ public class ReservaForm extends Dialog{
 		return precioTotal.getValue();
 	}
 	
-	public int cantidadPasajesSeleccionados() {
+	public Integer cantidadPasajesSeleccionados() {
 		return cantidadPasajes.getValue().intValue();
 	}
 	
