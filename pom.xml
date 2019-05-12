@@ -19,6 +19,8 @@
         <vaadin.version>13.0.3</vaadin.version>
     </properties>
 
+
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -48,7 +50,19 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.vaadin.gatanaso</groupId>
+            <artifactId>multiselect-combo-box-flow</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+
     </dependencies>
+    <repositories>
+        <repository>
+            <id>vaadin-addons</id>
+            <url>http://maven.vaadin.com/vaadin-addons</url>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
