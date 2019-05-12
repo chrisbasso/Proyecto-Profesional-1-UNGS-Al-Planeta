@@ -1,14 +1,32 @@
 package com.tp.proyecto1.model.clientes;
 
-
 import javax.persistence.Entity;
-import java.util.Objects;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
 @Entity
-public class Interesado extends Persona{
+public abstract class Persona {
 
+    @Id
+    @GeneratedValue
+    protected Long id;
 
-    public Interesado() {
+    protected String nombre;
+    protected String apellido;
+    protected String telefono;
+    protected String email;
+
+    public Persona() {
+    }
+
+    public Persona(String nombre, String apellido, String telefono, String email) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.telefono = telefono;
+        this.email = email;
+    }
+
+    public Persona(String nombre, String apellido) {
     }
 
     public Long getId() {
@@ -49,22 +67,5 @@ public class Interesado extends Persona{
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Interesado that = (Interesado) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(nombre, that.nombre) &&
-                Objects.equals(apellido, that.apellido) &&
-                Objects.equals(telefono, that.telefono) &&
-                Objects.equals(email, that.email);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, nombre, apellido, telefono, email);
     }
 }

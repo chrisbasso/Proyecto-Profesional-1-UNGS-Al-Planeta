@@ -33,7 +33,7 @@ public class ViajesController {
     
 	private ReservaFormController reservaFormController; 
 
-    private ChangeHandler changeHandler;
+    public ChangeHandler changeHandler;
 
     public ViajesController() {
         Inject.Inject(this);
@@ -81,6 +81,7 @@ public class ViajesController {
     	if (viajeSeleccionado != null) {
 	    	ventaFormController = new VentaFormController(viajeSeleccionado);
 			ventaFormController.getVentaFormCompra().open();
+			ventaFormController.setChangeHandler(this::listViajes);
     	}
     	else {
     			Notification.show("Seleccione un Viaje");

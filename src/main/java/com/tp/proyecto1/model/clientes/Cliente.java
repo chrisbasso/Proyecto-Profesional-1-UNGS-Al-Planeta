@@ -10,22 +10,18 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-public class Cliente {
+public class Cliente extends Persona{
 
 	@Id
 	@GeneratedValue
 	private Long id;
 
-	private String nombre;
-	private String apellido;
 	private String dni;
 	private LocalDate fechaNacimiento;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private Domicilio domicilio;
 
-	private String email;
-	private String telefono;
 	private boolean isActivo;
 	private LocalDate fechaBaja;
 	private LocalDate fechaAlta;
@@ -37,19 +33,15 @@ public class Cliente {
 	}
 
 	public Cliente(String nombre, String apellido, String dni) {
-		this.nombre = nombre;
-		this.apellido = apellido;
+		super(nombre, apellido);
 		this.dni = dni;
 	}
 
 	public Cliente(String nombre, String apellido, String dni, LocalDate fechaNacimiento, Domicilio domicilio, String email, String telefono, boolean isActivo, LocalDate fechaBaja, LocalDate fechaAlta) {
-		this.nombre = nombre;
-		this.apellido = apellido;
+		super(nombre, apellido, email, telefono);
 		this.dni = dni;
 		this.fechaNacimiento = fechaNacimiento;
 		this.domicilio = domicilio;
-		this.email = email;
-		this.telefono = telefono;
 		this.isActivo = isActivo;
 		this.fechaBaja = fechaBaja;
 		this.fechaAlta = fechaAlta;

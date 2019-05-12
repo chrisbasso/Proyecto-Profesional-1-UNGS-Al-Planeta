@@ -99,6 +99,7 @@ public class VentaFormController {
 		ventaService.save(setNewVenta());
         restarCapacidadTransporte();
         ventaForm.close();
+        changeHandler.onChange();
         Notification.show("PasajeVenta Guardada");
 		
 	}
