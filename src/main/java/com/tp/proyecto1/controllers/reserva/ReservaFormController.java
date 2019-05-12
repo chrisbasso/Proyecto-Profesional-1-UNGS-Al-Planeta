@@ -106,6 +106,9 @@ public class ReservaFormController {
 		for (int i = 0; i < cantidadPasajes; i++) {
 			pasajes.add(new PasajeReserva(viaje, cliente));
 		}
+		for(Pago pago : listaDePagos) {
+			pago.setCliente(cliente);			
+		}
 		reserva = new Reserva(pasajes, listaDePagos, importeTotal, cliente);
 		if(viaje.getPasajesRestantes()>= cantidadPasajes) {
 			viaje.restarPasajes(cantidadPasajes);
