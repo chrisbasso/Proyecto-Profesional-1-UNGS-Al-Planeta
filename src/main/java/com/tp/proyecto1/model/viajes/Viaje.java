@@ -41,11 +41,11 @@ public class Viaje {
 		this.activo = activo;
 	}
 	
-	public double getPasajesRestantes() {
-		return transporte.pasajesRestantes();
+	public Double getPasajesRestantes() {
+		return transporte.getCapacidadRestante();
 	}
 	
-	public void restarPasajes(double cantPasajes) {
+	public void restarPasajes(Double cantPasajes) {
 		transporte.restarPasajes(cantPasajes);
 	}
 

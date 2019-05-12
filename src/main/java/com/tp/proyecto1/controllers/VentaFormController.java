@@ -139,7 +139,7 @@ public class VentaFormController {
 
 		Pago pago = new Pago(cliente, venta, formaPago, viaje.getPrecio(),  LocalDate.now());
 		venta.getPagos().add(pago);
-		viaje.restarPasajes(venta.getPasajes().size());
+		viaje.restarPasajes(Double.valueOf(venta.getPasajes().size()));
 		venta.setViaje(viaje);
 
 		venta.setImporteTotal(ventaForm.getSaldoPagar().getValue());

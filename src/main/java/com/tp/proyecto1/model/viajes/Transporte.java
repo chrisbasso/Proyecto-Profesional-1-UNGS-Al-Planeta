@@ -15,14 +15,14 @@ public class Transporte {
 	@OneToOne
 	private TipoTransporte tipo;
 
-	private double capacidad;
-	private double capacidadRestante;
+	private Double capacidad;
+	private Double capacidadRestante;
 	private String clase;
 
 	public Transporte() {
 	}
 
-	public Transporte(String codTransporte, TipoTransporte tipo, double capacidad, String clase) {
+	public Transporte(String codTransporte, TipoTransporte tipo, Double capacidad, String clase) {
 		this.codTransporte = codTransporte;
 		this.tipo = tipo;
 		this.capacidad = capacidad;
@@ -30,7 +30,7 @@ public class Transporte {
 		this.clase = clase;
 	}
 	
-	public boolean restarPasajes(double cantPasajes) {
+	public boolean restarPasajes(Double cantPasajes) {
 		if(capacidadRestante == 0 || capacidadRestante < cantPasajes) {
 			return false;
 		}else{			
@@ -39,7 +39,7 @@ public class Transporte {
 		}
 	}
 	
-	public double pasajesRestantes() {
+	public Double getCapacidadRestante() {
 		return capacidadRestante;
 	}
 
@@ -54,8 +54,6 @@ public class Transporte {
 	public void setCodTransporte(String codTransporte) {
 		this.codTransporte = codTransporte;
 	}
-	
-	
 
 	public TipoTransporte getTipo() {
 		return tipo;
@@ -65,11 +63,11 @@ public class Transporte {
 		this.tipo = tipo;
 	}
 
-	public double getCapacidad() {
+	public Double getCapacidad() {
 		return capacidad;
 	}
 
-	public void setCapacidad(double capacidad) {
+	public void setCapacidad(Double capacidad) {
 		this.capacidad = capacidad;
 	}
 
@@ -81,8 +79,7 @@ public class Transporte {
 		this.clase = clase;
 	}
 	
-	public TipoTransporte getTipoTransporte()
-	{
+	public TipoTransporte getTipoTransporte(){
 		return tipo;
 	}
 
