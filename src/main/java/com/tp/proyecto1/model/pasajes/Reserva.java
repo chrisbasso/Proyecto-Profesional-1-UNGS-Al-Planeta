@@ -12,8 +12,18 @@ public class Reserva extends Transaccion{
 	public Reserva() {		
 	}
 
-	public Reserva(List<PasajeVenta> pasajes, List<Pago> pagos, Double importeTotal, Cliente cliente) {
+	public Reserva(List<Pasaje> pasajes, List<Pago> pagos, Double importeTotal, Cliente cliente) {
 		super(pasajes,pagos,importeTotal,cliente);
+	}
+	
+	public double getTotalPagado() {
+		double total = 0.0;
+		if(pagos.size()>0) {
+			for(Pago pago : pagos) {
+				total += pago.getImporte();
+			}
+		}
+		return total;
 	}
 	
 }

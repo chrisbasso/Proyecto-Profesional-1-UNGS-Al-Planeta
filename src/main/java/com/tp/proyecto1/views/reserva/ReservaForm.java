@@ -10,7 +10,6 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Span;
@@ -215,12 +214,13 @@ public class ReservaForm extends Dialog{
 	
 	public void setModoModificacion(double pasajes, Cliente cliente, double pago) {
 		cmbCliente.setReadOnly(false);
-		cmbCliente.clear();
+		cmbCliente.setItems(cliente);
 		cmbCliente.setValue(cliente);
 		cmbCliente.setReadOnly(true);
 		cantidadPasajes.setValue(pasajes);	
 		precioTotal.setValue(pasajes * viaje.getPrecio());
-		this.sumaDePagos.setValue(pago);
+		actualizarPagos(pago);
+		habilitarBtnAgregarPago();
 	}
 	
 	public void setListenerCliente(ValueChangeListener<? super ComponentValueChangeEvent<ComboBox<Cliente>, Cliente>> e) {

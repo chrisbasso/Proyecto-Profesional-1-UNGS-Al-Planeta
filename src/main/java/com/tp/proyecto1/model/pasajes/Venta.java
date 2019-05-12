@@ -13,7 +13,7 @@ public class Venta extends Transaccion{
 		
 	}
 	
-	public Venta(List<PasajeVenta> pasajes, List<Pago> pagos, Double importeTotal, Cliente cliente) {
+	public Venta(List<Pasaje> pasajes, List<Pago> pagos, Double importeTotal, Cliente cliente) {
 		super(pasajes,pagos,importeTotal,cliente);
 	}
 

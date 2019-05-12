@@ -25,6 +25,7 @@ public class PagoFormController {
 		form.cargarFormasDePago(fdp);
 		form.cargarPagosAnteriores(pagos);
 		setListeners();	
+		form.open();
 	}
 	
 	private void setListeners() {

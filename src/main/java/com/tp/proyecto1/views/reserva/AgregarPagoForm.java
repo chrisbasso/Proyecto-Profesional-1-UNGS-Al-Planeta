@@ -29,7 +29,7 @@ public class AgregarPagoForm extends Dialog{
 	private ComboBox<FormaDePago> cmbFormaPago;
 	private NumberField pago;
 	private double importeMaximo;
-	private Grid <Pago> pagosAnteriores;
+	private Grid pagosAnteriores;
 	private Button btnSave;
     private Button btnCancel;
     
@@ -37,14 +37,15 @@ public class AgregarPagoForm extends Dialog{
     	this.importeMaximo = importeMaximo;
 		iniciliazarCampos();
     	inicializarForm();
-    	inicializarActions();        
-    	inicializarMainLayout();
+    	inicializarActions();
     	inicializarGridPagos();
+    	inicializarMainLayout();    	
     }
 
 	private void iniciliazarCampos() {		
 		cmbFormaPago = new ComboBox<FormaDePago>();
-		pago = new NumberField();		
+		pago = new NumberField();
+		pago.setLabel("Saldo: " + importeMaximo);
 		pago.setPrefixComponent(new Span("$"));
 		pago.setMin(0.0);
 		pago.setMax(importeMaximo);
@@ -65,20 +66,23 @@ public class AgregarPagoForm extends Dialog{
 	}
 	
 	private void inicializarGridPagos() {
-		pagosAnteriores = new Grid<Pago>();
+		pagosAnteriores = new Grid<>(Pago.class);
 		pagosAnteriores.addThemeVariants(GridVariant.MATERIAL_COLUMN_DIVIDERS);
-		pagosAnteriores.setSelectionMode(Grid.SelectionMode.SINGLE);		
+		pagosAnteriores.setSelectionMode(Grid.SelectionMode.NONE);		
+		pagosAnteriores.setColumns("cliente", "transaccion", "formaDePago", "importe", "fechaDePago");
+		pagosAnteriores.getColumnByKey("cliente").setVisible(false);
+		pagosAnteriores.getColumnByKey("transaccion").setVisible(false);
+		pagosAnteriores.getColumnByKey("formaDePago").setHeader("Medio");
 	}
 
 	private void inicializarMainLayout() {
 		mainLayout = new VerticalLayout();
     	mainLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
-        mainLayout.add(form,actions, pagosAnteriores);
+        mainLayout.add(form,actions,pagosAnteriores);
         mainLayout.setSizeFull();
     	this.add(mainLayout);
         this.setWidth("800px");
         this.setHeight("100%");
-        this.open();
 	}
 	
 	public void cargarFormasDePago(List <FormaDePago> fdp) {
