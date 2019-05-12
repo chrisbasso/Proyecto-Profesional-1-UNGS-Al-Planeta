@@ -97,20 +97,10 @@ public class VentaFormController {
 	private void newVenta() {
 
 		ventaService.save(setNewVenta());
-        restarCapacidadTransporte();
         ventaForm.close();
         changeHandler.onChange();
         Notification.show("PasajeVenta Guardada");
 		
-	}
-
-	private void restarCapacidadTransporte() {
-		Integer capacidadTransporte = viaje.getTransporte().getCapacidad();
-		Integer cantPasajes = ventaForm.getPasajerosGridComponent().getPasajerosList().size();
-		Integer capacidadActual = capacidadTransporte - cantPasajes;
-
-		viaje.getTransporte().setCapacidad(capacidadActual);
-		viajeService.save(viaje);
 	}
 
 	private void saveVenta(Venta venta) {
@@ -141,8 +131,8 @@ public class VentaFormController {
 		Pago pago = new Pago(cliente, venta, formaPago, viaje.getPrecio(),  LocalDate.now());
 		venta.getPagos().add(pago);
 		viaje.restarPasajes(venta.getPasajes().size());
-		venta.setViaje(viaje);
-
+		viajeService.save(viaje);
+		
 		venta.setImporteTotal(ventaForm.getSaldoPagar().getValue());
 
 		return venta;
