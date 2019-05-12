@@ -114,9 +114,9 @@ public class VentasController {
         if(!ventaView.getPaisFilter().isEmpty()){
             venta.getViaje().getDestino().setPais(ventaView.getPaisFilter().getValue());
         }
-        if(!ventaView.getCodTransporteFilter().isEmpty()){
-            venta.getViaje().getTransporte().setCodTransporte(ventaView.getCodTransporteFilter().getValue());
-        }
+//        if(!ventaView.getCodTransporteFilter().isEmpty()){
+//            venta.getViaje().getTransporte().setCodTransporte(ventaView.getCodTransporteFilter().getValue());
+//        }
         if(!ventaView.getFechaFilter().isEmpty()){
             venta.getViaje().setFechaSalida(ventaView.getFechaFilter().getValue());
         }

@@ -98,22 +98,23 @@ public class ReservaFormController {
 	}
 	
 	private void guardarReserva() {
-		if(esReservablePorFecha()) {
-			Cliente cliente = reservaForm.getClienteSeleccionado();
-			Double importeTotal = reservaForm.getPrecioTotal();
-			int cantidadPasajes = reservaForm.cantidadPasajesSeleccionados();			
-			List<PasajeVenta> pasajes = new ArrayList<PasajeVenta> ();
-			for (int i = 0; i < cantidadPasajes; i++) {
-				pasajes.add(new PasajeVenta());
-			}			
-			reserva = new Reserva(pasajes, listaDePagos, importeTotal, cliente);
+		Cliente cliente = reservaForm.getClienteSeleccionado();
+		Double importeTotal = reservaForm.getPrecioTotal();
+		int cantidadPasajes = reservaForm.cantidadPasajesSeleccionados();
+		List<PasajeVenta> pasajes = new ArrayList<PasajeVenta> ();
+		for (int i = 0; i < cantidadPasajes; i++) {
+			pasajes.add(new PasajeVenta());
+		}
+		reserva = new Reserva(pasajes, listaDePagos, importeTotal, cliente);
+		if(viaje.getPasajesRestantes()>= cantidadPasajes) {
+			viaje.restarPasajes(Double.valueOf(cantidadPasajes));
+			reserva.setViaje(viaje);
 			reservaService.save(reserva);
 			mensajeReservaGuardada();
-			mensajeSaldoViaje(); 
-			actualizarCapacidadTransporte();
+			mensajeSaldoViaje();
 			reservaForm.close();
 		}else {
-			Notification.show("Por la fecha del viaje solo es posible comprar.");
+			Notification.show("Lo sentimos, no quedan pasajes disponibles en el viaje seleccionado.");
 			reservaForm.close();
 		}
 	}
@@ -128,8 +129,7 @@ public class ReservaFormController {
 	}
 	
 	private void mensajeSaldoViaje() {
-		// pero avisando al cliente que debe pagar al menos el 30%
-		// del valor total antes que finalice la fecha de la reserva.
+		// pero avisando al cliente que debe pagar al menos el 30% ...
 		double pago = getSumatoriaPagos();
 		double porcentaje = reservaForm.getPrecioTotal() * 0.3; 
 		String fechaMaxima = ConfigService.findValueByKey("reserva_fecha_maxima");
@@ -144,15 +144,7 @@ public class ReservaFormController {
 			}			
 		}
 	}
-		
-	private void actualizarCapacidadTransporte() {
-		Double capacidadTransporte = viaje.getTransporte().getCapacidad().doubleValue();
-		Double pasajesReservados = reservaForm.cantidadPasajesSeleccionados().doubleValue();
-		Double saldoCapacidad = capacidadTransporte - pasajesReservados;
-		viaje.getTransporte().setCapacidad(saldoCapacidad.intValue());
-		viajeService.save(viaje);
-	}
-	
+
 	private void formNuevoPago() {
 		double saldoReserva = getSaldo();
 		pagoFormController = new PagoFormController(this);

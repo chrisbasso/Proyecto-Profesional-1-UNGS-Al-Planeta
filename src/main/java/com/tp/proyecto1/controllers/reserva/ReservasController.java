@@ -1,11 +1,14 @@
 package com.tp.proyecto1.controllers.reserva;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.Reserva;
-import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.model.viajes.Destino;
 import com.tp.proyecto1.model.viajes.Transporte;
 import com.tp.proyecto1.model.viajes.Viaje;
@@ -14,7 +17,6 @@ import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.reserva.ReservaView;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -32,7 +34,7 @@ public class ReservasController {
     public ReservasController() {
         Inject.Inject(this);
         this.reservaView = new ReservaView();        
-//        agregarBotonesEdicion();
+        agregarBotonesEdicion();
         setListeners();
         listReservas();
     }
@@ -59,13 +61,22 @@ public class ReservasController {
     }
 
     private void listReservas() {
-        Reserva reservaBusqueda = new Reserva();
-        if(checkFiltros()){
-            setParametrosBusqueda(reservaBusqueda);
-            reservaView.cargarReservas(reservaService.findReservas(reservaBusqueda));
-        }else {
-            reservaView.cargarReservas(reservaService.findAll());
-        }
+    	if(!reservaView.getNumeroClienteFilter().equals(0L)){    		
+    		Optional reserva = reservaService.findById(reservaView.getNumeroClienteFilter());
+    		if(reserva.isPresent()) {
+    			List<Reserva> reservas = new ArrayList<Reserva>();
+    			reservas.add((Reserva)reserva.get());
+        		reservaView.cargarReservas(reservas);	
+    		}    		
+    	}else {
+	        Reserva reservaBusqueda = new Reserva();
+	        if(checkFiltros()){
+	            setParametrosBusqueda(reservaBusqueda);
+	            reservaView.cargarReservas(reservaService.findReservas(reservaBusqueda));
+	        }else {
+	            reservaView.cargarReservas(reservaService.findAll());
+	        }
+    	}
     }
 
     private void setParametrosBusqueda(Reserva reservaBusqueda) {
@@ -78,7 +89,7 @@ public class ReservasController {
         viaje.setTransporte(transporte);
         viaje.setActivo(true);
         reservaBusqueda.setViaje(viaje);
-        if(reservaView.getNumeroClienteFilter() >= 0){
+        if(!reservaView.getNumeroClienteFilter().equals(0L)){
             reservaBusqueda.getCliente().setId(reservaView.getNumeroClienteFilter());
         }
         if(!reservaView.getCiudadFilter().equals("")){

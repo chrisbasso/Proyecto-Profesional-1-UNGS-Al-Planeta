@@ -16,6 +16,7 @@ public class Transporte {
 	private TipoTransporte tipo;
 
 	private Integer capacidad;
+	private Integer capacidadRestante;
 	private String clase;
 
 	public Transporte() {
@@ -25,7 +26,21 @@ public class Transporte {
 		this.codTransporte = codTransporte;
 		this.tipo = tipo;
 		this.capacidad = capacidad;
+		this.capacidadRestante = capacidad;
 		this.clase = clase;
+	}
+
+	public boolean restarPasajes(Integer cantPasajes) {
+		if(capacidadRestante == 0 || capacidadRestante < cantPasajes) {
+			return false;
+		}else{
+			capacidadRestante -= cantPasajes;
+			return true;
+		}
+	}
+
+	public Integer getCapacidadRestante() {
+		return capacidadRestante;
 	}
 
 	public Long getId() {

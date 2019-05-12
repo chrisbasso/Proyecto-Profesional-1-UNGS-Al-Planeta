@@ -40,6 +40,14 @@ public class Viaje {
 		this.descripcion = descripcion;
 		this.activo = activo;
 	}
+	
+	public Double getPasajesRestantes() {
+		return transporte.getCapacidadRestante();
+	}
+	
+	public void restarPasajes(Double cantPasajes) {
+		transporte.restarPasajes(cantPasajes);
+	}
 
 	public Long getId() {
 		return id;
@@ -48,7 +56,7 @@ public class Viaje {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
+	
 	public Destino getDestino() {
 		return destino;
 	}
@@ -146,6 +154,6 @@ public class Viaje {
 	@Override
 	public String toString()
 	{
-		return destino.toString() + ", " + fechaSalida.toString() + " "  +  horaSalida.toString() + ", " + transporte.getTipoTransporte().getDescripcion();
+		return destino.toString() + ", " + fechaSalida.toString() + " "  +  horaSalida.toString() + ", " + transporte.getTipo().getDescripcion();
 	}
 }

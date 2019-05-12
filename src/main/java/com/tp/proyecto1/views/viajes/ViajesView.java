@@ -73,10 +73,11 @@ public class ViajesView extends FilterGridLayout<Viaje> implements View {
 
 	public void setGrid() {
 		grid.setColumns("id", "destino.ciudad","destino.pais", "transporte.codTransporte",
-				"transporte.tipo.descripcion", "transporte.capacidad", "transporte.clase",
+				"transporte.tipo.descripcion", "transporte.capacidadRestante", "transporte.clase",
 				"fechaSalida", "horaSalida", "fechaLlegada", "horaLlegada", "precio");
 		grid.getColumnByKey("id").setHeader("Nº");
 		grid.getColumnByKey("id").setWidth("70px").setFlexGrow(0);
+		grid.getColumnByKey("transporte.capacidadRestante").setHeader("Disponibles");
 		grid.getColumnByKey("transporte.tipo.descripcion").setHeader("Tipo Transporte");
 
 	}
