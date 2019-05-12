@@ -19,6 +19,16 @@ public class EventosController {
 	public EventosController() {
 		Inject.Inject(this);
 		this.eventosView = new EventosView();
+		setListeners();
+	}
+
+	private void setListeners() {
+		eventosView.getNewConsultaButton().addClickListener(e->openConsultaForm());
+	}
+
+	private void openConsultaForm() {
+		ConsultaFormController consultaFormController = new ConsultaFormController();
+		consultaFormController.getView().open();
 	}
 
 	public EventosView getEventosView() {

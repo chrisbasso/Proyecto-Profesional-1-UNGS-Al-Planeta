@@ -7,8 +7,6 @@ public class GenericDialog extends Dialog {
 
     public GenericDialog(String mensaje) {
         this.add(new Label(mensaje));
-        this.setWidth("400px");
-        this.setHeight("150px");
         this.open();
     }
 }

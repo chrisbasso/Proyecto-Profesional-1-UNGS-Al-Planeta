@@ -1,6 +1,7 @@
 package com.tp.proyecto1.model.eventos;
 
 import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.model.clientes.Interesado;
 import com.tp.proyecto1.model.users.User;
 
 import javax.persistence.*;
@@ -21,6 +22,8 @@ public abstract class Evento {
 	private LocalTime hora;
 	@OneToOne
 	private Cliente cliente;
+	@OneToOne
+	private Interesado interesado;
 	@OneToOne
 	private User usuarioLogueado;
 
@@ -83,6 +86,14 @@ public abstract class Evento {
 
 	public void setPrioridad(String prioridad) {
 		this.prioridad = prioridad;
+	}
+
+	public Interesado getInteresado() {
+		return interesado;
+	}
+
+	public void setInteresado(Interesado interesado) {
+		this.interesado = interesado;
 	}
 
 	@Override
