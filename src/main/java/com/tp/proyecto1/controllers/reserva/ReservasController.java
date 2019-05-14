@@ -50,7 +50,7 @@ public class ReservasController {
         return new Button(VaadinIcon.EDIT.create(), clickEvent -> {
             reservaFormController = new ReservaFormController(reserva.getViaje());
             if(reservaFormController.esReservablePorFecha()) {    			    	
-                reservaFormController.getReservaForm().open();    			
+                reservaFormController.getFormModificacionReserva(reserva).open();    			
     		}else {
     			Notification.show("Por la política de fechas el viaje selecionado solo se puede comprar.");
     		};

@@ -11,7 +11,8 @@ import org.springframework.stereotype.Controller;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.tp.proyecto1.model.pasajes.Pago;
-import com.tp.proyecto1.model.pasajes.PasajeVenta;
+import com.tp.proyecto1.model.pasajes.Pasaje;
+import com.tp.proyecto1.model.pasajes.PasajeReserva;
 import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.ClienteService;
@@ -44,7 +45,7 @@ public class ReservaFormController {
 	private Viaje viaje;	
 	private Reserva reserva;
 	private PagoFormController pagoFormController;
-	private ArrayList <Pago> listaDePagos;
+	private List <Pago> listaDePagos;
 	private ChangeHandler changeHandler;
 	
 	public ReservaFormController(Viaje viaje) {
@@ -101,9 +102,12 @@ public class ReservaFormController {
 		Cliente cliente = reservaForm.getClienteSeleccionado();
 		Double importeTotal = reservaForm.getPrecioTotal();
 		int cantidadPasajes = reservaForm.cantidadPasajesSeleccionados();
-		List<PasajeVenta> pasajes = new ArrayList<PasajeVenta> ();
+		List<Pasaje> pasajes = new ArrayList<Pasaje> ();
 		for (int i = 0; i < cantidadPasajes; i++) {
-			pasajes.add(new PasajeVenta());
+			pasajes.add(new PasajeReserva(viaje, cliente));
+		}
+		for(Pago pago : listaDePagos) {
+			pago.setCliente(cliente);			
 		}
 		reserva = new Reserva(pasajes, listaDePagos, importeTotal, cliente);
 		if(viaje.getPasajesRestantes()>= cantidadPasajes) {
@@ -185,9 +189,11 @@ public class ReservaFormController {
 	}
 	
 	public ReservaForm getFormModificacionReserva(Reserva reserva) {
+		this.reserva = reserva;
+		this.listaDePagos = reserva.getPagos();
 		reservaForm = new ReservaForm(reserva.getViaje());
-		reservaForm.setModoModificacion(reserva.getPasajes().size(), reserva.getCliente(), reserva.getImporteTotal());
-		setListeners();
+		reservaForm.setModoModificacion(reserva.getCantidadPasajes(), reserva.getCliente(), reserva.getTotalPagado());
+		setListeners(); 
 		return reservaForm;		
 	}
 

@@ -1,5 +1,8 @@
 package com.tp.proyecto1.views.eventos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.tp.proyecto1.utils.BuscadorClientesComponent;
 import com.tp.proyecto1.utils.PrioridadEvento;
 import com.vaadin.flow.component.button.Button;
@@ -14,10 +17,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
-import org.vaadin.gatanaso.MultiselectComboBox;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ConsultaForm extends Dialog {
 

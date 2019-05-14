@@ -20,7 +20,7 @@ public abstract class Transaccion {
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@Fetch(value = FetchMode.SUBSELECT)
-	protected List<PasajeVenta> pasajes =  new ArrayList<>();
+	protected List<Pasaje> pasajes =  new ArrayList<>();
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	protected List<Pago> pagos = new ArrayList<>();
@@ -36,7 +36,7 @@ public abstract class Transaccion {
 	public Transaccion() {
 	}
 
-	public Transaccion(List<PasajeVenta> pasajes, List<Pago> pagos, Double importeTotal, Cliente cliente) {
+	public Transaccion(List<Pasaje> pasajes, List<Pago> pagos, Double importeTotal, Cliente cliente) {
 		this.pasajes = pasajes;
 		this.pagos = pagos;
 		this.importeTotal = importeTotal;
@@ -55,14 +55,18 @@ public abstract class Transaccion {
 		this.id = id;
 	}
 
-	public List<PasajeVenta> getPasajes() {
+	public List<Pasaje> getPasajes() {
 		return pasajes;
 	}
 
-	public void setPasajes(List<PasajeVenta> pasajes) {
+	public void setPasajes(List<Pasaje> pasajes) {
 		this.pasajes = pasajes;
 	}
 
+	public int getCantidadPasajes() {
+		return pasajes.size();
+	}
+	
 	public List<Pago> getPagos() {
 		return pagos;
 	}
