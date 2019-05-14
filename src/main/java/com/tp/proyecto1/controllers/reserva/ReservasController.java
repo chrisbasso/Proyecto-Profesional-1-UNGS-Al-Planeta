@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.tp.proyecto1.controllers.VentaFormController;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.model.viajes.Destino;
@@ -31,6 +32,8 @@ public class ReservasController {
     private ReservaView reservaView;
     private ChangeHandler changeHandler;
 
+    private VentaFormController ventaFormController;
+    
     public ReservasController() {
         Inject.Inject(this);
         this.reservaView = new ReservaView();        
@@ -58,6 +61,7 @@ public class ReservasController {
     private void setListeners() {
     	setChangeHandler(this::listReservas);
     	reservaView.setBtnBuscarListener(e->listReservas());
+    	reservaView.getBtnVender().addClickListener(e-> openPasaVentaForm());
     }
 
     private void listReservas() {
@@ -112,6 +116,18 @@ public class ReservasController {
                  reservaView.getFechaFilter() != null;
     }
 
+    private void openPasaVentaForm() {
+    	Reserva reservaSeleccionada = this.reservaView.getGrid().asSingleSelect().getValue();
+    	if (reservaSeleccionada != null) {
+	    	ventaFormController = new VentaFormController(reservaSeleccionada);
+			ventaFormController.getVentaFormCompra().open();
+			ventaFormController.setChangeHandler(this::listReservas);
+    	}
+    	else {
+    			Notification.show("Seleccione un Viaje");
+    	}
+	}
+    
     private void setChangeHandler(ChangeHandler h) {
         changeHandler = h;
     }

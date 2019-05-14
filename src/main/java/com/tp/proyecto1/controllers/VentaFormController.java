@@ -13,8 +13,10 @@ import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
+import com.tp.proyecto1.utils.BuscadorClientesComponent;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.views.ventas.VentaForm;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.*;
@@ -43,6 +45,8 @@ public class VentaFormController {
 	private Venta venta;
 
 	private Viaje viaje;
+	
+	private Reserva reserva;
 
 	private Binder<PasajeVenta> binderPasajeVenta;
 	private Binder<Venta> binderVenta;
@@ -55,13 +59,33 @@ public class VentaFormController {
 		this.ventaForm = new VentaForm();
 		setListeners();
         setComponents();
-        setComponentesLectura();
+        setComponentesLectura(this.viaje);
        // setBinders(); no lo uso!!
+	}
+	
+	public VentaFormController(Reserva reserva) {
+		Inject.Inject(this);
+		this.reserva = reserva;
+		this.ventaForm = new VentaForm();
+		setListeners(); //revisar q le estoy pasando para RESERVA-> Venta ver si funciona
+		setComponents();//revisar q le estoy pasando para RESERVA-> Venta ver si funciona 
+		setComponentesLectura(this.reserva.getViaje()); //ver si funciona
+		//Setear Cliente, encapsular luego
+		Label nroCliente = new Label();
+		nroCliente.setText(this.reserva.getCliente().getId().toString());
+		ventaForm.setCliente(new BuscadorClientesComponent(nroCliente));
+		//Setear Forma de Pago si la hay y saldo a pagar y subtotal, encapsular luego
+		if (this.reserva.getPagos().size() >= 0) {//verificar q noi se salga de bounds
+			ventaForm.setFormaPago(this.reserva.getPagos().get(0).getFormaDePago().getId().toString());
+			ventaForm.setSaldoPagarDouble(reserva.getPagos().get(0).getImporte());
+			ventaForm.setSubtotalDouble(reserva.getPagos().get(0).getImporte());
+		}
+		//Setear 
+		
 	}
 
 
-
-	private void setComponentesLectura() {
+	private void setComponentesLectura(Viaje viaje) {
 		ventaForm.getPais().setValue(viaje.getDestino().getPais());
 		ventaForm.getCiudad().setValue(viaje.getDestino().getCiudad());
 		ventaForm.getCodTransporte().setValue(viaje.getTransporte().getCodTransporte());
@@ -84,6 +108,7 @@ public class VentaFormController {
 		ventaForm.getBtnSave().addClickListener(e-> saveVenta(venta));//en el modo edit
 		ventaForm.getBtnCancel().addClickListener(e->ventaForm.close());
 		ventaForm.getBtnFinalizarCompra().addClickListener(e-> newVenta());//en el modo compra pasajes de viajes,
+		//impactar  aqui la venta que viene de reserva
 		ventaForm.getPasajerosGridComponent().getGrid().getEditor().addCloseListener(e->modificarSaldoaPagar());
 	}
 	

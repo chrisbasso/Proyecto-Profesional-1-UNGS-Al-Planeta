@@ -145,6 +145,11 @@ public class VentaForm extends Dialog {
 	public void setFormaPago(ComboBox<FormaDePago> formaPago) {
 		this.formaPago = formaPago;
 	}
+	
+	public void setFormaPago(String formaPagoId) {
+		this.formaPago.setId(formaPagoId);
+	}
+
 
 	public BuscadorClientesComponent getCliente() {
 		return cliente;
@@ -265,5 +270,13 @@ public class VentaForm extends Dialog {
 
 	public void setBtnFinalizarCompra(Button btnFinalizarCompra) {
 		this.btnFinalizarCompra = btnFinalizarCompra;
+	}
+
+	public Label getDescripcionCliente() {
+		return descripcionCliente;
+	}
+
+	public void setDescripcionCliente(Label descripcionCliente) {
+		this.descripcionCliente = descripcionCliente;
 	}
 }

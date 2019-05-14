@@ -4,12 +4,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.tp.proyecto1.model.pasajes.Reserva;
+import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -25,6 +27,7 @@ public class ReservaView extends FilterGridLayout<Reserva> {
     private DatePicker fechaFilter;
     private Button btnBuscar;
     private Button btnComprobante;
+    private Button btnVender;
 
     public ReservaView() {
         super(Reserva.class);
@@ -42,11 +45,12 @@ public class ReservaView extends FilterGridLayout<Reserva> {
         this.btnBuscar.setMinWidth("110px");
         this.btnComprobante = new Button("Exportar Comprobante");
         this.fechaFilter = new DatePicker("Fecha");
+        this.btnVender = new Button("Venta");
     }
 
     private void setLayout() {
         HorizontalLayout hlSpace = new HorizontalLayout();
-        this.hlFooter.add(btnComprobante);
+        this.hlFooter.add(btnComprobante, btnVender);
         hlSpace.setWidthFull();
         this.hlActions.add(numeroClienteFilter, paisFilter, ciudadFilter, codTransporteFilter,fechaFilter,hlSpace, btnBuscar);
     }
@@ -61,6 +65,10 @@ public class ReservaView extends FilterGridLayout<Reserva> {
     public void agregarColumnaEdicion(ValueProvider<Reserva, Button> e) {
     	grid.addComponentColumn(e).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);    	
     }
+
+	public Grid<Reserva> getGrid() {
+		return grid;
+	}
 
     public Long getNumeroClienteFilter() {
     	Long idCliente = 0L;
@@ -113,4 +121,14 @@ public class ReservaView extends FilterGridLayout<Reserva> {
     public void setBtnComprobanteListener(ComponentEventListener<ClickEvent<Button>> e) {
         btnComprobante.addClickListener(e);
     }
+
+	public Button getBtnVender() {
+		return btnVender;
+	}
+
+	public void setBtnVender(Button btnVender) {
+		this.btnVender = btnVender;
+	}
+    
+    
 }
