@@ -55,14 +55,14 @@ public class PromocionForm extends Dialog
         items.add("Descuento");
         items.add("Puntos");
         tipoPromocion.setItems(items);
-       // tipoPromocion.setItemLabelGenerator(TipoTransporte::getDescripcion);
+        tipoPromocion.setPattern("Puntos|Descuento");
+        tipoPromocion.setPreventInvalidInput(true);
         nombre = new TextField();
         fechaVencimiento = new DatePicker();
         nroFloat = new TextField();
         nroFloat.setWidth("192px");
-        nroFloat.setPattern("[0-9]*");
         nroFloat.setPreventInvalidInput(true);
-        //nroFloat.setPrefixComponent(new Span("$"));
+        nroFloat.setEnabled(false);
         textAreaDescripcion = new TextArea("Descripción");
         textAreaDescripcion.setHeight("100px");
         textAreaDescripcion.setWidth("770px");
@@ -75,10 +75,10 @@ public class PromocionForm extends Dialog
         destinos.setLabel("Seleccione destinos");
         destinos.setItemLabelGenerator(Destino::toString);
         viajes = new MultiselectComboBox<>();
-        destinos.setLabel("Seleccione viajes");
+        viajes.setLabel("Seleccione viajes");
         viajes.setItemLabelGenerator(Viaje::toString);
         tagsDestino = new MultiselectComboBox<>();
-        destinos.setLabel("Seleccione tags");
+        tagsDestino.setLabel("Seleccione tags");
         tagsDestino.setItemLabelGenerator(TagDestino::getDescripcion);
         
     }

@@ -11,6 +11,7 @@ import com.tp.proyecto1.views.promociones.PromocionForm;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.Setter;
@@ -66,9 +67,34 @@ public class PromocionFormController {
     private void setListeners() {
     	promocionForm.getBtnSave().addClickListener(e-> savePromocion(promocion));
     	promocionForm.getBtnCancel().addClickListener(e->promocionForm.close());
+    	promocionForm.getTipoPromocion().addValueChangeListener(e-> cambiarBonificador());
     }
     
-    private void savePromocion(Promocion promocion)
+    private void cambiarBonificador()
+    {
+    	promocionForm.getNroFloat().setPrefixComponent(null);
+    	promocionForm.getNroFloat().setSuffixComponent(null);
+    	 if(promocionForm.getTipoPromocion().getValue()!= null)
+    	 {
+    		 promocionForm.getNroFloat().setEnabled(true);
+    		 if (promocionForm.getTipoPromocion().getValue().equals("Puntos"))
+    		 {
+    			 promocionForm.getNroFloat().setPrefixComponent(new Span("x"));
+    			 promocionForm.getNroFloat().setPattern("[1-9]*");
+    		 }
+    		 else
+    		 {
+    			 promocionForm.getNroFloat().setSuffixComponent(new Span("%"));
+    			 promocionForm.getNroFloat().setPattern("^100$|^[0-9]{1,2}$|^[0-9]{1,2}");// se agrega lo siguiente si queremos que tenga coma:  \\,[0-9]{1,2}$
+    		 }
+    	 }
+    	 else
+    	 {
+    		 promocionForm.getNroFloat().setEnabled(false);
+    	 }
+	}
+
+	private void savePromocion(Promocion promocion)
     {
     	if(promocion==null){
             promocion = setNewPromocion();
