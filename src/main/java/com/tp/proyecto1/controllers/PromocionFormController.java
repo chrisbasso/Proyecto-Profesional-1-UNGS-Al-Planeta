@@ -23,6 +23,7 @@ import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @UIScope
@@ -93,9 +94,9 @@ public class PromocionFormController {
     	Integer cantidadPasajes = 0;
     	if (!promocionForm.getCantidadPasajes().getValue().equals(""))
     		cantidadPasajes = Integer.parseInt(promocionForm.getCantidadPasajes().getValue());
-    	/*List<Destino>*/ Destino destinos = promocionForm.getDestinos().getValue();
-    	/*List<Viaje>*/ Viaje viajes = promocionForm.getViajes().getValue();
-    	/*List<TagDestino>*/ TagDestino tags = promocionForm.getTagsDestino().getValue();
+    	Set<Destino> destinos  = promocionForm.getDestinos().getValue();
+    	Set<Viaje> /*Viaje */viajes = promocionForm.getViajes().getValue();
+    	Set<TagDestino> /*TagDestino*/ tags = promocionForm.getTagsDestino().getValue();
     	Promocion promocionToAdd;
     	if (promocionForm.getTipoPromocion().getValue()=="Descuento")
     		promocionToAdd = new PromocionDescuento(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
@@ -106,9 +107,9 @@ public class PromocionFormController {
     	 * promocionToAdd.setViajesAfectados(viajes);
     	 * promocionToAdd.setTagsDestinoAfectados(tags);
     	*/
-    	promocionToAdd.getDestinosAfectados().add(destinos);
-    	promocionToAdd.getViajesAfectados().add(viajes);
-    	promocionToAdd.getTagsDestinoAfectados().add(tags);
+    	promocionToAdd.setDestinosAfectados(destinos);
+    	promocionToAdd.setViajesAfectados(viajes);
+    	promocionToAdd.setTagsDestinoAfectados(tags);
     	
     	return promocionToAdd;
     	

@@ -3,20 +3,19 @@ package com.tp.proyecto1.views.promociones;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.vaadin.gatanaso.MultiselectComboBox;
+
 import com.tp.proyecto1.model.viajes.Destino;
 import com.tp.proyecto1.model.viajes.TagDestino;
-import com.tp.proyecto1.model.viajes.TipoTransporte;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 
@@ -31,9 +30,9 @@ public class PromocionForm extends Dialog
     private DatePicker fechaVencimiento;
     private TextField nroFloat;
     private TextArea textAreaDescripcion;
-    private ComboBox<Destino> destinos;
-    private ComboBox<Viaje> viajes;
-    private ComboBox<TagDestino> tagsDestino;
+    private MultiselectComboBox<Viaje> viajes;
+    private MultiselectComboBox<TagDestino> tagsDestino;
+    private MultiselectComboBox<Destino> destinos;
     
     private Button btnSave;
     private Button btnCancel;
@@ -72,11 +71,14 @@ public class PromocionForm extends Dialog
         cantidadPasajes.setPattern("[0-9]*");
         cantidadPasajes.setPreventInvalidInput(true);
        
-        destinos = new ComboBox<>();
+        destinos = new MultiselectComboBox<>();
+        destinos.setLabel("Seleccione destinos");
         destinos.setItemLabelGenerator(Destino::toString);
-        viajes = new ComboBox<>();
+        viajes = new MultiselectComboBox<>();
+        destinos.setLabel("Seleccione viajes");
         viajes.setItemLabelGenerator(Viaje::toString);
-        tagsDestino = new ComboBox<>();
+        tagsDestino = new MultiselectComboBox<>();
+        destinos.setLabel("Seleccione tags");
         tagsDestino.setItemLabelGenerator(TagDestino::getDescripcion);
         
     }
@@ -187,27 +189,27 @@ public class PromocionForm extends Dialog
 		this.cantidadPasajes = cantidadPasajes;
 	}
 
-	public ComboBox<Destino> getDestinos() {
+	public MultiselectComboBox<Destino> getDestinos() {
 		return destinos;
 	}
 
-	public void setDestinos(ComboBox<Destino> destinos) {
+	public void setDestinos(MultiselectComboBox<Destino> destinos) {
 		this.destinos = destinos;
 	}
 
-	public ComboBox<Viaje> getViajes() {
+	public MultiselectComboBox<Viaje> getViajes() {
 		return viajes;
 	}
 
-	public void setViajes(ComboBox<Viaje> viajes) {
+	public void setViajes(MultiselectComboBox<Viaje> viajes) {
 		this.viajes = viajes;
 	}
 
-	public ComboBox<TagDestino> getTagsDestino() {
+	public MultiselectComboBox<TagDestino> getTagsDestino() {
 		return tagsDestino;
 	}
 
-	public void setTagsDestino(ComboBox<TagDestino> tagsDestino) {
+	public void setTagsDestino(MultiselectComboBox<TagDestino> tagsDestino) {
 		this.tagsDestino = tagsDestino;
 	}
 
