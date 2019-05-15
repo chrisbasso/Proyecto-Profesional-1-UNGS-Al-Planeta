@@ -2,10 +2,16 @@ package com.tp.proyecto1.model.clientes;
 
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Objects;
 
 @Entity
 public class Interesado extends Persona{
+
+    @Id
+    @GeneratedValue
+    private Long id;
 
 
     public Interesado() {

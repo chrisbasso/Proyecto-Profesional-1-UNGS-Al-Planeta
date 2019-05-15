@@ -1,6 +1,7 @@
 package com.tp.proyecto1;
 
 
+import com.vaadin.flow.component.UI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -26,6 +27,8 @@ public class Proyecto1Application {
 
 	private static final Logger log = LoggerFactory.getLogger(Proyecto1Application.class);
 
+	public static User logUser;
+
 	public static void main(String[] args) {
 		SpringApplication.run(Proyecto1Application.class);
 	}
@@ -48,6 +51,8 @@ public class Proyecto1Application {
 			userService.createRoleIfNotFound("ADMIN", userService.getPrivileges());
 			User userAdmin = new User("root", "root", userService.getRoles());
 			userService.createUserIfNotExist(userAdmin);
+			User userEmployee = new User("pepe", "pepe", userService.getRoles());
+			userService.createUserIfNotExist(userEmployee);
 			viajeService.createTipoTransporteIfNotExist("Avión");
 			viajeService.createTipoTransporteIfNotExist("Bus");
 			viajeService.createTipoTransporteIfNotExist("Tren");
@@ -73,7 +78,7 @@ public class Proyecto1Application {
 //			Pago pago1 = new Pago(cliente, venta, formaDePago,500.50, LocalDate.now());
 //			Pago pago2 = new Pago(cliente, venta, formaDePago,800.00, LocalDate.now());
 //			venta.setViaje(viaje);
-//			venta.setCliente(cliente);
+//			venta.setPersona(cliente);
 //
 //			venta.agregarPago(pago1);
 //

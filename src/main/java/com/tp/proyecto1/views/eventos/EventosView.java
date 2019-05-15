@@ -5,9 +5,8 @@ import com.tp.proyecto1.model.viajes.TipoTransporte;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.tp.proyecto1.utils.View;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
@@ -15,7 +14,7 @@ import com.vaadin.flow.component.textfield.TextField;
 public class EventosView extends FilterGridLayout<Evento> implements View {
 
 	private NumberField idFilter = new NumberField("Nº Evento");
-	private NumberField idClienteFilter = new NumberField("Nº Cliente");
+	private NumberField idClienteFilter = new NumberField("Nº Cliente/Interesado");
 	private TextField nombreFilter = new TextField("Nombre");
 	private TextField apellidoFilter = new TextField("Apellido");
 	private DatePicker fechaFilter = new DatePicker("Fecha");
@@ -48,10 +47,14 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 	@Override
 	public void setGrid() {
 
-		grid.setColumns("id", "cliente.id", "cliente.nombre", "cliente.apellido", "fecha", "hora");
-		grid.getColumnByKey("id").setHeader("Nº Reclamo");
-		grid.getColumnByKey("cliente.id").setHeader("Nº Cliente");
+		grid.setColumns("id", "persona.id", "persona.nombre", "persona.apellido", "fecha", "hora","usuarioLogueado.user", "prioridad");
+		grid.getColumnByKey("id").setHeader("Nº Evento");
+		grid.getColumnByKey("persona.id").setHeader("Nº Cliente/Interesado");
 		grid.getColumnByKey("id").setWidth("100px").setFlexGrow(0);
+	}
+
+	public Grid<Evento> getGrid(){
+		return this.grid;
 	}
 
 	public NumberField getIdFilter() {
@@ -117,4 +120,5 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 	public void setNewReclamoButton(Button newReclamoButton) {
 		this.newReclamoButton = newReclamoButton;
 	}
+
 }

@@ -57,9 +57,7 @@ public class MainView extends VerticalLayout {
 
 		mainLayout.removeAll();
 
-		if(UI.getCurrent().getSession().getAttribute("usuarioLogueado")==null){
-			openMain();
-		}else if(((User)UI.getCurrent().getSession().getAttribute("usuarioLogueado")).getUser()==null){
+		if(Proyecto1Application.logUser==null){
 			openMain();
 		} else{
 			openMenu();
@@ -103,8 +101,8 @@ public class MainView extends VerticalLayout {
 		);
 
 		menu.addMenuItem(new AppLayoutMenuItem(VaadinIcon.USER.create(),
-				"Logout " + ((User) UI.getCurrent().getSession().getAttribute("usuarioLogueado")).getUser()),
-				e->loginController.logout());
+				"Logout " + Proyecto1Application.logUser.getUser(),
+				e->loginController.logout()));
 
 		//Cargamos la lista de viajes en la página inicial
 		openViajesView();
