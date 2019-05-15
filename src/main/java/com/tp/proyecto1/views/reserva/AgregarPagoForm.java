@@ -69,8 +69,7 @@ public class AgregarPagoForm extends Dialog{
 		pagosAnteriores = new Grid<>(Pago.class);
 		pagosAnteriores.addThemeVariants(GridVariant.MATERIAL_COLUMN_DIVIDERS);
 		pagosAnteriores.setSelectionMode(Grid.SelectionMode.NONE);		
-		pagosAnteriores.setColumns("cliente", "transaccion", "formaDePago", "importe", "fechaDePago");
-		pagosAnteriores.getColumnByKey("cliente").setVisible(false);
+		pagosAnteriores.setColumns("transaccion", "formaDePago", "importe", "fechaDePago");
 		pagosAnteriores.getColumnByKey("transaccion").setVisible(false);
 		pagosAnteriores.getColumnByKey("formaDePago").setHeader("Medio");
 	}

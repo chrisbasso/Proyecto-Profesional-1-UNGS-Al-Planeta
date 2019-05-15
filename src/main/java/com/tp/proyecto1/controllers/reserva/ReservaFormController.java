@@ -99,27 +99,53 @@ public class ReservaFormController {
 	}
 	
 	private void guardarReserva() {
-		Cliente cliente = reservaForm.getClienteSeleccionado();
-		Double importeTotal = reservaForm.getPrecioTotal();
-		int cantidadPasajes = reservaForm.cantidadPasajesSeleccionados();
-		List<Pasaje> pasajes = new ArrayList<Pasaje> ();
-		for (int i = 0; i < cantidadPasajes; i++) {
-			pasajes.add(new PasajeReserva(viaje, cliente));
-		}
-		for(Pago pago : listaDePagos) {
-			pago.setCliente(cliente);			
-		}
-		reserva = new Reserva(pasajes, listaDePagos, importeTotal, cliente);
-		if(viaje.getPasajesRestantes()>= cantidadPasajes) {
-			viaje.restarPasajes(cantidadPasajes);
-			reserva.setViaje(viaje);
-			reservaService.save(reserva);
-			mensajeReservaGuardada();
-			mensajeSaldoViaje();
-			reservaForm.close();
-		}else {
-			Notification.show("Lo sentimos, no quedan pasajes disponibles en el viaje seleccionado.");
-			reservaForm.close();
+		if(reserva == null) {
+			Cliente cliente = reservaForm.getClienteSeleccionado();
+			Double importeTotal = reservaForm.getPrecioTotal();
+			int cantidadPasajes = reservaForm.cantidadPasajesSeleccionados();
+			List<Pasaje> pasajes = new ArrayList<Pasaje> ();
+			for (int i = 0; i < cantidadPasajes; i++) {
+				pasajes.add(new PasajeReserva(viaje, cliente));
+			}
+//			for(Pago pago : listaDePagos) {
+//				pago.setCliente(cliente);		
+//			}
+			reserva = new Reserva(pasajes, listaDePagos, importeTotal, cliente);
+			if(viaje.getPasajesRestantes()>= cantidadPasajes) {
+				viaje.restarPasajes(cantidadPasajes);
+				reserva.setViaje(viaje);
+				reservaService.save(reserva);
+				mensajeReservaGuardada();
+				mensajeSaldoViaje();
+				reservaForm.close();
+			}else {
+				Notification.show("Lo sentimos, no quedan pasajes disponibles en el viaje seleccionado.");
+				reservaForm.close();
+			}
+		}else { // Reserva Modificada
+			Double importeTotal = reservaForm.getPrecioTotal();
+			reserva.setImporteTotal(importeTotal);			
+			int cantidadPasajes = reservaForm.cantidadPasajesSeleccionados();
+			List<Pasaje> pasajes = new ArrayList<Pasaje> ();
+			for (int i = 0; i < cantidadPasajes; i++) {
+				pasajes.add(new PasajeReserva(viaje, reserva.getCliente()));
+			}
+			reserva.setPasajes(pasajes);
+			reserva.setPagos(listaDePagos);
+			
+			if(viaje.getPasajesRestantes()>= cantidadPasajes) {
+				viaje.restarPasajes(cantidadPasajes);
+				reservaService.save(reserva);
+				mensajeReservaGuardada();
+				mensajeSaldoViaje();
+				reservaForm.close();
+			}else {
+				Notification.show("Lo sentimos, no quedan pasajes disponibles en el viaje seleccionado.");
+				reservaForm.close();
+			}
+//			for(Pago pago : listaDePagos) {
+//				pago.setCliente(reserva.getCliente());		
+//			}
 		}
 	}
 
@@ -159,22 +185,14 @@ public class ReservaFormController {
 		}
 	}
 	
-	public void agregarPago(FormaDePago fdp, double importe) {
+	public void agregarPago(FormaDePago fdp, Double importe) {
 		Cliente cliente = reservaForm.getClienteSeleccionado();
 		Pago nuevoPago = new Pago(cliente, null, fdp, importe, LocalDate.now()); 
 		listaDePagos.add(nuevoPago);
 		reservaForm.inhabilitarClientes();
 		actualizarImportes();
 	}
-	
-	private void emitirComprobante() {
 		
-	}
-	
-	private void enviarMail() {
-		
-	}
-	
 	public boolean esReservablePorFecha() {
 		LocalDateTime presente = LocalDate.now().atStartOfDay();
 		LocalDateTime fechaViaje = viaje.getFechaSalida().atStartOfDay();		
@@ -199,5 +217,14 @@ public class ReservaFormController {
 
 	public void setChangeHandler(ChangeHandler ch) {
 		changeHandler = ch;
+	}
+	
+
+	private void emitirComprobante() {
+		
+	}
+	
+	private void enviarMail() {
+		
 	}
 }
