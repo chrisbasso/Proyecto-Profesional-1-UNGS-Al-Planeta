@@ -45,8 +45,12 @@ public class Viaje {
 		return transporte.getCapacidadRestante();
 	}
 	
-	public void restarPasajes(Integer cantPasajes) {
-		transporte.restarPasajes(cantPasajes);
+	public boolean restarPasajes(Integer cantPasajes) {
+		return transporte.restarPasajes(cantPasajes);
+	}
+
+	public boolean agregarPasajes(Integer cantPasajes) {
+		return transporte.agregarPasajes(cantPasajes);		
 	}
 
 	public Long getId() {

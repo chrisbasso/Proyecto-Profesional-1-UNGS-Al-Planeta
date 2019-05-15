@@ -18,34 +18,22 @@ public class Pago {
 	@Id
 	@GeneratedValue
 	private Long id;	
-//	@OneToOne
-//	private Cliente cliente;
 	@ManyToOne
 	private Transaccion transaccion;
 	@OneToOne(fetch = FetchType.EAGER)
 	private FormaDePago formaDePago;
-
 	private Double importe;
 	private LocalDate fechaDePago;
 
 	public Pago() {		
 	}
 	
-	public Pago(Cliente cliente, Transaccion transaccion , FormaDePago formaDePago, Double importe, LocalDate fechaDePago) {
-//		this.cliente = cliente;
+	public Pago(Transaccion transaccion , FormaDePago formaDePago, Double importe, LocalDate fechaDePago) {
 		this.transaccion = transaccion;
 		this.formaDePago = formaDePago;
 		this.importe = importe;
 		this.fechaDePago = fechaDePago;
 	}
-
-//	public Cliente getCliente() {
-//		return cliente;
-//	}
-//
-//	public void setCliente(Cliente cliente) {
-//		this.cliente = cliente;
-//	}
 
 	public void setId(Long id) {
 		this.id = id;

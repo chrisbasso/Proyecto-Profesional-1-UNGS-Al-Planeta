@@ -65,7 +65,7 @@ public class ReservaFormController {
         reservaForm.setListenerCantPasajes(e->actualizarImportes());
         reservaForm.setListenerCliente(e->habilitarPagos());
         reservaForm.setListenerBtnNuevoPago(e->formNuevoPago());        
-        reservaForm.setListenerBtnSave(e->guardarReserva());
+        reservaForm.setListenerBtnSave(e->accionGuardarReserva());
         reservaForm.setListenerBtnCancel(e->reservaForm.close());
     }
     
@@ -98,55 +98,68 @@ public class ReservaFormController {
 		reservaForm.habilitarBtnAgregarPago();
 	}
 	
-	private void guardarReserva() {
-		if(reserva == null) {
-			Cliente cliente = reservaForm.getClienteSeleccionado();
-			Double importeTotal = reservaForm.getPrecioTotal();
-			int cantidadPasajes = reservaForm.cantidadPasajesSeleccionados();
-			List<Pasaje> pasajes = new ArrayList<Pasaje> ();
-			for (int i = 0; i < cantidadPasajes; i++) {
-				pasajes.add(new PasajeReserva(viaje, cliente));
-			}
-//			for(Pago pago : listaDePagos) {
-//				pago.setCliente(cliente);		
-//			}
-			reserva = new Reserva(pasajes, listaDePagos, importeTotal, cliente);
-			if(viaje.getPasajesRestantes()>= cantidadPasajes) {
-				viaje.restarPasajes(cantidadPasajes);
-				reserva.setViaje(viaje);
-				reservaService.save(reserva);
-				mensajeReservaGuardada();
-				mensajeSaldoViaje();
-				reservaForm.close();
-			}else {
-				Notification.show("Lo sentimos, no quedan pasajes disponibles en el viaje seleccionado.");
-				reservaForm.close();
-			}
-		}else { // Reserva Modificada
-			Double importeTotal = reservaForm.getPrecioTotal();
-			reserva.setImporteTotal(importeTotal);			
-			int cantidadPasajes = reservaForm.cantidadPasajesSeleccionados();
-			List<Pasaje> pasajes = new ArrayList<Pasaje> ();
-			for (int i = 0; i < cantidadPasajes; i++) {
-				pasajes.add(new PasajeReserva(viaje, reserva.getCliente()));
-			}
-			reserva.setPasajes(pasajes);
-			reserva.setPagos(listaDePagos);
-			
-			if(viaje.getPasajesRestantes()>= cantidadPasajes) {
-				viaje.restarPasajes(cantidadPasajes);
-				reservaService.save(reserva);
-				mensajeReservaGuardada();
-				mensajeSaldoViaje();
-				reservaForm.close();
-			}else {
-				Notification.show("Lo sentimos, no quedan pasajes disponibles en el viaje seleccionado.");
-				reservaForm.close();
-			}
-//			for(Pago pago : listaDePagos) {
-//				pago.setCliente(reserva.getCliente());		
-//			}
+	private void accionGuardarReserva() {
+		Cliente cliente = reservaForm.getClienteSeleccionado();
+		Double importeTotal = reservaForm.getPrecioTotal();
+		int cantidadPasajes = reservaForm.cantidadPasajesSeleccionados();
+		List<Pasaje> pasajes = new ArrayList<Pasaje> ();
+		for (int i = 0; i < cantidadPasajes; i++) {
+			pasajes.add(new PasajeReserva(viaje, cliente));
 		}
+		
+		if(reserva == null) {
+			guardarNuevaReserva(pasajes, importeTotal, cliente);
+		}else { 
+			guardarReservaModificada(pasajes, importeTotal);
+		}
+	}
+
+	private void guardarNuevaReserva(List <Pasaje> pasajes, Double importeTotal, Cliente cliente) {		
+		reserva = new Reserva(pasajes, listaDePagos, importeTotal, cliente);
+		//actualizarTransaccionEnPagos(reserva);
+		if(viaje.getPasajesRestantes()>= pasajes.size()) {
+			viaje.restarPasajes(pasajes.size());
+			reserva.setViaje(viaje);
+			reservaService.save(reserva);
+			mensajeGuardadoCierreForm();
+		}else {
+			Notification.show("Lo sentimos, no quedan pasajes disponibles en el viaje seleccionado.");
+			reservaForm.close();
+		}
+	}
+
+	private void guardarReservaModificada(List <Pasaje> pasajes, Double importeTotal) {
+		int cantidadOriginal = reserva.getCantidadPasajes();
+		int nuevaCantidad = pasajes.size();
+		int cambio = nuevaCantidad - cantidadOriginal;
+		boolean actualizarPasajes = true; // En principio guardamos
+		
+		if(cambio == 0) {
+			// Do nothing on viaje
+		}else if(cambio > 0) {
+			actualizarPasajes = viaje.restarPasajes(cambio); // Si no quedan pasajes disp..
+		}else if(cambio < 0) {
+			actualizarPasajes = viaje.agregarPasajes(cambio*-1); // Si queremos devolver..
+		}
+		
+		reserva.setImporteTotal(importeTotal);			
+		reserva.setPasajes(pasajes);
+//		actualizarTransaccionEnPagos(reserva);
+		reserva.setPagos(listaDePagos);
+		
+		if(actualizarPasajes) {
+			reservaService.save(reserva);
+			mensajeGuardadoCierreForm();
+		}else {
+			Notification.show("Lo sentimos, no pudimos actualizar los pasajes disponibles en el viaje seleccionado.");
+			reservaForm.close();
+		}
+	}
+
+	private void mensajeGuardadoCierreForm() {
+		mensajeReservaGuardada();
+		mensajeSaldoViaje();
+		reservaForm.close();
 	}
 
 	private void mensajeReservaGuardada() {
@@ -186,11 +199,16 @@ public class ReservaFormController {
 	}
 	
 	public void agregarPago(FormaDePago fdp, Double importe) {
-		Cliente cliente = reservaForm.getClienteSeleccionado();
-		Pago nuevoPago = new Pago(cliente, null, fdp, importe, LocalDate.now()); 
+		Pago nuevoPago = new Pago(null, fdp, importe, LocalDate.now()); 
 		listaDePagos.add(nuevoPago);
 		reservaForm.inhabilitarClientes();
 		actualizarImportes();
+	}
+	
+	private void actualizarTransaccionEnPagos(Reserva reserva) {
+		for(Pago pago : listaDePagos) {
+			pago.setTransaccion(reserva);
+		}
 	}
 		
 	public boolean esReservablePorFecha() {
