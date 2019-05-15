@@ -26,10 +26,10 @@ public class PromocionForm extends Dialog
 	private VerticalLayout mainLayout = new VerticalLayout();
     private FormLayout form = new FormLayout();
     private TextField nombre;
-    private NumberField cantidadPasajes;
+    private TextField cantidadPasajes;
     private ComboBox<String> tipoPromocion;
     private DatePicker fechaVencimiento;
-    private NumberField nroFloat;
+    private TextField nroFloat;
     private TextArea textAreaDescripcion;
     private ComboBox<Destino> destinos;
     private ComboBox<Viaje> viajes;
@@ -59,18 +59,17 @@ public class PromocionForm extends Dialog
        // tipoPromocion.setItemLabelGenerator(TipoTransporte::getDescripcion);
         nombre = new TextField();
         fechaVencimiento = new DatePicker();
-        nroFloat = new NumberField();
+        nroFloat = new TextField();
         nroFloat.setWidth("192px");
-        nroFloat.setMin(0);
+        nroFloat.setPattern("[0-9]*");
         nroFloat.setPreventInvalidInput(true);
         //nroFloat.setPrefixComponent(new Span("$"));
         textAreaDescripcion = new TextArea("Descripción");
         textAreaDescripcion.setHeight("100px");
         textAreaDescripcion.setWidth("770px");
         
-        cantidadPasajes = new NumberField();
+        cantidadPasajes = new TextField();
         cantidadPasajes.setPattern("[0-9]*");
-        cantidadPasajes.setMin(0);
         cantidadPasajes.setPreventInvalidInput(true);
        
         destinos = new ComboBox<>();
@@ -148,11 +147,11 @@ public class PromocionForm extends Dialog
         this.fechaVencimiento = fechaVencimiento;
     }
 
-    public NumberField getNroFloat() {
+    public TextField getNroFloat() {
         return nroFloat;
     }
 
-    public void setNroFloat(NumberField nroFloat) {
+    public void setNroFloat(TextField nroFloat) {
         this.nroFloat = nroFloat;
     }
 
@@ -180,11 +179,11 @@ public class PromocionForm extends Dialog
         this.btnCancel = btnCancel;
     }
 
-	public NumberField getCantidadPasajes() {
+	public TextField getCantidadPasajes() {
 		return cantidadPasajes;
 	}
 
-	public void setCantidadPasajes(NumberField cantidadPasajes) {
+	public void setCantidadPasajes(TextField cantidadPasajes) {
 		this.cantidadPasajes = cantidadPasajes;
 	}
 

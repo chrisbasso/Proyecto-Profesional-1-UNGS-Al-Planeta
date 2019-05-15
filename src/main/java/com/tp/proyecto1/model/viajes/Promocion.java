@@ -30,11 +30,11 @@ public abstract class Promocion
 	
 	protected String codigoPromocion;
 	
-	protected Double doubleValue;
+	protected Integer doubleValue;
 	
 	protected String tipoPromocion;
 	
-	protected Double cantidadPasajes;
+	protected Integer cantidadPasajes;
 	
 	@OneToMany
 	protected List<Viaje> viajesAfectados;
@@ -50,13 +50,13 @@ public abstract class Promocion
 		
 	}
 	
-	public Promocion(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion,Double doubleValue, Double cantidadPasajes2)
+	public Promocion(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion,Integer nroFloat, Integer cantidadPasajes2)
 	{
 		setNombrePromocion(nombrePromocion);
 		setDescripcion(descripcion);
 		setFechaVencimiento(fechaVencimiento);
 		setCodigoPromocion(codigoPromocion);
-		setDoubleValue(doubleValue);
+		setDoubleValue(nroFloat);
 		setCantidadPasajes(cantidadPasajes2);
 		viajesAfectados = new ArrayList<Viaje>();
 		destinosAfectados = new ArrayList<Destino>();
@@ -114,14 +114,14 @@ public abstract class Promocion
 		this.codigoPromocion = codigoPromocion;
 	}
 	
-	public Double getDoubleValue()
+	public Integer getDoubleValue()
 	{
 		return doubleValue;
 	}
 
-	public void setDoubleValue(Double doubleValue)
+	public void setDoubleValue(Integer nroFloat)
 	{
-		this.doubleValue = doubleValue;
+		this.doubleValue = nroFloat;
 	}
 	
 	public String getTipoPromocion()
@@ -134,12 +134,12 @@ public abstract class Promocion
 		this.tipoPromocion = tipoPromocion;
 	}
 	
-	public Double getCantidadPasajes()
+	public Integer getCantidadPasajes()
 	{
 		return cantidadPasajes;
 	}
 	
-	public void setCantidadPasajes(Double cantidadPasajes2)
+	public void setCantidadPasajes(Integer cantidadPasajes2)
 	{
 		this.cantidadPasajes = cantidadPasajes2;
 	}
