@@ -79,6 +79,7 @@ public class ConsultaForm extends Dialog {
         this.add(mainLayout);
         this.setWidth("800px");
         this.setHeight("100%");
+        this.setCloseOnOutsideClick(false);
 
     }
 

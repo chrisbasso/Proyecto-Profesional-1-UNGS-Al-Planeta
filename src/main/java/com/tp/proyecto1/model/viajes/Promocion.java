@@ -3,6 +3,9 @@ package com.tp.proyecto1.model.viajes;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -30,37 +33,37 @@ public abstract class Promocion
 	
 	protected String codigoPromocion;
 	
-	protected Double doubleValue;
+	protected Integer doubleValue;
 	
 	protected String tipoPromocion;
 	
-	protected Double cantidadPasajes;
+	protected Integer cantidadPasajes;
 	
 	@OneToMany
-	protected List<Viaje> viajesAfectados;
+	protected Set<Viaje> viajesAfectados;
 	
 	@OneToMany
-	protected List<Destino> destinosAfectados;
+	protected Set<Destino> destinosAfectados;
 	
 	@OneToMany
-	protected List<TagDestino> tagsDestinoAfectados;
+	protected Set<TagDestino> tagsDestinoAfectados;
 	
 	public Promocion()
 	{
 		
 	}
 	
-	public Promocion(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion,Double doubleValue, Double cantidadPasajes2)
+	public Promocion(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion,Integer nroFloat, Integer cantidadPasajes2)
 	{
 		setNombrePromocion(nombrePromocion);
 		setDescripcion(descripcion);
 		setFechaVencimiento(fechaVencimiento);
 		setCodigoPromocion(codigoPromocion);
-		setDoubleValue(doubleValue);
+		setDoubleValue(nroFloat);
 		setCantidadPasajes(cantidadPasajes2);
-		viajesAfectados = new ArrayList<Viaje>();
-		destinosAfectados = new ArrayList<Destino>();
-		tagsDestinoAfectados = new ArrayList<TagDestino>();
+		viajesAfectados = new TreeSet<Viaje>();
+		destinosAfectados = new TreeSet<Destino>();
+		tagsDestinoAfectados = new TreeSet<TagDestino>();
 		
 	}
 	
@@ -114,14 +117,14 @@ public abstract class Promocion
 		this.codigoPromocion = codigoPromocion;
 	}
 	
-	public Double getDoubleValue()
+	public Integer getDoubleValue()
 	{
 		return doubleValue;
 	}
 
-	public void setDoubleValue(Double doubleValue)
+	public void setDoubleValue(Integer nroFloat)
 	{
-		this.doubleValue = doubleValue;
+		this.doubleValue = nroFloat;
 	}
 	
 	public String getTipoPromocion()
@@ -134,44 +137,65 @@ public abstract class Promocion
 		this.tipoPromocion = tipoPromocion;
 	}
 	
-	public Double getCantidadPasajes()
+	public Integer getCantidadPasajes()
 	{
 		return cantidadPasajes;
 	}
 	
-	public void setCantidadPasajes(Double cantidadPasajes2)
+	public void setCantidadPasajes(Integer cantidadPasajes2)
 	{
 		this.cantidadPasajes = cantidadPasajes2;
 	}
 
-	public List<Destino> getDestinosAfectados()
+	public Set<Destino> getDestinosAfectados()
 	{
 		return destinosAfectados;
 	}
 	
-	public void setDestinosAfectados(List<Destino> destinosAfectados)
+	public void setDestinosAfectados(Set<Destino> destinosAfectados)
 	{
 		this.destinosAfectados = destinosAfectados;
 	}
 	
-	public List<Viaje> getViajesAfectados()
+	public Set<Viaje> getViajesAfectados()
 	{
 		return viajesAfectados;
 	}
 	
-	public void setViajesAfectados(List<Viaje> viajesAfectados)
+	public void setViajesAfectados(Set<Viaje> viajesAfectados)
 	{
 		this.viajesAfectados = viajesAfectados;
 	}
 	
-	public List<TagDestino> getTagsDestinoAfectados()
+	public Set<TagDestino> getTagsDestinoAfectados()
 	{
 		return tagsDestinoAfectados;
 	}
 	
-	public void setTagsDestinoAfectados(List<TagDestino> tagsDestinoAfectados)
+	public void setTagsDestinoAfectados(Set<TagDestino> tagsDestinoAfectados)
 	{
 		this.tagsDestinoAfectados = tagsDestinoAfectados;
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Promocion promocion = (Promocion) o;
+		return
+				Objects.equals(id, promocion.id) &&
+				Objects.equals(nombrePromocion, promocion.nombrePromocion) &&
+				Objects.equals(descripcion, promocion.descripcion) &&
+				Objects.equals(fechaVencimiento, promocion.fechaVencimiento) &&
+				Objects.equals(codigoPromocion, promocion.codigoPromocion) &&
+				Objects.equals(doubleValue, promocion.doubleValue) &&
+				Objects.equals(tipoPromocion, promocion.tipoPromocion) &&
+				Objects.equals(cantidadPasajes, promocion.cantidadPasajes);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, nombrePromocion, descripcion, fechaVencimiento, codigoPromocion,doubleValue,tipoPromocion,cantidadPasajes);
 	}
 	    
 }

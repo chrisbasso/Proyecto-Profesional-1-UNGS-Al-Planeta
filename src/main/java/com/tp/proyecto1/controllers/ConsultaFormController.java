@@ -1,5 +1,10 @@
 package com.tp.proyecto1.controllers;
 
+import com.tp.proyecto1.Proyecto1Application;
+import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.model.clientes.Interesado;
+import com.tp.proyecto1.model.eventos.Consulta;
+import com.tp.proyecto1.model.eventos.Evento;
 import com.tp.proyecto1.services.EventoService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
@@ -7,6 +12,9 @@ import com.tp.proyecto1.views.eventos.ConsultaForm;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Controller
 @UIScope
@@ -19,12 +27,15 @@ public class ConsultaFormController {
 
     private ChangeHandler changeHandler;
 
+    private Evento evento;
+
     public ConsultaFormController() {
         Inject.Inject(this);
         this.consultaForm = new ConsultaForm();
         setListeners();
         setComponents();
     }
+
 
     private void setComponents() {
         consultaForm.getApellido().setEnabled(false);
@@ -36,7 +47,36 @@ public class ConsultaFormController {
     private void setListeners() {
 
         consultaForm.getCheckInteresado().addValueChangeListener(e-> cambiarAinteresado());
+        consultaForm.getCancel().addClickListener(e-> consultaForm.close());
+        consultaForm.getSave().addClickListener(e-> saveConsulta());
+    }
 
+    private void saveConsulta() {
+
+        if(evento==null){
+            evento = new Consulta();
+            if(consultaForm.getCheckInteresado().getValue()){
+                Interesado interesado = new Interesado();
+                interesado.setApellido(consultaForm.getApellido().getValue());
+                interesado.setNombre(consultaForm.getNombre().getValue());
+                interesado.setEmail(consultaForm.getEmail().getValue());
+                interesado.setTelefono(consultaForm.getTelefono().getValue());
+                evento.setPersona(interesado);
+
+            }else{
+                Cliente cliente = consultaForm.getBuscadorClientes().getCliente();
+                evento.setPersona(cliente);
+            }
+            evento.setMensaje(consultaForm.getTextAreaDescripcion().getValue());
+            evento.setPrioridad(consultaForm.getComboPrioridad().getValue());
+            evento.setFecha(LocalDate.now());
+            evento.setHora(LocalTime.now());
+            evento.setUsuarioLogueado(Proyecto1Application.logUser);
+        }
+
+        eventoService.save(this.evento);
+        changeHandler.onChange();
+        consultaForm.close();
 
     }
 
@@ -58,7 +98,7 @@ public class ConsultaFormController {
 
     }
 
-    private void setChangeHandler(ChangeHandler h) {
+    public void setChangeHandler(ChangeHandler h) {
         changeHandler = h;
     }
 

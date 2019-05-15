@@ -198,9 +198,10 @@ public class VentaFormController {
 
 		venta.setCliente(cliente);
 
-		Pago pago = new Pago(cliente, venta, formaPago, viaje.getPrecio(),  LocalDate.now());
+		Pago pago = new Pago(venta, formaPago, viaje.getPrecio(),  LocalDate.now());
 		venta.agregarPago(pago);
 		
+
 		viaje.restarPasajes(venta.getPasajes().size());
 		venta.setViaje(viaje);
 		viajeService.save(viaje);

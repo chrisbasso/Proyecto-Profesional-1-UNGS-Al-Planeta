@@ -38,6 +38,15 @@ public class Transporte {
 			return true;
 		}
 	}
+	
+	public boolean agregarPasajes(Integer cantPasajes) {
+		if(capacidadRestante+cantPasajes > capacidad) {
+			return false;
+		}else{
+			capacidadRestante += cantPasajes;
+			return true;
+		}
+	}
 
 	public Integer getCapacidadRestante() {
 		return capacidadRestante;

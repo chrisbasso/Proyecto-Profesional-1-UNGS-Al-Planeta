@@ -2,6 +2,7 @@ package com.tp.proyecto1.model.eventos;
 
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.clientes.Interesado;
+import com.tp.proyecto1.model.clientes.Persona;
 import com.tp.proyecto1.model.users.User;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import java.util.Objects;
 
 @Entity
 @Inheritance(strategy= InheritanceType.TABLE_PER_CLASS)
-public abstract class Evento {
+public class Evento {
 
 	@Id
 	@GeneratedValue
@@ -20,10 +21,8 @@ public abstract class Evento {
 	private String mensaje;
 	private LocalDate fecha;
 	private LocalTime hora;
-	@OneToOne
-	private Cliente cliente;
-	@OneToOne
-	private Interesado interesado;
+	@ManyToOne
+	private Persona persona;
 	@OneToOne
 	private User usuarioLogueado;
 
@@ -56,12 +55,12 @@ public abstract class Evento {
 		this.hora = hora;
 	}
 
-	public Cliente getCliente() {
-		return cliente;
+	public Persona getPersona() {
+		return persona;
 	}
 
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
+	public void setPersona(Persona persona) {
+		this.persona = persona;
 	}
 
 	public User getUsuarioLogueado() {
@@ -88,13 +87,6 @@ public abstract class Evento {
 		this.prioridad = prioridad;
 	}
 
-	public Interesado getInteresado() {
-		return interesado;
-	}
-
-	public void setInteresado(Interesado interesado) {
-		this.interesado = interesado;
-	}
 
 	@Override
 	public boolean equals(Object o) {
@@ -105,13 +97,13 @@ public abstract class Evento {
 				Objects.equals(mensaje, evento.mensaje) &&
 				Objects.equals(fecha, evento.fecha) &&
 				Objects.equals(hora, evento.hora) &&
-				Objects.equals(cliente, evento.cliente) &&
+				Objects.equals(persona, evento.persona) &&
 				Objects.equals(usuarioLogueado, evento.usuarioLogueado) &&
 				Objects.equals(prioridad, evento.prioridad);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, mensaje, fecha, hora, cliente, usuarioLogueado, prioridad);
+		return Objects.hash(id, mensaje, fecha, hora, persona, usuarioLogueado, prioridad);
 	}
 }

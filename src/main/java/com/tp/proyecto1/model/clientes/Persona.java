@@ -1,10 +1,13 @@
 package com.tp.proyecto1.model.clientes;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import com.tp.proyecto1.model.eventos.Evento;
+
+import javax.persistence.*;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
+@Inheritance(strategy= InheritanceType.TABLE_PER_CLASS)
 public abstract class Persona {
 
     @Id
@@ -15,6 +18,9 @@ public abstract class Persona {
     protected String apellido;
     protected String telefono;
     protected String email;
+
+    @OneToMany
+    protected List<Evento> eventos;
 
     public Persona() {
     }
@@ -67,5 +73,31 @@ public abstract class Persona {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Evento> getEventos() {
+        return eventos;
+    }
+
+    public void setEventos(List<Evento> eventos) {
+        this.eventos = eventos;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Persona persona = (Persona) o;
+        return Objects.equals(id, persona.id) &&
+                Objects.equals(nombre, persona.nombre) &&
+                Objects.equals(apellido, persona.apellido) &&
+                Objects.equals(telefono, persona.telefono) &&
+                Objects.equals(email, persona.email) &&
+                Objects.equals(eventos, persona.eventos);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nombre, apellido, telefono, email, eventos);
     }
 }

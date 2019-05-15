@@ -1,5 +1,6 @@
 package com.tp.proyecto1.controllers;
 
+import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.utils.ChangeHandler;
@@ -37,6 +38,7 @@ public class LoginController{
 			if (isAuthenticated) {
 				loginUser = userService.getUserByName(e.getUsername());
 				UI.getCurrent().getSession().setAttribute("usuarioLogueado", loginUser);
+				Proyecto1Application.logUser=loginUser;
 				changeHandler.onChange();
 			} else {
 				loginView.getLoginComponent().setError(true);
@@ -75,7 +77,7 @@ public class LoginController{
 
 	public void logout(){
 
-		((User) UI.getCurrent().getSession().getAttribute("usuarioLogueado")).setUser(null);
+		Proyecto1Application.logUser=null;
 		UI.getCurrent().getPage().reload();
 
 	}

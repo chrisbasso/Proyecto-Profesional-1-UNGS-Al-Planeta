@@ -11,9 +11,11 @@ import com.tp.proyecto1.views.promociones.PromocionForm;
 import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.Setter;
+import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.function.SerializablePredicate;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @UIScope
@@ -64,9 +67,34 @@ public class PromocionFormController {
     private void setListeners() {
     	promocionForm.getBtnSave().addClickListener(e-> savePromocion(promocion));
     	promocionForm.getBtnCancel().addClickListener(e->promocionForm.close());
+    	promocionForm.getTipoPromocion().addValueChangeListener(e-> cambiarBonificador());
     }
     
-    private void savePromocion(Promocion promocion)
+    private void cambiarBonificador()
+    {
+    	promocionForm.getNroFloat().setPrefixComponent(null);
+    	promocionForm.getNroFloat().setSuffixComponent(null);
+    	 if(promocionForm.getTipoPromocion().getValue()!= null)
+    	 {
+    		 promocionForm.getNroFloat().setEnabled(true);
+    		 if (promocionForm.getTipoPromocion().getValue().equals("Puntos"))
+    		 {
+    			 promocionForm.getNroFloat().setPrefixComponent(new Span("x"));
+    			 promocionForm.getNroFloat().setPattern("[1-9]*");
+    		 }
+    		 else
+    		 {
+    			 promocionForm.getNroFloat().setSuffixComponent(new Span("%"));
+    			 promocionForm.getNroFloat().setPattern("^100$|^[0-9]{1,2}$|^[0-9]{1,2}");// se agrega lo siguiente si queremos que tenga coma:  \\,[0-9]{1,2}$
+    		 }
+    	 }
+    	 else
+    	 {
+    		 promocionForm.getNroFloat().setEnabled(false);
+    	 }
+	}
+
+	private void savePromocion(Promocion promocion)
     {
     	if(promocion==null){
             promocion = setNewPromocion();
@@ -86,24 +114,23 @@ public class PromocionFormController {
     	String nombrePromocion = promocionForm.getNombre().getValue();
     	String descripcion = promocionForm.getTextAreaDescripcion().getValue();
     	LocalDate fechaVencimiento = promocionForm.getFechaVencimiento().getValue();
-    	Double nroFloat = promocionForm.getNroFloat().getValue();
-    	Double cantidadPasajes = promocionForm.getCantidadPasajes().getValue();
-    	/*List<Destino>*/ Destino destinos = promocionForm.getDestinos().getValue();
-    	/*List<Viaje>*/ Viaje viajes = promocionForm.getViajes().getValue();
-    	/*List<TagDestino>*/ TagDestino tags = promocionForm.getTagsDestino().getValue();
+    	Integer nroFloat = 0;
+    	if (!promocionForm.getNroFloat().getValue().equals(""))
+    		nroFloat = Integer.parseInt(promocionForm.getNroFloat().getValue());
+    	Integer cantidadPasajes = 0;
+    	if (!promocionForm.getCantidadPasajes().getValue().equals(""))
+    		cantidadPasajes = Integer.parseInt(promocionForm.getCantidadPasajes().getValue());
+    	Set<Destino> destinos  = promocionForm.getDestinos().getValue();
+    	Set<Viaje> viajes = promocionForm.getViajes().getValue();
+    	Set<TagDestino> tags = promocionForm.getTagsDestino().getValue();
     	Promocion promocionToAdd;
     	if (promocionForm.getTipoPromocion().getValue()=="Descuento")
     		promocionToAdd = new PromocionDescuento(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
     	else
     		promocionToAdd = new PromocionPuntos(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
-    	/*
-    	 * promocionToAdd.setDestinosAfectados(destinos);
-    	 * promocionToAdd.setViajesAfectados(viajes);
-    	 * promocionToAdd.setTagsDestinoAfectados(tags);
-    	*/
-    	promocionToAdd.getDestinosAfectados().add(destinos);
-    	promocionToAdd.getViajesAfectados().add(viajes);
-    	promocionToAdd.getTagsDestinoAfectados().add(tags);
+    	promocionToAdd.setDestinosAfectados(destinos);
+    	promocionToAdd.setViajesAfectados(viajes);
+    	promocionToAdd.setTagsDestinoAfectados(tags);
     	
     	return promocionToAdd;
     	
@@ -169,13 +196,14 @@ public class PromocionFormController {
         promocionForm.getBtnSave().addClickListener(event -> binding.validate());
     }
     
-    private void setBinderFieldDoubleValue(AbstractField field, ValueProvider<Promocion, Double> valueProvider, Setter<Promocion, Double> setter, boolean isRequiered){
+    private void setBinderFieldDoubleValue(AbstractField field, ValueProvider<Promocion, Integer> valueProvider, Setter<Promocion, Integer> setter, boolean isRequiered){
 
-        SerializablePredicate<Double> predicate = value -> !field.isEmpty();
-        Binder.Binding<Promocion, Double> binding;
+        SerializablePredicate<String> predicate = value -> !field.isEmpty();
+        Binder.Binding<Promocion, Integer> binding;
         if(isRequiered){
-           binding = binderPromocion.forField(field)
+        	binding = binderPromocion.forField(field)
                     .withValidator(predicate, "El campo es obligatorio")
+                    .withConverter(new StringToIntegerConverter("Debe ingresar un numero"))
                     .bind(valueProvider, setter);
         }else{
             binding = binderPromocion.forField(field).bind(valueProvider, setter);
@@ -183,13 +211,14 @@ public class PromocionFormController {
         promocionForm.getBtnSave().addClickListener(event -> binding.validate());
     }
     
-    private void setBinderFieldCantidadPasajes(AbstractField field, ValueProvider<Promocion, Double> valueProvider, Setter<Promocion, Double> setter, boolean isRequiered){
+    private void setBinderFieldCantidadPasajes(AbstractField field, ValueProvider<Promocion, Integer> valueProvider, Setter<Promocion, Integer> setter, boolean isRequiered){
 
-        SerializablePredicate<Double> predicate = value -> !field.isEmpty();
-        Binder.Binding<Promocion, Double> binding;
+        SerializablePredicate<String> predicate = value -> !field.isEmpty();
+        Binder.Binding<Promocion, Integer> binding;
         if(isRequiered){
-           binding = binderPromocion.forField(field)
+        	binding = binderPromocion.forField(field)
                     .withValidator(predicate, "El campo es obligatorio")
+                    .withConverter(new StringToIntegerConverter("Debe ingresar un numero"))
                     .bind(valueProvider, setter);
         }else{
             binding = binderPromocion.forField(field).bind(valueProvider, setter);

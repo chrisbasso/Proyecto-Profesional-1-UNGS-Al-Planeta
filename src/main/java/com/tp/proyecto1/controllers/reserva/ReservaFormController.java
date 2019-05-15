@@ -65,7 +65,7 @@ public class ReservaFormController {
         reservaForm.setListenerCantPasajes(e->actualizarImportes());
         reservaForm.setListenerCliente(e->habilitarPagos());
         reservaForm.setListenerBtnNuevoPago(e->formNuevoPago());        
-        reservaForm.setListenerBtnSave(e->guardarReserva());
+        reservaForm.setListenerBtnSave(e->accionGuardarReserva());
         reservaForm.setListenerBtnCancel(e->reservaForm.close());
     }
     
@@ -98,7 +98,7 @@ public class ReservaFormController {
 		reservaForm.habilitarBtnAgregarPago();
 	}
 	
-	private void guardarReserva() {
+	private void accionGuardarReserva() {
 		Cliente cliente = reservaForm.getClienteSeleccionado();
 		Double importeTotal = reservaForm.getPrecioTotal();
 		int cantidadPasajes = reservaForm.cantidadPasajesSeleccionados();
@@ -106,21 +106,60 @@ public class ReservaFormController {
 		for (int i = 0; i < cantidadPasajes; i++) {
 			pasajes.add(new PasajeReserva(viaje, cliente));
 		}
-		for(Pago pago : listaDePagos) {
-			pago.setCliente(cliente);			
+		
+		if(reserva == null) {
+			guardarNuevaReserva(pasajes, importeTotal, cliente);
+		}else { 
+			guardarReservaModificada(pasajes, importeTotal);
 		}
+	}
+
+	private void guardarNuevaReserva(List <Pasaje> pasajes, Double importeTotal, Cliente cliente) {		
 		reserva = new Reserva(pasajes, listaDePagos, importeTotal, cliente);
-		if(viaje.getPasajesRestantes()>= cantidadPasajes) {
-			viaje.restarPasajes(cantidadPasajes);
+		//actualizarTransaccionEnPagos(reserva);
+		if(viaje.getPasajesRestantes()>= pasajes.size()) {
+			viaje.restarPasajes(pasajes.size());
 			reserva.setViaje(viaje);
 			reservaService.save(reserva);
-			mensajeReservaGuardada();
-			mensajeSaldoViaje();
-			reservaForm.close();
+			mensajeGuardadoCierreForm();
 		}else {
 			Notification.show("Lo sentimos, no quedan pasajes disponibles en el viaje seleccionado.");
 			reservaForm.close();
 		}
+	}
+
+	private void guardarReservaModificada(List <Pasaje> pasajes, Double importeTotal) {
+		int cantidadOriginal = reserva.getCantidadPasajes();
+		int nuevaCantidad = pasajes.size();
+		int cambio = nuevaCantidad - cantidadOriginal;
+		boolean actualizarPasajes = true; // En principio guardamos
+		
+		if(cambio == 0) {
+			// Do nothing on viaje
+		}else if(cambio > 0) {
+			actualizarPasajes = viaje.restarPasajes(cambio); // Si no quedan pasajes disp..
+		}else if(cambio < 0) {
+			actualizarPasajes = viaje.agregarPasajes(cambio*-1); // Si queremos devolver..
+		}
+		
+		reserva.setImporteTotal(importeTotal);			
+		reserva.setPasajes(pasajes);
+//		actualizarTransaccionEnPagos(reserva);
+		reserva.setPagos(listaDePagos);
+		
+		if(actualizarPasajes) {
+			reservaService.save(reserva);
+			mensajeGuardadoCierreForm();
+		}else {
+			Notification.show("Lo sentimos, no pudimos actualizar los pasajes disponibles en el viaje seleccionado.");
+			reservaForm.close();
+		}
+	}
+
+	private void mensajeGuardadoCierreForm() {
+		mensajeReservaGuardada();
+		mensajeSaldoViaje();
+		reservaForm.close();
 	}
 
 	private void mensajeReservaGuardada() {
@@ -159,22 +198,19 @@ public class ReservaFormController {
 		}
 	}
 	
-	public void agregarPago(FormaDePago fdp, double importe) {
-		Cliente cliente = reservaForm.getClienteSeleccionado();
-		Pago nuevoPago = new Pago(cliente, null, fdp, importe, LocalDate.now()); 
+	public void agregarPago(FormaDePago fdp, Double importe) {
+		Pago nuevoPago = new Pago(null, fdp, importe, LocalDate.now()); 
 		listaDePagos.add(nuevoPago);
 		reservaForm.inhabilitarClientes();
 		actualizarImportes();
 	}
 	
-	private void emitirComprobante() {
-		
+	private void actualizarTransaccionEnPagos(Reserva reserva) {
+		for(Pago pago : listaDePagos) {
+			pago.setTransaccion(reserva);
+		}
 	}
-	
-	private void enviarMail() {
 		
-	}
-	
 	public boolean esReservablePorFecha() {
 		LocalDateTime presente = LocalDate.now().atStartOfDay();
 		LocalDateTime fechaViaje = viaje.getFechaSalida().atStartOfDay();		
@@ -199,5 +235,14 @@ public class ReservaFormController {
 
 	public void setChangeHandler(ChangeHandler ch) {
 		changeHandler = ch;
+	}
+	
+
+	private void emitirComprobante() {
+		
+	}
+	
+	private void enviarMail() {
+		
 	}
 }
