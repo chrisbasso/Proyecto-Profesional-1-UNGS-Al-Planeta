@@ -95,18 +95,13 @@ public class PromocionFormController {
     	if (!promocionForm.getCantidadPasajes().getValue().equals(""))
     		cantidadPasajes = Integer.parseInt(promocionForm.getCantidadPasajes().getValue());
     	Set<Destino> destinos  = promocionForm.getDestinos().getValue();
-    	Set<Viaje> /*Viaje */viajes = promocionForm.getViajes().getValue();
-    	Set<TagDestino> /*TagDestino*/ tags = promocionForm.getTagsDestino().getValue();
+    	Set<Viaje> viajes = promocionForm.getViajes().getValue();
+    	Set<TagDestino> tags = promocionForm.getTagsDestino().getValue();
     	Promocion promocionToAdd;
     	if (promocionForm.getTipoPromocion().getValue()=="Descuento")
     		promocionToAdd = new PromocionDescuento(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
     	else
     		promocionToAdd = new PromocionPuntos(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
-    	/*
-    	 * promocionToAdd.setDestinosAfectados(destinos);
-    	 * promocionToAdd.setViajesAfectados(viajes);
-    	 * promocionToAdd.setTagsDestinoAfectados(tags);
-    	*/
     	promocionToAdd.setDestinosAfectados(destinos);
     	promocionToAdd.setViajesAfectados(viajes);
     	promocionToAdd.setTagsDestinoAfectados(tags);
