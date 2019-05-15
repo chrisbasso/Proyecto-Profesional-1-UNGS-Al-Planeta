@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Controller
 @UIScope
@@ -46,6 +47,18 @@ public class ClientesController {
 		setChangeHandler(this::listClientes);
 		clientesView.getNewClientButton().addClickListener(e-> openNewClienteForm());
 		clientesView.getSearchButton().addClickListener(e-> listClientes());
+		clientesView.getBtnHistorialEventos().addClickListener(e->openHistorialEventos());
+	}
+
+	private void openHistorialEventos() {
+
+		Optional<Cliente> clienteSeleccionado = clientesView.getGrid().asSingleSelect().getOptionalValue();
+		if(clienteSeleccionado.isPresent()){
+			EventosClienteWindowController historico = new EventosClienteWindowController(clienteSeleccionado.get());
+			historico.getView().open();
+		}else{
+			Notification.show("Debe seleccionar un cliente");
+		}
 	}
 
 	private void openNewClienteForm() {

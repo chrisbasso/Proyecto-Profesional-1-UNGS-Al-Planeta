@@ -1,6 +1,7 @@
 package com.tp.proyecto1.views.clientes;
 
 import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.utils.FilterGridLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.grid.Grid;
@@ -12,9 +13,8 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 
 
-public class ClientesView extends VerticalLayout {
+public class ClientesView extends FilterGridLayout<Cliente> {
 
-	private Grid<Cliente> grid;
 	private NumberField idFilter;
 	private TextField nameFilter;
 	private TextField lastNameFilter;
@@ -22,15 +22,17 @@ public class ClientesView extends VerticalLayout {
 	private Checkbox activosCheck;
 	private Button searchButton;
 	private Button newClientButton;
+	private Button btnHistorialEventos;
 
 	public ClientesView() {
+		super(Cliente.class);
 		setComponents();
 		setLayout();
 		setGrid();
 	}
 
 	private void setComponents() {
-		this.grid = new Grid<>(Cliente.class);
+		this.btnHistorialEventos = new Button("Historico Eventos");
 		this.idFilter = new NumberField();
 		this.nameFilter = new TextField();
 		this.lastNameFilter = new TextField();
@@ -51,11 +53,8 @@ public class ClientesView extends VerticalLayout {
 	private void setLayout() {
 		HorizontalLayout hlSpace = new HorizontalLayout();
 		hlSpace.setWidthFull();
-		HorizontalLayout actions = new HorizontalLayout(idFilter, nameFilter, lastNameFilter, dniFilter,activosCheck,hlSpace, searchButton, newClientButton);
-		this.add(actions, grid);
-		this.setSizeFull();
-		actions.setWidthFull();
-		actions.setVerticalComponentAlignment(Alignment.END, searchButton, newClientButton, activosCheck);
+		this.hlFooter.add(btnHistorialEventos);
+		this.hlActions.add(idFilter, nameFilter, lastNameFilter, dniFilter,activosCheck,hlSpace, searchButton, newClientButton);
 	}
 
 	private void setGrid() {
@@ -133,6 +132,14 @@ public class ClientesView extends VerticalLayout {
 
 	public void setActivosCheck(Checkbox activosCheck) {
 		this.activosCheck = activosCheck;
+	}
+
+	public Button getBtnHistorialEventos() {
+		return btnHistorialEventos;
+	}
+
+	public void setBtnHistorialEventos(Button btnHistorialEventos) {
+		this.btnHistorialEventos = btnHistorialEventos;
 	}
 }
 

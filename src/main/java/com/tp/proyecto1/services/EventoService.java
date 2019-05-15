@@ -1,6 +1,7 @@
 package com.tp.proyecto1.services;
 
 import com.tp.proyecto1.model.clientes.Interesado;
+import com.tp.proyecto1.model.clientes.Persona;
 import com.tp.proyecto1.model.eventos.Evento;
 import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.repository.clientes.ClienteRepository;
@@ -39,8 +40,8 @@ public class EventoService {
 	}
 
 	@Transactional
-	public List<Evento> findReservas(Evento evento){
-		return eventoRepository.findAll(Example.of(evento));
+	public List<Evento> findEventosByPersona(Persona persona){
+		return eventoRepository.findAllByPersona(persona);
 	}
 
 }
