@@ -26,7 +26,7 @@ public class VentaForm extends Dialog {
 	private BuscadorClientesComponent cliente;
 	private Label descripcionCliente;
 	private ComboBox<FormaDePago> formaPago;
-	private NumberField cantidadPasaje;
+//	private NumberField cantidadPasaje;
 	private Checkbox usoPuntosCheck;
 	private NumberField saldoPagar;
 	private NumberField subtotal;
@@ -70,11 +70,11 @@ public class VentaForm extends Dialog {
 		descripcionCliente = new Label();
 
 		cliente = new BuscadorClientesComponent(descripcionCliente);
-		cantidadPasaje = new NumberField();
-		cantidadPasaje.setMin(1);
-		cantidadPasaje.setMax(6);
-		cantidadPasaje.setValue((double) 1);
-		cantidadPasaje.setHasControls(true);
+//		cantidadPasaje = new NumberField();
+//		cantidadPasaje.setMin(1);
+//		cantidadPasaje.setMax(6);
+//		cantidadPasaje.setValue((double) 1);
+//		cantidadPasaje.setHasControls(true);
 		usoPuntosCheck = new Checkbox("Uso de Puntos");
 		usoPuntosCheck.setValue(true);
 		usoPuntosCheck.setMinWidth("135px");
@@ -145,6 +145,11 @@ public class VentaForm extends Dialog {
 	public void setFormaPago(ComboBox<FormaDePago> formaPago) {
 		this.formaPago = formaPago;
 	}
+	
+	public void setFormaPago(String formaPagoId) {
+		this.formaPago.setId(formaPagoId);
+	}
+
 
 	public BuscadorClientesComponent getCliente() {
 		return cliente;
@@ -152,13 +157,13 @@ public class VentaForm extends Dialog {
 	public void setCliente(BuscadorClientesComponent cliente) {
 		this.cliente = cliente;
 	}
-
-	public NumberField getCantidadPasaje() {
-		return cantidadPasaje;
-	}
-	public void setCantidadPasaje(NumberField cantidadPasaje) {
-		this.cantidadPasaje = cantidadPasaje;
-	}
+//
+//	public NumberField getCantidadPasaje() {
+//		return cantidadPasaje;
+//	}
+//	public void setCantidadPasaje(NumberField cantidadPasaje) {
+//		this.cantidadPasaje = cantidadPasaje;
+//	}
 	public Checkbox getUsoPuntosCheck() {
 		return usoPuntosCheck;
 	}
@@ -265,5 +270,13 @@ public class VentaForm extends Dialog {
 
 	public void setBtnFinalizarCompra(Button btnFinalizarCompra) {
 		this.btnFinalizarCompra = btnFinalizarCompra;
+	}
+
+	public Label getDescripcionCliente() {
+		return descripcionCliente;
+	}
+
+	public void setDescripcionCliente(Label descripcionCliente) {
+		this.descripcionCliente = descripcionCliente;
 	}
 }

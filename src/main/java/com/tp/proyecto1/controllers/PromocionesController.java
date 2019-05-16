@@ -4,16 +4,12 @@ import com.tp.proyecto1.utils.Inject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.tp.proyecto1.model.viajes.Destino;
 import com.tp.proyecto1.model.viajes.Promocion;
 import com.tp.proyecto1.model.viajes.PromocionDescuento;
 import com.tp.proyecto1.model.viajes.PromocionPuntos;
-import com.tp.proyecto1.model.viajes.Transporte;
-import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.PromocionService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.views.promociones.PromocionView;
-import com.tp.proyecto1.views.viajes.ViajesView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -42,7 +38,6 @@ public class PromocionesController {
     }
 
     private void setComponents() {
-        //viajesView.getTransporteFilter().setItems(viajeService.findAllTipoTransportes());
        this.promocionView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
     }
 

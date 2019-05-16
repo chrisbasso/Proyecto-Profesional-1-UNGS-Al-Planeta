@@ -32,6 +32,8 @@ public abstract class Transaccion {
 
 	@OneToOne
 	protected Cliente cliente;
+	
+	private boolean isActivo = true;
 
 	public Transaccion() {
 	}
@@ -97,6 +99,14 @@ public abstract class Transaccion {
 
 	public void setViaje(Viaje viaje) {
 		this.viaje = viaje;
+	}
+
+	public boolean isActivo() {
+		return isActivo;
+	}
+
+	public void setActivo(boolean isActivo) {
+		this.isActivo = isActivo;
 	}
 
 	@Override
