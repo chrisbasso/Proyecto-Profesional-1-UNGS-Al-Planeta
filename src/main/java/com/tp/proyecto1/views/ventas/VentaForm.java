@@ -98,12 +98,12 @@ public class VentaForm extends Dialog {
 		form.addFormItem(transporte, "Transporte");
 		form.addFormItem(fechaSalida, "Fecha Salida");
 		form.addFormItem(horaSalida, "Hora Salida");
-		form.addFormItem(cliente, "Nro de Cliente");
+		form.addFormItem(cliente, "Nro de Cliente (*)");
 		form.addFormItem(descripcionCliente, "Descripción");
 		//form.addFormItem(cantidadPasaje, "Cantidad de Pasajes");
 		FormItem totalItem = form.addFormItem(subtotal, "Subtotal");
 		totalItem.add(usoPuntosCheck);
-		form.addFormItem(formaPago, "Forma de Pago");
+		form.addFormItem(formaPago, "Forma de Pago (*)");
 		form.addFormItem(saldoPagar, "Saldo a Pagar");
 	}
 
