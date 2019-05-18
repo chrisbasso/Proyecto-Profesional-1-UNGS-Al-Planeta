@@ -51,7 +51,8 @@ public class Proyecto1Application {
 									  FormaDePagoRepository formaDePagoRepository,
 									  PasajeVentaRepository pasajeVentaRepository,
 									  PromocionRepository promocionRepository,
-									  DestinoService destinoService
+									  DestinoService destinoService,
+									  ConfiguracionService configService
 									  /*PromocionDescuentoRepository promocionDescuentosRepository,
 									  PromocionDescuentoRepository promocionPuntosRepository*/) {
 		return args -> {
@@ -70,6 +71,7 @@ public class Proyecto1Application {
 			ventaService.createFormaDePagoIfNotExist("Efectivo");
 			ventaService.createFormaDePagoIfNotExist("Débito");
 			ventaService.createFormaDePagoIfNotExist("Crédito");
+			configService.createConfiguracionIfNotExist("reserva_fecha_maxima", "3");
 /*
 			System.out.println(promocionRepository.findByViajesAfectados(viajeService.findAll().get(0)));
 			
