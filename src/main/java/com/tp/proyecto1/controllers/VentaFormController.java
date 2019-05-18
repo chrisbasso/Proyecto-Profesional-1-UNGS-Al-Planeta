@@ -161,7 +161,7 @@ public class VentaFormController {
         ventaForm.close();
       //Si viene de una reserva
         if (this.reserva !=null) {
-        	this.reserva.setActivo(false);
+        	this.reserva.inactivar();
             this.reservaService.save(reserva);
         }
         changeHandler.onChange();

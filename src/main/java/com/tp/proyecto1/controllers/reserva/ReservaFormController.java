@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -29,7 +30,8 @@ import com.vaadin.flow.spring.annotation.UIScope;
 @Controller
 @UIScope
 public class ReservaFormController {
-
+	@Autowired
+	private ConfiguracionService ConfigService;
 	@Autowired
 	private ReservaService reservaService;
 	@Autowired
@@ -38,13 +40,11 @@ public class ReservaFormController {
 	private VentaService ventaService;
 	@Autowired
 	private ViajeService viajeService;
-	@Autowired
-	private ConfiguracionService ConfigService;
-
+	
 	private ReservaForm reservaForm;
+	private PagoFormController pagoFormController;
 	private Viaje viaje;	
 	private Reserva reserva;
-	private PagoFormController pagoFormController;
 	private List <Pago> listaDePagos;
 	private ChangeHandler changeHandler;
 	
@@ -52,15 +52,19 @@ public class ReservaFormController {
 		Inject.Inject(this);
 		this.viaje = viaje;	
 		this.listaDePagos = new ArrayList<Pago>(); 
-	}
-
+	}	
+	/*
+	 *	Creación de nueva reserva 
+	 */
 	public ReservaForm getReservaForm() {
 		reservaForm = new ReservaForm(viaje);
 		reservaForm.cargarClientes(clienteService.findAll());
 		setListeners();
 		return reservaForm;
 	}
-	
+	/*
+	 * Listeners nueva reserva
+	 */
     private void setListeners() {
         reservaForm.setListenerCantPasajes(e->actualizarImportes());
         reservaForm.setListenerCliente(e->habilitarPagos());
@@ -68,18 +72,24 @@ public class ReservaFormController {
         reservaForm.setListenerBtnSave(e->accionGuardarReserva());
         reservaForm.setListenerBtnCancel(e->reservaForm.close());
     }
-    
+    /*
+     * Actualizar todos los importes en el form ante una modificación
+     */
 	private void actualizarImportes(){
 		reservaForm.actualizarPrecioTotal(getPrecioTotal());
 		reservaForm.actualizarSaldo(getSaldo());
 		reservaForm.actualizarPagos(getSumatoriaPagos());
 	}
-	
+	/*
+	 * Calcular el precio total según los datos del form
+	 */
 	private double getPrecioTotal() {
 		int pasajes = reservaForm.cantidadPasajesSeleccionados();
 		return viaje.getPrecio() * pasajes;
 	}
-	
+	/*
+	 * Sumar los pagos de la reserva
+	 */
 	private double getSumatoriaPagos() {
 		double sumatoria = 0.0;
 		if(listaDePagos.size()>0) {
@@ -89,15 +99,23 @@ public class ReservaFormController {
 		}
 		return sumatoria;
 	}
-	
+	/*
+	 * Calcular el saldo a pagar en funcion del precio total 
+	 * y la suma de pagos
+	 */
 	private double getSaldo() {
 		return getPrecioTotal() - getSumatoriaPagos();
 	}
-	
+	/*
+	 * Habilitar el botón de agregar pagos una vez que se seleccionó el cliente
+	 */
 	private void habilitarPagos() {
 		reservaForm.habilitarBtnAgregarPago();
 	}
-	
+	/*
+	 * Accion de guardar: como el botón es el mismo desde aquí se invocan
+	 * el guardado de una nueva reserva o de una modificación.
+	 */
 	private void accionGuardarReserva() {
 		Cliente cliente = reservaForm.getClienteSeleccionado();
 		Double importeTotal = reservaForm.getPrecioTotal();
@@ -113,11 +131,13 @@ public class ReservaFormController {
 			guardarReservaModificada(pasajes, importeTotal);
 		}
 	}
-
-	private void guardarNuevaReserva(List <Pasaje> pasajes, Double importeTotal, Cliente cliente) {		
-		reserva = new Reserva(pasajes, listaDePagos, importeTotal, cliente);
-		//actualizarTransaccionEnPagos(reserva);
+	/*
+	 * Evento de guardado frente a una creación de reserva.
+	 */
+	private void guardarNuevaReserva(List <Pasaje> pasajes, Double importeTotal, Cliente cliente) {			
 		if(viaje.getPasajesRestantes()>= pasajes.size()) {
+			reserva = new Reserva(pasajes, listaDePagos, importeTotal, cliente);
+			actualizarTransaccionEnPagos(reserva);
 			viaje.restarPasajes(pasajes.size());
 			reserva.setViaje(viaje);
 			reservaService.save(reserva);
@@ -126,12 +146,53 @@ public class ReservaFormController {
 			Notification.show("Lo sentimos, no quedan pasajes disponibles en el viaje seleccionado.");
 			reservaForm.close();
 		}
+	}	
+	/*
+	 *  Iniciar el form para modificaciones de reservas
+	 */
+	public ReservaForm getFormModificacionReserva(Reserva reserva) {
+		this.reserva = reserva;
+		this.listaDePagos = reserva.getPagos();
+		reservaForm = new ReservaForm(reserva.getViaje());
+		reservaForm.setModoModificacion(reserva.getCantidadPasajes(), reserva.getCliente(), reserva.getTotalPagado());
+		setListeners(); 
+		return reservaForm;		
 	}
-
+	/*
+	 * Evento de guardado frente a una modificación de reserva preexistente.
+	 */
 	private void guardarReservaModificada(List <Pasaje> pasajes, Double importeTotal) {
+		int cambio = getCambioCantidadPasajes(pasajes);
+		boolean actualizarPasajes = evaluarCambioPasajes(cambio);
+		
+		if(actualizarPasajes) {
+			reserva.setImporteTotal(importeTotal);			
+			reserva.setPasajes(pasajes);
+			actualizarTransaccionEnPagos(reserva);
+			reserva.setPagos(listaDePagos);
+			reservaService.save(reserva);
+			mensajeGuardadoCierreForm();
+		}else {
+			Notification.show("Lo sentimos, no pudimos actualizar los pasajes disponibles en el viaje seleccionado.");
+			reservaForm.close();
+		}
+	}
+	/*
+	 * Evaluar si hubo un cambio en el número de pasajes respecto de
+	 * la reserva original.  
+	 */
+	private int getCambioCantidadPasajes(List<Pasaje> pasajes) {
 		int cantidadOriginal = reserva.getCantidadPasajes();
 		int nuevaCantidad = pasajes.size();
 		int cambio = nuevaCantidad - cantidadOriginal;
+		return cambio;
+	}
+	/*
+	 * Evaluar si hubo modificación del número de pasajes, y si el viaje permite dicha
+	 * modificación. 
+	 * Si no hubo cambios o el viaje admite el cambio(disponibilidad), retorna TRUE.
+	 */
+	private boolean evaluarCambioPasajes(int cambio) {
 		boolean actualizarPasajes = true; // En principio guardamos
 		
 		if(cambio == 0) {
@@ -141,27 +202,55 @@ public class ReservaFormController {
 		}else if(cambio < 0) {
 			actualizarPasajes = viaje.agregarPasajes(cambio*-1); // Si queremos devolver..
 		}
-		
-		reserva.setImporteTotal(importeTotal);			
-		reserva.setPasajes(pasajes);
-//		actualizarTransaccionEnPagos(reserva);
-		reserva.setPagos(listaDePagos);
-		
-		if(actualizarPasajes) {
-			reservaService.save(reserva);
-			mensajeGuardadoCierreForm();
+		return actualizarPasajes;
+	}
+	/*
+	 * Gestionar el agregado de pagos a la reserva.
+	 */
+	private void formNuevoPago() {
+		double saldoReserva = getSaldo();
+		pagoFormController = new PagoFormController(this);
+		if(reserva != null) {
+			pagoFormController.mostrarForm(saldoReserva, ventaService.findAllFomaDePagos(),reserva.getPagos());
 		}else {
-			Notification.show("Lo sentimos, no pudimos actualizar los pasajes disponibles en el viaje seleccionado.");
-			reservaForm.close();
+			pagoFormController.mostrarForm(saldoReserva, ventaService.findAllFomaDePagos(),new ArrayList<Pago>());
 		}
 	}
-
+	/*
+	 * Modificar la lista de pagos, inhabilitar la selección de clientes y 
+	 * actualizar los importes del form.
+	 */
+	public void modificarListaPagos(List <Pago> pagos) {		 
+		listaDePagos = pagos;
+		reservaForm.inhabilitarClientes();
+		actualizarImportes();
+	}
+	/*
+	 * Recorrer el arreglo de pagos y setearle una reserva como transacción.
+	 * Me parece que se soluciona con algún cascade, pero no lo sé.
+	 */
+	private void actualizarTransaccionEnPagos(Reserva reserva) {
+		for(Pago pago : listaDePagos) {
+			pago.setTransaccion(reserva);
+		}
+	}
+	/*
+	 * No recuerdo para que lo usamos, lo dejo por si acaso.
+	 */
+	public void setChangeHandler(ChangeHandler ch) {
+		changeHandler = ch;
+	}
+	/*
+	 * Gestión de mensajes al cerrar el form
+	 */
 	private void mensajeGuardadoCierreForm() {
 		mensajeReservaGuardada();
 		mensajeSaldoViaje();
 		reservaForm.close();
 	}
-
+	/*
+	 * Intentar recuperar el nro de reserva generado en la BD
+	 */
 	private void mensajeReservaGuardada() {
 		Long idGuardada = reservaService.findReservaId(reserva);
 		if(idGuardada > -1) {
@@ -170,12 +259,15 @@ public class ReservaFormController {
 			Notification.show("Reserva guardada con éxito."); 
 		}
 	}
-	
+	/*
+	 * Recuperar fecha máxima de la configuración y mostrar el mensaje del saldo
+	 * a pagar. Se puede reservar sin pagar pero debe cancelar el 30% antes de 
+	 * la fecha máxima.
+	 */
 	private void mensajeSaldoViaje() {
-		// pero avisando al cliente que debe pagar al menos el 30% ...
 		double pago = getSumatoriaPagos();
 		double porcentaje = reservaForm.getPrecioTotal() * 0.3; 
-		String fechaMaxima = ConfigService.findValueByKey("reserva_fecha_maxima");
+		String fechaMaxima = getConfiguracionFechaMaxima();
 		if(pago < porcentaje) {
 			if (fechaMaxima != null) {
 				Notification.show("Recuerde que debe abonar $" + porcentaje + 
@@ -187,34 +279,14 @@ public class ReservaFormController {
 			}			
 		}
 	}
-
-	private void formNuevoPago() {
-		double saldoReserva = getSaldo();
-		pagoFormController = new PagoFormController(this);
-		if(reserva != null) {
-			pagoFormController.mostrarForm(saldoReserva, ventaService.findAllFomaDePagos(),reserva.getPagos());
-		}else {
-			pagoFormController.mostrarForm(saldoReserva, ventaService.findAllFomaDePagos(),new ArrayList<Pago>());
-		}
-	}
-	
-	public void agregarPago(FormaDePago fdp, Double importe) {
-		Pago nuevoPago = new Pago(null, fdp, importe, LocalDate.now()); 
-		listaDePagos.add(nuevoPago);
-		reservaForm.inhabilitarClientes();
-		actualizarImportes();
-	}
-	
-	private void actualizarTransaccionEnPagos(Reserva reserva) {
-		for(Pago pago : listaDePagos) {
-			pago.setTransaccion(reserva);
-		}
-	}
-		
-	public boolean esReservablePorFecha() {
+	/*
+	 * Evaluar si un viaje es reservable según la configuración de fecha
+	 * máxima.
+	 */
+	public static boolean esReservablePorFecha(Viaje viaje) {
 		LocalDateTime presente = LocalDate.now().atStartOfDay();
 		LocalDateTime fechaViaje = viaje.getFechaSalida().atStartOfDay();		
-		String fechaMaxima = ConfigService.findValueByKey("reserva_fecha_maxima");
+		String fechaMaxima = getConfiguracionFechaMaxima();
 		if(fechaMaxima != null) {
 			int fecha_maxima = Integer.parseInt(fechaMaxima);
 			return fechaViaje.minusDays(fecha_maxima).isAfter(presente);
@@ -223,26 +295,18 @@ public class ReservaFormController {
 		// operación comercial.
 		return true; 
 	}
-	
-	public ReservaForm getFormModificacionReserva(Reserva reserva) {
-		this.reserva = reserva;
-		this.listaDePagos = reserva.getPagos();
-		reservaForm = new ReservaForm(reserva.getViaje());
-		reservaForm.setModoModificacion(reserva.getCantidadPasajes(), reserva.getCliente(), reserva.getTotalPagado());
-		setListeners(); 
-		return reservaForm;		
-	}
-
-	public void setChangeHandler(ChangeHandler ch) {
-		changeHandler = ch;
+	/*
+	 * Recuperar información de la configuración de reservas.
+	 * Intenté declarar el ConfigService como static pero no funciona
+	 * el autowired.
+	 */
+	private static String getConfiguracionFechaMaxima() {
+		ReservaFormController dummy = new ReservaFormController(null);
+		String fechaMaxima = dummy.getFechaMaximaConfigurada(); 
+		return fechaMaxima;
 	}
 	
-
-	private void emitirComprobante() {
-		
-	}
-	
-	private void enviarMail() {
-		
+	private String getFechaMaximaConfigurada() {
+		return ConfigService.findValueByKey("reserva_fecha_maxima");
 	}
 }

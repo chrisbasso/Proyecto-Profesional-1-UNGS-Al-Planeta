@@ -29,7 +29,7 @@ public class ConfiguracionService {
 
 		@Transactional
 		public List<Configuracion> findAll(){
-			return this.configuracionRepository.findAll();
+			return this.configuracionRepository.findAll();			
 		}
 
 		@Transactional
@@ -50,8 +50,12 @@ public class ConfiguracionService {
 		@Transactional
 		public String findValueByKey(String key) {		
 			for(Configuracion config : findAll()) {
-				if(config.getClave().equals(key)) {
-					return config.getValue();
+				if(config.equals(null)) {
+					return null;
+				}else {
+					if(config.getClave().equals(key)) {
+						return config.getValue();
+					}
 				}
 			}
 			return null;
@@ -65,8 +69,6 @@ public class ConfiguracionService {
 	        }else {
 	        	save(config);
 	        	return config;
-	        }
-	        
+	        }	        
 	    }
-
 	}
