@@ -44,4 +44,7 @@ public class EventoService {
 		return eventoRepository.findAllByPersona(persona);
 	}
 
+	public List<Evento> findEventos(Evento eventoConsulta) {
+		return eventoRepository.findAll(Example.of(eventoConsulta));
+	}
 }

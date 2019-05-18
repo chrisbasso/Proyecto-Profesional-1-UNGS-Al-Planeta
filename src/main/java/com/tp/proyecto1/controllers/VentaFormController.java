@@ -60,7 +60,9 @@ public class VentaFormController {
 	private Binder<Venta> binderVenta;
 	private Binder<Viaje> binderViaje;  //NO LOS USO
 	private Binder<Cliente> binderCliente;//NO LOS USO
-
+	
+	private Double pagoParcial; 
+	
 	public VentaFormController(Viaje viaje) {
 		Inject.Inject(this);
 		this.viaje = viaje;
@@ -95,22 +97,21 @@ public class VentaFormController {
 			/*ventaForm.setSaldoPagarDouble(reserva.getPagos().get(1).getImporte());
 			ventaForm.setSubtotalDouble(reserva.getPagos().get(1).getImporte());
 			*/
-			
+			this.pagoParcial = 0.0;
 			Iterator<Pago> pagosIterator = this.reserva.getPagos().iterator();
 			while(pagosIterator.hasNext()){
 				Pago elemento = pagosIterator.next();
 				
 				ventaForm.getFormaPago().setValue(elemento.getFormaDePago()); 
 				
-				Double pagoParcial = elemento.getImporte();
-				
-				ventaForm.setSaldoPagarDouble(reserva.getImporteTotal()-pagoParcial);
-				ventaForm.setSubtotalDouble(reserva.getImporteTotal()-pagoParcial);
+				this.pagoParcial = this.pagoParcial + elemento.getImporte();
 			}
+			ventaForm.setSaldoPagarDouble(reserva.getImporteTotal()-this.pagoParcial);
+			ventaForm.setSubtotalDouble(reserva.getImporteTotal()-this.pagoParcial);
 		}
 					
 		//Setear cantidad de pasajes como obligatorio para terminar la venta
-		cantPasajesReserva =  reserva.getCantidadPasajes();
+		this.cantPasajesReserva =  reserva.getCantidadPasajes();
 		
 	}
 
@@ -137,27 +138,38 @@ public class VentaFormController {
 	private void setListeners() {
 		ventaForm.getBtnSave().addClickListener(e-> saveVenta(venta));//en el modo edit
 		ventaForm.getBtnCancel().addClickListener(e->ventaForm.close());
-		ventaForm.getBtnFinalizarCompra().addClickListener(e-> newVenta());//en el modo compra pasajes de viajes,
-		//impactar  aqui la venta que viene de reserva, en esta linea, no la de abajo
-		ventaForm.getBtnSave().addClickListener(e-> saveReservaVenta(venta)); //en el modo pasar Reserva a Venta
+		ventaForm.getBtnFinalizarCompra().addClickListener(e-> newVenta());//en el modo compra pasajes de viajes, y para reserva venta
 		ventaForm.getPasajerosGridComponent().getGrid().getEditor().addCloseListener(e->modificarSaldoaPagar());
 	}
 	
 	//Incrementa o decrementa los campos de saldo a pagar y subtotal dependiendo la cant. de pasajeros
-	private void modificarSaldoaPagar() {
-		Double precio = viaje.getPrecio();
-		ventaForm.getSaldoPagar().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
-		ventaForm.getSubtotal().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
+	private void modificarSaldoaPagar() {//pasar metodo original a otro lado y cambiar por el nuevo al que llama a getPasajeros
+		if (this.reserva !=null) {//Si viene de una reserva
+			if (this.cantPasajesReserva < this.ventaForm.getPasajerosGridComponent().getPasajerosList().size()) {
+				ventaForm.getPasajerosGridComponent().getNewPasajero().setEnabled(false);
+			}
+			else {
+				ventaForm.getPasajerosGridComponent().getNewPasajero().setEnabled(false);
+			}
+		}
+		else{
+			Double precio = viaje.getPrecio();
+			ventaForm.getSaldoPagar().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
+			ventaForm.getSubtotal().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
+		}
+		
 	}
 	
 	private void newVenta() {
 
 		ventaService.save(setNewVenta());
         ventaForm.close();
-        
+        if (this.reserva !=null) {//Si viene de una reserva
+        	this.reserva.setActivo(false);
+            this.reservaService.save(reserva);
+        }
         changeHandler.onChange();
-        Notification.show("PasajeVenta Guardada");
-		
+        Notification.show("PasajeVenta Guardada");		
 	}
 
 	private void saveVenta(Venta venta) {
@@ -169,20 +181,8 @@ public class VentaFormController {
             //agregar el lote de puntos con el id del cliente(calculo de puntos)cada 1000, 100 ptos para la  PROX VERSIOON O LA DE PUNTOS!!!!!!!!!!!!!!!!!
             Notification.show("PasajeVenta Guardado");
             changeHandler.onChange();
-
 	}
 	
-	private void saveReservaVenta(Venta venta) {
-
-        ventaService.save(venta);
-       // reservaService.save
-        ventaForm.close();
-        //agregar el lote de puntos con el id del cliente(calculo de puntos)cada 1000, 100 ptos para la  PROX VERSIOON O LA DE PUNTOS!!!!!!!!!!!!!!!!!
-        Notification.show("PasajeVenta Guardado");
-        changeHandler.onChange();
-
-}
-
 	private Venta setNewVenta() {
 
 		Venta venta = new Venta();
@@ -190,18 +190,30 @@ public class VentaFormController {
 		Cliente cliente = ventaForm.getCliente().getCliente();
 		FormaDePago formaPago = ventaForm.getFormaPago().getValue();
 
+		venta.setCliente(cliente);
+		Pago pagoVenta = new Pago();
+		//Si viene de una reserva
+		if (this.reserva !=null) {
+			
+			Pago pagoReserva = new Pago(venta, null, pagoParcial, LocalDate.now());
+			venta.agregarPago(pagoReserva);
+						
+			pagoVenta = new Pago(venta, formaPago, ventaForm.getSaldoPagar().getValue(),  LocalDate.now());//tiro null pointer al hacer la prueba q esta en la hoja
+			venta.agregarPago(pagoVenta);
+			
+			this.viaje = reserva.getViaje();
+		}
+		else {
+				pagoVenta = new Pago(venta, formaPago, viaje.getPrecio(),  LocalDate.now());//tiro null pointer al hacer la prueba q esta en la hoja
+				venta.agregarPago(pagoVenta);
+			}
+		
 		ventaForm.getPasajerosGridComponent().getPasajerosList().stream().forEach(pasajero->{
 			PasajeVenta pasajeVenta = new PasajeVenta(viaje, cliente);
 			pasajeVenta.setPasajero(pasajero);
 			venta.getPasajes().add(pasajeVenta);
 		});
-
-		venta.setCliente(cliente);
-
-		Pago pago = new Pago(venta, formaPago, viaje.getPrecio(),  LocalDate.now());
-		venta.agregarPago(pago);
 		
-
 		viaje.restarPasajes(venta.getPasajes().size());
 		venta.setViaje(viaje);
 		viajeService.save(viaje);
@@ -210,6 +222,7 @@ public class VentaFormController {
 
 		return venta;
 	}
+	
 	public void setComponentsValues(Venta venta) {
 
 		this.venta = venta;
@@ -242,6 +255,11 @@ public class VentaFormController {
 	
 	public VentaForm getVentaFormCompra() {
 		ventaForm.getBtnSave().setVisible(false);
+		return ventaForm;
+	}
+	
+	public VentaForm getVentaReservaFormCompra() {
+		ventaForm.getPasajerosGridComponent().getRemoveLastButton().setEnabled(false);
 		return ventaForm;
 	}
 	

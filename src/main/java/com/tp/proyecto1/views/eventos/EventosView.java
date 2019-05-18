@@ -1,15 +1,17 @@
 package com.tp.proyecto1.views.eventos;
 
 import com.tp.proyecto1.model.eventos.Evento;
-import com.tp.proyecto1.model.viajes.TipoTransporte;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.tp.proyecto1.utils.View;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
+
 
 public class EventosView extends FilterGridLayout<Evento> implements View {
 
@@ -18,9 +20,9 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 	private TextField nombreFilter = new TextField("Nombre");
 	private TextField apellidoFilter = new TextField("Apellido");
 	private DatePicker fechaFilter = new DatePicker("Fecha");
-	private Button searchButton = new Button("Buscar");
-	private Button newConsultaButton = new Button("Nueva Consulta");
-	private Button newReclamoButton = new Button("Nuevo Reclamo");
+	private Button searchButton = new Button("Buscar", VaadinIcon.SEARCH.create());
+	private Button newConsultaButton = new Button("Nueva Evento");
+	private Checkbox checkAbierto = new Checkbox("Solo Abiertos");
 
 	public EventosView() {
 		super(Evento.class);
@@ -33,7 +35,8 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 	public void setComponents() {
 		searchButton.setMinWidth("150px");
 		newConsultaButton.setMinWidth("150px");
-		newReclamoButton.setMinWidth("150px");
+		checkAbierto.setMinWidth("150px");
+		idClienteFilter.setMinWidth("150px");
 	}
 
 	@Override
@@ -41,12 +44,11 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 
 		HorizontalLayout hlSpace = new HorizontalLayout();
 		hlSpace.setWidthFull();
-		this.hlActions.add(idFilter,idClienteFilter,nombreFilter,apellidoFilter,fechaFilter,hlSpace,searchButton,newConsultaButton,newReclamoButton);
+		this.hlActions.add(idFilter,idClienteFilter,nombreFilter,apellidoFilter,fechaFilter,checkAbierto,hlSpace,searchButton,newConsultaButton);
 	}
 
 	@Override
 	public void setGrid() {
-
 		grid.setColumns("id", "persona.id", "persona.nombre", "persona.apellido", "fecha", "hora","usuarioLogueado.user", "prioridad");
 		grid.getColumnByKey("id").setHeader("Nº Evento");
 		grid.getColumnByKey("persona.id").setHeader("Nº Cliente/Interesado");
@@ -101,6 +103,14 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 		return searchButton;
 	}
 
+	public Checkbox getCheckAbierto() {
+		return checkAbierto;
+	}
+
+	public void setCheckAbierto(Checkbox checkAbierto) {
+		this.checkAbierto = checkAbierto;
+	}
+
 	public void setSearchButton(Button searchButton) {
 		this.searchButton = searchButton;
 	}
@@ -111,14 +121,6 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 
 	public void setNewConsultaButton(Button newConsultaButton) {
 		this.newConsultaButton = newConsultaButton;
-	}
-
-	public Button getNewReclamoButton() {
-		return newReclamoButton;
-	}
-
-	public void setNewReclamoButton(Button newReclamoButton) {
-		this.newReclamoButton = newReclamoButton;
 	}
 
 }

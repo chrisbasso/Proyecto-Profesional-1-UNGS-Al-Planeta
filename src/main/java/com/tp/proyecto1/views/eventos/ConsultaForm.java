@@ -3,6 +3,7 @@ package com.tp.proyecto1.views.eventos;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.utils.BuscadorClientesComponent;
 import com.tp.proyecto1.utils.PrioridadEvento;
 import com.vaadin.flow.component.button.Button;
@@ -32,7 +33,9 @@ public class ConsultaForm extends Dialog {
     private Checkbox checkInteresado = new Checkbox("Interesado");
     private Button save = new Button("Guardar");
     private Button cancel = new Button("Cancelar");
-    private TextArea textAreaDescripcion = new TextArea("Descripciòn");
+    private TextArea textAreaDescripcion = new TextArea("Descripción");
+    private ComboBox<User> comboUsuarios = new ComboBox<>();
+    private ComboBox<String> comboTipo = new ComboBox<>();
 
     public ConsultaForm() {
 
@@ -57,6 +60,8 @@ public class ConsultaForm extends Dialog {
     }
 
     private void setForm() {
+        form.addFormItem(comboTipo, "Tipo");
+        form.addFormItem(comboUsuarios, "Usuario");
         form.addFormItem(buscadorClientes, "Nº Cliente");
         form.addFormItem(clienteDescripcion, "Descripción");
         form.addFormItem(nombre, "Nombre");
@@ -65,7 +70,6 @@ public class ConsultaForm extends Dialog {
         form.addFormItem(telefono, "Teléfono");
         form.addFormItem(comboPrioridad, "Prioridad");
         form.addFormItem(checkInteresado,"");
-
     }
 
     private void setLayouts() {
@@ -177,6 +181,26 @@ public class ConsultaForm extends Dialog {
 
     public TextArea getTextAreaDescripcion() {
         return textAreaDescripcion;
+    }
+
+    public void setMainLayout(VerticalLayout mainLayout) {
+        this.mainLayout = mainLayout;
+    }
+
+    public ComboBox<User> getComboUsuarios() {
+        return comboUsuarios;
+    }
+
+    public void setComboUsuarios(ComboBox<User> comboUsuarios) {
+        this.comboUsuarios = comboUsuarios;
+    }
+
+    public ComboBox<String> getComboTipo() {
+        return comboTipo;
+    }
+
+    public void setComboTipo(ComboBox<String> comboTipo) {
+        this.comboTipo = comboTipo;
     }
 
     public void setTextAreaDescripcion(TextArea textAreaDescripcion) {

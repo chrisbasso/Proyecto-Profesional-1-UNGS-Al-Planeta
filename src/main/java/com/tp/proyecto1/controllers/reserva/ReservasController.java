@@ -121,7 +121,7 @@ public class ReservasController {
     	Reserva reservaSeleccionada = this.reservaView.getGrid().asSingleSelect().getValue();
     	if (reservaSeleccionada != null) {
 	    	ventaFormController = new VentaFormController(reservaSeleccionada);
-			ventaFormController.getVentaFormCompra().open();
+			ventaFormController.getVentaReservaFormCompra().open();
 			ventaFormController.setChangeHandler(this::listReservas);
     	}
     	else {
