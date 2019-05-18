@@ -26,6 +26,7 @@ public class EventosClienteWindowController {
 
 	private void listarEventos() {
 		this.view.getGrid().setItems(eventoService.findEventosByPersona(cliente));
+
 	}
 
 

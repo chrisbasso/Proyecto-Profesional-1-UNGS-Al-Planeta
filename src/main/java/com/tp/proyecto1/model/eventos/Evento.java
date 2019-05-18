@@ -26,6 +26,8 @@ public class Evento {
 	@OneToOne
 	private User usuarioLogueado;
 
+	private Boolean isAbierto = true;
+
 	private String prioridad;
 
 	public Evento() {
@@ -87,6 +89,13 @@ public class Evento {
 		this.prioridad = prioridad;
 	}
 
+	public boolean isAbierto() {
+		return isAbierto;
+	}
+
+	public void setAbierto(boolean abierto) {
+		isAbierto = abierto;
+	}
 
 	@Override
 	public boolean equals(Object o) {
