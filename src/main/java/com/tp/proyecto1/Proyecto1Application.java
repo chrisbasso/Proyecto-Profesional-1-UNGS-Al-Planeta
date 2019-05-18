@@ -2,6 +2,11 @@ package com.tp.proyecto1;
 
 
 import com.vaadin.flow.component.UI;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -10,6 +15,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import com.tp.proyecto1.model.users.User;
+import com.tp.proyecto1.model.viajes.Destino;
+import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.repository.clientes.ClienteRepository;
 import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
 import com.tp.proyecto1.repository.pasajes.ReservaRepository;
@@ -17,6 +24,7 @@ import com.tp.proyecto1.repository.viajes.PromocionDescuentoRepository;
 import com.tp.proyecto1.repository.viajes.PromocionRepository;
 import com.tp.proyecto1.repository.pasajes.PasajeVentaRepository;
 import com.tp.proyecto1.services.ConfiguracionService;
+import com.tp.proyecto1.services.DestinoService;
 import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
@@ -42,7 +50,8 @@ public class Proyecto1Application {
 									  ClienteRepository clienteRepository,
 									  FormaDePagoRepository formaDePagoRepository,
 									  PasajeVentaRepository pasajeVentaRepository,
-									  PromocionRepository promocionRepository
+									  PromocionRepository promocionRepository,
+									  DestinoService destinoService
 									  /*PromocionDescuentoRepository promocionDescuentosRepository,
 									  PromocionDescuentoRepository promocionPuntosRepository*/) {
 		return args -> {
@@ -61,6 +70,16 @@ public class Proyecto1Application {
 			ventaService.createFormaDePagoIfNotExist("Efectivo");
 			ventaService.createFormaDePagoIfNotExist("Débito");
 			ventaService.createFormaDePagoIfNotExist("Crédito");
+/*
+			System.out.println(promocionRepository.findByViajesAfectados(viajeService.findAll().get(0)));
+			
+			for(Destino destino : destinoService.findAll())
+			{
+				System.out.println(destino);
+				System.out.println(promocionRepository.findByDestinosAfectados(destino));
+			}
+			*/
+			
 			//configuracionService.createConfiguracionIfNotExist("reserva_fecha_maxima","5");
 //
 //			Cliente cliente = new Cliente("Alberto Carlos","Bustos", "854445");

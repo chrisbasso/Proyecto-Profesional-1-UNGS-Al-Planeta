@@ -2,6 +2,7 @@ package com.tp.proyecto1.model.viajes;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -40,13 +41,13 @@ public abstract class Promocion
 	protected Integer cantidadPasajes;
 	
 	@OneToMany
-	protected Set<Viaje> viajesAfectados;
+	protected Collection<Viaje> viajesAfectados;
 	
 	@OneToMany
-	protected Set<Destino> destinosAfectados;
+	protected Collection<Destino> destinosAfectados;
 	
 	@OneToMany
-	protected Set<TagDestino> tagsDestinoAfectados;
+	protected Collection<TagDestino> tagsDestinoAfectados;
 	
 	public Promocion()
 	{
@@ -147,7 +148,7 @@ public abstract class Promocion
 		this.cantidadPasajes = cantidadPasajes2;
 	}
 
-	public Set<Destino> getDestinosAfectados()
+	public Collection<Destino> getDestinosAfectados()
 	{
 		return destinosAfectados;
 	}
@@ -157,7 +158,7 @@ public abstract class Promocion
 		this.destinosAfectados = destinosAfectados;
 	}
 	
-	public Set<Viaje> getViajesAfectados()
+	public Collection<Viaje> getViajesAfectados()
 	{
 		return viajesAfectados;
 	}
@@ -167,7 +168,7 @@ public abstract class Promocion
 		this.viajesAfectados = viajesAfectados;
 	}
 	
-	public Set<TagDestino> getTagsDestinoAfectados()
+	public Collection<TagDestino> getTagsDestinoAfectados()
 	{
 		return tagsDestinoAfectados;
 	}
@@ -196,6 +197,12 @@ public abstract class Promocion
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, nombrePromocion, descripcion, fechaVencimiento, codigoPromocion,doubleValue,tipoPromocion,cantidadPasajes);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return nombrePromocion;
 	}
 	    
 }

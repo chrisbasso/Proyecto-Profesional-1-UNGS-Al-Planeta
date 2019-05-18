@@ -2,7 +2,9 @@ package com.tp.proyecto1.services;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -12,8 +14,11 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tp.proyecto1.model.viajes.Destino;
 import com.tp.proyecto1.model.viajes.Promocion;
 import com.tp.proyecto1.model.viajes.PromocionPuntos;
+import com.tp.proyecto1.model.viajes.TagDestino;
+import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.repository.viajes.PromocionRepository;
 
 @Service
@@ -66,7 +71,31 @@ public class PromocionService
         	ret.add(promoPuntos);
         return ret;*/
     }
-
+	
+	@Transactional
+	public Set<Promocion> findByViajesAfectados(Viaje viaje)
+	{
+		return promocionRepository.findByViajesAfectados(viaje);
+	}
+	
+	@Transactional
+	public Set<Promocion> findByDestinosAfectados(Destino destinos)
+	{
+		return promocionRepository.findByDestinosAfectados(destinos);
+	}
+	
+	@Transactional
+	public Set<Promocion> findByTagsDestinoAfectados(Set<TagDestino> tags)
+	{
+		Set<Promocion> toRet = new HashSet<>();
+		for (TagDestino tag : tags)
+		{
+			toRet.addAll(promocionRepository.findByTagsDestinoAfectados(tag));
+		}
+		return toRet;
+	}
+	
+	@Transactional
 	public Collection<Promocion> findPromociones(Promocion promocionBusqueda, LocalDate vencimientoMayorA)
 	{
 		List<Promocion> promociones; 
