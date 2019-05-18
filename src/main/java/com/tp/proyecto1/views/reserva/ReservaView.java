@@ -66,6 +66,10 @@ public class ReservaView extends FilterGridLayout<Reserva> {
     	grid.addComponentColumn(e).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);    	
     }
 
+    public void agregarColumnaBorrado(ValueProvider<Reserva, Button> e) {
+    	grid.addComponentColumn(e).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);    	
+    }
+    
 	public Grid<Reserva> getGrid() {
 		return grid;
 	}

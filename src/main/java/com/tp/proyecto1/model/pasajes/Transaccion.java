@@ -6,6 +6,8 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +37,8 @@ public abstract class Transaccion {
 	
 	private boolean isActivo = true;
 
+	private LocalDate fechaInactivacion;
+	
 	public Transaccion() {
 	}
 
@@ -101,14 +105,16 @@ public abstract class Transaccion {
 		this.viaje = viaje;
 	}
 
-	public boolean isActivo() {
-		return isActivo;
+	public void activar() {
+		isActivo = true;
+		fechaInactivacion = null;
 	}
 
-	public void setActivo(boolean isActivo) {
-		this.isActivo = isActivo;
+	public void inactivar() {
+		isActivo = false;
+		fechaInactivacion = LocalDate.now();
 	}
-
+	
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

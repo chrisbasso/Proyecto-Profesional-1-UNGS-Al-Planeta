@@ -1,5 +1,6 @@
 package com.tp.proyecto1.controllers.reserva;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import com.tp.proyecto1.model.viajes.Transporte;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.ReservaService;
 import com.tp.proyecto1.utils.ChangeHandler;
+import com.tp.proyecto1.utils.ConfirmationDialog;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.reserva.ReservaView;
 import com.vaadin.flow.component.button.Button;
@@ -44,6 +46,7 @@ public class ReservasController {
 
     private void agregarBotonesEdicion() {
         reservaView.agregarColumnaEdicion(this::createEditButton);
+        reservaView.agregarColumnaBorrado(this::createDeleteButton);
     }
     
     private Button createEditButton(Reserva reserva) {
@@ -59,6 +62,24 @@ public class ReservasController {
         });
     }
     
+    private Button createDeleteButton(Reserva reserva) {
+        return new Button(VaadinIcon.TRASH.create(), clickEvent -> {
+        	borrarReserva(reserva);
+            
+        });
+    }
+    
+    private void borrarReserva(Reserva reserva) {
+		ConfirmationDialog confirmationDialog = new ConfirmationDialog("¿Realmente desea dar de baja la reserva?");
+		confirmationDialog.getConfirmButton().addClickListener(event -> {
+			reserva.inactivar();			
+			reservaService.save(reserva);
+			Notification.show("Reserva dada de baja");
+			changeHandler.onChange();
+		});
+		confirmationDialog.open();
+	}
+
     private void setListeners() {
     	setChangeHandler(this::listReservas);
     	reservaView.setBtnBuscarListener(e->listReservas());
