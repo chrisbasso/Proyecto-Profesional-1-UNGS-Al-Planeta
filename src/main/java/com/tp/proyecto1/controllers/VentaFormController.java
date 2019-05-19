@@ -15,18 +15,12 @@ import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.services.ReservaService;
 import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
-import com.tp.proyecto1.utils.BuscadorClientesComponent;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.views.ventas.VentaForm;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.*;
-import org.springframework.util.StringUtils;
 
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
 
 @Controller
 @UIScope
@@ -67,52 +61,18 @@ public class VentaFormController {
 		Inject.Inject(this);
 		this.viaje = viaje;
 		this.ventaForm = new VentaForm();
-		setListeners();
-        setComponents();
-        setComponentesLectura(this.viaje);
-       // setBinders(); no lo uso!!
+		this.setListeners();
+        this.setComponents();
+        this.setComponentesLectura(this.viaje);
 	}
 	
 	public VentaFormController(Reserva reserva) {
 		Inject.Inject(this);
 		this.reserva = reserva;
 		this.ventaForm = new VentaForm();
-		setListeners(); //revisar q le estoy pasando para RESERVA-> Venta ver si funciona
-		setComponents();//revisar q le estoy pasando para RESERVA-> Venta ver si funciona 
-		setComponentesLectura(this.reserva.getViaje()); //ver si funciona
-		//Setear Cliente, encapsular luego NO PUEDO SETEAR EL CLIENTE EN ESTA FUNCION, SEGUIR CON LA PARTE DE GUARDAR Y ACOMODAT ESTOS SETS
-		ventaForm.getCliente().getFiltro().setValue(reserva.getCliente().getId().toString());
-		ventaForm.getCliente().getFiltro().setEnabled(false);
-		
-		//Setear Forma de Pago si la hay y saldo a pagar y subtotal, encapsular luego
-		if (this.reserva.getPagos().size() == 0) { //sin pagos previos
-			ventaForm.setSaldoPagarDouble(reserva.getImporteTotal());//precio al momento de la reserva
-			ventaForm.setSubtotalDouble(reserva.getImporteTotal());//precio al momento de la reserva
-//			ventaForm.setSaldoPagarDouble(reserva.getViaje().getPrecio());//o saco el precio del viaje, por si se modifico
-//			ventaForm.setSubtotalDouble(reserva.getViaje().getPrecio());//o saco el precio del viaje, por si se modifico
-		}
-		else{//con pagos previos
-//			ventaForm.setFormaPago(this.reserva.getPagos().get(1).getFormaDePago().getId().toString());
-//			ventaForm.getFormaPago().setValue(venta.getPagos().get(0).getFormaDePago());
-			/*ventaForm.setSaldoPagarDouble(reserva.getPagos().get(1).getImporte());
-			ventaForm.setSubtotalDouble(reserva.getPagos().get(1).getImporte());
-			*/
-			this.pagoParcial = 0.0;
-			Iterator<Pago> pagosIterator = this.reserva.getPagos().iterator();
-			while(pagosIterator.hasNext()){
-				Pago elemento = pagosIterator.next();
-				
-				ventaForm.getFormaPago().setValue(elemento.getFormaDePago()); 
-				
-				this.pagoParcial = this.pagoParcial + elemento.getImporte();
-			}
-			ventaForm.setSaldoPagarDouble(reserva.getImporteTotal()-this.pagoParcial);
-			ventaForm.setSubtotalDouble(reserva.getImporteTotal()-this.pagoParcial);
-		}
-					
-		//Setear cantidad de pasajes como obligatorio para terminar la venta
-		this.cantPasajesReserva =  reserva.getCantidadPasajes();
-		
+		this.setListeners(); 
+		this.setComponents();
+		this.setComponentesLectura(this.reserva.getViaje()); 		
 	}
 
 
@@ -133,38 +93,74 @@ public class VentaFormController {
 
 	private void setComponents() {
 		ventaForm.getFormaPago().setItems(ventaService.findAllFomaDePagos());
+		
+		if (this.reserva != null){
+			//Setear Cliente
+			ventaForm.getCliente().getFiltro().setValue(reserva.getCliente().getId().toString());
+			ventaForm.getCliente().getFiltro().setEnabled(false);
+			
+			//Setear cantidad de pasajes como uno de los obligatorio para terminar la venta
+			this.cantPasajesReserva =  this.reserva.getCantidadPasajes();
+			
+			//Setear Forma de Pago si la hay y saldo a pagar y subtotal
+			if (this.reserva.getPagos().size() == 0) { //sin pagos previos
+				ventaForm.setSaldoPagarDouble(reserva.getImporteTotal());//precio al momento de la reserva
+				ventaForm.setSubtotalDouble(reserva.getImporteTotal());//precio al momento de la reserva
+			}
+			else{//con pagos previos
+				this.pagoParcial = 0.0;
+				Iterator<Pago> pagosIterator = this.reserva.getPagos().iterator();
+				while(pagosIterator.hasNext()){
+					Pago elemento = pagosIterator.next();
+					
+					ventaForm.getFormaPago().setValue(elemento.getFormaDePago()); 
+					
+					this.pagoParcial = this.pagoParcial + elemento.getImporte();
+				}
+				ventaForm.setSaldoPagarDouble(reserva.getImporteTotal()-this.pagoParcial);
+				ventaForm.setSubtotalDouble(reserva.getImporteTotal()-this.pagoParcial);
+			}
+		}
 	}
 	
 	private void setListeners() {
 		ventaForm.getBtnSave().addClickListener(e-> saveVenta(venta));//en el modo edit
 		ventaForm.getBtnCancel().addClickListener(e->ventaForm.close());
 		ventaForm.getBtnFinalizarCompra().addClickListener(e-> newVenta());//en el modo compra pasajes de viajes, y para reserva venta
-		ventaForm.getPasajerosGridComponent().getGrid().getEditor().addCloseListener(e->modificarSaldoaPagar());
+		ventaForm.getPasajerosGridComponent().getGrid().getEditor().addCloseListener(e-> gestionarPasajeros());
+		ventaForm.getFormaPago().addValueChangeListener(e-> validarCompra());
+		ventaForm.getCliente().getFiltro().addValueChangeListener(e-> validarCompra());
 	}
 	
 	//Incrementa o decrementa los campos de saldo a pagar y subtotal dependiendo la cant. de pasajeros
-	private void modificarSaldoaPagar() {//pasar metodo original a otro lado y cambiar por el nuevo al que llama a getPasajeros
-		if (this.reserva !=null) {//Si viene de una reserva
-			if (this.cantPasajesReserva < this.ventaForm.getPasajerosGridComponent().getPasajerosList().size()) {
+	private void gestionarPasajeros() {
+		//Si viene de una reserva
+		if (this.reserva !=null) {
+			if (this.cantPasajesReserva == this.ventaForm.getPasajerosGridComponent().getPasajerosList().size()) {
 				ventaForm.getPasajerosGridComponent().getNewPasajero().setEnabled(false);
 			}
 			else {
-				ventaForm.getPasajerosGridComponent().getNewPasajero().setEnabled(false);
+				ventaForm.getPasajerosGridComponent().getNewPasajero().setEnabled(true);//este no sirve
 			}
 		}
 		else{
-			Double precio = viaje.getPrecio();
-			ventaForm.getSaldoPagar().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
-			ventaForm.getSubtotal().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
-		}
-		
+			this.modificarSaldoaPagar();
+		}	
+		//validar que se pueda habilitar el boton de finalizar compra
+		this.validarCompra();
+	}
+	
+	private void modificarSaldoaPagar() {
+		Double precio = viaje.getPrecio();
+		ventaForm.getSaldoPagar().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
+		ventaForm.getSubtotal().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
 	}
 	
 	private void newVenta() {
-
 		ventaService.save(setNewVenta());
         ventaForm.close();
-        if (this.reserva !=null) {//Si viene de una reserva
+      //Si viene de una reserva
+        if (this.reserva !=null) {
         	this.reserva.inactivar();
             this.reservaService.save(reserva);
         }
@@ -175,7 +171,6 @@ public class VentaFormController {
 	private void saveVenta(Venta venta) {
 
             ventaService.save(venta);
-            //reservaService.save(venta);
             ventaForm.close();
             
             //agregar el lote de puntos con el id del cliente(calculo de puntos)cada 1000, 100 ptos para la  PROX VERSIOON O LA DE PUNTOS!!!!!!!!!!!!!!!!!
@@ -218,7 +213,7 @@ public class VentaFormController {
 		venta.setViaje(viaje);
 		viajeService.save(viaje);
 		
-		venta.setImporteTotal(ventaForm.getSaldoPagar().getValue());
+		venta.setImporteTotal(viaje.getPrecio());//si es el caso que viene de reserva le paso igual el importe total, sino faltaria un campo en que diga importeVenta/parcial
 
 		return venta;
 	}
@@ -247,6 +242,23 @@ public class VentaFormController {
 
 	}
 	
+	private void validarCompra() {
+		boolean isValido = false; 
+		if(ventaForm.getFormaPago().getValue() != null && !ventaForm.getCliente().getFiltro().getValue().isBlank()) {
+			if (this.reserva != null) {
+				if (this.cantPasajesReserva == ventaForm.getPasajerosGridComponent().getPasajerosList().size()) {
+					isValido = true;
+				}
+			}
+			else {
+				if (ventaForm.getPasajerosGridComponent().getPasajerosList().size() > 0) {
+					isValido = true;
+				}
+			}
+		}
+		ventaForm.getBtnFinalizarCompra().setEnabled(isValido);
+	}
+	
     //NO USO ESTA PODEROSA TECNICA
 	private void setBinders() {
 		binderVenta.setBean(venta);
@@ -255,11 +267,14 @@ public class VentaFormController {
 	
 	public VentaForm getVentaFormCompra() {
 		ventaForm.getBtnSave().setVisible(false);
+		ventaForm.getBtnFinalizarCompra().setEnabled(false);
 		return ventaForm;
 	}
 	
 	public VentaForm getVentaReservaFormCompra() {
 		ventaForm.getPasajerosGridComponent().getRemoveLastButton().setEnabled(false);
+		ventaForm.getBtnSave().setVisible(false);
+		ventaForm.getBtnFinalizarCompra().setEnabled(false);
 		return ventaForm;
 	}
 	

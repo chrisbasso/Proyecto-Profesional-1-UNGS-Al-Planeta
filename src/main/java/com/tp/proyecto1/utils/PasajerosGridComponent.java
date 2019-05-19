@@ -16,7 +16,7 @@ import java.util.*;
 
 public class PasajerosGridComponent extends VerticalLayout {
 
-	private Button newPasajero = new Button("Agregar Pasajero");
+	private Button newPasajero = new Button("Agregar Pasajero (*)");
 	private Button removeLastButton = new Button("Eliminar Último");
 	private Grid<Pasajero> grid = new Grid<>();
 	private List<Pasajero> pasajerosList = new ArrayList<>();
