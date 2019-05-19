@@ -141,7 +141,6 @@ public class ClienteFormController {
 		SerializablePredicate<String> predicate = value -> !field.isEmpty();
 
 		Binder.Binding<Domicilio, String> binding = binderDomicilio.forField(field)
-				.withValidator(predicate, "El campo es obligatorio")
 				.bind(valueProvider, setter);
 		clienteForm.getSave().addClickListener(event -> binding.validate());
 	}
