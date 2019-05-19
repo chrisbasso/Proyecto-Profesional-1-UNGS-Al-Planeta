@@ -1,7 +1,6 @@
 package com.tp.proyecto1.model.eventos;
 
-import com.tp.proyecto1.model.clientes.Cliente;
-import com.tp.proyecto1.model.clientes.Interesado;
+
 import com.tp.proyecto1.model.clientes.Persona;
 import com.tp.proyecto1.model.users.User;
 

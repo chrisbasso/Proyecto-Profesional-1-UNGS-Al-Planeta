@@ -36,7 +36,7 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 		searchButton.setMinWidth("150px");
 		newConsultaButton.setMinWidth("150px");
 		checkAbierto.setMinWidth("150px");
-		idClienteFilter.setMinWidth("150px");
+		idClienteFilter.setMinWidth("150px");	
 	}
 
 	@Override

@@ -57,6 +57,14 @@ public class ConsultaForm extends Dialog {
         textAreaDescripcion.setHeight("100px");
         textAreaDescripcion.setWidth("770px");
 
+        textAreaDescripcion.setRequired(true);
+        comboTipo.setRequired(true);
+        buscadorClientes.getFiltro().setRequired(true);
+        nombre.setRequired(true);
+        apellido.setRequired(true);
+        telefono.setRequired(true);
+        comboPrioridad.setRequired(true);
+
     }
 
     private void setForm() {

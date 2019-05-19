@@ -258,7 +258,7 @@ public class VentaFormController {
 	
 	private void validarCompra() {
 		boolean isValido = false; 
-		if(ventaForm.getFormaPago().getValue() != null && !ventaForm.getCliente().getFiltro().getValue().isBlank()) {
+		if(ventaForm.getFormaPago().getValue() != null && !ventaForm.getCliente().getFiltro().getValue().isEmpty()) {
 			if (this.reserva != null) {
 				if (this.cantPasajesReserva == ventaForm.getPasajerosGridComponent().getPasajerosList().size()) {
 					isValido = true;
