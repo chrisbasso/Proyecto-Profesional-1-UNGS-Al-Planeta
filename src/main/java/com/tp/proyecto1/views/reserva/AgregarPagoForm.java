@@ -28,7 +28,8 @@ public class AgregarPagoForm extends Dialog{
 	private VerticalLayout mainLayout;
 	private NumberField pago;     
 	private ComboBox<FormaDePago> cmbFormaPago;	
-    private HorizontalLayout etiquetas;
+    private Text saldo;
+    private Text sumaDePagos;    
     private Grid pagosAnteriores;
     private FormLayout form;
     private Button btnGuardar;
@@ -46,7 +47,6 @@ public class AgregarPagoForm extends Dialog{
 		iniciliazarCampos();
     	inicializarForm();
     	inicializarActions();
-    	inicializarEtiquetas();
     	inicializarGridPagos();
     	inicializarMainLayout();    	
     }
@@ -59,6 +59,8 @@ public class AgregarPagoForm extends Dialog{
 		pago.setPrefixComponent(new Span("$"));
 		pago.setMin(0.0);
 		pago.setMax(importeMaximo);
+		saldo = new Text("Por pagar: " + importeMaximo.toString() + "\n");
+		sumaDePagos = new Text("");
 	}
 	/*
 	 * Form para pago y combo de pagos. 
@@ -67,54 +69,45 @@ public class AgregarPagoForm extends Dialog{
 		form = new FormLayout();    	
     	form.addFormItem(pago, "Importe");
     	form.addFormItem(cmbFormaPago, "Forma de Pago");
-    	btnAgregar = new Button("", VaadinIcon.PLUS.create());
-    	form.addFormItem(btnAgregar,"");
+    	form.addFormItem(saldo,"");
+    	form.addFormItem(sumaDePagos,"");
+    	btnAgregar = new Button("Agregar este pago", VaadinIcon.PLUS.create());
+    	btnAgregar.setEnabled(false);
+    	form.addFormItem(btnAgregar,"");    	
 	}
 	/*
 	 * Cargar botones.
 	 */
 	private void inicializarActions() {
-		btnGuardar= new Button("Guardar");
+		btnGuardar= new Button("Guardar",VaadinIcon.CHECK_CIRCLE.create());
 		btnGuardar.setEnabled(false);
-		btnCancelar= new Button("Cancelar");
+		btnCancelar= new Button("Cancelar", VaadinIcon.CLOSE_CIRCLE.create());
     	actions = new HorizontalLayout();
         actions.add(btnGuardar, btnCancelar);
 	}
 	/*
 	 * Cargar grid con detalle de pagos.
 	 */
-	private void inicializarGridPagos() {
+	private void inicializarGridPagos() {		
 		pagosAnteriores = new Grid<>(Pago.class);
 		pagosAnteriores.addThemeVariants(GridVariant.MATERIAL_COLUMN_DIVIDERS);
 		pagosAnteriores.setSelectionMode(Grid.SelectionMode.NONE);
 		pagosAnteriores.setHeightByRows(true);
 		pagosAnteriores.setColumns("transaccion", "formaDePago", "importe", "fechaDePago");
 		pagosAnteriores.getColumnByKey("transaccion").setVisible(false);
-		pagosAnteriores.getColumnByKey("formaDePago").setHeader("Medio");
-		
+		pagosAnteriores.getColumnByKey("formaDePago").setHeader("Medio");		
 	}
 	/*
-	 * Etiquetas de texto para mostrar los pagos ingresados y el saldo por pagar.
+	 * Mostrar la etiqueta de suma de pagos.
 	 */
-	private void inicializarEtiquetas() {
-		etiquetas = new HorizontalLayout();
-		Text saldo = new Text("Por pagar: " + importeMaximo.toString());
-		Text sumaDePagos = new Text("Pagado: ");
-		etiquetas.addComponentAtIndex(0, saldo);
-		etiquetas.addComponentAtIndex(1,sumaDePagos);		
+	public void actualizarEtiquetaSumaDePagos(Double suma) {		
+		sumaDePagos.setText("Pagado: " + suma.toString());		
 	}
 	/*
-	 * Intenté mostrar y ocultar las etiquetas...
-	 */
-	public void mostrarEtiquetaSumaDePagos(Double suma) {		
-		etiquetas.getComponentAt(1).getElement().setText("Pagado: " + suma.toString());
-		etiquetas.getComponentAt(1).setVisible(true);		
-	}
-	/*
-	 * Intenté mostrar y ocultar las etiquetas...
+	 * Ocultar la etiqueta de suma de pagos.
 	 */	
 	public void ocultarEtiquetaSumaDePagos() {
-		etiquetas.getComponentAt(1).setVisible(false);
+		sumaDePagos.setText("");
 	}
 	/*
 	 * Contenedor principal de todos los elementos
@@ -122,7 +115,7 @@ public class AgregarPagoForm extends Dialog{
 	private void inicializarMainLayout() {		
 		mainLayout = new VerticalLayout();
     	mainLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
-        mainLayout.add(form,etiquetas,pagosAnteriores,actions);
+        mainLayout.add(form,saldo,sumaDePagos,pagosAnteriores,actions);
         mainLayout.setSizeFull();
     	this.add(mainLayout);
         this.setWidth("800px");

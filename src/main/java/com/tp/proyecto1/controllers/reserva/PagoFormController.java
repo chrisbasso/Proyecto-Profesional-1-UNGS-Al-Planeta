@@ -34,7 +34,9 @@ public class PagoFormController {
 		form = new AgregarPagoForm(importeMaximo);
 		form.cargarFormasDePago(fdp);
 		form.cargarPagosAnteriores(pagos);
-		//form.mostrarEtiquetaSumaDePagos(sumarPagos());
+		if(sumarPagos()>0.0) {
+			form.actualizarEtiquetaSumaDePagos(sumarPagos());
+		}
 		setListeners();	
 		form.open();
 	}
@@ -71,8 +73,7 @@ public class PagoFormController {
 		pagoAgregado = true;
 		agregarPagoIngresado();
 		actualizarForm();		
-		// Tengo que corregir esto:
-		//form.mostrarEtiquetaSumaDePagos(sumarPagos());
+		form.actualizarEtiquetaSumaDePagos(sumarPagos());
 	}
 	/*
 	 * Agregar el pago ingresado a la lista de pagos.
