@@ -6,6 +6,9 @@ import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+
+import com.tp.proyecto1.model.clientes.Cliente;
 
 @Entity
 public class LotePunto
@@ -18,21 +21,25 @@ public class LotePunto
 	private LocalDate fechaAlta;
 	private LocalDate fechaVencimiento;
 	private Integer cantidadPuntos;
-	private Integer cantidadPuntosRestantes;
+	private Integer cantidadRestante;
 	private Boolean isActivo;
+	
+	@ManyToOne
+	private Cliente cliente;
 	
 	public LotePunto()
 	{
 		
 	}
 	
-	public LotePunto(LocalDate fechaAlta, LocalDate fechaVencimiento, Integer cantidadPuntos, Boolean isActivo, Integer cantidadPuntosRestantes)
+	public LotePunto(LocalDate fechaAlta, LocalDate fechaVencimiento, Integer cantidadPuntos, Boolean isActivo, Integer cantidadPuntosRestantes, Cliente cliente)
 	{
 		setFechaAlta(fechaAlta);
 		setFechaVencimiento(fechaVencimiento);
 		setCantidadPuntos(cantidadPuntos);
-		setCantidadPuntosRestantes(cantidadPuntosRestantes);
+		setCantidadRestante(cantidadPuntosRestantes);
 		setActivo(isActivo);
+		setCliente(cliente);
 	}
 
 	public Long getId() {
@@ -82,6 +89,15 @@ public class LotePunto
 		return isActivo;
 	}
 	
+	public Integer getCantidadRestante()
+	{
+		return cantidadRestante;
+	}
+	
+	public void setCantidadRestante(Integer cantidadRestante)
+	{
+		this.cantidadRestante = cantidadRestante;
+	}
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -89,23 +105,23 @@ public class LotePunto
         LotePunto lotePunto = (LotePunto) o;
         return Objects.equals(id, lotePunto.id) &&
                 Objects.equals(cantidadPuntos, lotePunto.cantidadPuntos) &&
+                Objects.equals(cantidadRestante, lotePunto.cantidadRestante) &&
                 Objects.equals(fechaAlta, lotePunto.fechaAlta);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, cantidadPuntos, fechaAlta);
+        return Objects.hash(id, cantidadPuntos,cantidadRestante, fechaAlta);
     }
 
-	public Integer getCantidadPuntosRestante()
-	{
-		return cantidadPuntosRestantes;
+	public Cliente getCliente() {
+		return cliente;
 	}
 
-	public void setCantidadPuntosRestantes(Integer cantidadPuntosRestantes)
-	{
-		this.cantidadPuntosRestantes = cantidadPuntosRestantes;
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
 	}
+
 
 
 }

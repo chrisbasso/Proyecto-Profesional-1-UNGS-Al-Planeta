@@ -2,6 +2,9 @@ package com.tp.proyecto1.model.clientes;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.tp.proyecto1.model.lotePunto.LotePunto;
 
 import java.time.LocalDate;
@@ -19,14 +22,15 @@ public class Cliente extends Persona{
 	private String dni;
 	private LocalDate fechaNacimiento;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private Domicilio domicilio;
 
 	private boolean isActivo;
 	private LocalDate fechaBaja;
 	private LocalDate fechaAlta;
 
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "cliente",cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
 	private List<LotePunto>puntos = new ArrayList<>();
 	
 	public Cliente() {
@@ -45,7 +49,6 @@ public class Cliente extends Persona{
 		this.isActivo = isActivo;
 		this.fechaBaja = fechaBaja;
 		this.fechaAlta = fechaAlta;
-		this.puntos = new ArrayList<>();
 	}
 
 	public Long getId() {
