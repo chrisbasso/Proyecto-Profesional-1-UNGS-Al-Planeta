@@ -115,6 +115,10 @@ public abstract class Transaccion {
 		fechaInactivacion = LocalDate.now();
 	}
 	
+	public boolean isActivo() {
+		return isActivo;
+	}
+	
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

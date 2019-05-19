@@ -19,6 +19,7 @@ public class PagoFormController {
 	private ReservaFormController observer;
 	private List <Pago> pagos;
 	private Double importeMaximo;
+	private Boolean pagoAgregado;
 	
 	public PagoFormController(ReservaFormController observer) {
 		this.observer = observer;			
@@ -29,6 +30,7 @@ public class PagoFormController {
 	public void mostrarForm(Double importeMaximo, List <FormaDePago> fdp, List <Pago> pagos) {
 		this.importeMaximo = importeMaximo; 
 		this.pagos = pagos;
+		pagoAgregado = false;
 		form = new AgregarPagoForm(importeMaximo);
 		form.cargarFormasDePago(fdp);
 		form.cargarPagosAnteriores(pagos);
@@ -40,8 +42,8 @@ public class PagoFormController {
 	 * Listeners para los botones del form
 	 */
 	private void setListeners() {
-		form.setListenerImporte(e->validacionBtnGuardar());
-		form.setListenerFDP(e->validacionBtnGuardar());
+		form.setListenerImporte(e->validacionBotones());
+		form.setListenerFDP(e->validacionBotones());
 		form.setListenerBtnAgregar(e->accionAgregarPago());
 		form.setListenerBtnGuardar(e->finalizarConPago());	
 		form.setListenerBtnCancelar(e->finalizar());
@@ -50,23 +52,23 @@ public class PagoFormController {
 	 * Se habilita el botón "guardar" cuando se seleccionó un forma de pago y 
 	 * se ingreso un importe. Los listeners de esos componentes invocan este método. 
 	 */
-	private void validacionBtnGuardar() {
+	private void validacionBotones() {
 		if(form.getFormaPagoSeleccionada() != null && form.getPagoIngresado() > 0) {
-			form.activarBtnGuardar();
+			form.activarBtnAgregar();
 		}else{
-			desactivarBtnGuardar(); 
+			form.desactivarBtnAgregar();			 
 		}
-	}
-	/*
-	 * Ocultar el botón "guardar".
-	 */
-	private void desactivarBtnGuardar() {
-		form.desactivarBtnGuardar();
+		if(pagoAgregado) {
+			form.activarBtnGuardar();
+		}else {
+			form.desactivarBtnGuardar();
+		}
 	}	
 	/*
 	 * Agregar un pago y seguir agregando más.
 	 */
 	private void accionAgregarPago() {
+		pagoAgregado = true;
 		agregarPagoIngresado();
 		actualizarForm();		
 		// Tengo que corregir esto:
