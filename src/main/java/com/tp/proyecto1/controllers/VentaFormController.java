@@ -132,7 +132,6 @@ public class VentaFormController {
 		ventaForm.getCliente().getFiltro().addValueChangeListener(e-> validarCompra());
 		ventaForm.getPasajerosGridComponent().getRemoveLastButton().addClickListener(e-> this.modificarSaldoaPagar());
 		ventaForm.getPasajerosGridComponent().getNewPasajero().addClickListener(e-> this.modificarSaldoaPagar());
-		//ventaForm.getPasajerosGridComponent().getNewPasajero().addClickListener(e-> validarCantPasajes());
 	}
 	
 	//Incrementa o decrementa los campos de saldo a pagar y subtotal dependiendo la cant. de pasajeros
