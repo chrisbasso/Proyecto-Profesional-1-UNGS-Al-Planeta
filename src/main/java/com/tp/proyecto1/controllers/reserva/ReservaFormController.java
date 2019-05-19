@@ -141,6 +141,7 @@ public class ReservaFormController {
 			viaje.restarPasajes(pasajes.size());
 			reserva.setViaje(viaje);
 			reservaService.save(reserva);
+			viajeService.save(viaje);
 			mensajeGuardadoCierreForm();
 		}else {
 			Notification.show("Lo sentimos, no quedan pasajes disponibles en el viaje seleccionado.");
@@ -171,6 +172,7 @@ public class ReservaFormController {
 			actualizarTransaccionEnPagos(reserva);
 			reserva.setPagos(listaDePagos);
 			reservaService.save(reserva);
+			viajeService.save(viaje);
 			mensajeGuardadoCierreForm();
 		}else {
 			Notification.show("Lo sentimos, no pudimos actualizar los pasajes disponibles en el viaje seleccionado.");

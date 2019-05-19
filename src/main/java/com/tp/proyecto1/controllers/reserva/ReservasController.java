@@ -1,6 +1,5 @@
 package com.tp.proyecto1.controllers.reserva;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +14,7 @@ import com.tp.proyecto1.model.viajes.Destino;
 import com.tp.proyecto1.model.viajes.Transporte;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.ReservaService;
+import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.ConfirmationDialog;
 import com.tp.proyecto1.utils.Inject;
@@ -30,6 +30,8 @@ public class ReservasController {
 
     @Autowired
     private ReservaService reservaService;
+    @Autowired
+    private ViajeService viajeService;
     private ReservaFormController reservaFormController;
     private ReservaView reservaView;
     private ChangeHandler changeHandler;
@@ -63,17 +65,26 @@ public class ReservasController {
     }
     
     private Button createDeleteButton(Reserva reserva) {
-        return new Button(VaadinIcon.TRASH.create(), clickEvent -> {
-        	borrarReserva(reserva);
-            
-        });
+        Button btnBorrar = new Button(VaadinIcon.TRASH.create(), clickEvent -> borrarReserva(reserva));
+    		if(!reserva.isActivo()){
+    			btnBorrar.setEnabled(false);
+    		}
+    		return btnBorrar;
     }
     
     private void borrarReserva(Reserva reserva) {
-		ConfirmationDialog confirmationDialog = new ConfirmationDialog("¿Realmente desea dar de baja la reserva?");
+    	String mensaje = "¿Realmente desea dar de baja la reserva del cliente " 
+    						+ reserva.getCliente()
+    						+ ", por "
+    						+ reserva.getCantidadPasajes()
+    						+ " pasajes?";
+		ConfirmationDialog confirmationDialog = new ConfirmationDialog(mensaje);
 		confirmationDialog.getConfirmButton().addClickListener(event -> {
-			reserva.inactivar();			
+			reserva.inactivar();
+			Viaje viaje = reserva.getViaje();
+			viaje.agregarPasajes(reserva.getCantidadPasajes());			
 			reservaService.save(reserva);
+			viajeService.save(viaje);
 			Notification.show("Reserva dada de baja");
 			changeHandler.onChange();
 		});

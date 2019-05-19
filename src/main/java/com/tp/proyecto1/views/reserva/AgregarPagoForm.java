@@ -160,7 +160,7 @@ public class AgregarPagoForm extends Dialog{
 	 * Actualizar el importe máximo para el siguiente pago.
 	 */
 	public void actualizarPagoMaximo(Double nuevoImporte) {
-		pago.setValue(0.0);
+		pago.clear();
 		pago.setMax(nuevoImporte);
 	}
 	/*
@@ -174,6 +174,18 @@ public class AgregarPagoForm extends Dialog{
 	 */	
 	public void desactivarBtnGuardar() {
 		btnGuardar.setEnabled(false);
+	}
+	/*
+	 * Habilitar el botón agregar.
+	 */
+	public void activarBtnAgregar() {
+		btnAgregar.setEnabled(true);		
+	}
+	/*
+	 * Deshabilitar el botón agregar.
+	 */	
+	public void desactivarBtnAgregar() {
+		btnAgregar.setEnabled(false);
 	}
 	
 	public void setListenerImporte(ValueChangeListener<? super ComponentValueChangeEvent<NumberField, Double>> e) {
