@@ -18,6 +18,7 @@ public class LotePunto
 	private LocalDate fechaAlta;
 	private LocalDate fechaVencimiento;
 	private Integer cantidadPuntos;
+	private Integer cantidadPuntosRestantes;
 	private Boolean isActivo;
 	
 	public LotePunto()
@@ -25,11 +26,12 @@ public class LotePunto
 		
 	}
 	
-	public LotePunto(LocalDate fechaAlta, LocalDate fechaVencimiento, Integer cantidadPuntos, Boolean isActivo)
+	public LotePunto(LocalDate fechaAlta, LocalDate fechaVencimiento, Integer cantidadPuntos, Boolean isActivo, Integer cantidadPuntosRestantes)
 	{
 		setFechaAlta(fechaAlta);
 		setFechaVencimiento(fechaVencimiento);
 		setCantidadPuntos(cantidadPuntos);
+		setCantidadPuntosRestantes(cantidadPuntosRestantes);
 		setActivo(isActivo);
 	}
 
@@ -94,6 +96,16 @@ public class LotePunto
     public int hashCode() {
         return Objects.hash(id, cantidadPuntos, fechaAlta);
     }
+
+	public Integer getCantidadPuntosRestante()
+	{
+		return cantidadPuntosRestantes;
+	}
+
+	public void setCantidadPuntosRestantes(Integer cantidadPuntosRestantes)
+	{
+		this.cantidadPuntosRestantes = cantidadPuntosRestantes;
+	}
 
 
 }
