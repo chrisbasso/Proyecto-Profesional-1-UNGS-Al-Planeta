@@ -94,7 +94,7 @@ public class ReservasController {
     private void setListeners() {
     	setChangeHandler(this::listReservas);
     	reservaView.setBtnBuscarListener(e->listReservas());
-    	reservaView.getBtnVender().addClickListener(e-> openPasaVentaForm());
+    	reservaView.setBtnVenderListener(e-> venderReserva());
     }
 
     private void listReservas() {
@@ -149,8 +149,8 @@ public class ReservasController {
                  reservaView.getFechaFilter() != null;
     }
 
-    private void openPasaVentaForm() {
-    	Reserva reservaSeleccionada = this.reservaView.getGrid().asSingleSelect().getValue();
+    private void venderReserva() {
+    	Reserva reservaSeleccionada = reservaView.getReservaSeleccionada();
     	if (reservaSeleccionada != null) {
 	    	ventaFormController = new VentaFormController(reservaSeleccionada);
 			ventaFormController.getVentaReservaFormCompra().open();
