@@ -7,6 +7,7 @@ import com.tp.proyecto1.model.viajes.Destino;
 import com.tp.proyecto1.model.viajes.Transporte;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.VentaService;
+import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.ConfirmationDialog;
 import com.tp.proyecto1.utils.Inject;
@@ -32,6 +33,9 @@ public class VentasController {
 
     @Autowired
     private VentaService ventaService;
+    
+    @Autowired
+    private ViajeService viajeService;
 
     private ChangeHandler changeHandler;
     
@@ -61,7 +65,9 @@ public class VentasController {
         ConfirmationDialog confirmationDialog = new ConfirmationDialog("¿Realmente desea cancelar la Venta?");
         confirmationDialog.getConfirmButton().addClickListener(event -> {venta.inactivar();
             //venta.setFechaBaja(LocalDate.now());
-        //sumar pasajes
+	        Viaje viaje = venta.getViaje();
+			viaje.agregarPasajes(venta.getCantidadPasajes());
+			viajeService.save(viaje);
             ventaService.save(venta);
             Notification.show("Venta fue cancelada");
             changeHandler.onChange();
@@ -72,9 +78,9 @@ public class VentasController {
 
     private Button createRemoveButton(Venta venta) {
         Button botonEliminar = new Button(VaadinIcon.TRASH.create(), clickEvent -> deleteVenta(venta));
-//        if(!venta.isActivo()){
-//            botonEliminar.setEnabled(false);
-//        }
+        if(!venta.isActivo()){
+            botonEliminar.setEnabled(false);
+        }
         return botonEliminar;
     }
 
