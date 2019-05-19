@@ -139,7 +139,7 @@ public class ReservaForm extends Dialog{
 		btnCancel= new Button("Cancelar");
 		btnComprar= new Button("Comprar");
     	actions = new HorizontalLayout();
-        actions.add(btnSave, btnCancel, btnComprar);
+        actions.add(btnSave, btnCancel/*, btnComprar*/);//comente comprar ya que va a estar por ahora en la view de reservas
 	}
 
 	private void inicializarMainLayout() {

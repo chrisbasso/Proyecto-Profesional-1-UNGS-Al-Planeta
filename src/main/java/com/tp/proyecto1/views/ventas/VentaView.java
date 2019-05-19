@@ -4,6 +4,7 @@ import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.tp.proyecto1.utils.View;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -21,6 +22,7 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
     private DatePicker fechaFilter;
     private Button searchButton;
     private Button btnComprobante;
+	private Checkbox activosCheck;
 
 
     public VentaView() {
@@ -32,8 +34,6 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
 
     @Override
     public void setComponents() {
-
-
         this.numeroClienteFilter = new NumberField("Nº Cliente");
         this.paisFilter = new TextField("País");
         this.ciudadFilter = new TextField("Ciudad");
@@ -42,7 +42,9 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
         this.searchButton.setMinWidth("110px");
         this.btnComprobante = new Button("Exportar Comprobante");
         this.fechaFilter = new DatePicker("Fecha");
-
+        this.activosCheck = new Checkbox("Solo Activos");
+		this.activosCheck.setMinWidth("140px");
+		activosCheck.setValue(true);
     }
 
     @Override
@@ -51,7 +53,7 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
         HorizontalLayout hlSpace = new HorizontalLayout();
         this.hlFooter.add(btnComprobante);
         hlSpace.setWidthFull();
-        this.hlActions.add(numeroClienteFilter, paisFilter, ciudadFilter, codTransporteFilter,fechaFilter,hlSpace, searchButton);
+        this.hlActions.add(numeroClienteFilter, paisFilter, ciudadFilter, codTransporteFilter,fechaFilter,activosCheck, hlSpace, searchButton);
 
     }
 
@@ -124,4 +126,12 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
     public void setBtnComprobante(Button btnComprobante) {
         this.btnComprobante = btnComprobante;
     }
+
+	public Checkbox getActivosCheck() {
+		return activosCheck;
+	}
+
+	public void setActivosCheck(Checkbox activosCheck) {
+		this.activosCheck = activosCheck;
+	}
 }

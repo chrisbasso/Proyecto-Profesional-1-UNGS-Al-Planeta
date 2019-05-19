@@ -34,7 +34,9 @@ public class VentasController {
     private VentaService ventaService;
 
     private ChangeHandler changeHandler;
-
+    
+	private boolean isActivo;
+	
     public VentasController() {
         Inject.Inject(this);
         this.ventaView = new VentaView();
@@ -56,14 +58,15 @@ public class VentasController {
 
     private void deleteVenta(Venta venta) {
 
-//        ConfirmationDialog confirmationDialog = new ConfirmationDialog("¿Realmente desea cancelar la Venta?");
-//        confirmationDialog.getConfirmButton().addClickListener(event -> {venta.setActivo(false);
-//            cliente.setFechaBaja(LocalDate.now());
-//            clienteService.save(cliente);
-//            Notification.show("Venta fue cancelada");
-//            changeHandler.onChange();
-//        });
-//        confirmationDialog.open();
+        ConfirmationDialog confirmationDialog = new ConfirmationDialog("¿Realmente desea cancelar la Venta?");
+        confirmationDialog.getConfirmButton().addClickListener(event -> {venta.inactivar();
+            //venta.setFechaBaja(LocalDate.now());
+        //sumar pasajes
+            ventaService.save(venta);
+            Notification.show("Venta fue cancelada");
+            changeHandler.onChange();
+        });
+        confirmationDialog.open();
     }
 
 
@@ -120,12 +123,20 @@ public class VentasController {
         if(!ventaView.getFechaFilter().isEmpty()){
             venta.getViaje().setFechaSalida(ventaView.getFechaFilter().getValue());
         }
+        if (ventaView.getActivosCheck().getValue()) {
+        	venta.activar();
+        }
+        else {
+        	venta.inactivar();
+        }
+        
     }
 
     private boolean checkFiltros() {
         return !ventaView.getPaisFilter().isEmpty() || !ventaView.getCiudadFilter().isEmpty() ||
                 !ventaView.getCodTransporteFilter().isEmpty() || !ventaView.getNumeroClienteFilter().isEmpty() ||
-                 !ventaView.getFechaFilter().isEmpty();
+                 !ventaView.getFechaFilter().isEmpty() ||
+                 ventaView.getActivosCheck().getValue();
     }
 
     private void setChangeHandler(ChangeHandler h) {
@@ -139,4 +150,12 @@ public class VentasController {
 	public VentaView getView(){
         return ventaView;
     }
+
+	public boolean isActivo() {
+		return isActivo;
+	}
+
+	public void setActivo(boolean isActivo) {
+		this.isActivo = isActivo;
+	}
 }

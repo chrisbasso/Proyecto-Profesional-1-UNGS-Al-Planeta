@@ -141,7 +141,7 @@ public class PasajerosGridComponent extends VerticalLayout {
 		newPasajero.setVisible(false);
 		removeLastButton.setVisible(false);
 	}
-
+	
 	public Button getNewPasajero() {
 		return newPasajero;
 	}

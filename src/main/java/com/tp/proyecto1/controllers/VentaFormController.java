@@ -127,13 +127,16 @@ public class VentaFormController {
 		ventaForm.getBtnSave().addClickListener(e-> saveVenta(venta));//en el modo edit
 		ventaForm.getBtnCancel().addClickListener(e->ventaForm.close());
 		ventaForm.getBtnFinalizarCompra().addClickListener(e-> newVenta());//en el modo compra pasajes de viajes, y para reserva venta
-		ventaForm.getPasajerosGridComponent().getGrid().getEditor().addCloseListener(e-> gestionarPasajeros());
+		//ventaForm.getPasajerosGridComponent().getGrid().getEditor().addCloseListener(e-> this.modificarSaldoaPagar());
 		ventaForm.getFormaPago().addValueChangeListener(e-> validarCompra());
 		ventaForm.getCliente().getFiltro().addValueChangeListener(e-> validarCompra());
+		ventaForm.getPasajerosGridComponent().getRemoveLastButton().addClickListener(e-> this.modificarSaldoaPagar());
+		ventaForm.getPasajerosGridComponent().getNewPasajero().addClickListener(e-> this.modificarSaldoaPagar());
+		//ventaForm.getPasajerosGridComponent().getNewPasajero().addClickListener(e-> validarCantPasajes());
 	}
 	
 	//Incrementa o decrementa los campos de saldo a pagar y subtotal dependiendo la cant. de pasajeros
-	private void gestionarPasajeros() {
+	private void validarCantPasajes() {
 		//Si viene de una reserva
 		if (this.reserva !=null) {
 			if (this.cantPasajesReserva == this.ventaForm.getPasajerosGridComponent().getPasajerosList().size()) {
@@ -143,17 +146,22 @@ public class VentaFormController {
 				ventaForm.getPasajerosGridComponent().getNewPasajero().setEnabled(true);//este no sirve
 			}
 		}
-		else{
-			this.modificarSaldoaPagar();
-		}	
 		//validar que se pueda habilitar el boton de finalizar compra
 		this.validarCompra();
 	}
 	
 	private void modificarSaldoaPagar() {
-		Double precio = viaje.getPrecio();
-		ventaForm.getSaldoPagar().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
-		ventaForm.getSubtotal().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
+		if (this.reserva ==null) {
+			Double precio = viaje.getPrecio();
+			ventaForm.getSaldoPagar().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
+			ventaForm.getSubtotal().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
+
+			//validar que se pueda habilitar el boton de finalizar compra
+			this.validarCompra();
+		}
+		else {
+			this.validarCantPasajes();
+		}
 	}
 	
 	private void newVenta() {
@@ -228,7 +236,14 @@ public class VentaFormController {
 		ventaForm.getFechaSalida().setValue(venta.getViaje().getFechaSalida().toString());
 		ventaForm.getTransporte().setValue(venta.getViaje().getTransporte().getTipo().getDescripcion());
 		ventaForm.getCodTransporte().setValue(venta.getViaje().getTransporte().getCodTransporte());
-		ventaForm.getFormaPago().setValue(venta.getPagos().get(0).getFormaDePago());
+		
+		if(venta.getPagos().get(0).getFormaDePago() != null){
+			ventaForm.getFormaPago().setValue(venta.getPagos().get(0).getFormaDePago());
+		}
+		else {
+			ventaForm.getFormaPago().setValue(venta.getPagos().get(1).getFormaDePago());
+		}
+		
 		ventaForm.getSubtotal().setValue(venta.getImporteTotal());
 		ventaForm.getSaldoPagar().setValue(venta.getImporteTotal());
 		ventaForm.getCliente().getFiltro().setValue(venta.getCliente().getId().toString());
@@ -272,7 +287,7 @@ public class VentaFormController {
 	}
 	
 	public VentaForm getVentaReservaFormCompra() {
-		ventaForm.getPasajerosGridComponent().getRemoveLastButton().setEnabled(false);
+		ventaForm.getPasajerosGridComponent().getRemoveLastButton().setVisible(false);
 		ventaForm.getBtnSave().setVisible(false);
 		ventaForm.getBtnFinalizarCompra().setEnabled(false);
 		return ventaForm;

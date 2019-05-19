@@ -43,7 +43,8 @@ public class VentaForm extends Dialog {
 	private Button btnSave;
 	private Button btnCancel;
 	private Button btnFinalizarCompra;
-
+	
+	
 	public VentaForm() {
 
 		setComponents();
@@ -68,7 +69,6 @@ public class VentaForm extends Dialog {
 		formaPago = new ComboBox<>();
 		formaPago.setItemLabelGenerator(FormaDePago::getDescripcion);
 		descripcionCliente = new Label();
-
 		cliente = new BuscadorClientesComponent(descripcionCliente);
 //		cantidadPasaje = new NumberField();
 //		cantidadPasaje.setMin(1);
@@ -87,6 +87,7 @@ public class VentaForm extends Dialog {
 		subtotal.setPreventInvalidInput(true);
 		subtotal.setEnabled(false);
 		pasajerosGridComponent = new PasajerosGridComponent();
+		
 
 	}
 
@@ -118,7 +119,7 @@ public class VentaForm extends Dialog {
 		this.add(mainLayout);
 		this.setWidth("800px");
 		this.setHeight("100%");
-
+		this.setCloseOnOutsideClick(false);
 	}
 
 	public VerticalLayout getMainLayout() {
@@ -238,7 +239,7 @@ public class VentaForm extends Dialog {
 
 	public TextField getCodTransporte() {
 		return codTransporte;
-	}
+	}	
 
 	public void setCodTransporte(TextField codTransporte) {
 		this.codTransporte = codTransporte;
