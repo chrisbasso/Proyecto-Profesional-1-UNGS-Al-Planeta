@@ -95,7 +95,6 @@ public class ReservaForm extends Dialog{
     	codTransporte.setValue(viaje.getTransporte().getCodTransporte().toString());
     	transporte.setValue(viaje.getTransporte().getTipo().getDescripcion());
     	fechaDesde.setValue(viaje.getFechaSalida().toString());
-    	fechaHasta.setValue(viaje.getFechaLlegada().toString());
     	precioUnitario.setValue(viaje.getPrecio());
     	precioTotal.setValue(viaje.getPrecio());
     	saldoPagar.setValue(viaje.getPrecio());

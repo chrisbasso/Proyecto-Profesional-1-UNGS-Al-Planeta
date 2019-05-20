@@ -2,8 +2,10 @@ package com.tp.proyecto1.controllers;
 
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.services.ClienteService;
+import com.tp.proyecto1.services.TransaccionService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.ConfirmationDialog;
+import com.tp.proyecto1.utils.GenericDialog;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.clientes.ClientesView;
 import com.vaadin.flow.component.button.Button;
@@ -27,6 +29,9 @@ public class ClientesController {
 
 	@Autowired
 	private ClienteService clienteService;
+
+	@Autowired
+	private TransaccionService transaccionService;
 
 	private ChangeHandler changeHandler;
 
@@ -68,7 +73,10 @@ public class ClientesController {
 	}
 
 	private void deleteCliente(Cliente cliente) {
-
+		if(transaccionService.verificarTransaccionCliente(cliente)){
+			GenericDialog dialog = new GenericDialog("No puede dar de baja al cliente " + cliente.getId() + " debido a que posee viajes activos al día de la fecha");
+			return;
+		}
 		ConfirmationDialog confirmationDialog = new ConfirmationDialog("¿Realmente desea dar de baja al Cliente?");
 		confirmationDialog.getConfirmButton().addClickListener(event -> {cliente.setActivo(false);
 			cliente.setFechaBaja(LocalDate.now());

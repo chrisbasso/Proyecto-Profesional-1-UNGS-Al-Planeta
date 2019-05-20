@@ -15,6 +15,7 @@ import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.timepicker.TimePicker;
+import org.vaadin.gatanaso.MultiselectComboBox;
 
 public class ViajeForm extends Dialog {
 
@@ -28,10 +29,9 @@ public class ViajeForm extends Dialog {
     private TextField capacidad;
     private DatePicker fechaSalida;
     private TimePicker horaSalida;
-    private DatePicker fechaLlegada;
-    private TimePicker horaLlegada;
+
     private NumberField precio;
-    private ComboBox<TagDestino> tagDestino;
+    private MultiselectComboBox<TagDestino> tagDestino;
     private TextArea textAreaDescripcion;
     private TextArea textAreaRecomendaciones;
 
@@ -52,7 +52,7 @@ public class ViajeForm extends Dialog {
         btnCancel = new Button("Cancelar");
         transporte = new ComboBox<>();
         transporte.setItemLabelGenerator(TipoTransporte::getDescripcion);
-        tagDestino = new ComboBox<>();
+        tagDestino = new MultiselectComboBox<>();
         tagDestino.setItemLabelGenerator(TagDestino::getDescripcion);
         codTransporte = new TextField();
         clase = new TextField();
@@ -63,8 +63,7 @@ public class ViajeForm extends Dialog {
         pais = new TextField();
         fechaSalida = new DatePicker();
         horaSalida = new TimePicker();
-        fechaLlegada = new DatePicker();
-        horaLlegada = new TimePicker();
+
         precio = new NumberField();
         textAreaDescripcion = new TextArea("Descripción");
         textAreaRecomendaciones = new TextArea("Recomendaciones");
@@ -86,8 +85,7 @@ public class ViajeForm extends Dialog {
         form.addFormItem(ciudad, "Ciudad");
         form.addFormItem(fechaSalida, "Fecha Salida");
         form.addFormItem(horaSalida, "Hora Salida");
-        form.addFormItem(fechaLlegada, "Fecha Llegada");
-        form.addFormItem(horaLlegada, "Hora Llegada");
+
         form.addFormItem(transporte, "Transporte");
         form.addFormItem(codTransporte, "Cod. Transporte");
         form.addFormItem(clase, "Clase");
@@ -191,21 +189,7 @@ public class ViajeForm extends Dialog {
         this.horaSalida = horaSalida;
     }
 
-    public DatePicker getFechaLlegada() {
-        return fechaLlegada;
-    }
 
-    public void setFechaLlegada(DatePicker fechaLlegada) {
-        this.fechaLlegada = fechaLlegada;
-    }
-
-    public TimePicker getHoraLlegada() {
-        return horaLlegada;
-    }
-
-    public void setHoraLlegada(TimePicker horaLlegada) {
-        this.horaLlegada = horaLlegada;
-    }
 
     public NumberField getPrecio() {
         return precio;
@@ -239,11 +223,11 @@ public class ViajeForm extends Dialog {
         this.btnCancel = btnCancel;
     }
 
-    public ComboBox<TagDestino> getTagDestino() {
+    public MultiselectComboBox<TagDestino> getTagDestino() {
         return tagDestino;
     }
 
-    public void setTagDestino(ComboBox<TagDestino> tagDestino) {
+    public void setTagDestino(MultiselectComboBox<TagDestino> tagDestino) {
         this.tagDestino = tagDestino;
     }
 

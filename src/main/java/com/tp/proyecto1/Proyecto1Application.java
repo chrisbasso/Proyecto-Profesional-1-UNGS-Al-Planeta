@@ -1,6 +1,8 @@
 package com.tp.proyecto1;
 
 
+import com.tp.proyecto1.model.viajes.TagDestino;
+import com.tp.proyecto1.services.*;
 import com.vaadin.flow.component.UI;
 
 import java.util.HashSet;
@@ -23,11 +25,6 @@ import com.tp.proyecto1.repository.pasajes.ReservaRepository;
 import com.tp.proyecto1.repository.viajes.PromocionDescuentoRepository;
 import com.tp.proyecto1.repository.viajes.PromocionRepository;
 import com.tp.proyecto1.repository.pasajes.PasajeVentaRepository;
-import com.tp.proyecto1.services.ConfiguracionService;
-import com.tp.proyecto1.services.DestinoService;
-import com.tp.proyecto1.services.UserService;
-import com.tp.proyecto1.services.VentaService;
-import com.tp.proyecto1.services.ViajeService;
 
 
 @SpringBootApplication
@@ -52,7 +49,8 @@ public class Proyecto1Application {
 									  PasajeVentaRepository pasajeVentaRepository,
 									  PromocionRepository promocionRepository,
 									  DestinoService destinoService,
-									  ConfiguracionService configService
+									  ConfiguracionService configService,
+									  TagDestinoService tagDestinoService
 									  /*PromocionDescuentoRepository promocionDescuentosRepository,
 									  PromocionDescuentoRepository promocionPuntosRepository*/) {
 		return args -> {
@@ -72,6 +70,12 @@ public class Proyecto1Application {
 			ventaService.createFormaDePagoIfNotExist("Débito");
 			ventaService.createFormaDePagoIfNotExist("Crédito");
 			configService.createConfiguracionIfNotExist("reserva_fecha_maxima", "3");
+//			TagDestino tagPlaya = new TagDestino("Playa");
+//			TagDestino tagMontania = new TagDestino("Montaña");
+//			TagDestino tagEuropa = new TagDestino("Europa");
+//			tagDestinoService.save(tagPlaya);
+//			tagDestinoService.save(tagMontania);
+//			tagDestinoService.save(tagEuropa);
 /*
 			System.out.println(promocionRepository.findByViajesAfectados(viajeService.findAll().get(0)));
 			

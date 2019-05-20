@@ -1,10 +1,10 @@
 package com.tp.proyecto1.model.viajes;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import java.util.Objects;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import javax.persistence.*;
+import java.util.*;
 
 @Entity
 public class Destino {
@@ -18,17 +18,16 @@ public class Destino {
 
     private String recomendacion;
 
-    @OneToOne
-    private TagDestino tagDestino;
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<TagDestino> tagsDestino = new HashSet<>();
 
     public Destino() {
     }
 
-    public Destino(String ciudad, String pais, String recomendacion, TagDestino tagDestino) {
+    public Destino(String ciudad, String pais, String recomendacion) {
         this.ciudad = ciudad;
         this.pais = pais;
         this.recomendacion = recomendacion;
-        this.tagDestino = tagDestino;
     }
 
     public String getRecomendacion() {
@@ -39,12 +38,12 @@ public class Destino {
         this.recomendacion = recomendacion;
     }
 
-    public TagDestino getTagDestino() {
-        return tagDestino;
+    public Set<TagDestino> getTagsDestino() {
+        return tagsDestino;
     }
 
-    public void setTagDestino(TagDestino tagDestino) {
-        this.tagDestino = tagDestino;
+    public void setTagsDestino(Set<TagDestino> tagsDestino) {
+        this.tagsDestino = tagsDestino;
     }
 
     public Long getId() {

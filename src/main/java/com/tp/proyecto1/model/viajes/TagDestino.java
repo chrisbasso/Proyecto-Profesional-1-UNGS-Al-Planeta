@@ -3,7 +3,11 @@ package com.tp.proyecto1.model.viajes;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class TagDestino {
@@ -13,6 +17,7 @@ public class TagDestino {
     private Long id;
 
     private String descripcion;
+
 
     public TagDestino() {
     }
@@ -36,6 +41,7 @@ public class TagDestino {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
 
     @Override
     public boolean equals(Object o) {

@@ -20,8 +20,7 @@ public class Viaje {
 
 	private LocalDate fechaSalida;
 	private LocalTime horaSalida;
-	private LocalDate fechaLlegada;
-	private LocalTime horaLlegada;
+
 	private Double precio;
 	private String descripcion;
 	private boolean activo;
@@ -29,13 +28,11 @@ public class Viaje {
 	public Viaje() {
 	}
 
-	public Viaje(Destino destino, Transporte transporte, LocalDate fechaSalida, LocalTime horaSalida, LocalDate fechaLlegada, LocalTime horaLlegada, Double precio, String descripcion, boolean activo) {
+	public Viaje(Destino destino, Transporte transporte, LocalDate fechaSalida, LocalTime horaSalida, Double precio, String descripcion, boolean activo) {
 		this.destino = destino;
 		this.transporte = transporte;
 		this.fechaSalida = fechaSalida;
 		this.horaSalida = horaSalida;
-		this.fechaLlegada = fechaLlegada;
-		this.horaLlegada = horaLlegada;
 		this.precio = precio;
 		this.descripcion = descripcion;
 		this.activo = activo;
@@ -93,22 +90,6 @@ public class Viaje {
 		this.horaSalida = horaSalida;
 	}
 
-	public LocalDate getFechaLlegada() {
-		return fechaLlegada;
-	}
-
-	public void setFechaLlegada(LocalDate fechaLlegada) {
-		this.fechaLlegada = fechaLlegada;
-	}
-
-	public LocalTime getHoraLlegada() {
-		return horaLlegada;
-	}
-
-	public void setHoraLlegada(LocalTime horaLlegada) {
-		this.horaLlegada = horaLlegada;
-	}
-
 	public Double getPrecio() {
 		return precio;
 	}
@@ -144,15 +125,14 @@ public class Viaje {
 				Objects.equals(transporte, viaje.transporte) &&
 				Objects.equals(fechaSalida, viaje.fechaSalida) &&
 				Objects.equals(horaSalida, viaje.horaSalida) &&
-				Objects.equals(fechaLlegada, viaje.fechaLlegada) &&
-				Objects.equals(horaLlegada, viaje.horaLlegada) &&
+
 				Objects.equals(precio, viaje.precio) &&
 				Objects.equals(descripcion, viaje.descripcion);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, destino, transporte, fechaSalida, horaSalida, fechaLlegada, horaLlegada, precio, descripcion, activo);
+		return Objects.hash(id, destino, transporte, fechaSalida, horaSalida, precio, descripcion, activo);
 	}
 	
 	@Override

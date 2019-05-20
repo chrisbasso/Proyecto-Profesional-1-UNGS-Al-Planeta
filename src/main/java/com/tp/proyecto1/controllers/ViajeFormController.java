@@ -1,6 +1,7 @@
 package com.tp.proyecto1.controllers;
 
 import com.tp.proyecto1.model.viajes.*;
+import com.tp.proyecto1.services.TagDestinoService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
@@ -18,9 +19,11 @@ import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.vaadin.gatanaso.MultiselectComboBox;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.*;
 
 @Controller
 @UIScope
@@ -30,6 +33,9 @@ public class ViajeFormController {
 
     @Autowired
     private ViajeService viajeService;
+
+    @Autowired
+    private TagDestinoService tagDestinoService;
 
     private ChangeHandler changeHandler;
 
@@ -49,6 +55,7 @@ public class ViajeFormController {
 
     private void setComponents() {
         viajeForm.getTransporte().setItems(viajeService.findAllTipoTransportes());
+        viajeForm.getTagDestino().setItems(tagDestinoService.findAll());
     }
 
     private void setListeners() {
@@ -79,20 +86,20 @@ public class ViajeFormController {
         String ciudad = viajeForm.getCiudad().getValue();
         LocalDate fechaSalida = viajeForm.getFechaSalida().getValue();
         LocalTime horaSalida = viajeForm.getHoraSalida().getValue();
-        LocalDate fechaLlegada = viajeForm.getFechaLlegada().getValue();
-        LocalTime horaLlegada = viajeForm.getHoraLlegada().getValue();
         TipoTransporte tipoTransporte = viajeForm.getTransporte().getValue();
         String codTransporte = viajeForm.getCodTransporte().getValue();
         String clase = viajeForm.getClase().getValue();
         Integer capacidad = Integer.parseInt(viajeForm.getCapacidad().getValue());
         Double precio = viajeForm.getPrecio().getValue();
-        TagDestino tagDestino = viajeForm.getTagDestino().getValue();
+        Set<TagDestino> tagsDestino = new HashSet<>();
+        tagsDestino.addAll(viajeForm.getTagDestino().getSelectedItems());
         String descipcion = viajeForm.getTextAreaDescripcion().getValue();
         String recomendacion = viajeForm.getTextAreaRecomendaciones().getValue();
 
         Transporte transporte = new Transporte(codTransporte,tipoTransporte, capacidad, clase);
-        Destino destino = new Destino(ciudad, pais, recomendacion, tagDestino);
-        Viaje viaje = new Viaje(destino,transporte,fechaSalida,horaSalida,fechaLlegada,horaLlegada,precio,descipcion, true);
+        Destino destino = new Destino(ciudad, pais, recomendacion);
+        destino.getTagsDestino().addAll(tagsDestino);
+        Viaje viaje = new Viaje(destino,transporte,fechaSalida,horaSalida,precio,descipcion, true);
 
         return viaje;
     }
@@ -111,14 +118,12 @@ public class ViajeFormController {
         setBinderFieldDestino(viajeForm.getCiudad(), Destino::getCiudad, Destino::setCiudad, true);
         setBinderDatePickerViaje(viajeForm.getFechaSalida(), Viaje::getFechaSalida, Viaje::setFechaSalida, true);
         setBinderTimePickerViaje(viajeForm.getHoraSalida(), Viaje::getHoraSalida, Viaje::setHoraSalida, true);
-        setBinderDatePickerViaje(viajeForm.getFechaLlegada(), Viaje::getFechaLlegada, Viaje::setFechaLlegada, true);
-        setBinderTimePickerViaje(viajeForm.getHoraLlegada(), Viaje::getHoraLlegada, Viaje::setHoraLlegada, true);
         setBinderComboTipoTransporte(viajeForm.getTransporte(), Transporte::getTipo, Transporte::setTipo, true);
         setBinderFieldTransporte(viajeForm.getCodTransporte(), Transporte::getCodTransporte, Transporte::setCodTransporte, true);
         setBinderFieldTransporte(viajeForm.getClase(), Transporte::getClase, Transporte::setClase, true);
         setBinderFieldIntegerTransporte(viajeForm.getCapacidad(), Transporte::getCapacidad, Transporte::setCapacidad, true);
         setBinderFieldDoubleViaje(viajeForm.getPrecio(), Viaje::getPrecio, Viaje::setPrecio, true);
-        setBinderComboTagDestino(viajeForm.getTagDestino(), Destino::getTagDestino, Destino::setTagDestino, false);
+        setBinderComboTagDestino(viajeForm.getTagDestino(), Destino::getTagsDestino, Destino::setTagsDestino, false);
         setBinderFieldDestino(viajeForm.getTextAreaRecomendaciones(), Destino::getRecomendacion, Destino::setRecomendacion, false);
         setBinderFieldViaje(viajeForm.getTextAreaDescripcion(), Viaje::getDescripcion, Viaje::setDescripcion, false);
 
@@ -214,17 +219,12 @@ public class ViajeFormController {
         viajeForm.getBtnSave().addClickListener(event -> binding.validate());
     }
 
-    private void setBinderComboTagDestino(ComboBox combo, ValueProvider<Destino, TagDestino> valueProvider, Setter<Destino, TagDestino> setter, boolean isRequiered){
+    private void setBinderComboTagDestino(MultiselectComboBox combo, ValueProvider<Destino, Set<TagDestino>> valueProvider, Setter<Destino, Set<TagDestino>> setter, boolean isRequiered){
 
-        SerializablePredicate<TagDestino> predicate = value -> combo.getValue() != null;
-        Binder.Binding<Destino, TagDestino> binding;
-        if(isRequiered){
-            binding = binderDestino.forField(combo)
-                    .withValidator(predicate, "El campo es obligatorio")
-                    .bind(valueProvider, setter);
-        }else{
-            binding = binderDestino.forField(combo).bind(valueProvider, setter);
-        }
+        Binder.Binding<Destino, Set<TagDestino>> binding;
+
+        binding = binderDestino.forField(combo).bind(valueProvider, setter);
+
         viajeForm.getBtnSave().addClickListener(event -> binding.validate());
     }
 
