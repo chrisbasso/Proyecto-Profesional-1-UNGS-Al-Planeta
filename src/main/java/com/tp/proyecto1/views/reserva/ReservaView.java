@@ -70,10 +70,6 @@ public class ReservaView extends FilterGridLayout<Reserva> {
     	grid.addComponentColumn(e).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);    	
     }
     
-	public Grid<Reserva> getGrid() {
-		return grid;
-	}
-
     public Long getNumeroClienteFilter() {
     	Long idCliente = 0L;
     	if(numeroClienteFilter.getValue() != null) {
@@ -117,6 +113,10 @@ public class ReservaView extends FilterGridLayout<Reserva> {
     public void cargarReservas(List <Reserva> reservas) {
     	grid.setItems(reservas);
     }
+    
+    public Reserva getReservaSeleccionada() {
+    	return grid.asSingleSelect().getValue();
+    }
 
     public void setBtnBuscarListener(ComponentEventListener<ClickEvent<Button>> e) {
         btnBuscar.addClickListener(e);
@@ -126,13 +126,7 @@ public class ReservaView extends FilterGridLayout<Reserva> {
         btnComprobante.addClickListener(e);
     }
 
-	public Button getBtnVender() {
-		return btnVender;
-	}
-
-	public void setBtnVender(Button btnVender) {
-		this.btnVender = btnVender;
-	}
-    
-    
+    public void setBtnVenderListener(ComponentEventListener<ClickEvent<Button>> e) {
+        btnVender.addClickListener(e);
+    }
 }

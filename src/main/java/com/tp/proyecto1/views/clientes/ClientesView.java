@@ -23,7 +23,8 @@ public class ClientesView extends FilterGridLayout<Cliente> {
 	private Button searchButton;
 	private Button newClientButton;
 	private Button btnHistorialEventos;
-
+	private Button btnHistorialPuntos;
+	
 	public ClientesView() {
 		super(Cliente.class);
 		setComponents();
@@ -33,6 +34,7 @@ public class ClientesView extends FilterGridLayout<Cliente> {
 
 	private void setComponents() {
 		this.btnHistorialEventos = new Button("Historico Eventos");
+		this.btnHistorialPuntos = new Button("Historico Puntos");
 		this.idFilter = new NumberField();
 		this.nameFilter = new TextField();
 		this.lastNameFilter = new TextField();
@@ -53,7 +55,7 @@ public class ClientesView extends FilterGridLayout<Cliente> {
 	private void setLayout() {
 		HorizontalLayout hlSpace = new HorizontalLayout();
 		hlSpace.setWidthFull();
-		this.hlFooter.add(btnHistorialEventos);
+		this.hlFooter.add(btnHistorialEventos,btnHistorialPuntos);
 		this.hlActions.add(idFilter, nameFilter, lastNameFilter, dniFilter,activosCheck,hlSpace, searchButton, newClientButton);
 	}
 
@@ -140,6 +142,14 @@ public class ClientesView extends FilterGridLayout<Cliente> {
 
 	public void setBtnHistorialEventos(Button btnHistorialEventos) {
 		this.btnHistorialEventos = btnHistorialEventos;
+	}
+
+	public Button getBtnHistorialPuntos() {
+		return btnHistorialPuntos;
+	}
+
+	public void setBtnHistorialPuntos(Button btnHistorialPuntos) {
+		this.btnHistorialPuntos = btnHistorialPuntos;
 	}
 }
 

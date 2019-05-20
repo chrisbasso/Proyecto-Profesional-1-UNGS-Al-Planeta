@@ -53,6 +53,7 @@ public class ClientesController {
 		clientesView.getNewClientButton().addClickListener(e-> openNewClienteForm());
 		clientesView.getSearchButton().addClickListener(e-> listClientes());
 		clientesView.getBtnHistorialEventos().addClickListener(e->openHistorialEventos());
+		clientesView.getBtnHistorialPuntos().addClickListener(e->openHistorialPuntos());
 	}
 
 	private void openHistorialEventos() {
@@ -60,6 +61,17 @@ public class ClientesController {
 		Optional<Cliente> clienteSeleccionado = clientesView.getGrid().asSingleSelect().getOptionalValue();
 		if(clienteSeleccionado.isPresent()){
 			EventosClienteWindowController historico = new EventosClienteWindowController(clienteSeleccionado.get());
+			historico.getView().open();
+		}else{
+			Notification.show("Debe seleccionar un cliente");
+		}
+	}
+	
+	private void openHistorialPuntos()
+	{
+		Optional<Cliente> clienteSeleccionado = clientesView.getGrid().asSingleSelect().getOptionalValue();
+		if(clienteSeleccionado.isPresent()){
+			HistorialPuntosClienteWindowController historico = new HistorialPuntosClienteWindowController(clienteSeleccionado.get());
 			historico.getView().open();
 		}else{
 			Notification.show("Debe seleccionar un cliente");
