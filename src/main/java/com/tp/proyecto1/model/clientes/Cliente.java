@@ -6,6 +6,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.tp.proyecto1.model.lotePunto.LotePunto;
+import com.tp.proyecto1.model.pasajes.Pago;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -51,6 +52,10 @@ public class Cliente extends Persona{
 		this.fechaAlta = fechaAlta;
 	}
 
+	public void agregarPuntos(LotePunto lotePunto) {
+		puntos.add(lotePunto);
+	}
+	
 	public Long getId() {
 		return id;
 	}

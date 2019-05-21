@@ -39,9 +39,9 @@ public class VentasController {
 
     private ChangeHandler changeHandler;
     
-	private boolean isActivo;
-	
-    public VentasController() {
+    private Venta ventaBorrar;
+    
+	public VentasController() {
         Inject.Inject(this);
         this.ventaView = new VentaView();
         setListeners();
@@ -60,30 +60,67 @@ public class VentasController {
     	ventaView.getSearchButton().addClickListener(e->listVentas());
     }
 
-    private void deleteVenta(Venta venta) {
-
-        ConfirmationDialog confirmationDialog = new ConfirmationDialog("¿Realmente desea cancelar la Venta?");
-        confirmationDialog.getConfirmButton().addClickListener(event -> {venta.inactivar();
-            //venta.setFechaBaja(LocalDate.now());
-	        Viaje viaje = venta.getViaje();
-			viaje.agregarPasajes(venta.getCantidadPasajes());
-			viajeService.save(viaje);
-            ventaService.save(venta);
-            Notification.show("Venta fue cancelada");
-            changeHandler.onChange();
-        });
-        confirmationDialog.open();
-    }
-
-
-    private Button createRemoveButton(Venta venta) {
-        Button botonEliminar = new Button(VaadinIcon.TRASH.create(), clickEvent -> deleteVenta(venta));
+	private Button createRemoveButton(Venta venta) {
+        Button botonEliminar = new Button(VaadinIcon.TRASH.create(), clickEvent -> borrarVenta(venta));
         if(!venta.isActivo()){
             botonEliminar.setEnabled(false);
         }
         return botonEliminar;
     }
-
+	
+	  private void borrarVenta(Venta venta) {
+		  	ventaBorrar = venta;
+	        ConfirmationDialog confirmationDialog = new ConfirmationDialog("¿Realmente desea cancelar la Venta?");
+	        confirmationDialog.getConfirmButton().addClickListener(event -> {ventaBorrar.inactivar();
+		        Viaje viaje = ventaBorrar.getViaje();
+				viaje.agregarPasajes(ventaBorrar.getCantidadPasajes());
+				
+				LocalDate fechaSalida = viaje.getFechaSalida();
+				Double importeTotalOriginal = ventaBorrar.getImporteTotal();
+				Double importeCancelacion = calcularImporteCancelacion(fechaSalida, importeTotalOriginal );
+				ventaBorrar.setImporteTotal(importeCancelacion);
+				
+				viajeService.save(viaje);
+	            ventaService.save(ventaBorrar);
+	            if (importeCancelacion == 0.0) {
+	            	Notification.show("La Venta fue cancelada, se le reintegra el total al cliente " +ventaBorrar.getCliente().getNombreyApellido());
+	            }
+	            else {
+	            	Double reintegro = importeTotalOriginal - importeCancelacion;
+	            	Notification.show("La Venta fue cancelada, se le reintegra "+ reintegro + " al cliente " +ventaBorrar.getCliente().getNombreyApellido());
+	            }
+	            changeHandler.onChange();
+	        });
+	        confirmationDialog.open();
+	    }
+	
+	private Double calcularImporteCancelacion(LocalDate fechaSalida, Double importeTotal) {
+		Double importeCancelacion = 0.0;
+		LocalDate fechaActual = LocalDate.now();
+		int cantDiasRestantes = fechaSalida.compareTo(fechaActual);
+			if (cantDiasRestantes< 5 && cantDiasRestantes >= 0 ) {
+				switch (cantDiasRestantes) {
+					case 4:
+						importeCancelacion = (importeTotal * 0.2 );
+						break;
+					case 3:
+						importeCancelacion = (importeTotal * 0.4 );
+						break;
+					case 2:
+						importeCancelacion = (importeTotal * 0.6 );
+						break;
+					case 1:
+						importeCancelacion = (importeTotal * 0.8 );
+						break;
+					case 0:
+						importeCancelacion = importeTotal;
+						break;
+				}
+			}
+		
+		return importeCancelacion;
+	}
+	
     private Button createEditButton(Venta venta) {
         return new Button(VaadinIcon.EDIT.create(), clickEvent -> {
             ventaFormController = new VentaFormController(venta.getViaje());
@@ -156,12 +193,4 @@ public class VentasController {
 	public VentaView getView(){
         return ventaView;
     }
-
-	public boolean isActivo() {
-		return isActivo;
-	}
-
-	public void setActivo(boolean isActivo) {
-		this.isActivo = isActivo;
-	}
 }

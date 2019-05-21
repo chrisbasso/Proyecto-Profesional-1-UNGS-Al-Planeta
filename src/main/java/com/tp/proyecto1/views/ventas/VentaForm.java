@@ -68,8 +68,10 @@ public class VentaForm extends Dialog {
 		btnCancel = new Button("Cancelar");
 		formaPago = new ComboBox<>();
 		formaPago.setItemLabelGenerator(FormaDePago::getDescripcion);
+		formaPago.setRequired(true);;
 		descripcionCliente = new Label();
 		cliente = new BuscadorClientesComponent(descripcionCliente);
+		cliente.getFiltro().setRequired(true);
 //		cantidadPasaje = new NumberField();
 //		cantidadPasaje.setMin(1);
 //		cantidadPasaje.setMax(6);
@@ -78,6 +80,7 @@ public class VentaForm extends Dialog {
 		usoPuntosCheck = new Checkbox("Uso de Puntos");
 		usoPuntosCheck.setValue(true);
 		usoPuntosCheck.setMinWidth("135px");
+		usoPuntosCheck.setEnabled(false);
 		saldoPagar = new NumberField();
 		saldoPagar.setPrefixComponent(new Span("$"));
 		saldoPagar.setPreventInvalidInput(true);
