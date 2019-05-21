@@ -157,7 +157,7 @@ public class ReservasController {
 			ventaFormController.setChangeHandler(this::listReservas);
     	}
     	else {
-    			Notification.show("Seleccione un Viaje");
+    			Notification.show("Seleccione un Venta");
     	}
 	}
     

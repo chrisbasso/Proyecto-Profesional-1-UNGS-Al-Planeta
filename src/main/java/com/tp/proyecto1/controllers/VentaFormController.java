@@ -74,6 +74,14 @@ public class VentaFormController {
 		this.setComponents();
 		this.setComponentesLectura(this.reserva.getViaje()); 		
 	}
+	
+	/*public VentaFormController(Venta ventaModificar) {
+		Inject.Inject(this);
+		this.venta = ventaModificar;
+		this.ventaForm = new VentaForm();
+		//this.setComponentsValues(this.venta);
+		this.setComponentesLectura(this.venta.getViaje());
+	}*/
 
 
 	private void setComponentesLectura(Viaje viaje) {
@@ -172,7 +180,7 @@ public class VentaFormController {
             this.reservaService.save(reserva);
         }
         changeHandler.onChange();
-        Notification.show("PasajeVenta Guardada");		
+        Notification.show("PasajeVenta comprado");		
 	}
 
 	private void saveVenta(Venta venta) {
