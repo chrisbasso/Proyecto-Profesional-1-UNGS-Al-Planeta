@@ -1,7 +1,5 @@
 package com.tp.proyecto1.model.viajes;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.*;
@@ -18,8 +16,8 @@ public class Destino {
 
     private String recomendacion;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<TagDestino> tagsDestino = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<TagDestino> tagsDestino;
 
     public Destino() {
     }
@@ -77,14 +75,16 @@ public class Destino {
         Destino destino = (Destino) o;
         return Objects.equals(id, destino.id) &&
                 Objects.equals(ciudad, destino.ciudad) &&
-                Objects.equals(pais, destino.pais);
+                Objects.equals(pais, destino.pais) &&
+                Objects.equals(recomendacion, destino.recomendacion) &&
+                Objects.equals(tagsDestino, destino.tagsDestino);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, ciudad, pais);
+        return Objects.hash(id, ciudad, pais, recomendacion, tagsDestino);
     }
-    
+
     @Override
     public String toString()
     {

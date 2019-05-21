@@ -21,6 +21,9 @@ public class Viaje {
 	private LocalDate fechaSalida;
 	private LocalTime horaSalida;
 
+	private Integer duracionDias;
+	private Integer duracionHoras;
+
 	private Double precio;
 	private String descripcion;
 	private boolean activo;
@@ -60,6 +63,22 @@ public class Viaje {
 	
 	public Destino getDestino() {
 		return destino;
+	}
+
+	public Integer getDuracionDias() {
+		return duracionDias;
+	}
+
+	public void setDuracionDias(Integer duracionDias) {
+		this.duracionDias = duracionDias;
+	}
+
+	public Integer getDuracionHoras() {
+		return duracionHoras;
+	}
+
+	public void setDuracionHoras(Integer duracionHoras) {
+		this.duracionHoras = duracionHoras;
 	}
 
 	public void setDestino(Destino destino) {

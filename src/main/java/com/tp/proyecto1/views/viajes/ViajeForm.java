@@ -31,6 +31,8 @@ public class ViajeForm extends Dialog {
     private TimePicker horaSalida;
 
     private NumberField precio;
+    private NumberField cantidadDias;
+    private NumberField cantidadHoras;
     private MultiselectComboBox<TagDestino> tagDestino;
     private TextArea textAreaDescripcion;
     private TextArea textAreaRecomendaciones;
@@ -39,11 +41,9 @@ public class ViajeForm extends Dialog {
     private Button btnCancel;
 
     public ViajeForm() {
-
         setComponents();
         setForm();
         setLayouts();
-
     }
 
     private void setComponents() {
@@ -63,7 +63,16 @@ public class ViajeForm extends Dialog {
         pais = new TextField();
         fechaSalida = new DatePicker();
         horaSalida = new TimePicker();
-
+        cantidadDias = new NumberField();
+        cantidadDias.setMin(0);
+        cantidadDias.setHasControls(true);
+        cantidadDias.setValue(0.0);
+        cantidadHoras = new NumberField();
+        cantidadHoras.setValue(1d);
+        cantidadHoras.setMin(0);
+        cantidadHoras.setValue(0.0);
+        cantidadHoras.setMax(23);
+        cantidadHoras.setHasControls(true);
         precio = new NumberField();
         textAreaDescripcion = new TextArea("Descripción");
         textAreaRecomendaciones = new TextArea("Recomendaciones");
@@ -85,7 +94,8 @@ public class ViajeForm extends Dialog {
         form.addFormItem(ciudad, "Ciudad");
         form.addFormItem(fechaSalida, "Fecha Salida");
         form.addFormItem(horaSalida, "Hora Salida");
-
+        form.addFormItem(cantidadDias, "Días");
+        form.addFormItem(cantidadHoras, "Horas");
         form.addFormItem(transporte, "Transporte");
         form.addFormItem(codTransporte, "Cod. Transporte");
         form.addFormItem(clase, "Clase");
@@ -189,7 +199,21 @@ public class ViajeForm extends Dialog {
         this.horaSalida = horaSalida;
     }
 
+    public NumberField getCantidadDias() {
+        return cantidadDias;
+    }
 
+    public void setCantidadDias(NumberField cantidadDias) {
+        this.cantidadDias = cantidadDias;
+    }
+
+    public NumberField getCantidadHoras() {
+        return cantidadHoras;
+    }
+
+    public void setCantidadHoras(NumberField cantidadHoras) {
+        this.cantidadHoras = cantidadHoras;
+    }
 
     public NumberField getPrecio() {
         return precio;

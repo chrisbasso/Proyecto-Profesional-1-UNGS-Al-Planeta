@@ -1,9 +1,6 @@
 package com.tp.proyecto1.model.viajes;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -17,6 +14,9 @@ public class TagDestino {
     private Long id;
 
     private String descripcion;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Destino> destinos;
 
 
     public TagDestino() {
@@ -42,18 +42,26 @@ public class TagDestino {
         this.descripcion = descripcion;
     }
 
+	public Set<Destino> getDestinos() {
+		return destinos;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        TagDestino that = (TagDestino) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(descripcion, that.descripcion);
-    }
+	public void setDestinos(Set<Destino> destinos) {
+		this.destinos = destinos;
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, descripcion);
-    }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		TagDestino that = (TagDestino) o;
+		return Objects.equals(id, that.id) &&
+				Objects.equals(descripcion, that.descripcion) &&
+				Objects.equals(destinos, that.destinos);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, descripcion, destinos);
+	}
 }

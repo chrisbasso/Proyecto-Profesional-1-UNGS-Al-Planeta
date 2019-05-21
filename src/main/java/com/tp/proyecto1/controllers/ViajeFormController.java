@@ -10,9 +10,13 @@ import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.Result;
 import com.vaadin.flow.data.binder.Setter;
+import com.vaadin.flow.data.binder.ValueContext;
+import com.vaadin.flow.data.converter.Converter;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.function.SerializablePredicate;
 import com.vaadin.flow.function.ValueProvider;
@@ -81,7 +85,6 @@ public class ViajeFormController {
     }
 
     private Viaje setNewViaje() {
-
         String pais = viajeForm.getPais().getValue();
         String ciudad = viajeForm.getCiudad().getValue();
         LocalDate fechaSalida = viajeForm.getFechaSalida().getValue();
@@ -95,12 +98,15 @@ public class ViajeFormController {
         tagsDestino.addAll(viajeForm.getTagDestino().getSelectedItems());
         String descipcion = viajeForm.getTextAreaDescripcion().getValue();
         String recomendacion = viajeForm.getTextAreaRecomendaciones().getValue();
-
+        Integer cantidadDias = viajeForm.getCantidadDias().getValue().intValue();
+        Integer cantidadHoras = viajeForm.getCantidadHoras().getValue().intValue();
         Transporte transporte = new Transporte(codTransporte,tipoTransporte, capacidad, clase);
         Destino destino = new Destino(ciudad, pais, recomendacion);
+        destino.setTagsDestino(new HashSet<>());
         destino.getTagsDestino().addAll(tagsDestino);
         Viaje viaje = new Viaje(destino,transporte,fechaSalida,horaSalida,precio,descipcion, true);
-
+		viaje.setDuracionDias(cantidadDias);
+		viaje.setDuracionHoras(cantidadHoras);
         return viaje;
     }
 
@@ -123,6 +129,8 @@ public class ViajeFormController {
         setBinderFieldTransporte(viajeForm.getClase(), Transporte::getClase, Transporte::setClase, true);
         setBinderFieldIntegerTransporte(viajeForm.getCapacidad(), Transporte::getCapacidad, Transporte::setCapacidad, true);
         setBinderFieldDoubleViaje(viajeForm.getPrecio(), Viaje::getPrecio, Viaje::setPrecio, true);
+        setBinderFieldIntegerViaje(viajeForm.getCantidadDias(), Viaje::getDuracionDias, Viaje::setDuracionDias, false);
+        setBinderFieldIntegerViaje(viajeForm.getCantidadHoras(), Viaje::getDuracionHoras, Viaje::setDuracionHoras, false);
         setBinderComboTagDestino(viajeForm.getTagDestino(), Destino::getTagsDestino, Destino::setTagsDestino, false);
         setBinderFieldDestino(viajeForm.getTextAreaRecomendaciones(), Destino::getRecomendacion, Destino::setRecomendacion, false);
         setBinderFieldViaje(viajeForm.getTextAreaDescripcion(), Viaje::getDescripcion, Viaje::setDescripcion, false);
@@ -130,7 +138,23 @@ public class ViajeFormController {
         binderViaje.setBean(viaje);
     }
 
-    private void setBinderFieldViaje(AbstractField field, ValueProvider<Viaje, String> valueProvider, Setter<Viaje, String> setter, boolean isRequiered){
+	private void setBinderFieldIntegerViaje(AbstractField field, ValueProvider<Viaje, Integer> valueProvider, Setter<Viaje, Integer> setter, boolean isRequiered){
+
+		SerializablePredicate<Integer> predicate = value -> !field.isEmpty();
+		Binder.Binding<Viaje, Integer> binding;
+
+		if(isRequiered){
+			binding = binderViaje.forField(field)
+					.withValidator(predicate, "El campo es obligatorio")
+					.withConverter((new DoubleToIntegerConverter()))
+					.bind(valueProvider, setter);
+		}else{
+			binding = binderViaje.forField(field).withConverter((new DoubleToIntegerConverter())).bind(valueProvider, setter);
+		}
+		viajeForm.getBtnSave().addClickListener(event -> binding.validate());
+	}
+
+	private void setBinderFieldViaje(AbstractField field, ValueProvider<Viaje, String> valueProvider, Setter<Viaje, String> setter, boolean isRequiered){
 
         SerializablePredicate<String> predicate = value -> !field.isEmpty();
         Binder.Binding<Viaje, String> binding;
@@ -180,12 +204,28 @@ public class ViajeFormController {
         if(isRequiered){
             binding = binderTransporte.forField(field)
                     .withValidator(predicate, "El campo es obligatorio")
-                    .withConverter(new StringToIntegerConverter("Debe ingresar un numero"))
+                    .withConverter(new StringToIntegerConverter(""))
                     .bind(valueProvider, setter);
         }else{
-            binding = binderTransporte.forField(field).bind(valueProvider, setter);
+            binding = binderTransporte.forField(field).withConverter(new StringToIntegerConverter("")).bind(valueProvider, setter);
         }
         viajeForm.getBtnSave().addClickListener(event -> binding.validate());
+    }
+
+    public class DoubleToIntegerConverter implements Converter<Double, Integer> {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public Result<Integer> convertToModel(Double presentation, ValueContext valueContext) {
+            return Result.ok(presentation.intValue());
+        }
+
+        @Override
+        public Double convertToPresentation(Integer model, ValueContext valueContext) {
+            return model.doubleValue();
+        }
+
     }
 
     private void setBinderFieldDestino(AbstractField field, ValueProvider<Destino, String> valueProvider, Setter<Destino, String> setter, boolean isRequiered){
