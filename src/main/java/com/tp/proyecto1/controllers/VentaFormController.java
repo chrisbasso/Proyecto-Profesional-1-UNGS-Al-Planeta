@@ -10,6 +10,7 @@ import com.tp.proyecto1.utils.Inject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
 import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.model.lotePunto.LotePunto;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.services.ReservaService;
@@ -75,15 +76,6 @@ public class VentaFormController {
 		this.setComponentesLectura(this.reserva.getViaje()); 		
 	}
 	
-	/*public VentaFormController(Venta ventaModificar) {
-		Inject.Inject(this);
-		this.venta = ventaModificar;
-		this.ventaForm = new VentaForm();
-		//this.setComponentsValues(this.venta);
-		this.setComponentesLectura(this.venta.getViaje());
-	}*/
-
-
 	private void setComponentesLectura(Viaje viaje) {
 		ventaForm.getPais().setValue(viaje.getDestino().getPais());
 		ventaForm.getCiudad().setValue(viaje.getDestino().getCiudad());
@@ -135,7 +127,6 @@ public class VentaFormController {
 		ventaForm.getBtnSave().addClickListener(e-> saveVenta(venta));//en el modo edit
 		ventaForm.getBtnCancel().addClickListener(e->ventaForm.close());
 		ventaForm.getBtnFinalizarCompra().addClickListener(e-> newVenta());//en el modo compra pasajes de viajes, y para reserva venta
-		//ventaForm.getPasajerosGridComponent().getGrid().getEditor().addCloseListener(e-> this.modificarSaldoaPagar());
 		ventaForm.getFormaPago().addValueChangeListener(e-> validarCompra());
 		ventaForm.getCliente().getFiltro().addValueChangeListener(e-> validarCompra());
 		ventaForm.getPasajerosGridComponent().getRemoveLastButton().addClickListener(e-> this.modificarSaldoaPagar());
@@ -180,21 +171,19 @@ public class VentaFormController {
             this.reservaService.save(reserva);
         }
         changeHandler.onChange();
-        Notification.show("PasajeVenta comprado");		
+        Notification.show("PasajeVenta comprado. Lote de puntos consequidos");		
 	}
 
 	private void saveVenta(Venta venta) {
 
             ventaService.save(venta);
             ventaForm.close();
-            
-            //agregar el lote de puntos con el id del cliente(calculo de puntos)cada 1000, 100 ptos para la  PROX VERSIOON O LA DE PUNTOS!!!!!!!!!!!!!!!!!
             Notification.show("PasajeVenta Guardado");
             changeHandler.onChange();
 	}
 	
 	private Venta setNewVenta() {
-
+		Double precioTotal;
 		Venta venta = new Venta();
 
 		Cliente cliente = ventaForm.getCliente().getCliente();
@@ -212,23 +201,34 @@ public class VentaFormController {
 			venta.agregarPago(pagoVenta);
 			
 			this.viaje = reserva.getViaje();
+			
+			precioTotal = reserva.getImporteTotal();
 		}
 		else {
 				pagoVenta = new Pago(venta, formaPago, viaje.getPrecio(),  LocalDate.now());//tiro null pointer al hacer la prueba q esta en la hoja
 				venta.agregarPago(pagoVenta);
+				
+				precioTotal = ventaForm.getSaldoPagar().getValue();
 			}
 		
 		ventaForm.getPasajerosGridComponent().getPasajerosList().stream().forEach(pasajero->{
 			PasajeVenta pasajeVenta = new PasajeVenta(viaje, cliente);
 			pasajeVenta.setPasajero(pasajero);
 			venta.getPasajes().add(pasajeVenta);
-		});
-		
+		});		
 		viaje.restarPasajes(venta.getPasajes().size());
 		venta.setViaje(viaje);
 		viajeService.save(viaje);
 		
-		venta.setImporteTotal(viaje.getPrecio());//si es el caso que viene de reserva le paso igual el importe total, sino faltaria un campo en que diga importeVenta/parcial
+		
+		Integer cantPuntos =  precioTotal.intValue()/10;
+		
+		LotePunto  lotePunto = new LotePunto(LocalDate.now(), null, cantPuntos , true, cantPuntos, cliente);
+		cliente.agregarPuntos(lotePunto);
+		venta.setCliente(cliente);
+		clienteService.save(cliente);
+		
+		venta.setImporteTotal(precioTotal);//si es el caso que viene de reserva le paso igual el importe total, sino faltaria un campo en que diga importeVenta/parcial
 
 		return venta;
 	}
