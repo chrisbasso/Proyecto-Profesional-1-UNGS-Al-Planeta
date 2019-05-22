@@ -3,6 +3,7 @@ package com.tp.proyecto1;
 import com.tp.proyecto1.controllers.*;
 import com.tp.proyecto1.controllers.reserva.ReservasController;
 
+import com.tp.proyecto1.views.reportes.ReportesView;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tp.proyecto1.model.users.User;
@@ -88,7 +89,6 @@ public class MainView extends VerticalLayout {
 		mainLayout.add(appLayout);
 		menu = appLayout.createMenu();
 
-
 		menu.addMenuItems(
 				new AppLayoutMenuItem(VaadinIcon.AIRPLANE.create(),"Viajes",e->openViajesView()),
 				new AppLayoutMenuItem(VaadinIcon.CALENDAR.create(),"Promociones",e->openPromocionesView()),
@@ -97,6 +97,7 @@ public class MainView extends VerticalLayout {
 				new AppLayoutMenuItem(VaadinIcon.GROUP.create(),"Clientes", e -> openClientesView()),
 				new AppLayoutMenuItem(VaadinIcon.PHONE.create(),"Eventos", e -> openEventosView()),
 				new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Contabilidad"),
+				new AppLayoutMenuItem(VaadinIcon.CHART_3D.create(), "Reportes", e-> openReportesView()),
 				new AppLayoutMenuItem(VaadinIcon.COGS.create(),"Configuración")
 		);
 
@@ -106,6 +107,10 @@ public class MainView extends VerticalLayout {
 
 		//Cargamos la lista de viajes en la página inicial
 		openViajesView();
+	}
+
+	private void openReportesView() {
+		appLayout.setContent(new ReportesView());
 	}
 
 	private HorizontalLayout getLogo() {
