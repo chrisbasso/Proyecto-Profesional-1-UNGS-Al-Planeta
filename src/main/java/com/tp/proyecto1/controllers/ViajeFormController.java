@@ -54,13 +54,22 @@ public class ViajeFormController {
     }
 
     private void setComponents() {
+        viajeForm.getPais().setItems(viajeService.findAllPaises());
         viajeForm.getTransporte().setItems(viajeService.findAllTipoTransportes());
         viajeForm.getTagDestino().setItems(tagDestinoService.findAll());
     }
 
     private void setListeners() {
+        viajeForm.getPais().addValueChangeListener(e->setComboCiudades());
         viajeForm.getBtnSave().addClickListener(e-> saveViaje(viaje));
         viajeForm.getBtnCancel().addClickListener(e->viajeForm.close());
+    }
+
+    private void setComboCiudades() {
+
+        Pais pais = viajeForm.getPais().getValue();
+        viajeForm.getCiudad().setItems(pais.getCiudades());
+
     }
 
     private void saveViaje(Viaje viaje) {
@@ -82,8 +91,9 @@ public class ViajeFormController {
 
     private Viaje setNewViaje() {
 
-        String pais = viajeForm.getPais().getValue();
-        String ciudad = viajeForm.getCiudad().getValue();
+       // String pais = viajeForm.getPais().getValue();
+        Ciudad ciudad = viajeForm.getCiudad().getValue();
+
         LocalDate fechaSalida = viajeForm.getFechaSalida().getValue();
         LocalTime horaSalida = viajeForm.getHoraSalida().getValue();
         TipoTransporte tipoTransporte = viajeForm.getTransporte().getValue();
@@ -97,7 +107,7 @@ public class ViajeFormController {
         String recomendacion = viajeForm.getTextAreaRecomendaciones().getValue();
 
         Transporte transporte = new Transporte(codTransporte,tipoTransporte, capacidad, clase);
-        Destino destino = new Destino(ciudad, pais, recomendacion);
+        Destino destino = new Destino(ciudad, recomendacion);
         destino.getTagsDestino().addAll(tagsDestino);
         Viaje viaje = new Viaje(destino,transporte,fechaSalida,horaSalida,precio,descipcion, true);
 
@@ -106,6 +116,8 @@ public class ViajeFormController {
 
     public void setComponentsValues(Viaje viaje) {
         this.viaje = viaje;
+        viajeForm.getPais().setItems(viajeService.findAllPaises());
+        viajeForm.getPais().setValue(viaje.getDestino().getCiudad().getPais());
         binderViaje.setBean(viaje);
         binderDestino.setBean(viaje.getDestino());
         binderTransporte.setBean(viaje.getTransporte());
@@ -114,8 +126,7 @@ public class ViajeFormController {
 
     private void setBinders() {
 
-        setBinderFieldDestino(viajeForm.getPais(), Destino::getPais, Destino::setPais, true);
-        setBinderFieldDestino(viajeForm.getCiudad(), Destino::getCiudad, Destino::setCiudad, true);
+        setBinderFieldCiudad(viajeForm.getCiudad(), Destino::getCiudad, Destino::setCiudad, true);
         setBinderDatePickerViaje(viajeForm.getFechaSalida(), Viaje::getFechaSalida, Viaje::setFechaSalida, true);
         setBinderTimePickerViaje(viajeForm.getHoraSalida(), Viaje::getHoraSalida, Viaje::setHoraSalida, true);
         setBinderComboTipoTransporte(viajeForm.getTransporte(), Transporte::getTipo, Transporte::setTipo, true);
@@ -184,6 +195,21 @@ public class ViajeFormController {
                     .bind(valueProvider, setter);
         }else{
             binding = binderTransporte.forField(field).bind(valueProvider, setter);
+        }
+        viajeForm.getBtnSave().addClickListener(event -> binding.validate());
+    }
+
+    private void setBinderFieldCiudad(ComboBox combo, ValueProvider<Destino, Ciudad> valueProvider, Setter<Destino, Ciudad> setter, boolean isRequiered){
+
+        SerializablePredicate<Ciudad> predicate = value -> combo.getValue() != null;
+        Binder.Binding<Destino, Ciudad> binding;
+
+        if(isRequiered){
+            binding = binderDestino.forField(combo)
+                    .withValidator(predicate, "El campo es obligatorio")
+                    .bind(valueProvider, setter);
+        }else{
+            binding = binderDestino.forField(combo).bind(valueProvider, setter);
         }
         viajeForm.getBtnSave().addClickListener(event -> binding.validate());
     }

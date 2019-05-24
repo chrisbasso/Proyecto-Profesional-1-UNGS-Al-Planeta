@@ -1,8 +1,8 @@
 package com.tp.proyecto1.views.ventas;
 
-import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.FormaDePago;
-import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.model.viajes.Ciudad;
+import com.tp.proyecto1.model.viajes.Pais;
 import com.tp.proyecto1.utils.BuscadorClientesComponent;
 import com.tp.proyecto1.utils.PasajerosGridComponent;
 import com.vaadin.flow.component.button.Button;
@@ -33,8 +33,8 @@ public class VentaForm extends Dialog {
 	private PasajerosGridComponent pasajerosGridComponent;
 
 	private TextField id;
-	private TextField pais;
-	private TextField ciudad;
+	private ComboBox<Pais> pais;
+	private ComboBox<Ciudad> ciudad;
 	private TextField codTransporte;
 	private TextField transporte;
 	private TextField fechaSalida;
@@ -56,8 +56,10 @@ public class VentaForm extends Dialog {
 	private void setComponents() {
 
 		id = new TextField();
-		pais= new TextField();
-		ciudad= new TextField();
+		pais= new ComboBox<>();
+		pais.setItemLabelGenerator(Pais::getNombre);
+		ciudad= new ComboBox<>();
+		ciudad.setItemLabelGenerator(Ciudad::getNombre);
 		codTransporte= new TextField();
 		transporte= new TextField();
 		fechaSalida= new TextField();
@@ -224,23 +226,23 @@ public class VentaForm extends Dialog {
 		this.pasajerosGridComponent = pasajerosGridComponent;
 	}
 
-	public TextField getPais() {
-		return pais;
-	}
+    public ComboBox<Pais> getPais() {
+        return pais;
+    }
 
-	public void setPais(TextField pais) {
-		this.pais = pais;
-	}
+    public void setPais(ComboBox<Pais> pais) {
+        this.pais = pais;
+    }
 
-	public TextField getCiudad() {
-		return ciudad;
-	}
+    public ComboBox<Ciudad> getCiudad() {
+        return ciudad;
+    }
 
-	public void setCiudad(TextField ciudad) {
-		this.ciudad = ciudad;
-	}
+    public void setCiudad(ComboBox<Ciudad> ciudad) {
+        this.ciudad = ciudad;
+    }
 
-	public TextField getCodTransporte() {
+    public TextField getCodTransporte() {
 		return codTransporte;
 	}	
 

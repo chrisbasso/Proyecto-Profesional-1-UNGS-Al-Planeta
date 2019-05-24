@@ -1,10 +1,13 @@
 package com.tp.proyecto1.views.ventas;
 
 import com.tp.proyecto1.model.pasajes.Venta;
+import com.tp.proyecto1.model.viajes.Ciudad;
+import com.tp.proyecto1.model.viajes.Pais;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.tp.proyecto1.utils.View;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -16,8 +19,8 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
 
 
     private NumberField numeroClienteFilter;
-    private TextField paisFilter;
-    private TextField ciudadFilter;
+    private ComboBox<Pais> paisFilter;
+    private ComboBox<Ciudad> ciudadFilter;
     private TextField codTransporteFilter;
     private DatePicker fechaFilter;
     private Button searchButton;
@@ -35,8 +38,10 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
     @Override
     public void setComponents() {
         this.numeroClienteFilter = new NumberField("Nº Cliente");
-        this.paisFilter = new TextField("País");
-        this.ciudadFilter = new TextField("Ciudad");
+        this.paisFilter = new ComboBox<>("País");
+        this.paisFilter.setItemLabelGenerator(Pais::getNombre);
+        this.ciudadFilter = new ComboBox<>("Ciudad");
+        this.ciudadFilter.setItemLabelGenerator(Ciudad::getNombre);
         this.codTransporteFilter = new TextField("Cod. Transporte");
         this.searchButton = new Button("Buscar", VaadinIcon.SEARCH.create());
         this.searchButton.setMinWidth("110px");
@@ -60,10 +65,12 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
     @Override
     public void setGrid() {
 
-        grid.setColumns("cliente.id", "cliente.nombre", "cliente.apellido", "cliente.dni", "viaje.destino.ciudad",
-                "viaje.destino.pais", "viaje.transporte.codTransporte", "viaje.fechaSalida","importeTotal");
+        grid.setColumns("cliente.id", "cliente.nombre", "cliente.apellido", "cliente.dni", "viaje.destino.ciudad.nombre",
+                "viaje.destino.ciudad.pais.nombre", "viaje.transporte.codTransporte", "viaje.fechaSalida","importeTotal");
         grid.getColumnByKey("cliente.id").setHeader("Nº Cliente");
         grid.getColumnByKey("cliente.id").setWidth("100px").setFlexGrow(0);
+        grid.getColumnByKey("viaje.destino.ciudad.pais.nombre").setHeader("País");
+        grid.getColumnByKey("viaje.destino.ciudad.nombre").setHeader("Ciudad");
 
     }
 
@@ -79,19 +86,19 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
         return grid;
     }
 
-    public TextField getPaisFilter() {
+    public ComboBox<Pais> getPaisFilter() {
         return paisFilter;
     }
 
-    public void setPaisFilter(TextField paisFilter) {
+    public void setPaisFilter(ComboBox<Pais> paisFilter) {
         this.paisFilter = paisFilter;
     }
 
-    public TextField getCiudadFilter() {
+    public ComboBox<Ciudad> getCiudadFilter() {
         return ciudadFilter;
     }
 
-    public void setCiudadFilter(TextField ciudadFilter) {
+    public void setCiudadFilter(ComboBox<Ciudad> ciudadFilter) {
         this.ciudadFilter = ciudadFilter;
     }
 

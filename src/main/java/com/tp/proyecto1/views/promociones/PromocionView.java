@@ -120,7 +120,7 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 	
 	/*
 
-	public TextField getCodTransporteFilter() {
+	public TextField getValueCodTransporte() {
 		return codTransporteFilter;
 	}
 
