@@ -1,6 +1,8 @@
 package com.tp.proyecto1.model.pasajes;
 
 import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.model.sucursales.Sucursal;
+import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.model.viajes.Viaje;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -40,6 +42,12 @@ public abstract class Transaccion {
 	private LocalDate fechaInactivacion;
 	
 	private EstadoTransaccion estadoTransaccion;
+
+	@ManyToOne
+	private Sucursal sucursal;
+
+	@ManyToOne
+	private User vendedor;
 	
 	public Transaccion() {
 	}
@@ -95,6 +103,34 @@ public abstract class Transaccion {
 		return cliente;
 	}
 
+	public void setActivo(boolean activo) {
+		isActivo = activo;
+	}
+
+	public LocalDate getFechaInactivacion() {
+		return fechaInactivacion;
+	}
+
+	public void setFechaInactivacion(LocalDate fechaInactivacion) {
+		this.fechaInactivacion = fechaInactivacion;
+	}
+
+	public Sucursal getSucursal() {
+		return sucursal;
+	}
+
+	public void setSucursal(Sucursal sucursal) {
+		this.sucursal = sucursal;
+	}
+
+	public User getVendedor() {
+		return vendedor;
+	}
+
+	public void setVendedor(User vendedor) {
+		this.vendedor = vendedor;
+	}
+
 	public void setCliente(Cliente cliente) {
 		this.cliente = cliente;
 	}
@@ -106,6 +142,8 @@ public abstract class Transaccion {
 	public void setViaje(Viaje viaje) {
 		this.viaje = viaje;
 	}
+
+
 
 	public void activar() {
 		isActivo = true;

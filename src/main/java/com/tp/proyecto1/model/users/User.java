@@ -1,9 +1,11 @@
 package com.tp.proyecto1.model.users;
 
+import com.tp.proyecto1.model.pasajes.Transaccion;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -27,6 +29,9 @@ public class User {
                     name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
+    @OneToMany
+    private List<Transaccion> transacciones;
+
 	public User() {
 	}
 
@@ -47,7 +52,15 @@ public class User {
         this.roles = roles;
     }
 
-    public Long getId() {
+	public List<Transaccion> getTransacciones() {
+		return transacciones;
+	}
+
+	public void setTransacciones(List<Transaccion> transacciones) {
+		this.transacciones = transacciones;
+	}
+
+	public Long getId() {
 		return id;
 	}
 
