@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.pasajes.*;
 import com.tp.proyecto1.model.viajes.Pais;
 import com.tp.proyecto1.utils.Inject;
@@ -197,6 +198,8 @@ public class VentaFormController {
 	private Venta setNewVenta() {
 		Double precioTotal;
 		Venta venta = new Venta();
+		venta.setSucursal(Proyecto1Application.sucursal);
+		venta.setVendedor(Proyecto1Application.logUser);
 
 		Cliente cliente = ventaForm.getCliente().getCliente();
 		FormaDePago formaPago = ventaForm.getFormaPago().getValue();

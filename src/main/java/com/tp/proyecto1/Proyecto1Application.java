@@ -1,7 +1,9 @@
 package com.tp.proyecto1;
 
 
+import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.model.viajes.*;
+import com.tp.proyecto1.repository.sucursales.SucursalRepository;
 import com.tp.proyecto1.repository.viajes.PaisRepository;
 import com.tp.proyecto1.services.*;
 import com.vaadin.flow.component.UI;
@@ -31,6 +33,8 @@ public class Proyecto1Application {
 
 	public static User logUser;
 
+	public static Sucursal sucursal;
+
 	public static void main(String[] args) {
 		SpringApplication.run(Proyecto1Application.class);
 	}
@@ -48,67 +52,19 @@ public class Proyecto1Application {
 									  DestinoService destinoService,
 									  ConfiguracionService configService,
 									  TagDestinoService tagDestinoService,
-									  PaisRepository paisRepository
+									  PaisRepository paisRepository,
+									  SucursalRepository sucursalRepository
 									  /*PromocionDescuentoRepository promocionDescuentosRepository,
 									  PromocionDescuentoRepository promocionPuntosRepository*/) {
 		return args -> {
-			userService.createPrivilegeIfNotFound("READ_PRIVILEGE");
-			userService.createPrivilegeIfNotFound("WRITE_PRIVILEGE");
-			userService.createRoleIfNotFound("ADMIN", userService.getPrivileges());
-			User userAdmin = new User("root", "root", userService.getRoles());
-			userService.createUserIfNotExist(userAdmin);
-			User userEmployee = new User("pepe", "pepe", userService.getRoles());
-			userService.createUserIfNotExist(userEmployee);
-			viajeService.createTipoTransporteIfNotExist("Avión");
-			viajeService.createTipoTransporteIfNotExist("Bus");
-			viajeService.createTipoTransporteIfNotExist("Tren");
-			viajeService.createTipoTransporteIfNotExist("Buque");
-			viajeService.createTipoTransporteIfNotExist("Crucero");
-			ventaService.createFormaDePagoIfNotExist("Efectivo");
-			ventaService.createFormaDePagoIfNotExist("Débito");
-			ventaService.createFormaDePagoIfNotExist("Crédito");
-			configService.createConfiguracionIfNotExist("reserva_fecha_maxima", "3");
-			if(tagDestinoService.findAll().isEmpty()){
-				TagDestino tagPlaya = new TagDestino("Playa");
-				TagDestino tagMontania = new TagDestino("Montaña");
-				TagDestino tagEuropa = new TagDestino("Europa");
-				tagDestinoService.save(tagPlaya);
-				tagDestinoService.save(tagMontania);
-				tagDestinoService.save(tagEuropa);
-			}
-			if(paisRepository.findAll().isEmpty()){
-				Pais argentina = new Pais();
-				argentina.setNombre("Argentina");
-				Ciudad buenosAires = new Ciudad();
-				buenosAires.setNombre("Buenos Aires");
-				buenosAires.setPais(argentina);
-				Ciudad mendoza = new Ciudad();
-				mendoza.setNombre("Mendoza");
-				mendoza.setPais(argentina);
-				Ciudad misiones = new Ciudad();
-				misiones.setNombre("Misiones");
-				misiones.setPais(argentina);
-				Set<Ciudad> ciudadesArgentina = new HashSet<>();
-				ciudadesArgentina.add(buenosAires);
-				ciudadesArgentina.add(misiones);
-				ciudadesArgentina.add(mendoza);
-				argentina.setCiudades(ciudadesArgentina);
-				paisRepository.save(argentina);
+			crearUsuarios(userService);
+			crearTiposTransportes(viajeService);
+			crearFormasDePago(ventaService);
+			crearConfiguracion(configService);
+			crearTagsDestino(tagDestinoService);
+			crearPaisesCiudades(paisRepository);
+			setSurcursales(sucursalRepository);
 
-				Pais brasil = new Pais();
-				brasil.setNombre("Brasil");
-				Ciudad sanPablo = new Ciudad();
-				sanPablo.setNombre("San Pablo");
-				sanPablo.setPais(brasil);
-				Ciudad rioJaneiro = new Ciudad();
-				rioJaneiro.setNombre("Rio de Janeiro");
-				rioJaneiro.setPais(brasil);
-				Set<Ciudad> ciudadesBrasil = new HashSet<>();
-				ciudadesBrasil.add(rioJaneiro);
-				ciudadesBrasil.add(sanPablo);
-				brasil.setCiudades(ciudadesBrasil);
-				paisRepository.save(brasil);
-			}
 
 /*
 			System.out.println(promocionRepository.findByViajesAfectados(viajeService.findAll().get(0)));
@@ -153,6 +109,91 @@ public class Proyecto1Application {
 //			reservaRepository.save(reserva);
 
 		};
+	}
+
+	private void setSurcursales(SucursalRepository sucursalRepository) {
+		if(sucursalRepository.findAll().isEmpty()){
+			sucursalRepository.save(new Sucursal("Polvorines"));
+			sucursalRepository.save(new Sucursal("Palermo"));
+			sucursalRepository.save(new Sucursal("Central"));
+		}
+		sucursal = sucursalRepository.findAll().get(0); // setea la primer sucursal por defecto, solo para testear
+
+	}
+
+	private void crearPaisesCiudades(PaisRepository paisRepository) {
+		if(paisRepository.findAll().isEmpty()){
+			Pais argentina = new Pais();
+			argentina.setNombre("Argentina");
+			Ciudad buenosAires = new Ciudad();
+			buenosAires.setNombre("Buenos Aires");
+			buenosAires.setPais(argentina);
+			Ciudad mendoza = new Ciudad();
+			mendoza.setNombre("Mendoza");
+			mendoza.setPais(argentina);
+			Ciudad misiones = new Ciudad();
+			misiones.setNombre("Misiones");
+			misiones.setPais(argentina);
+			Set<Ciudad> ciudadesArgentina = new HashSet<>();
+			ciudadesArgentina.add(buenosAires);
+			ciudadesArgentina.add(misiones);
+			ciudadesArgentina.add(mendoza);
+			argentina.setCiudades(ciudadesArgentina);
+			paisRepository.save(argentina);
+
+			Pais brasil = new Pais();
+			brasil.setNombre("Brasil");
+			Ciudad sanPablo = new Ciudad();
+			sanPablo.setNombre("San Pablo");
+			sanPablo.setPais(brasil);
+			Ciudad rioJaneiro = new Ciudad();
+			rioJaneiro.setNombre("Rio de Janeiro");
+			rioJaneiro.setPais(brasil);
+			Set<Ciudad> ciudadesBrasil = new HashSet<>();
+			ciudadesBrasil.add(rioJaneiro);
+			ciudadesBrasil.add(sanPablo);
+			brasil.setCiudades(ciudadesBrasil);
+			paisRepository.save(brasil);
+		}
+	}
+
+	private void crearTagsDestino(TagDestinoService tagDestinoService) {
+		if(tagDestinoService.findAll().isEmpty()){
+			TagDestino tagPlaya = new TagDestino("Playa");
+			TagDestino tagMontania = new TagDestino("Montaña");
+			TagDestino tagEuropa = new TagDestino("Europa");
+			tagDestinoService.save(tagPlaya);
+			tagDestinoService.save(tagMontania);
+			tagDestinoService.save(tagEuropa);
+		}
+	}
+
+	private void crearConfiguracion(ConfiguracionService configService) {
+		configService.createConfiguracionIfNotExist("reserva_fecha_maxima", "3");
+	}
+
+	private void crearFormasDePago(VentaService ventaService) {
+		ventaService.createFormaDePagoIfNotExist("Efectivo");
+		ventaService.createFormaDePagoIfNotExist("Débito");
+		ventaService.createFormaDePagoIfNotExist("Crédito");
+	}
+
+	private void crearTiposTransportes(ViajeService viajeService) {
+		viajeService.createTipoTransporteIfNotExist("Avión");
+		viajeService.createTipoTransporteIfNotExist("Bus");
+		viajeService.createTipoTransporteIfNotExist("Tren");
+		viajeService.createTipoTransporteIfNotExist("Buque");
+		viajeService.createTipoTransporteIfNotExist("Crucero");
+	}
+
+	private void crearUsuarios(UserService userService) {
+		userService.createPrivilegeIfNotFound("READ_PRIVILEGE");
+		userService.createPrivilegeIfNotFound("WRITE_PRIVILEGE");
+		userService.createRoleIfNotFound("ADMIN", userService.getPrivileges());
+		User userAdmin = new User("root", "root", userService.getRoles());
+		userService.createUserIfNotExist(userAdmin);
+		User userEmployee = new User("pepe", "pepe", userService.getRoles());
+		userService.createUserIfNotExist(userEmployee);
 	}
 
 }

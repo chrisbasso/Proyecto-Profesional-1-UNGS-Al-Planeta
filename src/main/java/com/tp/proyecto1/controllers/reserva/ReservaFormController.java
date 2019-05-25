@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.tp.proyecto1.Proyecto1Application;
 import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -143,6 +144,8 @@ public class ReservaFormController {
 			actualizarTransaccionEnPagos(reserva);
 			viaje.restarPasajes(pasajes.size());
 			reserva.setViaje(viaje);
+			reserva.setSucursal(Proyecto1Application.sucursal);
+			reserva.setVendedor(Proyecto1Application.logUser);
 			reservaService.save(reserva);
 			viajeService.save(viaje);
 			mensajeGuardadoCierreForm();
