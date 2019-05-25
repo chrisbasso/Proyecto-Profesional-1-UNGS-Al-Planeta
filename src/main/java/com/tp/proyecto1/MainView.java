@@ -41,9 +41,12 @@ public class MainView extends VerticalLayout {
 
 	@Autowired
 	private ReservasController reservasController;
-	
+
 	@Autowired
 	private PromocionesController promocionesController;
+
+	@Autowired
+	private ReportesController reportesController;
 
 	private VerticalLayout mainLayout;
 	private AppLayout appLayout;
@@ -110,7 +113,9 @@ public class MainView extends VerticalLayout {
 	}
 
 	private void openReportesView() {
-		appLayout.setContent(new ReportesView());
+
+		appLayout.setContent(reportesController.getReportesView());
+
 	}
 
 	private HorizontalLayout getLogo() {

@@ -70,6 +70,7 @@ public class Proyecto1Application {
 			ventaService.createFormaDePagoIfNotExist("Débito");
 			ventaService.createFormaDePagoIfNotExist("Crédito");
 			configService.createConfiguracionIfNotExist("reserva_fecha_maxima", "3");
+
 //			TagDestino tagPlaya = new TagDestino("Playa");
 //			TagDestino tagMontania = new TagDestino("Montaña");
 //			TagDestino tagEuropa = new TagDestino("Europa");
