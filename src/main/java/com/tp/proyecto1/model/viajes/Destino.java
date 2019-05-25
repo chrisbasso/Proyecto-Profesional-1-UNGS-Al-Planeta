@@ -11,21 +11,28 @@ public class Destino {
     @GeneratedValue
     private Long id;
 
-    private String ciudad;
-    private String pais;
+    @OneToOne
+    private Ciudad ciudad;
 
     private String recomendacion;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<TagDestino> tagsDestino;
+    private Set<TagDestino> tagsDestino = new HashSet<>();
 
     public Destino() {
     }
 
-    public Destino(String ciudad, String pais, String recomendacion) {
+    public Destino(Ciudad ciudad, String recomendacion) {
         this.ciudad = ciudad;
-        this.pais = pais;
         this.recomendacion = recomendacion;
+    }
+
+    public Ciudad getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(Ciudad ciudad) {
+        this.ciudad = ciudad;
     }
 
     public String getRecomendacion() {
@@ -52,21 +59,7 @@ public class Destino {
         this.id = id;
     }
 
-    public String getCiudad() {
-        return ciudad;
-    }
 
-    public void setCiudad(String ciudad) {
-        this.ciudad = ciudad;
-    }
-
-    public String getPais() {
-        return pais;
-    }
-
-    public void setPais(String pais) {
-        this.pais = pais;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -74,20 +67,18 @@ public class Destino {
         if (o == null || getClass() != o.getClass()) return false;
         Destino destino = (Destino) o;
         return Objects.equals(id, destino.id) &&
-                Objects.equals(ciudad, destino.ciudad) &&
-                Objects.equals(pais, destino.pais) &&
-                Objects.equals(recomendacion, destino.recomendacion) &&
-                Objects.equals(tagsDestino, destino.tagsDestino);
+                Objects.equals(ciudad, destino.ciudad);
+
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, ciudad, pais, recomendacion, tagsDestino);
+        return Objects.hash(id, ciudad);
     }
-
+    
     @Override
     public String toString()
     {
-    	return ciudad+", "+pais;
+    	return ciudad+", "+ciudad.getPais();
     }
 }

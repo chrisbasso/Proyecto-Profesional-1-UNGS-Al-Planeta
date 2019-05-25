@@ -4,15 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.tp.proyecto1.model.viajes.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.tp.proyecto1.controllers.VentaFormController;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.Reserva;
-import com.tp.proyecto1.model.viajes.Destino;
-import com.tp.proyecto1.model.viajes.Transporte;
-import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.ReservaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
@@ -44,6 +42,7 @@ public class ReservasController {
         agregarBotonesEdicion();
         setListeners();
         listReservas();
+        setComponents();
     }
 
     private void agregarBotonesEdicion() {
@@ -91,15 +90,29 @@ public class ReservasController {
 		confirmationDialog.open();
 	}
 
+    private void setComponents() {
+        reservaView.getPaisFilter().setItems(viajeService.findAllPaises());
+    }
+
     private void setListeners() {
+        reservaView.getPaisFilter().addValueChangeListener(e->setComboCiudades());
     	setChangeHandler(this::listReservas);
     	reservaView.setBtnBuscarListener(e->listReservas());
     	reservaView.setBtnVenderListener(e-> venderReserva());
     }
 
+
+    private void setComboCiudades() {
+
+        Pais pais = reservaView.getPaisFilter().getValue();
+        reservaView.getCiudadFilter().setItems(pais.getCiudades());
+
+    }
+
+
     private void listReservas() {
-    	if(!reservaView.getNumeroClienteFilter().equals(0L)){    		
-    		Optional reserva = reservaService.findById(reservaView.getNumeroClienteFilter());
+    	if(!reservaView.getValueNumeroCliente().equals(0L)){
+    		Optional reserva = reservaService.findById(reservaView.getValueNumeroCliente());
     		if(reserva.isPresent()) {
     			List<Reserva> reservas = new ArrayList<Reserva>();
     			reservas.add((Reserva)reserva.get());
@@ -122,31 +135,33 @@ public class ReservasController {
         reservaBusqueda.setCliente(cliente);
         Transporte transporte = new Transporte();
         Viaje viaje = new Viaje();
-        viaje.setDestino(new Destino());
+        Destino destino = new Destino();
+        destino.setCiudad(new Ciudad());
+        viaje.setDestino(destino);
         viaje.setTransporte(transporte);
         viaje.setActivo(true);
         reservaBusqueda.setViaje(viaje);
-        if(!reservaView.getNumeroClienteFilter().equals(0L)){
-            reservaBusqueda.getCliente().setId(reservaView.getNumeroClienteFilter());
+        if(!reservaView.getValueNumeroCliente().equals(0L)){
+            reservaBusqueda.getCliente().setId(reservaView.getValueNumeroCliente());
         }
-        if(!reservaView.getCiudadFilter().equals("")){
-            reservaBusqueda.getViaje().getDestino().setCiudad(reservaView.getCiudadFilter());
+        if(!reservaView.getCiudadFilter().isEmpty()){
+            reservaBusqueda.getViaje().getDestino().setCiudad(reservaView.getCiudadFilter().getValue());
         }
-        if(!reservaView.getPaisFilter().equals("")){
-            reservaBusqueda.getViaje().getDestino().setPais(reservaView.getPaisFilter());
+        if(!reservaView.getPaisFilter().isEmpty()){
+            reservaBusqueda.getViaje().getDestino().getCiudad().setPais(reservaView.getPaisFilter().getValue());
         }
-        if(!reservaView.getCodTransporteFilter().equals("")){
-            reservaBusqueda.getViaje().getTransporte().setCodTransporte(reservaView.getCodTransporteFilter());
+        if(!reservaView.getValueCodTransporte().equals("")){
+            reservaBusqueda.getViaje().getTransporte().setCodTransporte(reservaView.getValueCodTransporte());
         }
-        if(reservaView.getFechaFilter() != null){
-            reservaBusqueda.getViaje().setFechaSalida(reservaView.getFechaFilter());
+        if(reservaView.getValueFecha() != null){
+            reservaBusqueda.getViaje().setFechaSalida(reservaView.getValueFecha());
         }
     }
 
     private boolean checkFiltros() {
-        return !reservaView.getPaisFilter().equals("") || !reservaView.getCiudadFilter().equals("")  ||
-                !reservaView.getCodTransporteFilter().equals("") || !reservaView.getNumeroClienteFilter().equals("")  ||
-                 reservaView.getFechaFilter() != null;
+        return !reservaView.getValuePais().equals("") || !reservaView.getValueCiudad().equals("")  ||
+                !reservaView.getValueCodTransporte().equals("") || !reservaView.getValueNumeroCliente().equals("")  ||
+                 reservaView.getValueFecha() != null;
     }
 
     private void venderReserva() {

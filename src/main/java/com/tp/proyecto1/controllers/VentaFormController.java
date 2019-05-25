@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.tp.proyecto1.model.pasajes.*;
+import com.tp.proyecto1.model.viajes.Pais;
 import com.tp.proyecto1.utils.Inject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
@@ -77,7 +78,8 @@ public class VentaFormController {
 	}
 	
 	private void setComponentesLectura(Viaje viaje) {
-		ventaForm.getPais().setValue(viaje.getDestino().getPais());
+		ventaForm.getPais().setItems(viajeService.findAllPaises());
+		ventaForm.getPais().setValue(viaje.getDestino().getCiudad().getPais());
 		ventaForm.getCiudad().setValue(viaje.getDestino().getCiudad());
 		ventaForm.getCodTransporte().setValue(viaje.getTransporte().getCodTransporte());
 		ventaForm.getTransporte().setValue(viaje.getTransporte().getTipo().getDescripcion());
@@ -92,6 +94,7 @@ public class VentaFormController {
 	}
 
 	private void setComponents() {
+		ventaForm.getPais().setItems(viajeService.findAllPaises());
 		ventaForm.getFormaPago().setItems(ventaService.findAllFomaDePagos());
 		
 		if (this.reserva != null){
@@ -124,6 +127,8 @@ public class VentaFormController {
 	}
 	
 	private void setListeners() {
+		ventaForm.getPais().addValueChangeListener(e->setComboCiudades());
+
 		ventaForm.getBtnSave().addClickListener(e-> saveVenta(venta));//en el modo edit
 		ventaForm.getBtnCancel().addClickListener(e->ventaForm.close());
 		ventaForm.getBtnFinalizarCompra().addClickListener(e-> newVenta());//en el modo compra pasajes de viajes, y para reserva venta
@@ -131,6 +136,13 @@ public class VentaFormController {
 		ventaForm.getCliente().getFiltro().addValueChangeListener(e-> validarCompra());
 		ventaForm.getPasajerosGridComponent().getRemoveLastButton().addClickListener(e-> this.modificarSaldoaPagar());
 		ventaForm.getPasajerosGridComponent().getNewPasajero().addClickListener(e-> this.modificarSaldoaPagar());
+	}
+
+	private void setComboCiudades() {
+
+		Pais pais = ventaForm.getPais().getValue();
+		ventaForm.getCiudad().setItems(pais.getCiudades());
+
 	}
 	
 	//Incrementa o decrementa los campos de saldo a pagar y subtotal dependiendo la cant. de pasajeros
@@ -237,7 +249,7 @@ public class VentaFormController {
 
 		this.venta = venta;
 
-		ventaForm.getPais().setValue(venta.getViaje().getDestino().getPais());
+		ventaForm.getPais().setValue(venta.getViaje().getDestino().getCiudad().getPais());
 		ventaForm.getCiudad().setValue(venta.getViaje().getDestino().getCiudad());
 		ventaForm.getHoraSalida().setValue(venta.getViaje().getHoraSalida().toString());
 		ventaForm.getFechaSalida().setValue(venta.getViaje().getFechaSalida().toString());

@@ -39,6 +39,8 @@ public abstract class Transaccion {
 
 	private LocalDate fechaInactivacion;
 	
+	private EstadoTransaccion estadoTransaccion;
+	
 	public Transaccion() {
 	}
 
@@ -119,6 +121,14 @@ public abstract class Transaccion {
 		return isActivo;
 	}
 	
+	public EstadoTransaccion getEstadoTransaccion() {
+		return estadoTransaccion;
+	}
+
+	public void setEstadoTransaccion(EstadoTransaccion estadoTransaccion) {
+		this.estadoTransaccion = estadoTransaccion;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

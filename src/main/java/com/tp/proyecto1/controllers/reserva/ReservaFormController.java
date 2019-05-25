@@ -58,7 +58,6 @@ public class ReservaFormController {
 	 */
 	public ReservaForm getReservaForm() {
 		reservaForm = new ReservaForm(viaje);
-		reservaForm.cargarClientes(clienteService.findAll());
 		setListeners();
 		return reservaForm;
 	}
@@ -67,7 +66,7 @@ public class ReservaFormController {
 	 */
     private void setListeners() {
         reservaForm.setListenerCantPasajes(e->actualizarImportes());
-        reservaForm.setListenerCliente(e->habilitarPagos());
+        reservaForm.getBuscadorCliente().getFiltro().addValueChangeListener(e->habilitarPagos());
         reservaForm.setListenerBtnNuevoPago(e->formNuevoPago());        
         reservaForm.setListenerBtnSave(e->accionGuardarReserva());
         reservaForm.setListenerBtnCancel(e->reservaForm.close());
@@ -110,7 +109,11 @@ public class ReservaFormController {
 	 * Habilitar el botón de agregar pagos una vez que se seleccionó el cliente
 	 */
 	private void habilitarPagos() {
-		reservaForm.habilitarBtnAgregarPago();
+		if(!reservaForm.getBuscadorCliente().getFiltro().isEmpty()){
+			reservaForm.habilitarBtnAgregarPago();
+		}else{
+			reservaForm.deshabilitarBtnAgregarPago();
+		}
 	}
 	/*
 	 * Accion de guardar: como el botón es el mismo desde aquí se invocan

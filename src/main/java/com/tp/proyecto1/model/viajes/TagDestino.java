@@ -42,26 +42,25 @@ public class TagDestino {
         this.descripcion = descripcion;
     }
 
-	public Set<Destino> getDestinos() {
-		return destinos;
-	}
+    public Set<Destino> getDestinos() {
+        return destinos;
+    }
 
-	public void setDestinos(Set<Destino> destinos) {
-		this.destinos = destinos;
-	}
+    public void setDestinos(Set<Destino> destinos) {
+        this.destinos = destinos;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		TagDestino that = (TagDestino) o;
-		return Objects.equals(id, that.id) &&
-				Objects.equals(descripcion, that.descripcion) &&
-				Objects.equals(destinos, that.destinos);
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TagDestino that = (TagDestino) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(descripcion, that.descripcion);
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, descripcion, destinos);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, descripcion);
+    }
 }

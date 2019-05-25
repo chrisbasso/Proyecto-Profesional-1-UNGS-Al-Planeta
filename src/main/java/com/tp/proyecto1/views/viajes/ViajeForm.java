@@ -1,12 +1,16 @@
 package com.tp.proyecto1.views.viajes;
 
+import com.tp.proyecto1.model.viajes.Ciudad;
+import com.tp.proyecto1.model.viajes.Pais;
 import com.tp.proyecto1.model.viajes.TagDestino;
 import com.tp.proyecto1.model.viajes.TipoTransporte;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -21,14 +25,16 @@ public class ViajeForm extends Dialog {
 
     private VerticalLayout mainLayout = new VerticalLayout();
     private FormLayout form = new FormLayout();
-    private TextField pais;
-    private TextField ciudad;
+    private ComboBox<Pais> pais;
+    private ComboBox<Ciudad> ciudad;
     private ComboBox<TipoTransporte> transporte;
     private TextField codTransporte;
     private TextField clase;
     private TextField capacidad;
     private DatePicker fechaSalida;
     private TimePicker horaSalida;
+    private Button btnNuevoPais = new Button("Nuevo");
+    private Button btnNuevaCiudad = new Button("Nueva");
 
     private NumberField precio;
     private NumberField cantidadDias;
@@ -54,13 +60,16 @@ public class ViajeForm extends Dialog {
         transporte.setItemLabelGenerator(TipoTransporte::getDescripcion);
         tagDestino = new MultiselectComboBox<>();
         tagDestino.setItemLabelGenerator(TagDestino::getDescripcion);
+        tagDestino.setWidth("192px");
         codTransporte = new TextField();
         clase = new TextField();
         capacidad = new TextField();
         capacidad.setPattern("[0-9]*");
         capacidad.setPreventInvalidInput(true);
-        ciudad = new TextField();
-        pais = new TextField();
+        ciudad = new ComboBox<>();
+        ciudad.setItemLabelGenerator(Ciudad::getNombre);
+        pais = new ComboBox<>();
+        pais.setItemLabelGenerator(Pais::getNombre);
         fechaSalida = new DatePicker();
         horaSalida = new TimePicker();
         cantidadDias = new NumberField();
@@ -77,9 +86,9 @@ public class ViajeForm extends Dialog {
         textAreaDescripcion = new TextArea("Descripción");
         textAreaRecomendaciones = new TextArea("Recomendaciones");
 
-        textAreaDescripcion.setHeight("100px");
+        textAreaDescripcion.setHeight("50px");
         textAreaDescripcion.setWidth("770px");
-        textAreaRecomendaciones.setHeight("100px");
+        textAreaRecomendaciones.setHeight("50px");
         textAreaRecomendaciones.setWidth("770px");
         precio.setWidth("192px");
         precio.setMin(0);
@@ -87,11 +96,27 @@ public class ViajeForm extends Dialog {
 
         precio.setPrefixComponent(new Span("$"));
 
+        btnNuevaCiudad.addThemeVariants(ButtonVariant.LUMO_SMALL);
+        btnNuevoPais.addThemeVariants(ButtonVariant.LUMO_SMALL);
+
     }
 
     private void setForm() {
-        form.addFormItem(pais, "País");
-        form.addFormItem(ciudad, "Ciudad");
+
+        FormLayout.FormItem paisItem = form.addFormItem(pais,"País");
+        HorizontalLayout hlPais = new HorizontalLayout();
+        HorizontalLayout hlSpacePais = new HorizontalLayout();
+        hlSpacePais.setWidth("110px");
+        hlPais.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
+        hlPais.add(hlSpacePais,btnNuevoPais);
+        paisItem.add(hlPais);
+        FormLayout.FormItem ciudadItem = form.addFormItem(ciudad,"Ciudad");
+        HorizontalLayout hlCiudad = new HorizontalLayout();
+        HorizontalLayout hlSpaceCiudad = new HorizontalLayout();
+        hlSpaceCiudad.setWidth("112px");
+        hlCiudad.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
+        hlCiudad.add(hlSpaceCiudad,btnNuevaCiudad);
+        ciudadItem.add(hlCiudad);
         form.addFormItem(fechaSalida, "Fecha Salida");
         form.addFormItem(horaSalida, "Hora Salida");
         form.addFormItem(cantidadDias, "Días");
@@ -135,19 +160,20 @@ public class ViajeForm extends Dialog {
         this.form = form;
     }
 
-    public TextField getPais() {
+
+    public ComboBox<Pais> getPais() {
         return pais;
     }
 
-    public void setPais(TextField pais) {
+    public void setPais(ComboBox<Pais> pais) {
         this.pais = pais;
     }
 
-    public TextField getCiudad() {
+    public ComboBox<Ciudad> getCiudad() {
         return ciudad;
     }
 
-    public void setCiudad(TextField ciudad) {
+    public void setCiudad(ComboBox<Ciudad> ciudad) {
         this.ciudad = ciudad;
     }
 

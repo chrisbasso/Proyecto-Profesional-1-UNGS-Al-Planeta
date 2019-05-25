@@ -3,9 +3,7 @@ package com.tp.proyecto1.controllers;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.PasajeVenta;
 import com.tp.proyecto1.model.pasajes.Venta;
-import com.tp.proyecto1.model.viajes.Destino;
-import com.tp.proyecto1.model.viajes.Transporte;
-import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.model.viajes.*;
 import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
@@ -51,13 +49,21 @@ public class VentasController {
     }
 
     private void setComponents() {
+        ventaView.getPaisFilter().setItems(viajeService.findAllPaises());
         this.ventaView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
         this.ventaView.getGrid().addComponentColumn(this::createRemoveButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
     }
 
     private void setListeners() {
-    	setChangeHandler(this::listVentas);
+        ventaView.getPaisFilter().addValueChangeListener(e->setComboCiudades());
+        setChangeHandler(this::listVentas);
     	ventaView.getSearchButton().addClickListener(e->listVentas());
+    }
+    private void setComboCiudades() {
+
+        Pais pais = ventaView.getPaisFilter().getValue();
+        ventaView.getCiudadFilter().setItems(pais.getCiudades());
+
     }
 
 	private Button createRemoveButton(Venta venta) {
@@ -147,7 +153,9 @@ public class VentasController {
         venta.setCliente(cliente);
         Transporte transporte = new Transporte();
         Viaje viaje = new Viaje();
-        viaje.setDestino(new Destino());
+        Destino destino = new Destino();
+        destino.setCiudad(new Ciudad());
+        viaje.setDestino(destino);
         viaje.setTransporte(transporte);
         viaje.setActivo(true);
         venta.setViaje(viaje);
@@ -158,11 +166,11 @@ public class VentasController {
             venta.getViaje().getDestino().setCiudad(ventaView.getCiudadFilter().getValue());
         }
         if(!ventaView.getPaisFilter().isEmpty()){
-            venta.getViaje().getDestino().setPais(ventaView.getPaisFilter().getValue());
+            venta.getViaje().getDestino().getCiudad().setPais(ventaView.getPaisFilter().getValue());
         }
-//        if(!ventaView.getCodTransporteFilter().isEmpty()){
-//            venta.getViaje().getTransporte().setCodTransporte(ventaView.getCodTransporteFilter().getValue());
-//        }
+        if(!ventaView.getCodTransporteFilter().isEmpty()){
+            venta.getViaje().getTransporte().setCodTransporte(ventaView.getCodTransporteFilter().getValue());
+        }
         if(!ventaView.getFechaFilter().isEmpty()){
             venta.getViaje().setFechaSalida(ventaView.getFechaFilter().getValue());
         }

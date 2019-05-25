@@ -1,17 +1,16 @@
 package com.tp.proyecto1.views.reserva;
 
-import java.util.List;
-
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.utils.BuscadorClientesComponent;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -31,11 +30,12 @@ public class ReservaForm extends Dialog{
 	private TextField ciudad;
 	private TextField codTransporte;
 	private TextField transporte;
-	private TextField fechaDesde;
-	private TextField fechaHasta;
+	private TextField fecha;
+	private TextField hora;
 	private NumberField precioUnitario;
 	private NumberField precioTotal;
-	private ComboBox<Cliente> cmbCliente;
+	private BuscadorClientesComponent buscadorCliente;
+	private Label lblDescripcionCliente;
 	private NumberField cantidadPasajes;
 	private NumberField sumaDePagos;
 	private NumberField saldoPagar;
@@ -65,12 +65,13 @@ public class ReservaForm extends Dialog{
 		ciudad= new TextField();
 		codTransporte= new TextField();
 		transporte= new TextField();
-		fechaDesde= new TextField();
-		fechaHasta= new TextField();
+		fecha = new TextField();
+		hora = new TextField();
 		precioUnitario= new NumberField();
 		precioUnitario.setClassName(".v-numberfield");
 		precioUnitario.setPrefixComponent(new Span("$"));
-		cmbCliente= new ComboBox<Cliente>();
+		lblDescripcionCliente = new Label();
+		buscadorCliente = new BuscadorClientesComponent(lblDescripcionCliente);
 		cantidadPasajes= new NumberField();		
 		cantidadPasajes.setValue(1d);
 		cantidadPasajes.setMin(1);
@@ -90,11 +91,12 @@ public class ReservaForm extends Dialog{
 
 	private void cargarValores() {
 		id.setValue(viaje.getId().toString());
-    	pais.setValue(viaje.getDestino().getPais());
-    	ciudad.setValue(viaje.getDestino().getCiudad());
-    	codTransporte.setValue(viaje.getTransporte().getCodTransporte().toString());
+    	pais.setValue(viaje.getDestino().getCiudad().getPais().getNombre());
+    	ciudad.setValue(viaje.getDestino().getCiudad().getNombre());
+    	codTransporte.setValue(viaje.getTransporte().getCodTransporte());
     	transporte.setValue(viaje.getTransporte().getTipo().getDescripcion());
-    	fechaDesde.setValue(viaje.getFechaSalida().toString());
+    	fecha.setValue(viaje.getFechaSalida().toString());
+    	hora.setValue(viaje.getHoraSalida().toString());
     	precioUnitario.setValue(viaje.getPrecio());
     	precioTotal.setValue(viaje.getPrecio());
     	saldoPagar.setValue(viaje.getPrecio());
@@ -106,8 +108,8 @@ public class ReservaForm extends Dialog{
 		ciudad.setReadOnly(true);  
 		codTransporte.setReadOnly(true);  
 		transporte.setReadOnly(true);  
-		fechaDesde.setReadOnly(true);  
-		fechaHasta.setReadOnly(true);
+		fecha.setReadOnly(true);
+		hora.setReadOnly(true);
 		precioUnitario.setReadOnly(true);
 		precioTotal.setReadOnly(true);
 		sumaDePagos.setReadOnly(true);
@@ -116,6 +118,7 @@ public class ReservaForm extends Dialog{
 
 	private void inicializarForm() {
 		HorizontalLayout pagos = new HorizontalLayout();
+		pagos.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);
 		pagos.add(sumaDePagos, btnAgregarPago);
 		
 		form = new FormLayout();    	
@@ -123,9 +126,10 @@ public class ReservaForm extends Dialog{
     	form.addFormItem(ciudad, "Ciudad");
     	form.addFormItem(codTransporte, "Cod Transporte");
     	form.addFormItem(transporte, "Transporte");
-    	form.addFormItem(fechaDesde, "Fecha desde");
-    	form.addFormItem(fechaHasta, "Fecha hasta");
-    	form.addFormItem(cmbCliente, "Cliente");
+    	form.addFormItem(fecha, "Fecha");
+    	form.addFormItem(hora, "Hora");
+    	form.addFormItem(buscadorCliente, "Cliente");
+    	form.addFormItem(lblDescripcionCliente,"Descripción");
     	form.addFormItem(cantidadPasajes, "Cantidad de pasajes");
     	form.addFormItem(precioUnitario, "Precio unitario");
     	form.addFormItem(precioTotal, "Precio Total");
@@ -150,13 +154,9 @@ public class ReservaForm extends Dialog{
         this.setWidth("800px");
         this.setHeight("100%");
 	}
-	
-	public void cargarClientes(List <Cliente> clientes) {
-		cmbCliente.setItems(clientes);
-	}
-	
+
 	public Cliente getClienteSeleccionado() {
-		return cmbCliente.getValue();
+		return buscadorCliente.getCliente();
 	}
 	
 	public double getPrecioTotal() {
@@ -208,23 +208,19 @@ public class ReservaForm extends Dialog{
 	}
 	
 	public void inhabilitarClientes(){
-		cmbCliente.setReadOnly(true);
+		buscadorCliente.getFiltro().setReadOnly(true);
 	}
 	
 	public void setModoModificacion(double pasajes, Cliente cliente, double pago) {
-		cmbCliente.setReadOnly(false);
-		cmbCliente.setItems(cliente);
-		cmbCliente.setValue(cliente);
-		cmbCliente.setReadOnly(true);
+		buscadorCliente.getFiltro().setReadOnly(false);
+		buscadorCliente.getFiltro().setValue(cliente.getId().toString());
+		buscadorCliente.getFiltro().setReadOnly(true);
 		cantidadPasajes.setValue(pasajes);	
 		precioTotal.setValue(pasajes * viaje.getPrecio());
 		actualizarPagos(pago);
 		habilitarBtnAgregarPago();
 	}
-	
-	public void setListenerCliente(ValueChangeListener<? super ComponentValueChangeEvent<ComboBox<Cliente>, Cliente>> e) {
-		cmbCliente.addValueChangeListener(e);
-	}
+
 	
 	public void setListenerCantPasajes(ValueChangeListener<? super ComponentValueChangeEvent<NumberField, Double>> e) {
 		cantidadPasajes.addValueChangeListener(e);
@@ -232,7 +228,15 @@ public class ReservaForm extends Dialog{
 	
 	public void setListenerBtnNuevoPago(ComponentEventListener<ClickEvent<Button>> e) {
 		btnAgregarPago.addClickListener(e);
-	}	
+	}
+
+	public BuscadorClientesComponent getBuscadorCliente() {
+		return buscadorCliente;
+	}
+
+	public void setBuscadorCliente(BuscadorClientesComponent buscadorCliente) {
+		this.buscadorCliente = buscadorCliente;
+	}
 
 	public void setListenerBtnSave(ComponentEventListener<ClickEvent<Button>> e) {
 		btnSave.addClickListener(e);

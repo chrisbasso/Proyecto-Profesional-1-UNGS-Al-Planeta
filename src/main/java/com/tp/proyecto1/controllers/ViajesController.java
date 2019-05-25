@@ -1,13 +1,11 @@
 package com.tp.proyecto1.controllers;
 
+import com.tp.proyecto1.model.viajes.*;
 import com.tp.proyecto1.utils.Inject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.tp.proyecto1.controllers.reserva.ReservaFormController;
-import com.tp.proyecto1.model.viajes.Destino;
-import com.tp.proyecto1.model.viajes.Transporte;
-import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.views.viajes.ViajesView;
@@ -44,19 +42,29 @@ public class ViajesController {
     }
 
     private void setComponents() {
+        viajesView.getPaisFilter().setItems(viajeService.findAllPaises());
         viajesView.getTransporteFilter().setItems(viajeService.findAllTipoTransportes());
         this.viajesView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
     }
 
     private void setListeners() {
+        viajesView.getPaisFilter().addValueChangeListener(e->setComboCiudades());
         setChangeHandler(this::listViajes);
         viajesView.getNewViajeButton().addClickListener(e-> openNewViajeForm());
         viajesView.getSearchButton().addClickListener(e-> listViajes());
         viajesView.getBtnReservar().addClickListener(e-> openNewReservaForm());
         viajesView.getBtnComprar().addClickListener(e-> openNewVentaForm());
+
     }
 
-	private void openNewViajeForm() {
+    private void setComboCiudades() {
+
+        Pais pais = viajesView.getPaisFilter().getValue();
+        viajesView.getCiudadFilter().setItems(pais.getCiudades());
+
+    }
+
+    private void openNewViajeForm() {
         viajeFormController = new ViajeFormController();
         viajeFormController.getViajeForm().open();
         viajeFormController.setChangeHandler(this::listViajes);
@@ -108,7 +116,9 @@ public class ViajesController {
     }
 
     private void setParametrosBusqueda(Viaje viajeBusqueda) {
-        viajeBusqueda.setDestino(new Destino());
+        Destino destino = new Destino();
+        destino.setCiudad(new Ciudad());
+        viajeBusqueda.setDestino(destino);
         viajeBusqueda.setTransporte(new Transporte());
         if(!viajesView.getIdFilter().isEmpty()){
             viajeBusqueda.setId(viajesView.getIdFilter().getValue().longValue());
@@ -117,7 +127,7 @@ public class ViajesController {
             viajeBusqueda.getDestino().setCiudad(viajesView.getCiudadFilter().getValue());
         }
         if(!viajesView.getPaisFilter().isEmpty()){
-            viajeBusqueda.getDestino().setPais(viajesView.getPaisFilter().getValue());
+            viajeBusqueda.getDestino().getCiudad().setPais(viajesView.getPaisFilter().getValue());
         }
         if(!viajesView.getCodTransporteFilter().isEmpty()){
             viajeBusqueda.getTransporte().setCodTransporte(viajesView.getCodTransporteFilter().getValue());

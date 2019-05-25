@@ -1,13 +1,12 @@
 package com.tp.proyecto1;
 
 
-import com.tp.proyecto1.model.viajes.TagDestino;
+import com.tp.proyecto1.model.viajes.*;
+import com.tp.proyecto1.repository.viajes.PaisRepository;
 import com.tp.proyecto1.services.*;
 import com.vaadin.flow.component.UI;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +16,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import com.tp.proyecto1.model.users.User;
-import com.tp.proyecto1.model.viajes.Destino;
-import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.repository.clientes.ClienteRepository;
 import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
 import com.tp.proyecto1.repository.pasajes.ReservaRepository;
@@ -50,7 +47,8 @@ public class Proyecto1Application {
 									  PromocionRepository promocionRepository,
 									  DestinoService destinoService,
 									  ConfiguracionService configService,
-									  TagDestinoService tagDestinoService
+									  TagDestinoService tagDestinoService,
+									  PaisRepository paisRepository
 									  /*PromocionDescuentoRepository promocionDescuentosRepository,
 									  PromocionDescuentoRepository promocionPuntosRepository*/) {
 		return args -> {
@@ -70,13 +68,48 @@ public class Proyecto1Application {
 			ventaService.createFormaDePagoIfNotExist("Débito");
 			ventaService.createFormaDePagoIfNotExist("Crédito");
 			configService.createConfiguracionIfNotExist("reserva_fecha_maxima", "3");
+			if(tagDestinoService.findAll().isEmpty()){
+				TagDestino tagPlaya = new TagDestino("Playa");
+				TagDestino tagMontania = new TagDestino("Montaña");
+				TagDestino tagEuropa = new TagDestino("Europa");
+				tagDestinoService.save(tagPlaya);
+				tagDestinoService.save(tagMontania);
+				tagDestinoService.save(tagEuropa);
+			}
+			if(paisRepository.findAll().isEmpty()){
+				Pais argentina = new Pais();
+				argentina.setNombre("Argentina");
+				Ciudad buenosAires = new Ciudad();
+				buenosAires.setNombre("Buenos Aires");
+				buenosAires.setPais(argentina);
+				Ciudad mendoza = new Ciudad();
+				mendoza.setNombre("Mendoza");
+				mendoza.setPais(argentina);
+				Ciudad misiones = new Ciudad();
+				misiones.setNombre("Misiones");
+				misiones.setPais(argentina);
+				Set<Ciudad> ciudadesArgentina = new HashSet<>();
+				ciudadesArgentina.add(buenosAires);
+				ciudadesArgentina.add(misiones);
+				ciudadesArgentina.add(mendoza);
+				argentina.setCiudades(ciudadesArgentina);
+				paisRepository.save(argentina);
 
-//			TagDestino tagPlaya = new TagDestino("Playa");
-//			TagDestino tagMontania = new TagDestino("Montaña");
-//			TagDestino tagEuropa = new TagDestino("Europa");
-//			tagDestinoService.save(tagPlaya);
-//			tagDestinoService.save(tagMontania);
-//			tagDestinoService.save(tagEuropa);
+				Pais brasil = new Pais();
+				brasil.setNombre("Brasil");
+				Ciudad sanPablo = new Ciudad();
+				sanPablo.setNombre("San Pablo");
+				sanPablo.setPais(brasil);
+				Ciudad rioJaneiro = new Ciudad();
+				rioJaneiro.setNombre("Rio de Janeiro");
+				rioJaneiro.setPais(brasil);
+				Set<Ciudad> ciudadesBrasil = new HashSet<>();
+				ciudadesBrasil.add(rioJaneiro);
+				ciudadesBrasil.add(sanPablo);
+				brasil.setCiudades(ciudadesBrasil);
+				paisRepository.save(brasil);
+			}
+
 /*
 			System.out.println(promocionRepository.findByViajesAfectados(viajeService.findAll().get(0)));
 			
