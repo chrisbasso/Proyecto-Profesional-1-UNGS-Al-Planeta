@@ -1,6 +1,7 @@
 package com.tp.proyecto1.controllers;
 
 import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.model.pasajes.EstadoTransaccion;
 import com.tp.proyecto1.model.pasajes.PasajeVenta;
 import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.model.viajes.*;
@@ -78,23 +79,35 @@ public class VentasController {
 		  	ventaBorrar = venta;
 	        ConfirmationDialog confirmationDialog = new ConfirmationDialog("¿Realmente desea cancelar la Venta?");
 	        confirmationDialog.getConfirmButton().addClickListener(event -> {ventaBorrar.inactivar();
-		        Viaje viaje = ventaBorrar.getViaje();
-				viaje.agregarPasajes(ventaBorrar.getCantidadPasajes());
-				
-				LocalDate fechaSalida = viaje.getFechaSalida();
-				Double importeTotalOriginal = ventaBorrar.getImporteTotal();
-				Double importeCancelacion = calcularImporteCancelacion(fechaSalida, importeTotalOriginal );
-				ventaBorrar.setImporteTotal(importeCancelacion);
-				
-				viajeService.save(viaje);
-	            ventaService.save(ventaBorrar);
-	            if (importeCancelacion == 0.0) {
-	            	Notification.show("La Venta fue cancelada, se le reintegra el total al cliente " +ventaBorrar.getCliente().getNombreyApellido());
-	            }
-	            else {
-	            	Double reintegro = importeTotalOriginal - importeCancelacion;
-	            	Notification.show("La Venta fue cancelada, se le reintegra "+ reintegro + " al cliente " +ventaBorrar.getCliente().getNombreyApellido());
-	            }
+		        if (ventaBorrar.getEstadoTransaccion() == EstadoTransaccion.VENCIDA ) {
+		        	Notification.show("No se puede cancelar la venta porque se encuentra vencida");
+		        }
+		        else {
+		        	Viaje viaje = ventaBorrar.getViaje();
+					viaje.agregarPasajes(ventaBorrar.getCantidadPasajes());
+					
+					LocalDate fechaSalida = viaje.getFechaSalida();
+					 
+					Double importeTotalOriginal = ventaBorrar.getImporteTotal();
+					Double importeCancelacion = calcularImporteCancelacion(fechaSalida, importeTotalOriginal );
+					
+					ventaBorrar.setImporteTotal(importeCancelacion);
+					
+					viajeService.save(viaje);
+		            ventaService.save(ventaBorrar);
+		            
+		            if (importeCancelacion == 0.0) {
+		            	ventaBorrar.setEstadoTransaccion(EstadoTransaccion.CANCELADA);
+		            	
+		            	Notification.show("La Venta fue cancelada, se le reintegra el total al cliente " +ventaBorrar.getCliente().getNombreyApellido());
+		            }
+		            else {           
+		            	Double reintegro = importeTotalOriginal - importeCancelacion;
+		            	ventaBorrar.setEstadoTransaccion(EstadoTransaccion.PENALIZADA);
+		            	ventaService.save(ventaBorrar);
+		            	Notification.show("La Venta fue penalizada, se le reintegra " + reintegro + " al cliente " +ventaBorrar.getCliente().getNombreyApellido());
+		            }
+		        }
 	            changeHandler.onChange();
 	        });
 	        confirmationDialog.open();
@@ -104,7 +117,7 @@ public class VentasController {
 		Double importeCancelacion = 0.0;
 		LocalDate fechaActual = LocalDate.now();
 		int cantDiasRestantes = fechaSalida.compareTo(fechaActual);
-			if (cantDiasRestantes< 5 && cantDiasRestantes >= 0 ) {
+			if (cantDiasRestantes < 5 && cantDiasRestantes >= 0 ) {
 				switch (cantDiasRestantes) {
 					case 4:
 						importeCancelacion = (importeTotal * 0.2 );
@@ -117,9 +130,6 @@ public class VentasController {
 						break;
 					case 1:
 						importeCancelacion = (importeTotal * 0.8 );
-						break;
-					case 0:
-						importeCancelacion = importeTotal;
 						break;
 				}
 			}

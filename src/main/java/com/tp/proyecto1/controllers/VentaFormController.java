@@ -218,12 +218,16 @@ public class VentaFormController {
 			this.viaje = reserva.getViaje();
 			
 			precioTotal = reserva.getImporteTotal();
+			
+			venta.setEstadoTransaccion(EstadoTransaccion.VENDIDA);
 		}
 		else {
 				pagoVenta = new Pago(venta, formaPago, viaje.getPrecio(),  LocalDate.now());//tiro null pointer al hacer la prueba q esta en la hoja
 				venta.agregarPago(pagoVenta);
 				
 				precioTotal = ventaForm.getSaldoPagar().getValue();
+				
+				venta.setEstadoTransaccion(EstadoTransaccion.CREADA);
 			}
 		
 		ventaForm.getPasajerosGridComponent().getPasajerosList().stream().forEach(pasajero->{
@@ -244,7 +248,7 @@ public class VentaFormController {
 		clienteService.save(cliente);
 		
 		venta.setImporteTotal(precioTotal);//si es el caso que viene de reserva le paso igual el importe total, sino faltaria un campo en que diga importeVenta/parcial
-
+		
 		return venta;
 	}
 	
