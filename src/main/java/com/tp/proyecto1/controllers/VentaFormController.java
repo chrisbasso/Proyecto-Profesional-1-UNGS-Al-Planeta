@@ -8,16 +8,13 @@ import java.util.stream.Collectors;
 import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.pasajes.*;
 import com.tp.proyecto1.model.viajes.Pais;
+import com.tp.proyecto1.services.*;
 import com.tp.proyecto1.utils.Inject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.lotePunto.LotePunto;
 import com.tp.proyecto1.model.viajes.Viaje;
-import com.tp.proyecto1.services.ClienteService;
-import com.tp.proyecto1.services.ReservaService;
-import com.tp.proyecto1.services.VentaService;
-import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.views.ventas.VentaForm;
 import com.vaadin.flow.component.notification.Notification;
@@ -42,6 +39,9 @@ public class VentaFormController {
 	
 	@Autowired
 	private ReservaService reservaService;
+
+	@Autowired
+	private UserService userService;
 	
 	private ChangeHandler changeHandler;
 
@@ -234,8 +234,7 @@ public class VentaFormController {
 		viaje.restarPasajes(venta.getPasajes().size());
 		venta.setViaje(viaje);
 		viajeService.save(viaje);
-		
-		
+
 		Integer cantPuntos =  precioTotal.intValue()/10;
 		
 		LotePunto  lotePunto = new LotePunto(LocalDate.now(), null, cantPuntos , true, cantPuntos, cliente);

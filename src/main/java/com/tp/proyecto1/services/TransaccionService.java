@@ -4,6 +4,7 @@ import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.Transaccion;
 import com.tp.proyecto1.repository.pasajes.TransaccionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,5 +25,12 @@ public class TransaccionService {
 			}
 		}
 		return false;
+	}
+
+	@Transactional
+	public List<Transaccion> findAllTransacciones(Transaccion transaccion){
+		List<Transaccion> transacciones =  transaccionRepository.findAll(Example.of(transaccion));
+		return transacciones;
+
 	}
 }
