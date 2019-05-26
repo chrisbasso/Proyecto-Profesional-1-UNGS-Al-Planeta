@@ -92,10 +92,16 @@ public class ViajeService {
 
     }
 
-
-    
     @Transactional
     public void saveTagDestino(TagDestino tag) {
     	tagDestinoRepository.save(tag);
+    }
+    @Transactional
+    public void savePais(Pais pais) {
+        paisRepository.save(pais);
+    }
+    @Transactional
+    public void saveCiudad(Ciudad ciudad) {
+        ciudadRepository.save(ciudad);
     }
 }

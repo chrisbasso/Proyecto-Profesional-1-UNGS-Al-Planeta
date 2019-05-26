@@ -16,7 +16,7 @@ import java.util.Objects;
 
 @Entity
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
-public abstract class Transaccion {
+public class Transaccion {
 
 	@Id
 	@GeneratedValue

@@ -18,6 +18,10 @@ public class Ciudad {
     public Ciudad() {
     }
 
+    public Ciudad(String nombre) {
+        this.nombre = nombre;
+    }
+
     public Long getId() {
         return id;
     }

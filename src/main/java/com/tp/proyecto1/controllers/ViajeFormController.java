@@ -64,9 +64,52 @@ public class ViajeFormController {
     }
 
     private void setListeners() {
-        viajeForm.getPais().addValueChangeListener(e->setComboCiudades());
-        viajeForm.getBtnSave().addClickListener(e-> saveViaje(viaje));
-        viajeForm.getBtnCancel().addClickListener(e->viajeForm.close());
+        viajeForm.getPais().addValueChangeListener(e -> setComboCiudades());
+        viajeForm.getBtnSave().addClickListener(e -> saveViaje(viaje));
+        viajeForm.getBtnCancel().addClickListener(e -> viajeForm.close());
+        viajeForm.getBtnNuevoPais().addClickListener(e -> agregarPais());
+        viajeForm.getPais().addValueChangeListener(e -> habilitarNuevaCiudad());
+        viajeForm.getBtnNuevaCiudad().addClickListener(e -> agregarCiudad());
+        viajeForm.getBtnNuevoTag().addClickListener(e->agregarTag());
+    }
+
+    private void agregarTag() {
+        if(!viajeForm.getCompNuevoTag().isEmpty()){
+            TagDestino nuevoTag = new TagDestino(viajeForm.getCompNuevoTag().getValue());
+            viajeService.saveTagDestino(nuevoTag);
+            viajeForm.getTagDestino().setItems(tagDestinoService.findAll());
+        }
+    }
+
+    private void agregarCiudad() {
+
+        if(!viajeForm.getCompNuevaCiudad().isEmpty()){
+            Pais pais = viajeForm.getPais().getValue();
+            Ciudad nuevaCiudad = new Ciudad(viajeForm.getCompNuevaCiudad().getValue());
+            pais.getCiudades().add(nuevaCiudad);
+            nuevaCiudad.setPais(pais);
+            viajeService.savePais(pais);
+            viajeForm.getCiudad().setItems(pais.getCiudades());
+
+        }
+    }
+
+    private void habilitarNuevaCiudad() {
+
+        if(viajeForm.getPais().getValue()!=null){
+            viajeForm.getBtnNuevaCiudad().setEnabled(true);
+        }else{
+            viajeForm.getBtnNuevaCiudad().setEnabled(false);
+        }
+
+    }
+
+    private void agregarPais() {
+        if(!viajeForm.getCompNuevoPais().isEmpty()){
+            Pais nuevoPais = new Pais(viajeForm.getCompNuevoPais().getValue());
+            viajeService.savePais(nuevoPais);
+            viajeForm.getPais().setItems(viajeService.findAllPaises());
+        }
     }
 
     private void setComboCiudades() {
