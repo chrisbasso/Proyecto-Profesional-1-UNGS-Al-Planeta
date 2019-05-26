@@ -20,6 +20,7 @@ public class ReportesView extends VerticalLayout {
 	private DatePicker fechaHasta = new DatePicker("Fecha Hasta");
 	private Button btnGenerar = new Button("Generar");
 	private Component gridDinamico = new Grid();
+	private HorizontalLayout hlCampos = new HorizontalLayout();
 
 	AreaChartExample areaChartExample = new AreaChartExample();
 
@@ -31,12 +32,18 @@ public class ReportesView extends VerticalLayout {
 	}
 
 	private void setLayout() {
-		HorizontalLayout hlCampos = new HorizontalLayout();
+
 		hlCampos.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
-		hlCampos.add(comboTipoReporte, filtroDinamico, fechaDesde, fechaHasta, btnGenerar);
+		setCampos();
 		this.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 		this.add(hlCampos, gridDinamico, areaChartExample);
 	}
+
+	public void setCampos() {
+		hlCampos.removeAll();
+		hlCampos.add(comboTipoReporte, filtroDinamico, fechaDesde, fechaHasta, btnGenerar);
+	}
+
 
 	private void setComponents() {
 

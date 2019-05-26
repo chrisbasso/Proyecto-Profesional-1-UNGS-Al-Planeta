@@ -18,6 +18,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import org.vaadin.gatanaso.MultiselectComboBox;
 
@@ -35,6 +36,10 @@ public class ViajeForm extends Dialog {
     private TimePicker horaSalida;
     private Button btnNuevoPais = new Button("Nuevo");
     private Button btnNuevaCiudad = new Button("Nueva");
+    private Button btnNuevoTag = new Button("Nuevo");
+    private TextField compNuevoPais = new TextField();
+    private TextField compNuevaCiudad = new TextField();
+    private TextField compNuevoTag = new TextField();
 
     private NumberField precio;
     private NumberField cantidadDias;
@@ -86,9 +91,9 @@ public class ViajeForm extends Dialog {
         textAreaDescripcion = new TextArea("Descripción");
         textAreaRecomendaciones = new TextArea("Recomendaciones");
 
-        textAreaDescripcion.setHeight("50px");
+        textAreaDescripcion.setHeight("80px");
         textAreaDescripcion.setWidth("770px");
-        textAreaRecomendaciones.setHeight("50px");
+        textAreaRecomendaciones.setHeight("80px");
         textAreaRecomendaciones.setWidth("770px");
         precio.setWidth("192px");
         precio.setMin(0);
@@ -98,6 +103,9 @@ public class ViajeForm extends Dialog {
 
         btnNuevaCiudad.addThemeVariants(ButtonVariant.LUMO_SMALL);
         btnNuevoPais.addThemeVariants(ButtonVariant.LUMO_SMALL);
+        btnNuevoTag.addThemeVariants(ButtonVariant.LUMO_SMALL);
+
+        btnNuevaCiudad.setEnabled(false);
 
     }
 
@@ -105,17 +113,17 @@ public class ViajeForm extends Dialog {
 
         FormLayout.FormItem paisItem = form.addFormItem(pais,"País");
         HorizontalLayout hlPais = new HorizontalLayout();
-        HorizontalLayout hlSpacePais = new HorizontalLayout();
-        hlSpacePais.setWidth("110px");
+        compNuevoPais.setWidth("112px");
+        compNuevoPais.addThemeVariants(TextFieldVariant.LUMO_SMALL);
         hlPais.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
-        hlPais.add(hlSpacePais,btnNuevoPais);
+        hlPais.add(compNuevoPais,btnNuevoPais);
         paisItem.add(hlPais);
         FormLayout.FormItem ciudadItem = form.addFormItem(ciudad,"Ciudad");
         HorizontalLayout hlCiudad = new HorizontalLayout();
-        HorizontalLayout hlSpaceCiudad = new HorizontalLayout();
-        hlSpaceCiudad.setWidth("112px");
+        compNuevaCiudad.setWidth("112px");
+        compNuevaCiudad.addThemeVariants(TextFieldVariant.LUMO_SMALL);
         hlCiudad.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
-        hlCiudad.add(hlSpaceCiudad,btnNuevaCiudad);
+        hlCiudad.add(compNuevaCiudad,btnNuevaCiudad);
         ciudadItem.add(hlCiudad);
         form.addFormItem(fechaSalida, "Fecha Salida");
         form.addFormItem(horaSalida, "Hora Salida");
@@ -126,7 +134,13 @@ public class ViajeForm extends Dialog {
         form.addFormItem(clase, "Clase");
         form.addFormItem(capacidad, "Capacidad");
         form.addFormItem(precio, "Precio");
-        form.addFormItem(tagDestino, "Tag Destino");
+        FormLayout.FormItem tagItem = form.addFormItem(tagDestino,"Tag Destino");
+        HorizontalLayout hlTag = new HorizontalLayout();
+        compNuevoTag.setWidth("112px");
+        compNuevoTag.addThemeVariants(TextFieldVariant.LUMO_SMALL);
+        hlTag.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
+        hlTag.add(compNuevoTag,btnNuevoTag);
+        tagItem.add(hlTag);
 
     }
 
@@ -227,6 +241,54 @@ public class ViajeForm extends Dialog {
 
     public NumberField getCantidadDias() {
         return cantidadDias;
+    }
+
+    public Button getBtnNuevoPais() {
+        return btnNuevoPais;
+    }
+
+    public void setBtnNuevoPais(Button btnNuevoPais) {
+        this.btnNuevoPais = btnNuevoPais;
+    }
+
+    public Button getBtnNuevaCiudad() {
+        return btnNuevaCiudad;
+    }
+
+    public void setBtnNuevaCiudad(Button btnNuevaCiudad) {
+        this.btnNuevaCiudad = btnNuevaCiudad;
+    }
+
+    public Button getBtnNuevoTag() {
+        return btnNuevoTag;
+    }
+
+    public void setBtnNuevoTag(Button btnNuevoTag) {
+        this.btnNuevoTag = btnNuevoTag;
+    }
+
+    public TextField getCompNuevoPais() {
+        return compNuevoPais;
+    }
+
+    public void setCompNuevoPais(TextField compNuevoPais) {
+        this.compNuevoPais = compNuevoPais;
+    }
+
+    public TextField getCompNuevaCiudad() {
+        return compNuevaCiudad;
+    }
+
+    public void setCompNuevaCiudad(TextField compNuevaCiudad) {
+        this.compNuevaCiudad = compNuevaCiudad;
+    }
+
+    public TextField getCompNuevoTag() {
+        return compNuevoTag;
+    }
+
+    public void setCompNuevoTag(TextField compNuevoTag) {
+        this.compNuevoTag = compNuevoTag;
     }
 
     public void setCantidadDias(NumberField cantidadDias) {
