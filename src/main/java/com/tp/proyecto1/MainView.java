@@ -1,13 +1,16 @@
 package com.tp.proyecto1;
 
-import com.tp.proyecto1.controllers.*;
-import com.tp.proyecto1.controllers.reserva.ReservasController;
-
-import com.tp.proyecto1.views.reportes.ReportesView;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.tp.proyecto1.model.users.User;
-import com.vaadin.flow.component.UI;
+import com.tp.proyecto1.controllers.ClientesController;
+import com.tp.proyecto1.controllers.EventosController;
+import com.tp.proyecto1.controllers.LoginController;
+import com.tp.proyecto1.controllers.PromocionesController;
+import com.tp.proyecto1.controllers.ReportesController;
+import com.tp.proyecto1.controllers.VentasController;
+import com.tp.proyecto1.controllers.ViajesController;
+import com.tp.proyecto1.controllers.contabilidad.AsientosController;
+import com.tp.proyecto1.controllers.reserva.ReservasController;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
@@ -41,6 +44,9 @@ public class MainView extends VerticalLayout {
 
 	@Autowired
 	private ReservasController reservasController;
+
+	@Autowired
+	private AsientosController asientosController;
 
 	@Autowired
 	private PromocionesController promocionesController;
@@ -99,7 +105,7 @@ public class MainView extends VerticalLayout {
 				new AppLayoutMenuItem(VaadinIcon.CALENDAR_CLOCK.create(),"Reservas", e->openReservasView()),
 				new AppLayoutMenuItem(VaadinIcon.GROUP.create(),"Clientes", e -> openClientesView()),
 				new AppLayoutMenuItem(VaadinIcon.PHONE.create(),"Eventos", e -> openEventosView()),
-				new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Contabilidad"),
+				new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Contabilidad", e -> openContabilidadView()),
 				new AppLayoutMenuItem(VaadinIcon.CHART_3D.create(), "Reportes", e-> openReportesView()),
 				new AppLayoutMenuItem(VaadinIcon.COGS.create(),"Configuración")
 		);
@@ -149,6 +155,10 @@ public class MainView extends VerticalLayout {
 //		eventosController.getChangeHandler().onChange();
 	}
 
+	private void openContabilidadView(){
+		appLayout.setContent(asientosController.getAsientosView());
+	}
+	
 	private void openClientesView() {
 		appLayout.setContent(clientesController.getView());
 	}

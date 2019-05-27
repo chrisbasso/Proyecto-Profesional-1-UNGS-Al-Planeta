@@ -1,11 +1,9 @@
 package com.tp.proyecto1.services;
 
-import com.tp.proyecto1.model.users.Privilege;
-import com.tp.proyecto1.model.users.Role;
-import com.tp.proyecto1.model.users.User;
-import com.tp.proyecto1.repository.users.PrivilegeRepository;
-import com.tp.proyecto1.repository.users.RoleRepository;
-import com.tp.proyecto1.repository.users.UserRepository;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +11,12 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.List;
+import com.tp.proyecto1.model.users.Privilege;
+import com.tp.proyecto1.model.users.Role;
+import com.tp.proyecto1.model.users.User;
+import com.tp.proyecto1.repository.users.PrivilegeRepository;
+import com.tp.proyecto1.repository.users.RoleRepository;
+import com.tp.proyecto1.repository.users.UserRepository;
 
 @Service
 public class UserService {
@@ -93,5 +95,14 @@ public class UserService {
 		return userRepository.findByUser(userName);
 	}
 
-
+	@Transactional
+	public User getUserById(Long userId){
+		Optional <User> usuario = userRepository.findById(userId);
+		if(usuario.isPresent()) {
+			return usuario.get();
+		}else {
+			return null;
+		}
+	}
+	
 }

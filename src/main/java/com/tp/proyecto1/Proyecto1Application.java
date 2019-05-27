@@ -1,14 +1,9 @@
 package com.tp.proyecto1;
 
 
-import com.tp.proyecto1.model.sucursales.Sucursal;
-import com.tp.proyecto1.model.viajes.*;
-import com.tp.proyecto1.repository.sucursales.SucursalRepository;
-import com.tp.proyecto1.repository.viajes.PaisRepository;
-import com.tp.proyecto1.services.*;
-import com.vaadin.flow.component.UI;
-
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,13 +12,26 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import com.tp.proyecto1.model.contabilidad.Cuenta;
+import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.model.users.User;
+import com.tp.proyecto1.model.viajes.Ciudad;
+import com.tp.proyecto1.model.viajes.Pais;
+import com.tp.proyecto1.model.viajes.TagDestino;
 import com.tp.proyecto1.repository.clientes.ClienteRepository;
+import com.tp.proyecto1.repository.contabilidad.CuentaRepository;
 import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
-import com.tp.proyecto1.repository.pasajes.ReservaRepository;
-import com.tp.proyecto1.repository.viajes.PromocionDescuentoRepository;
-import com.tp.proyecto1.repository.viajes.PromocionRepository;
 import com.tp.proyecto1.repository.pasajes.PasajeVentaRepository;
+import com.tp.proyecto1.repository.pasajes.ReservaRepository;
+import com.tp.proyecto1.repository.sucursales.SucursalRepository;
+import com.tp.proyecto1.repository.viajes.PaisRepository;
+import com.tp.proyecto1.repository.viajes.PromocionRepository;
+import com.tp.proyecto1.services.ConfiguracionService;
+import com.tp.proyecto1.services.DestinoService;
+import com.tp.proyecto1.services.TagDestinoService;
+import com.tp.proyecto1.services.UserService;
+import com.tp.proyecto1.services.VentaService;
+import com.tp.proyecto1.services.ViajeService;
 
 
 @SpringBootApplication
@@ -53,7 +61,8 @@ public class Proyecto1Application {
 									  ConfiguracionService configService,
 									  TagDestinoService tagDestinoService,
 									  PaisRepository paisRepository,
-									  SucursalRepository sucursalRepository
+									  SucursalRepository sucursalRepository,
+									  CuentaRepository cuentaRepository
 									  /*PromocionDescuentoRepository promocionDescuentosRepository,
 									  PromocionDescuentoRepository promocionPuntosRepository*/) {
 		return args -> {
@@ -64,50 +73,7 @@ public class Proyecto1Application {
 			crearTagsDestino(tagDestinoService);
 			crearPaisesCiudades(paisRepository);
 			setSurcursales(sucursalRepository);
-
-
-/*
-			System.out.println(promocionRepository.findByViajesAfectados(viajeService.findAll().get(0)));
-			
-			for(Destino destino : destinoService.findAll())
-			{
-				System.out.println(destino);
-				System.out.println(promocionRepository.findByDestinosAfectados(destino));
-			}
-			*/
-			
-			//configuracionService.createConfiguracionIfNotExist("reserva_fecha_maxima","5");
-//
-//			Cliente cliente = new Cliente("Alberto Carlos","Bustos", "854445");
-//			Transporte transporte = new Transporte();
-//			transporte.setTipo(viajeService.findAllTipoTransportes().get(0));
-//			clienteRepository.save(cliente);
-//			Reserva reserva = new Reserva();
-//			FormaDePago formaDePago = formaDePagoRepository.findByDescripcion("Efectivo");
-//			PasajeVenta venta = new PasajeVenta();
-//			Viaje viaje = new Viaje();
-//			viaje.setTransporte(transporte);
-//
-//			viajeService.save(viaje);
-//
-//			Pago pago1 = new Pago(cliente, venta, formaDePago,500.50, LocalDate.now());
-//			Pago pago2 = new Pago(cliente, venta, formaDePago,800.00, LocalDate.now());
-//			venta.setViaje(viaje);
-//			venta.setPersona(cliente);
-//
-//			venta.agregarPago(pago1);
-//
-//			ventaRepository.save(venta);
-
-			//log.info(ventaRepository.findAllPasajeVentas().toString());
-
-//			Pago pago1 = new Pago(cliente, reserva, formaDePago,500.50, LocalDate.now());
-//			Pago pago2 = new Pago(cliente, reserva, formaDePago,800.00, LocalDate.now());
-//			reserva.agregarPago(pago1);
-//			reserva.agregarPago(pago2);
-//
-//			reservaRepository.save(reserva);
-
+			crearCuentas(cuentaRepository);
 		};
 	}
 
@@ -195,5 +161,14 @@ public class Proyecto1Application {
 		User userEmployee = new User("pepe", "pepe", userService.getRoles());
 		userService.createUserIfNotExist(userEmployee);
 	}
-
+	
+	private void crearCuentas(CuentaRepository cuentaRepository) {
+		if(cuentaRepository.findAll().size()== 0) {
+			cuentaRepository.save(new Cuenta("Alquiler"));
+			cuentaRepository.save(new Cuenta("Limpieza"));
+			cuentaRepository.save(new Cuenta("Impuestos"));
+			cuentaRepository.save(new Cuenta("Sueldos"));
+			cuentaRepository.save(new Cuenta("Mantenimiento"));	
+		}
+	}
 }
