@@ -63,6 +63,13 @@ public class UserService {
 	}
 
 	@Transactional
+	public void save(User user){
+
+		userRepository.save(user);
+	}
+
+
+	@Transactional
 	public Role createRoleIfNotFound(
 			String name, Collection<Privilege> privileges) {
 

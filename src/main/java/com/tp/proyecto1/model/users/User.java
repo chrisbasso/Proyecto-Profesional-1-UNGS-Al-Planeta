@@ -1,9 +1,12 @@
 package com.tp.proyecto1.model.users;
 
 import com.tp.proyecto1.model.pasajes.Transaccion;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -29,8 +32,9 @@ public class User {
                     name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
-    @OneToMany
-    private List<Transaccion> transacciones;
+    @OneToMany(fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
+    private List<Transaccion> transacciones = new ArrayList<>();
 
 	public User() {
 	}

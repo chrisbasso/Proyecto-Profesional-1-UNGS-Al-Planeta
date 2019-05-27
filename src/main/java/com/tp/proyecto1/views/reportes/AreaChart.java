@@ -12,10 +12,21 @@ import com.github.appreciated.apexcharts.helper.Series;
 import com.vaadin.flow.component.html.Div;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.stream.IntStream;
 
-public class AreaChartExample extends Div {
-	public AreaChartExample() {
+public class AreaChart extends Div {
+
+
+	public AreaChart(List<Double> datos) {
+
+		Series series = new Series();
+		series.setName("INGRESOS");
+		series.setData(datos.toArray());
+
+
+		LocalDate fecha = LocalDate.now();
+
 		ApexCharts areaChart = new ApexCharts()
 				.withChart(
 						ChartBuilder.get()
@@ -28,14 +39,14 @@ public class AreaChartExample extends Div {
 						.withEnabled(false)
 						.build())
 				.withStroke(StrokeBuilder.get().withCurve(Curve.straight).build())
-				.withSeries(new Series("STOCK ABC", 10.0, 41.0, 35.0, 51.0, 49.0, 62.0, 69.0, 91.0, 148.0))
+				.withSeries(series)
 				.withTitle(TitleSubtitleBuilder.get()
-						.withText("Fundamental Analysis of Stocks")
+						.withText("Informe de Ingresos Anual")
 						.withAlign(Align.left).build())
 				.withSubtitle(TitleSubtitleBuilder.get()
-						.withText("Price Movements")
+						.withText("Importes")
 						.withAlign(Align.left).build())
-				.withLabels(IntStream.range(1, 10).boxed().map(day -> LocalDate.of(2000, 1, day).toString()).toArray(String[]::new))
+				.withLabels(IntStream.range(1, 13).boxed().map(month -> LocalDate.of(fecha.getYear(), month, 1).toString()).toArray(String[]::new))
 				.withXaxis(XAxisBuilder.get()
 						.withType(XAxisType.datetime).build())
 				.withYaxis(YAxisBuilder.get()

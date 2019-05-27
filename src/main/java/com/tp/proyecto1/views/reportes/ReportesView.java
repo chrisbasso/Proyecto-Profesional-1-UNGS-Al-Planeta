@@ -22,7 +22,7 @@ public class ReportesView extends VerticalLayout {
 	private Component gridDinamico = new Grid();
 	private HorizontalLayout hlCampos = new HorizontalLayout();
 
-	AreaChartExample areaChartExample = new AreaChartExample();
+	AreaChart areaChart;
 
 	public ReportesView() {
 
@@ -31,12 +31,13 @@ public class ReportesView extends VerticalLayout {
 
 	}
 
-	private void setLayout() {
+	public void setLayout() {
 
+		this.removeAll();
 		hlCampos.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
 		setCampos();
 		this.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-		this.add(hlCampos, gridDinamico, areaChartExample);
+		this.add(hlCampos, gridDinamico);
 	}
 
 	public void setCampos() {
@@ -107,11 +108,11 @@ public class ReportesView extends VerticalLayout {
 		this.gridDinamico = gridDinamico;
 	}
 
-	public AreaChartExample getAreaChartExample() {
-		return areaChartExample;
+	public AreaChart getAreaChart() {
+		return areaChart;
 	}
 
-	public void setAreaChartExample(AreaChartExample areaChartExample) {
-		this.areaChartExample = areaChartExample;
+	public void setAreaChart(AreaChart areaChart) {
+		this.areaChart = areaChart;
 	}
 }
