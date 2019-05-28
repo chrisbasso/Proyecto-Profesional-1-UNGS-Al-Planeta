@@ -31,7 +31,7 @@ public class PromocionForm extends Dialog
     private TextField nroFloat;
     private TextArea textAreaDescripcion;
     private MultiselectComboBox<Viaje> viajes;
-    private MultiselectComboBox<TagDestino> tagsDestino;
+   // private MultiselectComboBox<TagDestino> tagsDestino;
     private MultiselectComboBox<Destino> destinos;
     
     private Button btnSave;
@@ -77,9 +77,9 @@ public class PromocionForm extends Dialog
         viajes = new MultiselectComboBox<>();
         viajes.setLabel("Seleccione viajes");
         viajes.setItemLabelGenerator(Viaje::toString);
-        tagsDestino = new MultiselectComboBox<>();
+       /* tagsDestino = new MultiselectComboBox<>();
         tagsDestino.setLabel("Seleccione tags");
-        tagsDestino.setItemLabelGenerator(TagDestino::getDescripcion);
+        tagsDestino.setItemLabelGenerator(TagDestino::getDescripcion);*/
         
     }
 
@@ -91,7 +91,7 @@ public class PromocionForm extends Dialog
         form.addFormItem(nroFloat, "Bonificador");
         form.addFormItem(destinos, "Destinos afectados");
         form.addFormItem(viajes, "Viajes afectados");
-        form.addFormItem(tagsDestino, "Tags afectados");
+        //form.addFormItem(tagsDestino, "Tags afectados");
     }
 
     private void setLayouts() {
@@ -205,12 +205,12 @@ public class PromocionForm extends Dialog
 		this.viajes = viajes;
 	}
 
-	public MultiselectComboBox<TagDestino> getTagsDestino() {
+	/*public MultiselectComboBox<TagDestino> getTagsDestino() {
 		return tagsDestino;
 	}
 
 	public void setTagsDestino(MultiselectComboBox<TagDestino> tagsDestino) {
 		this.tagsDestino = tagsDestino;
-	}
+	}*/
 
 }

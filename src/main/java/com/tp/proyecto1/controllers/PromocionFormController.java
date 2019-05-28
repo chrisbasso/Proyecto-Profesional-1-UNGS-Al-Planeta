@@ -61,7 +61,7 @@ public class PromocionFormController {
     private void setComponents() {
     	promocionForm.getDestinos().setItems(destinosService.findAll());
     	promocionForm.getViajes().setItems(viajesService.findAll());
-    	promocionForm.getTagsDestino().setItems(tagsDestinoService.findAll());
+    	//promocionForm.getTagsDestino().setItems(tagsDestinoService.findAll());
     }
 
     private void setListeners() {
@@ -122,7 +122,7 @@ public class PromocionFormController {
     		cantidadPasajes = Integer.parseInt(promocionForm.getCantidadPasajes().getValue());
     	Set<Destino> destinos  = promocionForm.getDestinos().getValue();
     	Set<Viaje> viajes = promocionForm.getViajes().getValue();
-    	Set<TagDestino> tags = promocionForm.getTagsDestino().getValue();
+    	//Set<TagDestino> tags = promocionForm.getTagsDestino().getValue();
     	Promocion promocionToAdd;
     	if (promocionForm.getTipoPromocion().getValue()=="Descuento")
     		promocionToAdd = new PromocionDescuento(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
@@ -130,7 +130,7 @@ public class PromocionFormController {
     		promocionToAdd = new PromocionPuntos(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
     	promocionToAdd.setDestinosAfectados(destinos);
     	promocionToAdd.setViajesAfectados(viajes);
-    	promocionToAdd.setTagsDestinoAfectados(tags);
+    	//promocionToAdd.setTagsDestinoAfectados(tags);
     	
     	return promocionToAdd;
     	
