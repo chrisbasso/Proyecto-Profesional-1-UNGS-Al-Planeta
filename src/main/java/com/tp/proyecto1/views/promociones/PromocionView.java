@@ -25,15 +25,10 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 	private NumberField idFilter;
 	private TextField nombreFilter;
 	private TextField codigoPromoFilter;
-	//private TextField codTransporteFilter;
 	private ComboBox<String> tipoPromoFilter;
-	//private DatePicker fechaDesdeFilter;
 	private DatePicker vencimientoMenorAFilter;
-	//private Checkbox activosCheck;
 	private Button searchButton;
 	private Button newPromocionButton;
-	/*private Button btnReservar;
-	private Button btnComprar;*/
 
 	public PromocionView() {
 		super(Promocion.class);
@@ -54,27 +49,19 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 		this.searchButton.setMinWidth("105px");
 		this.newPromocionButton = new Button("Nuevo", VaadinIcon.PLUS.create());
 		this.newPromocionButton.setMinWidth("105px");
-	//	this.activosCheck = new Checkbox("Solo Activos");
 		tipoPromoFilter = new ComboBox<>("Tipo de promocion");
         Collection<String> items = new ArrayList<String>();
         items.add("Descuento");
         items.add("Puntos");
         tipoPromoFilter.setItems(items);
-		/*this.fechaDesdeFilter = new DatePicker("Fecha Desde");
-		this.fechaDesdeFilter.setWidth("137px");*/
 		this.vencimientoMenorAFilter = new DatePicker("Vencimiento menor a");
 		this.vencimientoMenorAFilter.setWidth("170px");
-		/*this.btnComprar = new Button("Vender");
-		this.btnReservar = new Button("Reservar");*/
-	//	this.activosCheck.setValue(true);
-	//	this.activosCheck.setMinWidth("135px");
 	}
 
 	public void setLayout() {
 		HorizontalLayout hlSpace = new HorizontalLayout();
-		//this.hlFooter.add(btnReservar, btnComprar);
 		hlSpace.setWidthFull();
-		this.hlActions.add(idFilter, nombreFilter, codigoPromoFilter, /*codTransporteFilter, */tipoPromoFilter,/*fechaDesdeFilter,*/vencimientoMenorAFilter/*,activosCheck(*/,hlSpace, searchButton, newPromocionButton);
+		this.hlActions.add(idFilter, nombreFilter, codigoPromoFilter,tipoPromoFilter,vencimientoMenorAFilter,hlSpace, searchButton, newPromocionButton);
 	}
 
 	public void setGrid() {
@@ -117,16 +104,6 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 	public void setCodigoPromoFilter(TextField codigoPromoFilter) {
 		this.codigoPromoFilter = codigoPromoFilter;
 	}
-	
-	/*
-
-	public TextField getValueCodTransporte() {
-		return codTransporteFilter;
-	}
-
-	public void setCodTransporteFilter(TextField codTransporteFilter) {
-		this.codTransporteFilter = codTransporteFilter;
-	}*/
 
 	public NumberField getIdFilter() {
 		return idFilter;
@@ -144,14 +121,6 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 		this.newPromocionButton = newPromocionButton;
 	}
 
-	/*public Checkbox getActivosCheck() {
-		return activosCheck;
-	}
-
-	public void setActivosCheck(Checkbox activosCheck) {
-		this.activosCheck = activosCheck;
-	}*/
-
 	public ComboBox<String> getTipoPromoFilter() {
 		return tipoPromoFilter;
 	}
@@ -160,14 +129,6 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 		this.tipoPromoFilter = tipoPromoFilter;
 	}
 
-	/*public DatePicker getFechaDesdeFilter() {
-		return fechaDesdeFilter;
-	}
-
-	public void setFechaDesdeFilter(DatePicker fechaDesdeFilter) {
-		this.fechaDesdeFilter = fechaDesdeFilter;
-	}*/
-
 	public DatePicker getVencimientoMenorAFilter() {
 		return vencimientoMenorAFilter;
 	}
@@ -175,20 +136,4 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 	public void setVencimientoMenorAFilter(DatePicker vencimientoMenorAFilter) {
 		this.vencimientoMenorAFilter = vencimientoMenorAFilter;
 	}
-
-	/*public Button getBtnReservar() {
-		return btnReservar;
-	}
-
-	public void setBtnReservar(Button btnReservar) {
-		this.btnReservar = btnReservar;
-	}
-
-	public Button getBtnComprar() {
-		return btnComprar;
-	}
-
-	public void setBtnComprar(Button btnComprar) {
-		this.btnComprar = btnComprar;
-	}*/
 }
