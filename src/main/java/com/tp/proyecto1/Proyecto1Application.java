@@ -62,9 +62,7 @@ public class Proyecto1Application {
 									  TagDestinoService tagDestinoService,
 									  PaisRepository paisRepository,
 									  SucursalRepository sucursalRepository,
-									  CuentaRepository cuentaRepository
-									  /*PromocionDescuentoRepository promocionDescuentosRepository,
-									  PromocionDescuentoRepository promocionPuntosRepository*/) {
+									  CuentaRepository cuentaRepository) {
 		return args -> {
 			crearUsuarios(userService);
 			crearTiposTransportes(viajeService);

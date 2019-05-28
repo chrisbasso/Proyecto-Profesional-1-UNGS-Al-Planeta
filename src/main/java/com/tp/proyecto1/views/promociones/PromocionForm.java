@@ -27,11 +27,11 @@ public class PromocionForm extends Dialog
     private TextField nombre;
     private TextField cantidadPasajes;
     private ComboBox<String> tipoPromocion;
+    private ComboBox<String> aAfectar;
     private DatePicker fechaVencimiento;
     private TextField nroFloat;
     private TextArea textAreaDescripcion;
     private MultiselectComboBox<Viaje> viajes;
-   // private MultiselectComboBox<TagDestino> tagsDestino;
     private MultiselectComboBox<Destino> destinos;
     
     private Button btnSave;
@@ -57,6 +57,16 @@ public class PromocionForm extends Dialog
         tipoPromocion.setItems(items);
         tipoPromocion.setPattern("Puntos|Descuento");
         tipoPromocion.setPreventInvalidInput(true);
+        
+        aAfectar = new ComboBox<>();
+        items = new ArrayList<String>();
+        items.add("Viajes");
+        items.add("Destinos");
+        aAfectar.setItems(items);
+        aAfectar.setPattern("Viajes|Destinos");
+        aAfectar.setPreventInvalidInput(true);
+        
+        
         nombre = new TextField();
         fechaVencimiento = new DatePicker();
         nroFloat = new TextField();
@@ -74,12 +84,11 @@ public class PromocionForm extends Dialog
         destinos = new MultiselectComboBox<>();
         destinos.setLabel("Seleccione destinos");
         destinos.setItemLabelGenerator(Destino::toString);
+        destinos.setEnabled(false);
         viajes = new MultiselectComboBox<>();
         viajes.setLabel("Seleccione viajes");
         viajes.setItemLabelGenerator(Viaje::toString);
-       /* tagsDestino = new MultiselectComboBox<>();
-        tagsDestino.setLabel("Seleccione tags");
-        tagsDestino.setItemLabelGenerator(TagDestino::getDescripcion);*/
+        viajes.setEnabled(false);
         
     }
 
@@ -89,9 +98,9 @@ public class PromocionForm extends Dialog
         form.addFormItem(cantidadPasajes, "Cantidad de pasajes");
         form.addFormItem(tipoPromocion, "Tipo de promocion");
         form.addFormItem(nroFloat, "Bonificador");
+        form.addFormItem(aAfectar, "Afectara");
         form.addFormItem(destinos, "Destinos afectados");
         form.addFormItem(viajes, "Viajes afectados");
-        //form.addFormItem(tagsDestino, "Tags afectados");
     }
 
     private void setLayouts() {
@@ -205,12 +214,14 @@ public class PromocionForm extends Dialog
 		this.viajes = viajes;
 	}
 
-	/*public MultiselectComboBox<TagDestino> getTagsDestino() {
-		return tagsDestino;
+	public ComboBox<String> getaAfectar()
+	{
+		return aAfectar;
 	}
 
-	public void setTagsDestino(MultiselectComboBox<TagDestino> tagsDestino) {
-		this.tagsDestino = tagsDestino;
-	}*/
+	public void setaAfectar(ComboBox<String> aAfectar)
+	{
+		this.aAfectar = aAfectar;
+	}
 
 }

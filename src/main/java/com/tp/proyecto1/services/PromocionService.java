@@ -24,13 +24,6 @@ import com.tp.proyecto1.repository.viajes.PromocionRepository;
 @Service
 public class PromocionService
 {
-
-	/*@Autowired
-	private PromocionDescuentoRepository promocionDescuentoRepository;
-	
-	@Autowired
-	private PromocionPuntosRepository promocionPuntosRepository;
-	*/
 	@Autowired
 	private PromocionRepository promocionRepository;
 	
@@ -40,36 +33,21 @@ public class PromocionService
 	@Transactional
 	public void save(Promocion promocion)
 	{
+		if (promocion.getViajesAfectados().size()>0 && promocion.getDestinosAfectados().size()>0)
+			throw new IllegalArgumentException("No puede aver una promocion que afecte viajes y destinos a la vez.");
 		promocionRepository.save(promocion);
-		/*
-		if (promocion.getClass().equals(PromocionDescuento.class))
-			promocionDescuentoRepository.save((PromocionDescuento)promocion);
-		else
-			promocionPuntosRepository.save((PromocionPuntos)promocion);*/
 	}	
 	
 	@Transactional
 	public void delete(Promocion promocion)
 	{
 		promocionRepository.delete(promocion);
-		/*
-		if (promocion.getClass().equals(PromocionDescuento.class))
-			promocionDescuentoRepository.delete((PromocionDescuento)promocion);
-		else
-			promocionPuntosRepository.delete((PromocionPuntos)promocion);*/
 	}
 
 	@Transactional
     public List<Promocion> findAll()
 	{
 		return promocionRepository.findAll();
-		/*
-        List<Promocion> ret = new ArrayList<Promocion>();
-        for (PromocionDescuento promoDesc : promocionDescuentoRepository.findAll())
-        	ret.add(promoDesc);
-        for (PromocionPuntos promoPuntos : promocionPuntosRepository.findAll())
-        	ret.add(promoPuntos);
-        return ret;*/
     }
 	
 	@Transactional

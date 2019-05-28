@@ -65,6 +65,7 @@ public class PromocionFormController {
     	promocionForm.getBtnSave().addClickListener(e-> savePromocion(promocion));
     	promocionForm.getBtnCancel().addClickListener(e->promocionForm.close());
     	promocionForm.getTipoPromocion().addValueChangeListener(e-> cambiarBonificador());
+    	promocionForm.getaAfectar().addValueChangeListener(e-> cambiarAfectados());
     }
     
     private void cambiarBonificador()
@@ -90,6 +91,28 @@ public class PromocionFormController {
     		 promocionForm.getNroFloat().setEnabled(false);
     	 }
 	}
+    
+    private void cambiarAfectados()
+    {
+    	promocionForm.getViajes().clear();
+    	promocionForm.getDestinos().clear();
+    	promocionForm.getViajes().setEnabled(false);
+    	promocionForm.getDestinos().setEnabled(false);
+		if(promocionForm.getaAfectar().getValue()!= null)
+		{
+			if (promocionForm.getaAfectar().getValue().equals(("Viajes")))
+			{
+				promocionForm.getViajes().setEnabled(true);
+				promocionForm.getDestinos().setEnabled(false);
+			}
+			else
+			{
+				promocionForm.getDestinos().setEnabled(true);
+				promocionForm.getViajes().setEnabled(false);
+			}
+		}
+    				
+    }
 
 	private void savePromocion(Promocion promocion)
     {
@@ -133,6 +156,10 @@ public class PromocionFormController {
 
     public void setComponentsValues(Promocion promocion) {
         this.promocion = promocion;
+        if (this.promocion.getViajesAfectados().size()>0)
+        	promocionForm.getaAfectar().setValue(("Viajes"));
+        else if (this.promocion.getDestinosAfectados().size()>0)
+        	promocionForm.getaAfectar().setValue(("Destinos"));
         binderPromocion.setBean(promocion);
         setBinders();
     }
