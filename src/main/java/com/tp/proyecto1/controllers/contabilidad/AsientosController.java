@@ -39,6 +39,7 @@ public class AsientosController {
         this.asientoView = new AsientoView();        
         agregarBotonesEdicion();
         setListeners();
+        listAsientos();
     }
 
     private void agregarBotonesEdicion() {

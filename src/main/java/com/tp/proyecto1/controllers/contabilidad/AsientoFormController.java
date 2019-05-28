@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.contabilidad.Asiento;
 import com.tp.proyecto1.model.contabilidad.Cabecera;
 import com.tp.proyecto1.model.contabilidad.Cuenta;
@@ -57,7 +58,7 @@ public class AsientoFormController {
     
     private void guardarAsiento() {
     	LocalDate fecha = asientoForm.getFechaSeleccionada();
-    	User usuario = null;
+    	User usuario = Proyecto1Application.logUser;
     	String textoCabecera = asientoForm.getTextoCabecera();
     	Cabecera cabecera = new Cabecera(fecha, usuario, textoCabecera);
     	
