@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -47,6 +48,10 @@ public class PromocionFormController {
     private ChangeHandler changeHandler;
 
     private Binder<Promocion> binderPromocion = new Binder<>();
+    
+    private Binder<Collection<Viaje>>binderViajes = new Binder<>();
+    
+    private Binder<Collection<Destino>>binderDestinos = new Binder<>();
     
     private Promocion promocion;
 
@@ -139,6 +144,8 @@ public class PromocionFormController {
     public void setComponentsValues(Promocion promocion) {
         this.promocion = promocion;
         binderPromocion.setBean(promocion);
+        binderViajes.setBean(promocion.getViajesAfectados());
+        binderDestinos.setBean(promocion.getDestinosAfectados());
         setBinders();
     }
 
