@@ -21,6 +21,7 @@ import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.vaadin.gatanaso.MultiselectComboBox;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -40,19 +41,11 @@ public class PromocionFormController {
     private ViajeService viajesService;
 
     @Autowired
-    private TagDestinoService tagsDestinoService;
-    
-    @Autowired
     private DestinoService destinosService;
     
     private ChangeHandler changeHandler;
 
     private Binder<Promocion> binderPromocion = new Binder<>();
-    
-    private Binder<Collection<Viaje>>binderViajes = new Binder<>();
-    
-    private Binder<Collection<Destino>>binderDestinos = new Binder<>();
-    
     private Promocion promocion;
 
     public PromocionFormController() {
@@ -66,7 +59,6 @@ public class PromocionFormController {
     private void setComponents() {
     	promocionForm.getDestinos().setItems(destinosService.findAll());
     	promocionForm.getViajes().setItems(viajesService.findAll());
-    	//promocionForm.getTagsDestino().setItems(tagsDestinoService.findAll());
     }
 
     private void setListeners() {
@@ -127,7 +119,6 @@ public class PromocionFormController {
     		cantidadPasajes = Integer.parseInt(promocionForm.getCantidadPasajes().getValue());
     	Set<Destino> destinos  = promocionForm.getDestinos().getValue();
     	Set<Viaje> viajes = promocionForm.getViajes().getValue();
-    	//Set<TagDestino> tags = promocionForm.getTagsDestino().getValue();
     	Promocion promocionToAdd;
     	if (promocionForm.getTipoPromocion().getValue()=="Descuento")
     		promocionToAdd = new PromocionDescuento(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
@@ -135,7 +126,6 @@ public class PromocionFormController {
     		promocionToAdd = new PromocionPuntos(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
     	promocionToAdd.setDestinosAfectados(destinos);
     	promocionToAdd.setViajesAfectados(viajes);
-    	//promocionToAdd.setTagsDestinoAfectados(tags);
     	
     	return promocionToAdd;
     	
@@ -144,8 +134,6 @@ public class PromocionFormController {
     public void setComponentsValues(Promocion promocion) {
         this.promocion = promocion;
         binderPromocion.setBean(promocion);
-        binderViajes.setBean(promocion.getViajesAfectados());
-        binderDestinos.setBean(promocion.getDestinosAfectados());
         setBinders();
     }
 
@@ -157,6 +145,8 @@ public class PromocionFormController {
     	setBinderComboTipoPromocion(promocionForm.getTipoPromocion(), Promocion::getTipoPromocion, Promocion::setTipoPromocion, true);
     	setBinderFieldDoubleValue(promocionForm.getNroFloat(), Promocion::getDoubleValue, Promocion::setDoubleValue, true);
     	setBinderFieldCantidadPasajes(promocionForm.getCantidadPasajes(), Promocion::getCantidadPasajes, Promocion::setCantidadPasajes, true);
+    	setBinderComboViajes(promocionForm.getViajes(),Promocion::getViajesAfectados,Promocion::setViajesAfectados,false);
+    	setBinderComboDestino(promocionForm.getDestinos(),Promocion::getDestinosAfectados,Promocion::setDestinosAfectados,false);
     	
     	binderPromocion.setBean(promocion);
     }
@@ -246,6 +236,24 @@ public class PromocionFormController {
         }else{
             binding = binderPromocion.forField(combo).bind(valueProvider, setter);
         }
+        promocionForm.getBtnSave().addClickListener(event -> binding.validate());
+    }
+    
+    private void setBinderComboDestino(MultiselectComboBox combo, ValueProvider<Promocion, Set<Destino>> valueProvider, Setter<Promocion, Set<Destino>> setter, boolean isRequiered){
+
+        Binder.Binding<Promocion, Set<Destino>> binding;
+
+        binding = binderPromocion.forField(combo).bind(valueProvider, setter);
+
+        promocionForm.getBtnSave().addClickListener(event -> binding.validate());
+    }
+    
+    private void setBinderComboViajes(MultiselectComboBox combo, ValueProvider<Promocion, Set<Viaje>> valueProvider, Setter<Promocion, Set<Viaje>> setter, boolean isRequiered){
+
+        Binder.Binding<Promocion, Set<Viaje>> binding;
+
+        binding = binderPromocion.forField(combo).bind(valueProvider, setter);
+
         promocionForm.getBtnSave().addClickListener(event -> binding.validate());
     }
     

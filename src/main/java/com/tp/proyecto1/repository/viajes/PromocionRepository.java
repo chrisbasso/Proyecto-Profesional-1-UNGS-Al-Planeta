@@ -18,6 +18,4 @@ public interface PromocionRepository extends JpaRepository<Promocion, Long>{
 	Set<Promocion> findByViajesAfectados(Viaje viaje);
 	
 	Set<Promocion> findByDestinosAfectados(Destino destino);
-	
-	Set<Promocion> findByTagsDestinoAfectados(TagDestino tag);
 }

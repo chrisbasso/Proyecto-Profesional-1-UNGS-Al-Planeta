@@ -85,17 +85,6 @@ public class PromocionService
 	}
 	
 	@Transactional
-	public Set<Promocion> findByTagsDestinoAfectados(Set<TagDestino> tags)
-	{
-		Set<Promocion> toRet = new HashSet<>();
-		for (TagDestino tag : tags)
-		{
-			toRet.addAll(promocionRepository.findByTagsDestinoAfectados(tag));
-		}
-		return toRet;
-	}
-	
-	@Transactional
 	public Collection<Promocion> findPromociones(Promocion promocionBusqueda, LocalDate vencimientoMayorA)
 	{
 		List<Promocion> promociones; 

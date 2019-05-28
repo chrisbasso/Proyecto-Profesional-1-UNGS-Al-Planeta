@@ -79,6 +79,6 @@ public class Destino {
     @Override
     public String toString()
     {
-    	return ciudad+", "+ciudad.getPais();
+    	return getCiudad()+", "+getCiudad().getPais();
     }
 }

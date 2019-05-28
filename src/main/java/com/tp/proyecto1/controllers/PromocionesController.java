@@ -45,8 +45,6 @@ public class PromocionesController {
         setChangeHandler(this::listPromociones);
         promocionView.getNewPromocionButton().addClickListener(e-> openNewPromocionForm());
         promocionView.getSearchButton().addClickListener(e-> listPromociones());
-        /*promocionView.getBtnReservar().addClickListener(e-> openNewReservaForm());
-        promocionView.getBtnComprar().addClickListener(e-> openNewVentaForm());*/
     }
 
 	private void openNewPromocionForm() {

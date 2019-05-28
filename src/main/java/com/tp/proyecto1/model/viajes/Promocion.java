@@ -10,11 +10,15 @@ import java.util.TreeSet;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.vaadin.flow.component.dialog.Dialog;
 
@@ -40,14 +44,12 @@ public abstract class Promocion
 	
 	protected Integer cantidadPasajes;
 	
-	@OneToMany
-	protected Collection<Viaje> viajesAfectados;
+	@OneToMany(fetch = FetchType.EAGER)
+	protected Set<Viaje> viajesAfectados;
 	
-	@OneToMany
-	protected Collection<Destino> destinosAfectados;
-	
-	@OneToMany
-	protected Collection<TagDestino> tagsDestinoAfectados;
+	@OneToMany(fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
+	protected Set<Destino> destinosAfectados;
 	
 	public Promocion()
 	{
@@ -64,8 +66,6 @@ public abstract class Promocion
 		setCantidadPasajes(cantidadPasajes2);
 		viajesAfectados = new TreeSet<Viaje>();
 		destinosAfectados = new TreeSet<Destino>();
-		tagsDestinoAfectados = new TreeSet<TagDestino>();
-		
 	}
 	
 	public Long getId()
@@ -148,7 +148,7 @@ public abstract class Promocion
 		this.cantidadPasajes = cantidadPasajes2;
 	}
 
-	public Collection<Destino> getDestinosAfectados()
+	public Set<Destino> getDestinosAfectados()
 	{
 		return destinosAfectados;
 	}
@@ -158,7 +158,7 @@ public abstract class Promocion
 		this.destinosAfectados = destinosAfectados;
 	}
 	
-	public Collection<Viaje> getViajesAfectados()
+	public Set<Viaje> getViajesAfectados()
 	{
 		return viajesAfectados;
 	}
@@ -166,16 +166,6 @@ public abstract class Promocion
 	public void setViajesAfectados(Set<Viaje> viajesAfectados)
 	{
 		this.viajesAfectados = viajesAfectados;
-	}
-	
-	public Collection<TagDestino> getTagsDestinoAfectados()
-	{
-		return tagsDestinoAfectados;
-	}
-	
-	public void setTagsDestinoAfectados(Set<TagDestino> tagsDestinoAfectados)
-	{
-		this.tagsDestinoAfectados = tagsDestinoAfectados;
 	}
 	
 	@Override
@@ -202,7 +192,7 @@ public abstract class Promocion
 	@Override
 	public String toString()
 	{
-		return nombrePromocion;
+		return getNombrePromocion();
 	}
 	    
 }
