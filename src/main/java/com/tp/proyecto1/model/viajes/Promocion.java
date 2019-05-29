@@ -52,12 +52,14 @@ public abstract class Promocion
 	@Fetch(value = FetchMode.SUBSELECT)
 	protected Set<Ciudad> ciudadesAfectadas;
 	
+	protected boolean activo;
+	
 	public Promocion()
 	{
 		
 	}
 	
-	public Promocion(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion,Integer nroFloat, Integer cantidadPasajes2)
+	public Promocion(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion,Integer nroFloat, Integer cantidadPasajes2,boolean activo)
 	{
 		setNombrePromocion(nombrePromocion);
 		setDescripcion(descripcion);
@@ -67,6 +69,7 @@ public abstract class Promocion
 		setCantidadPasajes(cantidadPasajes2);
 		viajesAfectados = new TreeSet<Viaje>();
 		ciudadesAfectadas = new TreeSet<Ciudad>();
+		setActivo(activo);
 	}
 	
 	public Long getId()
@@ -169,6 +172,16 @@ public abstract class Promocion
 		this.viajesAfectados = viajesAfectados;
 	}
 	
+	public boolean isActivo()
+	{
+		return activo;
+	}
+
+	public void setActivo(boolean activo)
+	{
+		this.activo = activo;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;

@@ -106,13 +106,14 @@ public class PromocionesController {
         
         if(!promocionView.getCodigoPromoFilter().isEmpty())
             promocionBusqueda.setCodigoPromocion(promocionView.getCodigoPromoFilter().getValue());
+        promocionBusqueda.setActivo(promocionView.getActivosCheck().getValue());
         return promocionBusqueda;
     }
 
     private boolean checkFiltros() {
         return !promocionView.getIdFilter().isEmpty() || !promocionView.getTipoPromoFilter().isEmpty() ||
                 !promocionView.getNombreFilter().isEmpty() || !promocionView.getCodigoPromoFilter().isEmpty() ||
-                !promocionView.getVencimientoMenorAFilter().isEmpty();
+                !promocionView.getVencimientoMenorAFilter().isEmpty() || promocionView.getActivosCheck().getValue();
     }
 
     private void setChangeHandler(ChangeHandler h) {

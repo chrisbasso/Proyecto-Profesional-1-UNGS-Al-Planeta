@@ -29,6 +29,7 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 	private DatePicker vencimientoMenorAFilter;
 	private Button searchButton;
 	private Button newPromocionButton;
+	private Checkbox activosCheck;
 
 	public PromocionView() {
 		super(Promocion.class);
@@ -56,12 +57,15 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
         tipoPromoFilter.setItems(items);
 		this.vencimientoMenorAFilter = new DatePicker("Vencimiento menor a");
 		this.vencimientoMenorAFilter.setWidth("170px");
+		this.activosCheck = new Checkbox("Solo Activas");
+		this.activosCheck.setValue(true);
+		this.activosCheck.setMinWidth("135px");
 	}
 
 	public void setLayout() {
 		HorizontalLayout hlSpace = new HorizontalLayout();
 		hlSpace.setWidthFull();
-		this.hlActions.add(idFilter, nombreFilter, codigoPromoFilter,tipoPromoFilter,vencimientoMenorAFilter,hlSpace, searchButton, newPromocionButton);
+		this.hlActions.add(idFilter, nombreFilter, codigoPromoFilter,tipoPromoFilter,vencimientoMenorAFilter,activosCheck,hlSpace, searchButton, newPromocionButton);
 	}
 
 	public void setGrid() {
@@ -135,5 +139,15 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
 
 	public void setVencimientoMenorAFilter(DatePicker vencimientoMenorAFilter) {
 		this.vencimientoMenorAFilter = vencimientoMenorAFilter;
+	}
+
+	public Checkbox getActivosCheck()
+	{
+		return activosCheck;
+	}
+
+	public void setActivosCheck(Checkbox activosCheck)
+	{
+		this.activosCheck = activosCheck;
 	}
 }

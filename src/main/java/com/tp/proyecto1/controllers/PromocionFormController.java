@@ -141,9 +141,9 @@ public class PromocionFormController {
     	Set<Viaje> viajes = promocionForm.getViajes().getValue();
     	Promocion promocionToAdd;
     	if (promocionForm.getTipoPromocion().getValue()=="Descuento")
-    		promocionToAdd = new PromocionDescuento(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
+    		promocionToAdd = new PromocionDescuento(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes,true);
     	else
-    		promocionToAdd = new PromocionPuntos(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
+    		promocionToAdd = new PromocionPuntos(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes,true);
     	promocionToAdd.setCiudadesAfectadas(ciudades);
     	promocionToAdd.setViajesAfectados(viajes);
     	
