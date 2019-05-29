@@ -16,7 +16,7 @@ public class TagDestino {
     private String descripcion;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Destino> destinos;
+    private Set<Viaje> viajes;
 
 
     public TagDestino() {
@@ -42,12 +42,12 @@ public class TagDestino {
         this.descripcion = descripcion;
     }
 
-    public Set<Destino> getDestinos() {
-        return destinos;
+    public Set<Viaje> getViajes() {
+        return viajes;
     }
 
-    public void setDestinos(Set<Destino> destinos) {
-        this.destinos = destinos;
+    public void setViajes(Set<Viaje> viajes) {
+        this.viajes = viajes;
     }
 
     @Override

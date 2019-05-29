@@ -91,8 +91,8 @@ public class ReservaForm extends Dialog{
 
 	private void cargarValores() {
 		id.setValue(viaje.getId().toString());
-    	pais.setValue(viaje.getDestino().getCiudad().getPais().getNombre());
-    	ciudad.setValue(viaje.getDestino().getCiudad().getNombre());
+    	pais.setValue(viaje.getCiudad().getPais().getNombre());
+    	ciudad.setValue(viaje.getCiudad().getNombre());
     	codTransporte.setValue(viaje.getTransporte().getCodTransporte());
     	transporte.setValue(viaje.getTransporte().getTipo().getDescripcion());
     	fecha.setValue(viaje.getFechaSalida().toString());

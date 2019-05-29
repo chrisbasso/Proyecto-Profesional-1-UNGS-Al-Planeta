@@ -3,7 +3,9 @@ package com.tp.proyecto1.model.viajes;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 public class Viaje {
@@ -12,8 +14,13 @@ public class Viaje {
 	@GeneratedValue
 	private Long id;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	private Destino destino;
+	@OneToOne
+	private Ciudad ciudad;
+
+	private String recomendacion;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	private Set<TagDestino> tagsDestino = new HashSet<>();
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private Transporte transporte;
@@ -31,8 +38,8 @@ public class Viaje {
 	public Viaje() {
 	}
 
-	public Viaje(Destino destino, Transporte transporte, LocalDate fechaSalida, LocalTime horaSalida, Double precio, String descripcion, boolean activo) {
-		this.destino = destino;
+	public Viaje(Ciudad ciudad, Transporte transporte, LocalDate fechaSalida, LocalTime horaSalida, Double precio, String descripcion, boolean activo) {
+		this.ciudad = ciudad;
 		this.transporte = transporte;
 		this.fechaSalida = fechaSalida;
 		this.horaSalida = horaSalida;
@@ -60,10 +67,7 @@ public class Viaje {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	public Destino getDestino() {
-		return destino;
-	}
+
 
 	public Integer getDuracionDias() {
 		return duracionDias;
@@ -81,9 +85,6 @@ public class Viaje {
 		this.duracionHoras = duracionHoras;
 	}
 
-	public void setDestino(Destino destino) {
-		this.destino = destino;
-	}
 
 	public Transporte getTransporte() {
 		return transporte;
@@ -140,23 +141,45 @@ public class Viaje {
 		Viaje viaje = (Viaje) o;
 		return activo == viaje.activo &&
 				Objects.equals(id, viaje.id) &&
-				Objects.equals(destino, viaje.destino) &&
 				Objects.equals(transporte, viaje.transporte) &&
 				Objects.equals(fechaSalida, viaje.fechaSalida) &&
 				Objects.equals(horaSalida, viaje.horaSalida) &&
-
 				Objects.equals(precio, viaje.precio) &&
 				Objects.equals(descripcion, viaje.descripcion);
 	}
 
+	public Ciudad getCiudad() {
+		return ciudad;
+	}
+
+	public void setCiudad(Ciudad ciudad) {
+		this.ciudad = ciudad;
+	}
+
+	public String getRecomendacion() {
+		return recomendacion;
+	}
+
+	public void setRecomendacion(String recomendacion) {
+		this.recomendacion = recomendacion;
+	}
+
+	public Set<TagDestino> getTagsDestino() {
+		return tagsDestino;
+	}
+
+	public void setTagsDestino(Set<TagDestino> tagsDestino) {
+		this.tagsDestino = tagsDestino;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, destino, transporte, fechaSalida, horaSalida, precio, descripcion, activo);
+		return Objects.hash(id, ciudad, transporte, fechaSalida, horaSalida, precio, descripcion, activo);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return getDestino().toString() + ", " + getFechaSalida().toString() + " "  +  getHoraSalida().toString() + ", " + getTransporte().getTipo().getDescripcion();
+		return getCiudad().toString() + ", " + getFechaSalida().toString() + " "  +  getHoraSalida().toString() + ", " + getTransporte().getTipo().getDescripcion();
 	}
 }

@@ -135,9 +135,8 @@ public class ReservasController {
         reservaBusqueda.setCliente(cliente);
         Transporte transporte = new Transporte();
         Viaje viaje = new Viaje();
-        Destino destino = new Destino();
-        destino.setCiudad(new Ciudad());
-        viaje.setDestino(destino);
+        Ciudad ciudad = new Ciudad();
+        viaje.setCiudad(ciudad);
         viaje.setTransporte(transporte);
         viaje.setActivo(true);
         reservaBusqueda.setViaje(viaje);
@@ -145,10 +144,10 @@ public class ReservasController {
             reservaBusqueda.getCliente().setId(reservaView.getValueNumeroCliente());
         }
         if(!reservaView.getCiudadFilter().isEmpty()){
-            reservaBusqueda.getViaje().getDestino().setCiudad(reservaView.getCiudadFilter().getValue());
+            reservaBusqueda.getViaje().setCiudad(reservaView.getCiudadFilter().getValue());
         }
         if(!reservaView.getPaisFilter().isEmpty()){
-            reservaBusqueda.getViaje().getDestino().getCiudad().setPais(reservaView.getPaisFilter().getValue());
+            reservaBusqueda.getViaje().getCiudad().setPais(reservaView.getPaisFilter().getValue());
         }
         if(!reservaView.getValueCodTransporte().equals("")){
             reservaBusqueda.getViaje().getTransporte().setCodTransporte(reservaView.getValueCodTransporte());

@@ -2,7 +2,6 @@ package com.tp.proyecto1;
 
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -27,7 +26,6 @@ import com.tp.proyecto1.repository.sucursales.SucursalRepository;
 import com.tp.proyecto1.repository.viajes.PaisRepository;
 import com.tp.proyecto1.repository.viajes.PromocionRepository;
 import com.tp.proyecto1.services.ConfiguracionService;
-import com.tp.proyecto1.services.DestinoService;
 import com.tp.proyecto1.services.TagDestinoService;
 import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.services.VentaService;
@@ -57,7 +55,6 @@ public class Proyecto1Application {
 									  FormaDePagoRepository formaDePagoRepository,
 									  PasajeVentaRepository pasajeVentaRepository,
 									  PromocionRepository promocionRepository,
-									  DestinoService destinoService,
 									  ConfiguracionService configService,
 									  TagDestinoService tagDestinoService,
 									  PaisRepository paisRepository,

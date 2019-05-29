@@ -1,9 +1,7 @@
 package com.tp.proyecto1.controllers;
 
 import com.tp.proyecto1.model.viajes.*;
-import com.tp.proyecto1.services.DestinoService;
 import com.tp.proyecto1.services.PromocionService;
-import com.tp.proyecto1.services.TagDestinoService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
@@ -24,8 +22,6 @@ import org.springframework.stereotype.Controller;
 import org.vaadin.gatanaso.MultiselectComboBox;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 @Controller

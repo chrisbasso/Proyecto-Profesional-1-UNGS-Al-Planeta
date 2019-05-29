@@ -76,15 +76,15 @@ public class ViajesView extends FilterGridLayout<Viaje> implements View {
 	}
 
 	public void setGrid() {
-		grid.setColumns("id", "destino.ciudad.nombre","destino.ciudad.pais.nombre", "transporte.codTransporte",
+		grid.setColumns("id", "ciudad.nombre","ciudad.pais.nombre", "transporte.codTransporte",
 				"transporte.tipo.descripcion", "transporte.capacidadRestante", "transporte.clase",
 				"fechaSalida", "horaSalida", "precio");
 		grid.getColumnByKey("id").setHeader("Nº");
 		grid.getColumnByKey("id").setWidth("70px").setFlexGrow(0);
 		grid.getColumnByKey("transporte.capacidadRestante").setHeader("Disponibles");
 		grid.getColumnByKey("transporte.tipo.descripcion").setHeader("Tipo Transporte");
-		grid.getColumnByKey("destino.ciudad.pais.nombre").setHeader("País");
-		grid.getColumnByKey("destino.ciudad.nombre").setHeader("Ciudad");
+		grid.getColumnByKey("ciudad.pais.nombre").setHeader("País");
+		grid.getColumnByKey("ciudad.nombre").setHeader("Ciudad");
 
 	}
 

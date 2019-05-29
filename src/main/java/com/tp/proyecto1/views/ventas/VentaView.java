@@ -65,12 +65,12 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
     @Override
     public void setGrid() {
 
-        grid.setColumns("cliente.id", "cliente.nombre", "cliente.apellido", "cliente.dni", "viaje.destino.ciudad.nombre",
-                "viaje.destino.ciudad.pais.nombre", "viaje.transporte.codTransporte", "viaje.fechaSalida","importeTotal");
+        grid.setColumns("cliente.id", "cliente.nombre", "cliente.apellido", "cliente.dni", "viaje.ciudad.nombre",
+                "viaje.ciudad.pais.nombre", "viaje.transporte.codTransporte", "viaje.fechaSalida","importeTotal");
         grid.getColumnByKey("cliente.id").setHeader("Nº Cliente");
         grid.getColumnByKey("cliente.id").setWidth("100px").setFlexGrow(0);
-        grid.getColumnByKey("viaje.destino.ciudad.pais.nombre").setHeader("País");
-        grid.getColumnByKey("viaje.destino.ciudad.nombre").setHeader("Ciudad");
+        grid.getColumnByKey("viaje.ciudad.pais.nombre").setHeader("País");
+        grid.getColumnByKey("viaje.ciudad.nombre").setHeader("Ciudad");
 
     }
 

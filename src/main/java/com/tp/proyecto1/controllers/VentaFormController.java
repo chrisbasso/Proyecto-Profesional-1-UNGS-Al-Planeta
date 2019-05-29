@@ -80,8 +80,8 @@ public class VentaFormController {
 	
 	private void setComponentesLectura(Viaje viaje) {
 		ventaForm.getPais().setItems(viajeService.findAllPaises());
-		ventaForm.getPais().setValue(viaje.getDestino().getCiudad().getPais());
-		ventaForm.getCiudad().setValue(viaje.getDestino().getCiudad());
+		ventaForm.getPais().setValue(viaje.getCiudad().getPais());
+		ventaForm.getCiudad().setValue(viaje.getCiudad());
 		ventaForm.getCodTransporte().setValue(viaje.getTransporte().getCodTransporte());
 		ventaForm.getTransporte().setValue(viaje.getTransporte().getTipo().getDescripcion());
 		ventaForm.getFechaSalida().setValue(viaje.getFechaSalida().toString());
@@ -255,8 +255,8 @@ public class VentaFormController {
 
 		this.venta = venta;
 
-		ventaForm.getPais().setValue(venta.getViaje().getDestino().getCiudad().getPais());
-		ventaForm.getCiudad().setValue(venta.getViaje().getDestino().getCiudad());
+		ventaForm.getPais().setValue(venta.getViaje().getCiudad().getPais());
+		ventaForm.getCiudad().setValue(venta.getViaje().getCiudad());
 		ventaForm.getHoraSalida().setValue(venta.getViaje().getHoraSalida().toString());
 		ventaForm.getFechaSalida().setValue(venta.getViaje().getFechaSalida().toString());
 		ventaForm.getTransporte().setValue(venta.getViaje().getTransporte().getTipo().getDescripcion());

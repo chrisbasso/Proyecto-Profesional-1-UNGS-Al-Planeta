@@ -163,9 +163,8 @@ public class VentasController {
         venta.setCliente(cliente);
         Transporte transporte = new Transporte();
         Viaje viaje = new Viaje();
-        Destino destino = new Destino();
-        destino.setCiudad(new Ciudad());
-        viaje.setDestino(destino);
+        Ciudad ciudad = new Ciudad();
+        viaje.setCiudad(ciudad);
         viaje.setTransporte(transporte);
         viaje.setActivo(true);
         venta.setViaje(viaje);
@@ -173,10 +172,10 @@ public class VentasController {
             venta.getCliente().setId(ventaView.getNumeroClienteFilter().getValue().longValue());
         }
         if(!ventaView.getCiudadFilter().isEmpty()){
-            venta.getViaje().getDestino().setCiudad(ventaView.getCiudadFilter().getValue());
+            venta.getViaje().setCiudad(ventaView.getCiudadFilter().getValue());
         }
         if(!ventaView.getPaisFilter().isEmpty()){
-            venta.getViaje().getDestino().getCiudad().setPais(ventaView.getPaisFilter().getValue());
+            venta.getViaje().getCiudad().setPais(ventaView.getPaisFilter().getValue());
         }
         if(!ventaView.getCodTransporteFilter().isEmpty()){
             venta.getViaje().getTransporte().setCodTransporte(ventaView.getCodTransporteFilter().getValue());

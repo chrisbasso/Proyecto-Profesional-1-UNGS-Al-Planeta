@@ -116,18 +116,17 @@ public class ViajesController {
     }
 
     private void setParametrosBusqueda(Viaje viajeBusqueda) {
-        Destino destino = new Destino();
-        destino.setCiudad(new Ciudad());
-        viajeBusqueda.setDestino(destino);
+        Ciudad ciudad = new Ciudad();
+        viajeBusqueda.setCiudad(ciudad);
         viajeBusqueda.setTransporte(new Transporte());
         if(!viajesView.getIdFilter().isEmpty()){
             viajeBusqueda.setId(viajesView.getIdFilter().getValue().longValue());
         }
         if(!viajesView.getCiudadFilter().isEmpty()){
-            viajeBusqueda.getDestino().setCiudad(viajesView.getCiudadFilter().getValue());
+            viajeBusqueda.setCiudad(viajesView.getCiudadFilter().getValue());
         }
         if(!viajesView.getPaisFilter().isEmpty()){
-            viajeBusqueda.getDestino().getCiudad().setPais(viajesView.getPaisFilter().getValue());
+            viajeBusqueda.getCiudad().setPais(viajesView.getPaisFilter().getValue());
         }
         if(!viajesView.getCodTransporteFilter().isEmpty()){
             viajeBusqueda.getTransporte().setCodTransporte(viajesView.getCodTransporteFilter().getValue());
@@ -135,7 +134,6 @@ public class ViajesController {
         if(!viajesView.getTransporteFilter().isEmpty()){
             viajeBusqueda.getTransporte().setTipo(viajesView.getTransporteFilter().getValue());
         }
-
         viajeBusqueda.setActivo(viajesView.getActivosCheck().getValue());
     }
 
