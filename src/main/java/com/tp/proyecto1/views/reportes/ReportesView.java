@@ -14,7 +14,9 @@ import java.util.List;
 
 public class ReportesView extends VerticalLayout {
 
-	private ComboBox<String> comboTipoReporte = new ComboBox<>("Tipo");
+	private ComboBox<String> comboTipoReporte = new ComboBox<>("Tipo Reporte");
+	private ComboBox<String> comboTipoGrafico = new ComboBox<>("Tipo Gráfico");
+	private ComboBox<Integer> comboBoxMeses = new ComboBox<>("Mes");
 	private Component filtroDinamico = new ComboBox("");
 	private DatePicker fechaDesde = new DatePicker("Fecha Desde");
 	private DatePicker fechaHasta = new DatePicker("Fecha Hasta");
@@ -22,7 +24,6 @@ public class ReportesView extends VerticalLayout {
 	private Component gridDinamico = new Grid();
 	private HorizontalLayout hlCampos = new HorizontalLayout();
 
-	AreaChart areaChart;
 
 	public ReportesView() {
 
@@ -42,7 +43,7 @@ public class ReportesView extends VerticalLayout {
 
 	public void setCampos() {
 		hlCampos.removeAll();
-		hlCampos.add(comboTipoReporte, filtroDinamico, fechaDesde, fechaHasta, btnGenerar);
+		hlCampos.add(comboTipoReporte, filtroDinamico, fechaDesde, fechaHasta, comboTipoGrafico, comboBoxMeses, btnGenerar);
 	}
 
 
@@ -55,6 +56,17 @@ public class ReportesView extends VerticalLayout {
 		tiposReporte.add(TipoReporte.VENDEDOR.name());
 		tiposReporte.add(TipoReporte.EGRESOS.name());
 		comboTipoReporte.setItems(tiposReporte);
+
+		List<String> tiposGrafico = new ArrayList<>();
+		tiposGrafico.add("Anual");
+		tiposGrafico.add("Mensual");
+		comboTipoGrafico.setItems(tiposGrafico);
+
+		List<Integer> meses = new ArrayList<>();
+		for (int i = 0; i < 12; i++) {
+			meses.add(i+1);
+		}
+		comboBoxMeses.setItems(meses);
 
 		((Grid)gridDinamico).setSizeFull();
 
@@ -108,11 +120,27 @@ public class ReportesView extends VerticalLayout {
 		this.gridDinamico = gridDinamico;
 	}
 
-	public AreaChart getAreaChart() {
-		return areaChart;
+	public ComboBox<String> getComboTipoGrafico() {
+		return comboTipoGrafico;
 	}
 
-	public void setAreaChart(AreaChart areaChart) {
-		this.areaChart = areaChart;
+	public void setComboTipoGrafico(ComboBox<String> comboTipoGrafico) {
+		this.comboTipoGrafico = comboTipoGrafico;
+	}
+
+	public ComboBox<Integer> getComboBoxMeses() {
+		return comboBoxMeses;
+	}
+
+	public void setComboBoxMeses(ComboBox<Integer> comboBoxMeses) {
+		this.comboBoxMeses = comboBoxMeses;
+	}
+
+	public HorizontalLayout getHlCampos() {
+		return hlCampos;
+	}
+
+	public void setHlCampos(HorizontalLayout hlCampos) {
+		this.hlCampos = hlCampos;
 	}
 }

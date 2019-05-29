@@ -9,12 +9,11 @@ import com.github.appreciated.apexcharts.config.yaxis.builder.TitleBuilder;
 import com.github.appreciated.apexcharts.helper.Series;
 import com.vaadin.flow.component.html.Div;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class VerticalChart extends Div {
 
-	public VerticalChart(List<Double> datos) {
+	public VerticalChart(List<Double> datos, String mensual) {
 
 		Series series = new Series();
 		series.setName("INGRESOS");
@@ -53,8 +52,8 @@ public class VerticalChart extends Div {
 										"}").build())
 						.build());
 		add(barChart);
-		setWidth("50%");
-		setHeight("50%");
+		setWidth("40%");
+		setHeight("40%");
 	}
 }
 

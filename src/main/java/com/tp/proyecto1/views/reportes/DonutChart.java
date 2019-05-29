@@ -8,15 +8,13 @@ import com.github.appreciated.apexcharts.config.chart.Type;
 import com.github.appreciated.apexcharts.config.legend.Position;
 import com.github.appreciated.apexcharts.config.responsive.builder.OptionsBuilder;
 
-import com.github.appreciated.apexcharts.helper.Series;
 import com.vaadin.flow.component.html.Div;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public class DonutChart extends Div {
 
-	public DonutChart(List<Double> datos) {
+	public DonutChart(List<Double> datos, String mensual) {
 		Double[] target = new Double[datos.size()];
 		for (int i = 0; i < target.length; i++) {
 			target[i] = datos.get(i);
@@ -38,8 +36,8 @@ public class DonutChart extends Div {
 								.build())
 						.build());
 		add(donutChart);
-		setWidth("40%");
-		setHeight("40%");
+		setWidth("30%");
+		setHeight("30%");
 	}
 }
 

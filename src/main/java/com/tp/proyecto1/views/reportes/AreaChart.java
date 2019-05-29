@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
 public class AreaChart extends Div {
 
 
-	public AreaChart(List<Double> datos) {
+	public AreaChart(List<Double> datos, String tipo) {
 
 		Series series = new Series();
 		series.setName("INGRESOS");
@@ -27,34 +27,66 @@ public class AreaChart extends Div {
 
 		LocalDate fecha = LocalDate.now();
 
-		ApexCharts areaChart = new ApexCharts()
-				.withChart(
-						ChartBuilder.get()
-								.withType(Type.area)
-								.withZoom(ZoomBuilder.get()
-										.withEnabled(false)
-										.build())
-								.build())
-				.withDataLabels(DataLabelsBuilder.get()
-						.withEnabled(false)
-						.build())
-				.withStroke(StrokeBuilder.get().withCurve(Curve.straight).build())
-				.withSeries(series)
-				.withTitle(TitleSubtitleBuilder.get()
-						.withText("Informe de Ingresos Anual")
-						.withAlign(Align.left).build())
-				.withSubtitle(TitleSubtitleBuilder.get()
-						.withText("Importes")
-						.withAlign(Align.left).build())
-				.withLabels(IntStream.range(1, 13).boxed().map(month -> LocalDate.of(fecha.getYear(), month, 1).toString()).toArray(String[]::new))
-				.withXaxis(XAxisBuilder.get()
-						.withType(XAxisType.datetime).build())
-				.withYaxis(YAxisBuilder.get()
-						.withOpposite(true).build())
-				.withLegend(LegendBuilder.get().withHorizontalAlign(HorizontalAlign.left).build());
+		ApexCharts areaChart;
+
+		if(tipo.equals("anual")){
+			areaChart = new ApexCharts()
+					.withChart(
+							ChartBuilder.get()
+									.withType(Type.area)
+									.withZoom(ZoomBuilder.get()
+											.withEnabled(false)
+											.build())
+									.build())
+					.withDataLabels(DataLabelsBuilder.get()
+							.withEnabled(false)
+							.build())
+					.withStroke(StrokeBuilder.get().withCurve(Curve.straight).build())
+					.withSeries(series)
+					.withTitle(TitleSubtitleBuilder.get()
+							.withText("Informe de Ingresos Anual")
+							.withAlign(Align.left).build())
+					.withSubtitle(TitleSubtitleBuilder.get()
+							.withText("Importes")
+							.withAlign(Align.left).build())
+					.withLabels(IntStream.range(1, 13).boxed().map(value -> LocalDate.of(fecha.getYear(), value, 1).toString()).toArray(String[]::new))
+					.withXaxis(XAxisBuilder.get()
+							.withType(XAxisType.datetime).build())
+					.withYaxis(YAxisBuilder.get()
+							.withOpposite(true).build())
+					.withLegend(LegendBuilder.get().withHorizontalAlign(HorizontalAlign.left).build());
+		}else{
+			areaChart = new ApexCharts()
+					.withChart(
+							ChartBuilder.get()
+									.withType(Type.area)
+									.withZoom(ZoomBuilder.get()
+											.withEnabled(false)
+											.build())
+									.build())
+					.withDataLabels(DataLabelsBuilder.get()
+							.withEnabled(false)
+							.build())
+					.withStroke(StrokeBuilder.get().withCurve(Curve.straight).build())
+					.withSeries(series)
+					.withTitle(TitleSubtitleBuilder.get()
+							.withText("Informe de Ingresos Mensual")
+							.withAlign(Align.left).build())
+					.withSubtitle(TitleSubtitleBuilder.get()
+							.withText("Importes")
+							.withAlign(Align.left).build())
+					.withLabels(IntStream.range(1, 31).boxed().map(day -> LocalDate.of(fecha.getYear(), fecha.getMonth(), day).toString()).toArray(String[]::new))
+					.withXaxis(XAxisBuilder.get()
+							.withType(XAxisType.datetime).build())
+					.withYaxis(YAxisBuilder.get()
+							.withOpposite(true).build())
+					.withLegend(LegendBuilder.get().withHorizontalAlign(HorizontalAlign.left).build());
+		}
+
+
 		add(areaChart);
-		setWidth("50%");
-		setHeight("50%");
+		setWidth("40%");
+		setHeight("40%");
 
 	}
 }
