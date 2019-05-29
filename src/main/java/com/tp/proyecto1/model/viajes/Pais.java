@@ -53,5 +53,15 @@ public class Pais {
     {
     	return this.getNombre();
     }
+    
+    @Override
+   	public boolean equals(Object o) {
+   		if (this == o) return true;
+   		if (o == null || getClass() != o.getClass()) return false;
+   		Pais pais = (Pais) o;
+   		return
+   				Objects.equals(id, pais.id) &&
+   				Objects.equals(nombre, pais.nombre);
+   	}
 
 }

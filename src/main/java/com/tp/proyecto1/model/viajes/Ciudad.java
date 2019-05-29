@@ -51,6 +51,17 @@ public class Ciudad {
     {
     	return getNombre();
     }
+    
+    @Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Ciudad ciudad = (Ciudad) o;
+		return
+				Objects.equals(id, ciudad.id) &&
+				Objects.equals(nombre, ciudad.nombre) &&
+				Objects.equals(pais, ciudad.pais);
+	}
 
 
 }
