@@ -5,8 +5,7 @@ import java.util.Collection;
 
 import org.vaadin.gatanaso.MultiselectComboBox;
 
-import com.tp.proyecto1.model.viajes.Destino;
-import com.tp.proyecto1.model.viajes.TagDestino;
+import com.tp.proyecto1.model.viajes.Ciudad;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -32,7 +31,7 @@ public class PromocionForm extends Dialog
     private TextField nroFloat;
     private TextArea textAreaDescripcion;
     private MultiselectComboBox<Viaje> viajes;
-    private MultiselectComboBox<Destino> destinos;
+    private MultiselectComboBox<Ciudad> ciudades;
     
     private Button btnSave;
     private Button btnCancel;
@@ -61,9 +60,9 @@ public class PromocionForm extends Dialog
         aAfectar = new ComboBox<>();
         items = new ArrayList<String>();
         items.add("Viajes");
-        items.add("Destinos");
+        items.add("Ciudades");
         aAfectar.setItems(items);
-        aAfectar.setPattern("Viajes|Destinos");
+        aAfectar.setPattern("Viajes|Ciudades");
         aAfectar.setPreventInvalidInput(true);
         
         
@@ -81,10 +80,10 @@ public class PromocionForm extends Dialog
         cantidadPasajes.setPattern("[0-9]*");
         cantidadPasajes.setPreventInvalidInput(true);
        
-        destinos = new MultiselectComboBox<>();
-        destinos.setLabel("Seleccione destinos");
-        destinos.setItemLabelGenerator(Destino::toString);
-        destinos.setEnabled(false);
+        ciudades = new MultiselectComboBox<>();
+        ciudades.setLabel("Seleccione ciudades");
+        ciudades.setItemLabelGenerator(Ciudad::toString);
+        ciudades.setEnabled(false);
         viajes = new MultiselectComboBox<>();
         viajes.setLabel("Seleccione viajes");
         viajes.setItemLabelGenerator(Viaje::toString);
@@ -99,7 +98,7 @@ public class PromocionForm extends Dialog
         form.addFormItem(tipoPromocion, "Tipo de promocion");
         form.addFormItem(nroFloat, "Bonificador");
         form.addFormItem(aAfectar, "Afectara");
-        form.addFormItem(destinos, "Destinos afectados");
+        form.addFormItem(ciudades, "Ciudades afectadas");
         form.addFormItem(viajes, "Viajes afectados");
     }
 
@@ -198,12 +197,12 @@ public class PromocionForm extends Dialog
 		this.cantidadPasajes = cantidadPasajes;
 	}
 
-	public MultiselectComboBox<Destino> getDestinos() {
-		return destinos;
+	public MultiselectComboBox<Ciudad> getCiudades() {
+		return ciudades;
 	}
 
-	public void setDestinos(MultiselectComboBox<Destino> destinos) {
-		this.destinos = destinos;
+	public void setCiudades(MultiselectComboBox<Ciudad> ciudades) {
+		this.ciudades = ciudades;
 	}
 
 	public MultiselectComboBox<Viaje> getViajes() {

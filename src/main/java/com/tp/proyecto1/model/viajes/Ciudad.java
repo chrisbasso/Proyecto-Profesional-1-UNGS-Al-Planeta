@@ -49,7 +49,7 @@ public class Ciudad {
     @Override
     public String toString()
     {
-    	return getNombre();
+    	return getNombre() + ", " + getPais();
     }
 
 

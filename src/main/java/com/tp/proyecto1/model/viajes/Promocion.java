@@ -50,7 +50,7 @@ public abstract class Promocion
 	
 	@ManyToMany(fetch = FetchType.EAGER)
 	@Fetch(value = FetchMode.SUBSELECT)
-	protected Set<Destino> destinosAfectados;
+	protected Set<Ciudad> ciudadesAfectadas;
 	
 	public Promocion()
 	{
@@ -66,7 +66,7 @@ public abstract class Promocion
 		setDoubleValue(nroFloat);
 		setCantidadPasajes(cantidadPasajes2);
 		viajesAfectados = new TreeSet<Viaje>();
-		destinosAfectados = new TreeSet<Destino>();
+		ciudadesAfectadas = new TreeSet<Ciudad>();
 	}
 	
 	public Long getId()
@@ -149,14 +149,14 @@ public abstract class Promocion
 		this.cantidadPasajes = cantidadPasajes2;
 	}
 
-	public Set<Destino> getDestinosAfectados()
+	public Set<Ciudad> getCiudadesAfectadas()
 	{
-		return destinosAfectados;
+		return ciudadesAfectadas;
 	}
 	
-	public void setDestinosAfectados(Set<Destino> destinosAfectados)
+	public void setCiudadesAfectadas(Set<Ciudad> destinosAfectados)
 	{
-		this.destinosAfectados = destinosAfectados;
+		this.ciudadesAfectadas = destinosAfectados;
 	}
 	
 	public Set<Viaje> getViajesAfectados()

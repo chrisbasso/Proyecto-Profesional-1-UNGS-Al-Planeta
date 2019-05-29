@@ -39,9 +39,6 @@ public class PromocionFormController {
     
     @Autowired
     private ViajeService viajesService;
-
-    @Autowired
-    private DestinoService destinosService;
     
     private ChangeHandler changeHandler;
 
@@ -57,7 +54,7 @@ public class PromocionFormController {
     }
 
     private void setComponents() {
-    	promocionForm.getDestinos().setItems(destinosService.findAll());
+    	promocionForm.getCiudades().setItems(viajesService.findAllCiudades());
     	promocionForm.getViajes().setItems(viajesService.findAll());
     }
 
@@ -95,19 +92,19 @@ public class PromocionFormController {
     private void cambiarAfectados()
     {
     	promocionForm.getViajes().clear();
-    	promocionForm.getDestinos().clear();
+    	promocionForm.getCiudades().clear();
     	promocionForm.getViajes().setEnabled(false);
-    	promocionForm.getDestinos().setEnabled(false);
+    	promocionForm.getCiudades().setEnabled(false);
 		if(promocionForm.getaAfectar().getValue()!= null)
 		{
 			if (promocionForm.getaAfectar().getValue().equals(("Viajes")))
 			{
 				promocionForm.getViajes().setEnabled(true);
-				promocionForm.getDestinos().setEnabled(false);
+				promocionForm.getCiudades().setEnabled(false);
 			}
 			else
 			{
-				promocionForm.getDestinos().setEnabled(true);
+				promocionForm.getCiudades().setEnabled(true);
 				promocionForm.getViajes().setEnabled(false);
 			}
 		}
@@ -140,14 +137,14 @@ public class PromocionFormController {
     	Integer cantidadPasajes = 0;
     	if (!promocionForm.getCantidadPasajes().getValue().equals(""))
     		cantidadPasajes = Integer.parseInt(promocionForm.getCantidadPasajes().getValue());
-    	Set<Destino> destinos  = promocionForm.getDestinos().getValue();
+    	Set<Ciudad> ciudades  = promocionForm.getCiudades().getValue();
     	Set<Viaje> viajes = promocionForm.getViajes().getValue();
     	Promocion promocionToAdd;
     	if (promocionForm.getTipoPromocion().getValue()=="Descuento")
     		promocionToAdd = new PromocionDescuento(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
     	else
     		promocionToAdd = new PromocionPuntos(nombrePromocion,descripcion,fechaVencimiento,null,nroFloat,cantidadPasajes);
-    	promocionToAdd.setDestinosAfectados(destinos);
+    	promocionToAdd.setCiudadesAfectadas(ciudades);
     	promocionToAdd.setViajesAfectados(viajes);
     	
     	return promocionToAdd;
@@ -158,8 +155,8 @@ public class PromocionFormController {
         this.promocion = promocion;
         if (this.promocion.getViajesAfectados().size()>0)
         	promocionForm.getaAfectar().setValue(("Viajes"));
-        else if (this.promocion.getDestinosAfectados().size()>0)
-        	promocionForm.getaAfectar().setValue(("Destinos"));
+        else if (this.promocion.getCiudadesAfectadas().size()>0)
+        	promocionForm.getaAfectar().setValue(("Ciudades"));
         binderPromocion.setBean(promocion);
         setBinders();
     }
@@ -173,7 +170,7 @@ public class PromocionFormController {
     	setBinderFieldDoubleValue(promocionForm.getNroFloat(), Promocion::getDoubleValue, Promocion::setDoubleValue, true);
     	setBinderFieldCantidadPasajes(promocionForm.getCantidadPasajes(), Promocion::getCantidadPasajes, Promocion::setCantidadPasajes, true);
     	setBinderComboViajes(promocionForm.getViajes(),Promocion::getViajesAfectados,Promocion::setViajesAfectados,false);
-    	setBinderComboDestino(promocionForm.getDestinos(),Promocion::getDestinosAfectados,Promocion::setDestinosAfectados,false);
+    	setBinderComboCiudad(promocionForm.getCiudades(),Promocion::getCiudadesAfectadas,Promocion::setCiudadesAfectadas,false);
     	
     	binderPromocion.setBean(promocion);
     }
@@ -266,9 +263,9 @@ public class PromocionFormController {
         promocionForm.getBtnSave().addClickListener(event -> binding.validate());
     }
     
-    private void setBinderComboDestino(MultiselectComboBox combo, ValueProvider<Promocion, Set<Destino>> valueProvider, Setter<Promocion, Set<Destino>> setter, boolean isRequiered){
+    private void setBinderComboCiudad(MultiselectComboBox combo, ValueProvider<Promocion, Set<Ciudad>> valueProvider, Setter<Promocion, Set<Ciudad>> setter, boolean isRequiered){
 
-        Binder.Binding<Promocion, Set<Destino>> binding;
+        Binder.Binding<Promocion, Set<Ciudad>> binding;
 
         binding = binderPromocion.forField(combo).bind(valueProvider, setter);
 

@@ -2,7 +2,6 @@ package com.tp.proyecto1.services;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,10 +13,9 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tp.proyecto1.model.viajes.Destino;
+import com.tp.proyecto1.model.viajes.Ciudad;
 import com.tp.proyecto1.model.viajes.Promocion;
 import com.tp.proyecto1.model.viajes.PromocionPuntos;
-import com.tp.proyecto1.model.viajes.TagDestino;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.repository.viajes.PromocionRepository;
 
@@ -33,7 +31,7 @@ public class PromocionService
 	@Transactional
 	public void save(Promocion promocion)
 	{
-		if (promocion.getViajesAfectados().size()>0 && promocion.getDestinosAfectados().size()>0)
+		if (promocion.getViajesAfectados().size()>0 && promocion.getCiudadesAfectadas().size()>0)
 			throw new IllegalArgumentException("No puede aver una promocion que afecte viajes y destinos a la vez.");
 		promocionRepository.save(promocion);
 	}	
@@ -57,9 +55,9 @@ public class PromocionService
 	}
 	
 	@Transactional
-	public Set<Promocion> findByDestinosAfectados(Destino destinos)
+	public Set<Promocion> findByCiudadesAfectadas(Ciudad ciudad)
 	{
-		return promocionRepository.findByDestinosAfectados(destinos);
+		return promocionRepository.findByCiudadesAfectadas(ciudad);
 	}
 	
 	@Transactional
