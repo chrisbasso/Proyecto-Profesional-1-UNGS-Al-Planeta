@@ -30,12 +30,26 @@ public class ViajeService {
 
     @Autowired
     private CiudadRepository ciudadRepository;
+    
+    @Autowired
+    private DestinoRepository destinoRepository;
+
 
     private static final Logger log = LoggerFactory.getLogger(ViajeService.class);
 
     @Transactional
     public void save(Viaje viaje){
+    	Destino destino = destinoRepository.findByCiudad(viaje.getDestino().getCiudad());
+    	if(destino==null)
+        	destino = viaje.getDestino();
+    	else
+    	{
+    		destino.setRecomendacion(viaje.getDestino().getRecomendacion());
+    		viaje.setDestino(destino);
+    	}
+    	destinoRepository.saveAndFlush(destino);
         viajeRepository.save(viaje);
+        
     }
 
     @Transactional
