@@ -76,6 +76,7 @@ public class PromocionService
 			promocionBusqueda2.setCodigoPromocion(promocionBusqueda.getCodigoPromocion());
 			promocionBusqueda2.setDoubleValue(promocionBusqueda.getDoubleValue());
 			promocionBusqueda2.setCantidadPasajes(promocionBusqueda.getCantidadPasajes());
+			promocionBusqueda2.setActivo(promocionBusqueda.isActivo());
 			for (Promocion promoPuntos : promocionRepository.findAll(Example.of(promocionBusqueda2)))
 				promociones.add(promoPuntos);
 		}
