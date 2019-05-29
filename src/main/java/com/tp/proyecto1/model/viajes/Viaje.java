@@ -12,7 +12,7 @@ public class Viaje {
 	@GeneratedValue
 	private Long id;
 
-	@OneToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
+	@OneToOne(cascade = CascadeType.ALL)
 	private Destino destino;
 
 	@OneToOne(cascade = CascadeType.ALL)

@@ -40,14 +40,12 @@ public class ViajeService {
     @Transactional
     public void save(Viaje viaje){
     	Destino destino = destinoRepository.findByCiudad(viaje.getDestino().getCiudad());
-    	if(destino==null)
-        	destino = viaje.getDestino();
-    	else
+    	if(destino!=null)
     	{
     		destino.setRecomendacion(viaje.getDestino().getRecomendacion());
     		viaje.setDestino(destino);
     	}
-    	destinoRepository.saveAndFlush(destino);
+    	//destinoRepository.saveAndFlush(destino);
         viajeRepository.save(viaje);
         
     }
