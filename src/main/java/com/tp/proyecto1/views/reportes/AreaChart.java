@@ -85,8 +85,8 @@ public class AreaChart extends Div {
 
 
 		add(areaChart);
-		setWidth("40%");
-		setHeight("40%");
+		setWidth("45%");
+		setHeight("45%");
 
 	}
 }

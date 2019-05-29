@@ -13,47 +13,85 @@ import java.util.List;
 
 public class VerticalChart extends Div {
 
-	public VerticalChart(List<Double> datos, String mensual) {
+	public VerticalChart(List<Double> datos, String tipo) {
 
 		Series series = new Series();
 		series.setName("INGRESOS");
 		series.setData(datos.toArray());
 
-		ApexCharts barChart = new ApexCharts()
-				.withChart(ChartBuilder.get()
-						.withType(Type.bar)
-						.build())
-				.withPlotOptions(PlotOptionsBuilder.get()
-						.withBar(BarBuilder.get()
-								.withHorizontal(false)
-								.withColumnWidth("55%")
-								.build())
-						.build())
-				.withDataLabels(DataLabelsBuilder.get()
-						.withEnabled(false).build())
-				.withStroke(StrokeBuilder.get()
-						.withShow(true)
-						.withWidth(2.0)
-						.withColors("transparent")
-						.build())
-				.withSeries(series)
-				.withYaxis(YAxisBuilder.get()
-						.withTitle(TitleBuilder.get()
-								.withText("$ (thousands)")
-								.build())
-						.build())
-				.withXaxis(XAxisBuilder.get().withCategories("Ene","Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct","Nov", "Dic").build())
-				.withFill(FillBuilder.get()
-						.withOpacity(1.0).build())
-				.withTooltip(TooltipBuilder.get()
-						.withY(YBuilder.get()
-								.withFormatter("function (val) {\n" + // Formatter currently not yet working
-										"return \"$ \" + val + \" thousands\"\n" +
-										"}").build())
-						.build());
+		ApexCharts barChart;
+
+		if(tipo.equals("anual")){
+			barChart = new ApexCharts()
+					.withChart(ChartBuilder.get()
+							.withType(Type.bar)
+							.build())
+					.withPlotOptions(PlotOptionsBuilder.get()
+							.withBar(BarBuilder.get()
+									.withHorizontal(false)
+									.withColumnWidth("55%")
+									.build())
+							.build())
+					.withDataLabels(DataLabelsBuilder.get()
+							.withEnabled(false).build())
+					.withStroke(StrokeBuilder.get()
+							.withShow(true)
+							.withWidth(2.0)
+							.withColors("transparent")
+							.build())
+					.withSeries(series)
+					.withYaxis(YAxisBuilder.get()
+							.withTitle(TitleBuilder.get()
+									.withText("$ (thousands)")
+									.build())
+							.build())
+					.withXaxis(XAxisBuilder.get().withCategories("Ene","Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct","Nov", "Dic").build())
+					.withFill(FillBuilder.get()
+							.withOpacity(1.0).build())
+					.withTooltip(TooltipBuilder.get()
+							.withY(YBuilder.get()
+									.withFormatter("function (val) {\n" + // Formatter currently not yet working
+											"return \"$ \" + val + \" thousands\"\n" +
+											"}").build())
+							.build());
+		}else{
+			barChart = new ApexCharts()
+					.withChart(ChartBuilder.get()
+							.withType(Type.bar)
+							.build())
+					.withPlotOptions(PlotOptionsBuilder.get()
+							.withBar(BarBuilder.get()
+									.withHorizontal(false)
+									.withColumnWidth("55%")
+									.build())
+							.build())
+					.withDataLabels(DataLabelsBuilder.get()
+							.withEnabled(false).build())
+					.withStroke(StrokeBuilder.get()
+							.withShow(true)
+							.withWidth(2.0)
+							.withColors("transparent")
+							.build())
+					.withSeries(series)
+					.withYaxis(YAxisBuilder.get()
+							.withTitle(TitleBuilder.get()
+									.withText("$ (thousands)")
+									.build())
+							.build())
+					.withXaxis(XAxisBuilder.get().withCategories("1", "5", "10", "15", "20","25","30").build())
+					.withFill(FillBuilder.get()
+							.withOpacity(1.0).build())
+					.withTooltip(TooltipBuilder.get()
+							.withY(YBuilder.get()
+									.withFormatter("function (val) {\n" + // Formatter currently not yet working
+											"return \"$ \" + val + \" thousands\"\n" +
+											"}").build())
+							.build());
+		}
+
 		add(barChart);
-		setWidth("40%");
-		setHeight("40%");
+		setWidth("45%");
+		setHeight("45%");
 	}
 }
 
