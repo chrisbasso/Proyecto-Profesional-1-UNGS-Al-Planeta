@@ -2,13 +2,13 @@ package com.tp.proyecto1;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.tp.proyecto1.controllers.ClientesController;
-import com.tp.proyecto1.controllers.EventosController;
-import com.tp.proyecto1.controllers.LoginController;
-import com.tp.proyecto1.controllers.PromocionesController;
-import com.tp.proyecto1.controllers.ReportesController;
-import com.tp.proyecto1.controllers.VentasController;
-import com.tp.proyecto1.controllers.ViajesController;
+import com.tp.proyecto1.controllers.clientes.ClientesController;
+import com.tp.proyecto1.controllers.eventos.EventosController;
+import com.tp.proyecto1.controllers.login.LoginController;
+import com.tp.proyecto1.controllers.promociones.PromocionesController;
+import com.tp.proyecto1.controllers.reportes.ReportesController;
+import com.tp.proyecto1.controllers.venta.VentasController;
+import com.tp.proyecto1.controllers.viajes.ViajesController;
 import com.tp.proyecto1.controllers.contabilidad.AsientosController;
 import com.tp.proyecto1.controllers.reserva.ReservasController;
 import com.vaadin.flow.component.applayout.AppLayout;

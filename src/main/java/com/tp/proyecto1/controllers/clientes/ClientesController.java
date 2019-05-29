@@ -1,4 +1,4 @@
-package com.tp.proyecto1.controllers;
+package com.tp.proyecto1.controllers.clientes;
 
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.services.ClienteService;

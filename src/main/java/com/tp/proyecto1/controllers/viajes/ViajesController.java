@@ -1,5 +1,6 @@
-package com.tp.proyecto1.controllers;
+package com.tp.proyecto1.controllers.viajes;
 
+import com.tp.proyecto1.controllers.venta.VentaFormController;
 import com.tp.proyecto1.model.viajes.*;
 import com.tp.proyecto1.utils.Inject;
 import org.springframework.beans.factory.annotation.Autowired;

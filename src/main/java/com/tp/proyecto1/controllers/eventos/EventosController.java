@@ -1,21 +1,17 @@
-package com.tp.proyecto1.controllers;
+package com.tp.proyecto1.controllers.eventos;
 
 
 import com.tp.proyecto1.model.clientes.Persona;
 import com.tp.proyecto1.model.eventos.Evento;
 import com.tp.proyecto1.model.eventos.Reclamo;
-import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.services.EventoService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.ConfirmationDialog;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.eventos.EventosView;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

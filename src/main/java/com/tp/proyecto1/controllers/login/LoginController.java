@@ -1,4 +1,4 @@
-package com.tp.proyecto1.controllers;
+package com.tp.proyecto1.controllers.login;
 
 import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.users.User;

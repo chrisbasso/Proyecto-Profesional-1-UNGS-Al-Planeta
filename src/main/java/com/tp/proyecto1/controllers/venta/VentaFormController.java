@@ -1,4 +1,4 @@
-package com.tp.proyecto1.controllers;
+package com.tp.proyecto1.controllers.venta;
 
 import java.time.LocalDate;
 import java.util.Iterator;

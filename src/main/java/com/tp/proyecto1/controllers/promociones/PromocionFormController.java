@@ -1,4 +1,4 @@
-package com.tp.proyecto1.controllers;
+package com.tp.proyecto1.controllers.promociones;
 
 import com.tp.proyecto1.model.viajes.*;
 import com.tp.proyecto1.services.PromocionService;

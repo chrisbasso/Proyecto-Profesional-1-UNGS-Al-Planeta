@@ -8,7 +8,7 @@ import com.tp.proyecto1.model.viajes.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.tp.proyecto1.controllers.VentaFormController;
+import com.tp.proyecto1.controllers.venta.VentaFormController;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.services.ReservaService;

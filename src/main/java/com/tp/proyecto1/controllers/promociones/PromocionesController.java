@@ -1,4 +1,4 @@
-package com.tp.proyecto1.controllers;
+package com.tp.proyecto1.controllers.promociones;
 
 import com.tp.proyecto1.utils.Inject;
 import org.springframework.beans.factory.annotation.Autowired;

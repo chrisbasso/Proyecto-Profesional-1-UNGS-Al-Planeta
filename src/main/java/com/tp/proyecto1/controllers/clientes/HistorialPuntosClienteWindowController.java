@@ -1,4 +1,4 @@
-package com.tp.proyecto1.controllers;
+package com.tp.proyecto1.controllers.clientes;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import com.tp.proyecto1.model.clientes.Cliente;
