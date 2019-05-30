@@ -33,12 +33,12 @@ public class Viaje {
 
 	private Double precio;
 	private String descripcion;
-	private boolean activo;
+	private Boolean activo;
 
 	public Viaje() {
 	}
 
-	public Viaje(Ciudad ciudad, Transporte transporte, LocalDate fechaSalida, LocalTime horaSalida, Double precio, String descripcion, boolean activo) {
+	public Viaje(Ciudad ciudad, Transporte transporte, LocalDate fechaSalida, LocalTime horaSalida, Double precio, String descripcion, Boolean activo) {
 		this.ciudad = ciudad;
 		this.transporte = transporte;
 		this.fechaSalida = fechaSalida;
@@ -126,11 +126,11 @@ public class Viaje {
 		this.descripcion = descripcion;
 	}
 
-	public boolean isActivo() {
+	public Boolean isActivo() {
 		return activo;
 	}
 
-	public void setActivo(boolean activo) {
+	public void setActivo(Boolean activo) {
 		this.activo = activo;
 	}
 

@@ -37,9 +37,11 @@ public class Transaccion {
 	@OneToOne
 	protected Cliente cliente;
 	
-	private boolean isActivo = true;
+	private Boolean isActivo = true;
 
 	private LocalDate fechaInactivacion;
+
+	private LocalDate fecha;
 	
 	private EstadoTransaccion estadoTransaccion;
 
@@ -57,6 +59,14 @@ public class Transaccion {
 		this.pagos = pagos;
 		this.importeTotal = importeTotal;
 		this.cliente = cliente;
+	}
+
+	public LocalDate getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(LocalDate fecha) {
+		this.fecha = fecha;
 	}
 
 	public void agregarPago(Pago pago) {
@@ -142,7 +152,6 @@ public class Transaccion {
 	public void setViaje(Viaje viaje) {
 		this.viaje = viaje;
 	}
-
 
 
 	public void activar() {

@@ -25,7 +25,7 @@ import com.vaadin.flow.component.dialog.Dialog;
 
 @Entity
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
-public abstract class Promocion
+public class Promocion
 {
 	@Id
     @GeneratedValue
@@ -52,14 +52,14 @@ public abstract class Promocion
 	@Fetch(value = FetchMode.SUBSELECT)
 	protected Set<Ciudad> ciudadesAfectadas;
 	
-	protected boolean activo;
+	protected Boolean activo;
 	
 	public Promocion()
 	{
 		
 	}
 	
-	public Promocion(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion,Integer nroFloat, Integer cantidadPasajes2,boolean activo)
+	public Promocion(String nombrePromocion, String descripcion, LocalDate fechaVencimiento, String codigoPromocion,Integer nroFloat, Integer cantidadPasajes2,Boolean activo)
 	{
 		setNombrePromocion(nombrePromocion);
 		setDescripcion(descripcion);
@@ -172,12 +172,12 @@ public abstract class Promocion
 		this.viajesAfectados = viajesAfectados;
 	}
 	
-	public boolean isActivo()
+	public Boolean isActivo()
 	{
 		return activo;
 	}
 
-	public void setActivo(boolean activo)
+	public void setActivo(Boolean activo)
 	{
 		this.activo = activo;
 	}

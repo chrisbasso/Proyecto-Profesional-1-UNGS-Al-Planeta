@@ -146,6 +146,7 @@ public class ReservaFormController {
 			reserva.setViaje(viaje);
 			reserva.setSucursal(Proyecto1Application.sucursal);
 			reserva.setVendedor(Proyecto1Application.logUser);
+			reserva.setFecha(LocalDate.now());
 			reservaService.save(reserva);
 			viajeService.save(viaje);
 			mensajeGuardadoCierreForm();
