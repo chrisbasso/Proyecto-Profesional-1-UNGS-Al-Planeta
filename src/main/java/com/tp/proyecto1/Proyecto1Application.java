@@ -1,9 +1,15 @@
 package com.tp.proyecto1;
 
 
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.*;
 
+import com.tp.proyecto1.model.pasajes.EstadoTransaccion;
+import com.tp.proyecto1.model.pasajes.Reserva;
+import com.tp.proyecto1.model.pasajes.Transaccion;
+import com.tp.proyecto1.model.viajes.*;
+import com.tp.proyecto1.repository.pasajes.TransaccionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -14,9 +20,6 @@ import org.springframework.context.annotation.Bean;
 import com.tp.proyecto1.model.contabilidad.Cuenta;
 import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.model.users.User;
-import com.tp.proyecto1.model.viajes.Ciudad;
-import com.tp.proyecto1.model.viajes.Pais;
-import com.tp.proyecto1.model.viajes.TagDestino;
 import com.tp.proyecto1.repository.clientes.ClienteRepository;
 import com.tp.proyecto1.repository.contabilidad.CuentaRepository;
 import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
@@ -30,6 +33,7 @@ import com.tp.proyecto1.services.TagDestinoService;
 import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
+import org.springframework.data.domain.Example;
 
 
 @SpringBootApplication
@@ -58,6 +62,7 @@ public class Proyecto1Application {
 									  ConfiguracionService configService,
 									  TagDestinoService tagDestinoService,
 									  PaisRepository paisRepository,
+									  TransaccionRepository transaccionRepository,
 									  SucursalRepository sucursalRepository,
 									  CuentaRepository cuentaRepository) {
 		return args -> {
@@ -69,7 +74,56 @@ public class Proyecto1Application {
 			crearPaisesCiudades(paisRepository);
 			setSurcursales(sucursalRepository);
 			crearCuentas(cuentaRepository);
+			procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository);
+
 		};
+	}
+
+	private void procesoVertificarVencimientos(ViajeService viajeService, ReservaRepository reservaRepository, PromocionRepository promocionRepository) {
+		Timer timer = new Timer();
+
+		TimerTask task = new TimerTask() {
+
+			@Override
+			public void run()
+			{
+				log.info("Verificando Vencimientos...");
+
+				List<Reserva> reservas = reservaRepository.findAllByViaje_FechaSalida(LocalDate.now().plusDays(5));
+				for (Reserva reserva : reservas) {
+					if(reserva.isActivo()){
+						log.info(reserva.getViaje().getFechaSalida().toString());
+						reserva.inactivar();
+						reserva.setEstadoTransaccion(EstadoTransaccion.VENCIDA);
+						reservaRepository.save(reserva);
+					}
+				}
+
+				Viaje viajeExample = new Viaje();
+				viajeExample.setFechaSalida(LocalDate.now());
+				List<Viaje> viajes = viajeService.findViajes(viajeExample,null, null);
+				for (Viaje viaje : viajes) {
+					if(viaje.getHoraSalida().isBefore(LocalTime.now()) && viaje.isActivo()){
+						log.info(viaje.getHoraSalida().toString());
+						viaje.setActivo(Boolean.FALSE);
+						viajeService.save(viaje);
+					}
+				}
+
+				Promocion promocionExample = new Promocion();
+				promocionExample.setFechaVencimiento(LocalDate.now().minusDays(1));
+				List<Promocion> promociones = promocionRepository.findAll(Example.of(promocionExample));
+				for (Promocion promocion : promociones) {
+					if(promocion.isActivo()){
+						promocion.setActivo(Boolean.FALSE);
+						promocionRepository.save(promocion);
+					}
+				}
+
+			}
+		};
+
+		timer.schedule(task, 10, 60000); //una vez por minuto
 	}
 
 	private void setSurcursales(SucursalRepository sucursalRepository) {

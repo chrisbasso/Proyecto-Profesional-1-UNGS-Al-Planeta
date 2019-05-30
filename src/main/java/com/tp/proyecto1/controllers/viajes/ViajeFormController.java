@@ -71,6 +71,7 @@ public class ViajeFormController {
         viajeForm.getPais().addValueChangeListener(e -> habilitarNuevaCiudad());
         viajeForm.getBtnNuevaCiudad().addClickListener(e -> agregarCiudad());
         viajeForm.getBtnNuevoTag().addClickListener(e->agregarTag());
+
     }
 
     private void agregarTag() {
@@ -101,7 +102,6 @@ public class ViajeFormController {
         }else{
             viajeForm.getBtnNuevaCiudad().setEnabled(false);
         }
-
     }
 
     private void agregarPais() {
@@ -139,7 +139,6 @@ public class ViajeFormController {
 
        // String pais = viajeForm.getPais().getValue();
         Ciudad ciudad = viajeForm.getCiudad().getValue();
-
         LocalDate fechaSalida = viajeForm.getFechaSalida().getValue();
         LocalTime horaSalida = viajeForm.getHoraSalida().getValue();
         TipoTransporte tipoTransporte = viajeForm.getTransporte().getValue();

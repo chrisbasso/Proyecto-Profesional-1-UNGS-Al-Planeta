@@ -117,6 +117,7 @@ public class VentasController {
 		LocalDate fechaActual = LocalDate.now();
 		int cantDiasRestantes = fechaSalida.compareTo(fechaActual);
 			if (cantDiasRestantes < 5 && cantDiasRestantes >= 0 ) {
+
 				switch (cantDiasRestantes) {
 					case 4:
 						importeCancelacion = (importeTotal * 0.2 );

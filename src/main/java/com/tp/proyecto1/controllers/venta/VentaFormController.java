@@ -200,6 +200,7 @@ public class VentaFormController {
 		Venta venta = new Venta();
 		venta.setSucursal(Proyecto1Application.sucursal);
 		venta.setVendedor(Proyecto1Application.logUser);
+		venta.setFecha(LocalDate.now());
 
 		Cliente cliente = ventaForm.getCliente().getCliente();
 		FormaDePago formaPago = ventaForm.getFormaPago().getValue();
