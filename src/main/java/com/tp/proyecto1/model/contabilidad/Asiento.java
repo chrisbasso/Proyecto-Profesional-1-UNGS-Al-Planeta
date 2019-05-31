@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.model.users.User;
 
 @Entity
@@ -45,11 +46,11 @@ public class Asiento {
 	public void setPosiciones(List<Posicion> posiciones) {
 		this.posiciones = posiciones;
 	}
-	public LocalDate getFecha() {
-		return cabecera.getFecha();
+	public LocalDate getFechaRegistro() {
+		return cabecera.getFechaRegistro();
 	}
-	public void setFecha(LocalDate fecha) {
-		cabecera.setFecha(fecha);
+	public void setFechaRegistro(LocalDate fecha) {
+		cabecera.setFechaRegistro(fecha);
 	}
 	public User getUsuario() {
 		return cabecera.getUsuario();
@@ -58,9 +59,21 @@ public class Asiento {
 		cabecera.setUsuario(usuario);
 	}
 	public boolean getAnulado() {
-		return cabecera.getAnulado();
+		return cabecera.isAnulado();
 	}
-	public void setAnulado() {
-		cabecera.setAnulado();
+	public void setAnulado(User usuarioAnulacion) {
+		cabecera.anular(LocalDate.now(), usuarioAnulacion);
+	}
+	public void setFechaContabilizacion(LocalDate fecha) {
+		cabecera.setFechaContabilizacion(fecha);
+	}
+	public LocalDate getFechaContabilizacion() {
+		return cabecera.getFechaContabilizacion();
+	}
+	public Sucursal getSucursal() {
+		return cabecera.getSucursal();
+	}
+	public String getTextoCabecera() {
+		return cabecera.getTextoCabecera();
 	}
 }

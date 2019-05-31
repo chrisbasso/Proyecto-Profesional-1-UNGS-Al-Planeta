@@ -22,7 +22,9 @@ public class AsientoView extends FilterGridLayout<Asiento> {
     private DatePicker fechaFilter;
     private NumberField idUsuarioFilter;    
     private Button btnAgregar;
+    private Button btnABMCuentas;
     private Button btnBuscar;
+    
     private Button btnComprobante;
 
     public AsientoView() {
@@ -34,10 +36,12 @@ public class AsientoView extends FilterGridLayout<Asiento> {
 
     private void setComponents() {
         numeroAsientoFilter = new NumberField("Nº Asiento");
-        fechaFilter = new DatePicker("Fecha");
         idUsuarioFilter = new NumberField("ID Usuario");
-        btnAgregar = new Button("Agregar", VaadinIcon.PLUS.create());
+        fechaFilter = new DatePicker("Fecha Contab.");        
+        btnAgregar = new Button("Asiento", VaadinIcon.PLUS.create());
         btnAgregar.setMinWidth("110px");
+        btnABMCuentas = new Button("ABM Cuentas", VaadinIcon.TOOLS.create());
+        btnABMCuentas.setMinWidth("110px");
         btnBuscar = new Button("Buscar", VaadinIcon.SEARCH.create());
         btnBuscar.setMinWidth("110px");
         btnComprobante = new Button("Exportar Comprobante");                
@@ -47,16 +51,20 @@ public class AsientoView extends FilterGridLayout<Asiento> {
         HorizontalLayout hlSpace = new HorizontalLayout();
         this.hlFooter.add(btnComprobante);
         hlSpace.setWidthFull();
-        this.hlActions.add(numeroAsientoFilter, idUsuarioFilter,fechaFilter,hlSpace, btnAgregar, btnBuscar);
+        this.hlActions.add(numeroAsientoFilter, idUsuarioFilter,fechaFilter, btnBuscar, hlSpace, btnAgregar, btnABMCuentas);
     }
 
     private void setGrid() {
-        grid.setColumns("id", "fecha", "usuario.id", "cabecera.textoCabecera");
+        grid.setColumns("id", "fechaContabilizacion", "usuario.id", "cabecera.textoCabecera", "anulado");
         grid.getColumnByKey("id").setHeader("Nº Asiento");
         grid.getColumnByKey("usuario.id").setHeader("Nº Usuario");
         grid.getColumnByKey("cabecera.textoCabecera").setHeader("Texto Cabecera");
     }
 
+    public void agregarColumnaVisualizar(ValueProvider<Asiento, Button> e) {
+    	grid.addComponentColumn(e).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);    	
+    }
+    
     public void agregarColumnaBorrado(ValueProvider<Asiento, Button> e) {
     	grid.addComponentColumn(e).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);    	
     }
@@ -97,6 +105,10 @@ public class AsientoView extends FilterGridLayout<Asiento> {
         btnAgregar.addClickListener(e);
     }
     
+    public void setBtnABMListener(ComponentEventListener<ClickEvent<Button>> e) {
+        btnABMCuentas.addClickListener(e);
+    }
+
     public void setBtnBuscarListener(ComponentEventListener<ClickEvent<Button>> e) {
         btnBuscar.addClickListener(e);
     }
