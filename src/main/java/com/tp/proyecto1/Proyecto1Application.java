@@ -185,6 +185,8 @@ public class Proyecto1Application {
 
 	private void crearConfiguracion(ConfiguracionService configService) {
 		configService.createConfiguracionIfNotExist("reserva_fecha_maxima", "3");
+		configService.createConfiguracionIfNotExist("pesos_por_punto", "10");
+		configService.createConfiguracionIfNotExist("cant_anios_venc_puntos", "1");
 	}
 
 	private void crearFormasDePago(VentaService ventaService) {

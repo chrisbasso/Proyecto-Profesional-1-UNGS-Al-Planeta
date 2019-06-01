@@ -1,13 +1,20 @@
 package com.tp.proyecto1.controllers.venta;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.pasajes.*;
 import com.tp.proyecto1.model.viajes.Pais;
+import com.tp.proyecto1.model.viajes.Promocion;
 import com.tp.proyecto1.services.*;
 import com.tp.proyecto1.utils.Inject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +50,12 @@ public class VentaFormController {
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private ConfiguracionService configuracionService;
+	
+	@Autowired
+	private  PromocionService promocionService;
+	
 	private ChangeHandler changeHandler;
 
 	private Venta venta;
@@ -53,6 +66,10 @@ public class VentaFormController {
 	
 	private Integer cantPasajesReserva;
 
+	private Integer cantPuntosporVenta;
+	
+	private Double precioFinal;
+	
 	private Binder<PasajeVenta> binderPasajeVenta;
 	private Binder<Venta> binderVenta;
 	private Binder<Viaje> binderViaje;  //NO LOS USO
@@ -94,22 +111,24 @@ public class VentaFormController {
 		ventaForm.getHoraSalida().setReadOnly(true);
 	}
 
-	private void setComponents() {
+	private void setComponents() {		
 		ventaForm.getPais().setItems(viajeService.findAllPaises());
 		ventaForm.getFormaPago().setItems(ventaService.findAllFomaDePagos());
+		
+		this.setPromociones();
 		
 		if (this.reserva != null){
 			//Setear Cliente
 			ventaForm.getCliente().getFiltro().setValue(reserva.getCliente().getId().toString());
 			ventaForm.getCliente().getFiltro().setEnabled(false);
 			
-			//Setear cantidad de pasajes como uno de los obligatorio para terminar la venta
+			//Setear cantidad de pasajes como uno de los obligatorios para terminar la venta
 			this.cantPasajesReserva =  this.reserva.getCantidadPasajes();
 			
 			//Setear Forma de Pago si la hay y saldo a pagar y subtotal
 			if (this.reserva.getPagos().size() == 0) { //sin pagos previos
 				ventaForm.setSaldoPagarDouble(reserva.getImporteTotal());//precio al momento de la reserva
-				ventaForm.setSubtotalDouble(reserva.getImporteTotal());//precio al momento de la reserva
+				ventaForm.setSubtotalDouble(reserva.getImporteTotal());  //precio al momento de la reserva
 			}
 			else{//con pagos previos
 				this.pagoParcial = 0.0;
@@ -127,6 +146,30 @@ public class VentaFormController {
 		}
 	}
 	
+	private void setPromociones() {
+		Set<Promocion> promoCiudad = new HashSet<>();
+		Set<Promocion> promoViaje = new HashSet<>();
+		
+		if (this.reserva !=null) {
+			promoCiudad = promocionService.findByCiudadesAfectadas(this.reserva.getViaje().getCiudad());
+			promoViaje = promocionService.findByViajesAfectados(this.reserva.getViaje());
+		}
+		else {
+			promoCiudad = promocionService.findByCiudadesAfectadas(this.viaje.getCiudad());
+			promoViaje = promocionService.findByViajesAfectados(this.viaje);
+		}
+		
+		Collection<Promocion> itemsPromo = new HashSet<>();
+		
+		if (promoViaje.size() > 0)  itemsPromo.addAll(promoViaje);
+		if (promoCiudad.size() > 0) itemsPromo.addAll(promoCiudad);
+		
+		if (!itemsPromo.isEmpty()) {
+			itemsPromo.stream().filter(promo -> promo.isActivo()).collect(Collectors.toList()); //deja solo las promociones no vencidas
+			this.ventaForm.getPromocion().setItems(itemsPromo);	
+		}
+	}
+
 	private void setListeners() {
 		ventaForm.getPais().addValueChangeListener(e->setComboCiudades());
 
@@ -146,7 +189,7 @@ public class VentaFormController {
 
 	}
 	
-	//Incrementa o decrementa los campos de saldo a pagar y subtotal dependiendo la cant. de pasajeros
+	
 	private void validarCantPasajes() {
 		//Si viene de una reserva
 		if (this.reserva !=null) {
@@ -161,12 +204,13 @@ public class VentaFormController {
 		this.validarCompra();
 	}
 	
+	//Incrementa o decrementa los campos de saldo a pagar y subtotal dependiendo la cant. de pasajeros
 	private void modificarSaldoaPagar() {
-		if (this.reserva ==null) {
+		if (this.reserva == null) {
 			Double precio = viaje.getPrecio();
 			ventaForm.getSaldoPagar().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
 			ventaForm.getSubtotal().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
-
+			
 			//validar que se pueda habilitar el boton de finalizar compra
 			this.validarCompra();
 		}
@@ -176,15 +220,18 @@ public class VentaFormController {
 	}
 	
 	private void newVenta() {
-		ventaService.save(setNewVenta());
+		Venta venta =  setNewVenta();
+		ventaService.save(venta);
+		//ventaService.save(setNewVenta());
         ventaForm.close();
       //Si viene de una reserva
-        if (this.reserva !=null) {
+        if (this.reserva != null) {
         	this.reserva.inactivar();
+        	this.reserva.setEstadoTransaccion(EstadoTransaccion.VENDIDA);
             this.reservaService.save(reserva);
         }
         changeHandler.onChange();
-        Notification.show("PasajeVenta comprado. Lote de puntos consequidos");		
+        Notification.show("PasajeVenta comprado. Lote de Puntos Conseguidos");		
 	}
 
 	private void saveVenta(Venta venta) {
@@ -196,7 +243,6 @@ public class VentaFormController {
 	}
 	
 	private Venta setNewVenta() {
-		Double precioTotal;
 		Venta venta = new Venta();
 		venta.setSucursal(Proyecto1Application.sucursal);
 		venta.setVendedor(Proyecto1Application.logUser);
@@ -205,7 +251,8 @@ public class VentaFormController {
 		Cliente cliente = ventaForm.getCliente().getCliente();
 		FormaDePago formaPago = ventaForm.getFormaPago().getValue();
 
-		venta.setCliente(cliente);
+		venta.setCliente(cliente);		
+		
 		Pago pagoVenta = new Pago();
 		//Si viene de una reserva
 		if (this.reserva !=null) {
@@ -218,17 +265,17 @@ public class VentaFormController {
 			
 			this.viaje = reserva.getViaje();
 			
-			precioTotal = reserva.getImporteTotal();
+			this.precioFinal = reserva.getImporteTotal();
 			
 			venta.setEstadoTransaccion(EstadoTransaccion.VENDIDA);
 		}
 		else {
-				pagoVenta = new Pago(venta, formaPago, viaje.getPrecio(),  LocalDate.now());//tiro null pointer al hacer la prueba q esta en la hoja
-				venta.agregarPago(pagoVenta);
-				
-				precioTotal = ventaForm.getSaldoPagar().getValue();
-				
-				venta.setEstadoTransaccion(EstadoTransaccion.CREADA);
+			pagoVenta = new Pago(venta, formaPago, viaje.getPrecio(),  LocalDate.now());//tiro null pointer al hacer la prueba q esta en la hoja
+			venta.agregarPago(pagoVenta);
+			
+			this.precioFinal = ventaForm.getSaldoPagar().getValue();
+			
+			venta.setEstadoTransaccion(EstadoTransaccion.CREADA);
 			}
 		
 		ventaForm.getPasajerosGridComponent().getPasajerosList().stream().forEach(pasajero->{
@@ -239,19 +286,66 @@ public class VentaFormController {
 		viaje.restarPasajes(venta.getPasajes().size());
 		venta.setViaje(viaje);
 		viajeService.save(viaje);
-
-		Integer cantPuntos =  precioTotal.intValue()/10;
 		
-		LotePunto  lotePunto = new LotePunto(LocalDate.now(), null, cantPuntos , true, cantPuntos, cliente);
-		cliente.agregarPuntos(lotePunto);
-		venta.setCliente(cliente);
-		clienteService.save(cliente);
+		//Obtener puntos de la venta, si se canjeo puntos anteriores solo obtener puntos de precio restante
+		this.generarPuntosDeVenta(cliente, venta);
 		
-		venta.setImporteTotal(precioTotal);//si es el caso que viene de reserva le paso igual el importe total, sino faltaria un campo en que diga importeVenta/parcial
+		
+		venta.setImporteTotal(this.precioFinal);//si es el caso que viene de reserva le paso igual el importe total, sino faltaria un campo en que diga importeVenta/parcial
 		
 		return venta;
 	}
 	
+	//en la seccion de uso de puntos colocar aplicar puntos
+//	if (ventaForm.getUsoPuntosCheck().getValue()/*colocar campos que no tienen que estar vacios a la hora de esta validacion*/) {
+//		this.modificarSaldoPagarPorPuntos();
+//	}
+//	
+//	//Descuento por promocion sobre el precio total
+//	this.modificarSaldoPagarPorPromocion();	
+//	
+	
+	private void modificarSaldoPagarPorPromocion() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void modificarSaldoPagarPorPuntos() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void generarPuntosDeVenta(Cliente cliente, Venta venta) {
+		if (this.precioFinal > 0) {
+			Integer pesosPorPunto = Integer.parseInt(this.getPesosPorPunto());
+			this.cantPuntosporVenta =  this.precioFinal.intValue()/pesosPorPunto;
+			
+			//Verificar si tiene bonificacion de puntos de promocion y aplicarlos
+			Promocion promoPuntos = new Promocion();
+			promoPuntos = this.ventaForm.getPromocion().getValue();
+			if ( promoPuntos.getTipoPromocion().equals("Puntos")) {
+				this.cantPuntosporVenta = promoPuntos.getDoubleValue() * this.cantPuntosporVenta;
+			}
+			
+			LocalDate fechaVencimiento = agregarAnios(Integer.parseInt(this.getCantAñosVencimientoPuntos()));
+			
+			LotePunto lotePunto = new LotePunto(LocalDate.now(), fechaVencimiento, this.cantPuntosporVenta , true, this.cantPuntosporVenta, cliente);
+			cliente.agregarPuntos(lotePunto);
+			venta.setCliente(cliente);
+			clienteService.save(cliente);
+		}		
+	}
+
+
+	private LocalDate agregarAnios(int cantAnios) {
+		Calendar fechaVencimiento = Calendar.getInstance();
+		Date fecha = new Date();
+		fechaVencimiento.setTime(fecha);
+		fechaVencimiento.add(Calendar.YEAR, cantAnios);
+
+		return fechaVencimiento.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	}
+
 	public void setComponentsValues(Venta venta) {
 
 		this.venta = venta;
@@ -334,5 +428,13 @@ public class VentaFormController {
 
 	public void setVentaForm(VentaForm ventaForm) {
 		this.ventaForm = ventaForm;
-	}	
+	}
+	
+	private String getPesosPorPunto() {
+		return configuracionService.findValueByKey("pesos_por_punto");
+	}
+	
+	private String getCantAñosVencimientoPuntos() {
+		return configuracionService.findValueByKey("cant_anios_venc_puntos");
+	}
 }

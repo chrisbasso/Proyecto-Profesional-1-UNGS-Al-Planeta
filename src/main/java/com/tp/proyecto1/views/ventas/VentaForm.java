@@ -3,6 +3,7 @@ package com.tp.proyecto1.views.ventas;
 import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.tp.proyecto1.model.viajes.Ciudad;
 import com.tp.proyecto1.model.viajes.Pais;
+import com.tp.proyecto1.model.viajes.Promocion;
 import com.tp.proyecto1.utils.BuscadorClientesComponent;
 import com.tp.proyecto1.utils.PasajerosGridComponent;
 import com.vaadin.flow.component.button.Button;
@@ -35,6 +36,7 @@ public class VentaForm extends Dialog {
 	private TextField id;
 	private ComboBox<Pais> pais;
 	private ComboBox<Ciudad> ciudad;
+	private ComboBox<Promocion> promocion;
 	private TextField codTransporte;
 	private TextField transporte;
 	private TextField fechaSalida;
@@ -92,8 +94,7 @@ public class VentaForm extends Dialog {
 		subtotal.setPreventInvalidInput(true);
 		subtotal.setEnabled(false);
 		pasajerosGridComponent = new PasajerosGridComponent();
-		
-
+		promocion = new ComboBox<>();
 	}
 
 	private void setForm() {
@@ -111,6 +112,7 @@ public class VentaForm extends Dialog {
 		totalItem.add(usoPuntosCheck);
 		form.addFormItem(formaPago, "Forma de Pago (*)");
 		form.addFormItem(saldoPagar, "Saldo a Pagar");
+		form.addFormItem(promocion, "Promocion");
 	}
 
 	private void setLayouts() {
@@ -284,5 +286,13 @@ public class VentaForm extends Dialog {
 
 	public void setDescripcionCliente(Label descripcionCliente) {
 		this.descripcionCliente = descripcionCliente;
+	}
+
+	public ComboBox<Promocion> getPromocion() {
+		return promocion;
+	}
+
+	public void setPromocion(ComboBox<Promocion> promocion) {
+		this.promocion = promocion;
 	}
 }

@@ -78,7 +78,7 @@ public class VentasController {
 		  	ventaBorrar = venta;
 	        ConfirmationDialog confirmationDialog = new ConfirmationDialog("¿Realmente desea cancelar la Venta?");
 	        confirmationDialog.getConfirmButton().addClickListener(event -> {ventaBorrar.inactivar();
-		        if (ventaBorrar.getEstadoTransaccion() == EstadoTransaccion.VENCIDA ) {
+		        if ( !ventaBorrar.getViaje().isActivo() ) {
 		        	Notification.show("No se puede cancelar la venta porque se encuentra vencida");
 		        }
 		        else {
