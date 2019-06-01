@@ -359,7 +359,7 @@ public class VentaFormController {
 		viajeService.save(viaje);
 		
 		if(ventaForm.getSaldoPagar().getValue() > 0) {
-			LocalDate fechaVencimiento = LocalDate.now().plusYears(Integer.parseInt(this.getCantAñosVencimientoPuntos()));
+			LocalDate fechaVencimiento = LocalDate.now().plusYears(Integer.parseInt(this.getCantAniosVencimientoPuntos()));
 			
 			LotePunto lotePunto = new LotePunto(LocalDate.now(), fechaVencimiento, this.cantPuntosPorVenta , true, this.cantPuntosPorVenta, cliente);
 			cliente.agregarPuntos(lotePunto);
@@ -417,7 +417,7 @@ public class VentaFormController {
 			promoPuntos = this.ventaForm.getPromocion().getValue();
 			if (promoPuntos.getTipoPromocion().equals("Puntos")) this.cantPuntosPorVenta = promoPuntos.getDoubleValue() * this.cantPuntosPorVenta;
 			
-			LocalDate fechaVencimiento = LocalDate.now().plusYears(Integer.parseInt(this.getCantAñosVencimientoPuntos()));
+			LocalDate fechaVencimiento = LocalDate.now().plusYears(Integer.parseInt(this.getCantAniosVencimientoPuntos()));
 			
 			LotePunto lotePunto = new LotePunto(LocalDate.now(), fechaVencimiento, this.cantPuntosPorVenta , true, this.cantPuntosPorVenta, cliente);
 			cliente.agregarPuntos(lotePunto);
