@@ -13,15 +13,23 @@ public class Posicion {
 	@OneToOne
 	private Cuenta cuenta;
 	private Double importe;
+	private TipoPosicion debeHaber;
 	
 	public Posicion() {		
 	}
-	public Posicion(Cuenta cuenta, Double importe) {
+	public Posicion(TipoPosicion debeHaber, Cuenta cuenta, Double importe) {
+		this.debeHaber = debeHaber;
 		this.cuenta = cuenta;
 		this.importe = importe;
 	}
 	public Long getId() {
 		return id;
+	}	
+	public TipoPosicion getDebeHaber() {
+		return debeHaber;
+	}
+	public void setDebeHaber(TipoPosicion debeHaber) {
+		this.debeHaber = debeHaber;
 	}
 	public Cuenta getCuenta() {
 		return cuenta;
@@ -34,5 +42,12 @@ public class Posicion {
 	}
 	public void setImporte(Double importe) {
 		this.importe = importe;
-	}	
+	}
+	public String getTipoPosicion() {
+		if(debeHaber.equals(TipoPosicion.DEBE)) {
+			return "D";
+		}else {
+			return "H";
+		}
+	}
 }

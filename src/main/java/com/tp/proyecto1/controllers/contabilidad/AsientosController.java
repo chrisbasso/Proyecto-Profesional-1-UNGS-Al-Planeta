@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.contabilidad.Asiento;
 import com.tp.proyecto1.model.contabilidad.Cabecera;
 import com.tp.proyecto1.model.contabilidad.Posicion;
@@ -32,23 +33,36 @@ public class AsientosController {
     private UserService userService;
     private AsientoFormController asientoFormController;
     private AsientoView asientoView;
+    private CuentaController cuentaController;
     private ChangeHandler changeHandler;
-
+    
     public AsientosController() {
         Inject.Inject(this);
         this.asientoView = new AsientoView();        
         agregarBotonesEdicion();
         setListeners();
-        listAsientos();
+        refreshAsientos();
     }
 
     private void agregarBotonesEdicion() {
+    	asientoView.agregarColumnaVisualizar(this::createViewButton);
         asientoView.agregarColumnaBorrado(this::createDeleteButton);
+    }
+    
+    private Button createViewButton(Asiento asiento) {
+        Button btnVer = new Button(VaadinIcon.FOLDER_OPEN_O.create(), clickEvent -> mostrarAsiento(asiento));
+    		return btnVer;
+    }
+    
+    private void mostrarAsiento(Asiento asiento) {
+    	asientoFormController = new AsientoFormController();
+    	asientoFormController.getFormVisualizar(asiento);
+    	asientoFormController.setChangeHandler(this::listAsientos);    	
     }
     
     private Button createDeleteButton(Asiento asiento) {
         Button btnBorrar = new Button(VaadinIcon.TRASH.create(), clickEvent -> borrarAsiento(asiento));
-    		if(!asiento.getAnulado()){
+    		if(asiento.getAnulado()){
     			btnBorrar.setEnabled(false);
     		}
     		return btnBorrar;
@@ -58,11 +72,11 @@ public class AsientosController {
     	String mensaje = "¿Realmente desea anular el asiento " 
     						+ asiento.getId()
     						+ ", del "
-    						+ asiento.getFecha()
+    						+ asiento.getFechaContabilizacion()
     						+ "?";
 		ConfirmationDialog confirmationDialog = new ConfirmationDialog(mensaje);
 		confirmationDialog.getConfirmButton().addClickListener(event -> {
-			asiento.setAnulado();						
+			asiento.setAnulado(Proyecto1Application.logUser);						
 			asientoService.save(asiento);			
 			Notification.show("Asiento anulado");
 			changeHandler.onChange();
@@ -72,11 +86,14 @@ public class AsientosController {
 
     private void setListeners() {
     	asientoView.setBtnAgregarListener(e->crearAsiento());
+    	asientoView.setBtnCuentasListener(e->abmCuentas());
     	asientoView.setBtnBuscarListener(e->listAsientos());    	
     }
     
     private void crearAsiento() {
-    	asientoFormController = new AsientoFormController();    	
+    	asientoFormController = new AsientoFormController();
+    	asientoFormController.getFormCrear();
+    	asientoFormController.setChangeHandler(this::listAsientos);
     }
     
     private void listAsientos() {
@@ -107,7 +124,7 @@ public class AsientosController {
             asientoBusqueda.setId(asientoView.getValueNumeroAsiento());
         }
         if(asientoView.getValueFecha()!=null){
-            asientoBusqueda.setFecha(asientoView.getValueFecha());
+            asientoBusqueda.setFechaContabilizacion(asientoView.getValueFecha());
         }
         if(asientoView.getValueUsuario()!=null){
         	User usuario = userService.getUserById(asientoView.getValueUsuario());
@@ -120,15 +137,17 @@ public class AsientosController {
                 asientoView.getValueFecha() == null;
     }
     
-    private void setChangeHandler(ChangeHandler h) {
-        changeHandler = h;
+    private void abmCuentas(){
+    	cuentaController = new CuentaController();
+    	cuentaController.getFormCrear();    	
     }
-
-	public ChangeHandler getChangeHandler() {
-		return changeHandler;
-	}
-
-	public AsientoView getAsientosView(){
+    
+    private void refreshAsientos() {
+    	List<Asiento> asientos = asientoService.findAll();
+    	asientoView.cargarAsientos(asientos);
+    }
+    
+ 	public AsientoView getAsientosView(){
         return asientoView;
     }
 }

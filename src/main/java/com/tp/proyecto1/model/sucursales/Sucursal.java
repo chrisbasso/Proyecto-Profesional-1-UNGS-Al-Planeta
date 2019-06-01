@@ -50,4 +50,11 @@ public class Sucursal {
 	public void setTransacciones(List<Transaccion> transacciones) {
 		this.transacciones = transacciones;
 	}
+
+	@Override
+	public String toString() {
+		return descripcion;
+	}
+	
+	
 }

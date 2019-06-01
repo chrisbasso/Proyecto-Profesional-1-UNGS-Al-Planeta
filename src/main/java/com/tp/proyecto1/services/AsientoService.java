@@ -40,11 +40,16 @@ public class AsientoService {
 		asientoRepository.save(asiento);
 	}
 
-
 	@Transactional
 	public List<Asiento> findAll(){
 		return this.asientoRepository.findAll();
 	}
+
+	@Transactional
+	public List<Cuenta> findAllCuentas(){
+		return this.cuentaRepository.findAll();
+	}
+
 
 	@Transactional
 	public List<Asiento> findAsientos(Asiento asiento){
@@ -75,4 +80,10 @@ public class AsientoService {
 	public List<Cuenta> findCuentas(){
 		return cuentaRepository.findAll();
 	}
+
+	@Transactional
+	public void saveCuenta(Cuenta cuenta){
+		cuentaRepository.save(cuenta);
+	}
+
 }
