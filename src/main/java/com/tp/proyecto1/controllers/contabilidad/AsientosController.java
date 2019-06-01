@@ -19,7 +19,6 @@ import com.tp.proyecto1.utils.ConfirmationDialog;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.contabilidad.AsientoView;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -34,6 +33,7 @@ public class AsientosController {
     private UserService userService;
     private AsientoFormController asientoFormController;
     private AsientoView asientoView;
+    private CuentaController cuentaController;
     private ChangeHandler changeHandler;
     
     public AsientosController() {
@@ -55,8 +55,9 @@ public class AsientosController {
     }
     
     private void mostrarAsiento(Asiento asiento) {
-    	
-    	
+    	asientoFormController = new AsientoFormController();
+    	asientoFormController.getFormVisualizar(asiento);
+    	asientoFormController.setChangeHandler(this::listAsientos);    	
     }
     
     private Button createDeleteButton(Asiento asiento) {
@@ -85,7 +86,7 @@ public class AsientosController {
 
     private void setListeners() {
     	asientoView.setBtnAgregarListener(e->crearAsiento());
-    	asientoView.setBtnABMListener(e->abmCuentas());
+    	asientoView.setBtnCuentasListener(e->abmCuentas());
     	asientoView.setBtnBuscarListener(e->listAsientos());    	
     }
     
@@ -137,7 +138,8 @@ public class AsientosController {
     }
     
     private void abmCuentas(){
-    	Notification.show("Not there yet");
+    	cuentaController = new CuentaController();
+    	cuentaController.getFormCrear();    	
     }
     
     private void refreshAsientos() {

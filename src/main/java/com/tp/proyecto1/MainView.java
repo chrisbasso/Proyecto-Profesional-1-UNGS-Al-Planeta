@@ -3,14 +3,15 @@ package com.tp.proyecto1;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tp.proyecto1.controllers.clientes.ClientesController;
+import com.tp.proyecto1.controllers.configuracion.ConfiguracionController;
+import com.tp.proyecto1.controllers.contabilidad.AsientosController;
 import com.tp.proyecto1.controllers.eventos.EventosController;
 import com.tp.proyecto1.controllers.login.LoginController;
 import com.tp.proyecto1.controllers.promociones.PromocionesController;
 import com.tp.proyecto1.controllers.reportes.ReportesController;
+import com.tp.proyecto1.controllers.reserva.ReservasController;
 import com.tp.proyecto1.controllers.venta.VentasController;
 import com.tp.proyecto1.controllers.viajes.ViajesController;
-import com.tp.proyecto1.controllers.contabilidad.AsientosController;
-import com.tp.proyecto1.controllers.reserva.ReservasController;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
@@ -53,6 +54,9 @@ public class MainView extends VerticalLayout {
 
 	@Autowired
 	private ReportesController reportesController;
+
+	@Autowired
+	private ConfiguracionController configuracionController;
 
 	private VerticalLayout mainLayout;
 	private AppLayout appLayout;
@@ -107,7 +111,7 @@ public class MainView extends VerticalLayout {
 				new AppLayoutMenuItem(VaadinIcon.PHONE.create(),"Eventos", e -> openEventosView()),
 				new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Contabilidad", e -> openContabilidadView()),
 				new AppLayoutMenuItem(VaadinIcon.CHART_3D.create(), "Reportes", e-> openReportesView()),
-				new AppLayoutMenuItem(VaadinIcon.COGS.create(),"Configuración")
+				new AppLayoutMenuItem(VaadinIcon.COGS.create(),"Configuración", e-> openConfiguracionView())
 		);
 
 		menu.addMenuItem(new AppLayoutMenuItem(VaadinIcon.USER.create(),
@@ -157,6 +161,10 @@ public class MainView extends VerticalLayout {
 
 	private void openContabilidadView(){
 		appLayout.setContent(asientosController.getAsientosView());
+	}
+	
+	private void openConfiguracionView(){
+		appLayout.setContent(configuracionController.getConfiguracionView());
 	}
 	
 	private void openClientesView() {

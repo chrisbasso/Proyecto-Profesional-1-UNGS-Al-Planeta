@@ -105,7 +105,7 @@ public class AsientoView extends FilterGridLayout<Asiento> {
         btnAgregar.addClickListener(e);
     }
     
-    public void setBtnABMListener(ComponentEventListener<ClickEvent<Button>> e) {
+    public void setBtnCuentasListener(ComponentEventListener<ClickEvent<Button>> e) {
         btnABMCuentas.addClickListener(e);
     }
 

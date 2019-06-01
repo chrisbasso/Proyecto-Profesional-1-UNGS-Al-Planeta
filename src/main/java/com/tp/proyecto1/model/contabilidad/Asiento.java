@@ -76,4 +76,25 @@ public class Asiento {
 	public String getTextoCabecera() {
 		return cabecera.getTextoCabecera();
 	}
+	public Double getSumaDebe() {
+		Double debe = 0.0;
+    	for(Posicion posicion : posiciones) {
+    		if(posicion.getDebeHaber() == TipoPosicion.DEBE) {
+    			debe += posicion.getImporte();
+    		}
+    	}
+		return debe;
+	}
+	public Double getSumaHaber() {
+		Double haber = 0.0;
+    	for(Posicion posicion : posiciones) {
+    		if(posicion.getDebeHaber() == TipoPosicion.HABER) {
+    			haber += posicion.getImporte();
+    		}
+    	}
+		return haber;
+	}
+	public Double getSaldo() {
+		return getSumaDebe() - getSumaHaber();  
+	}
 }

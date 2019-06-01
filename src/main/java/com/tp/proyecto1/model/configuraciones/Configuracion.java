@@ -30,6 +30,10 @@ public class Configuracion {
 		return clave;
 	}
 
+	public void setClave(String clave) {
+		this.clave = clave;
+	}
+
 	public String getValue() {
 		return value;
 	}

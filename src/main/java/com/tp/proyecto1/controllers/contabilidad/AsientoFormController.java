@@ -1,4 +1,3 @@
-
 package com.tp.proyecto1.controllers.contabilidad;
 
 import java.time.LocalDate;
@@ -15,7 +14,6 @@ import com.tp.proyecto1.model.contabilidad.Cuenta;
 import com.tp.proyecto1.model.contabilidad.Posicion;
 import com.tp.proyecto1.model.contabilidad.TipoPosicion;
 import com.tp.proyecto1.model.sucursales.Sucursal;
-import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.services.AsientoService;
 import com.tp.proyecto1.services.SucursalService;
 import com.tp.proyecto1.utils.ChangeHandler;
@@ -39,6 +37,8 @@ public class AsientoFormController {
 	private List<Cuenta> cuentas;
 	private Cabecera cabecera;
 	private List<Posicion> posiciones;
+	private Double debe;
+	private Double haber;
 	private ChangeHandler changeHandler;
 	
 	public AsientoFormController() {
@@ -110,8 +110,18 @@ public class AsientoFormController {
     	Double imp = asientoForm.getImporte();
     	Posicion posicion = new Posicion(tp, ct, imp);    	
     	posiciones.add(posicion);
+		asientoForm.actualizarGridPosiciones(posiciones);
+		asientoForm.deshabilitarBtnAgregar();
+		actualizarEtiquetas();
     }
     
+	private void actualizarEtiquetas(){
+		actualizarDebeHaber();
+		asientoForm.actualizarEtiquetaDebe(debe);
+		asientoForm.actualizarEtiquetaHaber(haber);
+		asientoForm.actualizarEtiquetaSaldo(debe - haber);
+	}
+	
     private void guardarAsiento() {
     	if(controlarSaldo()) {
     		Asiento asiento = new Asiento(cabecera,posiciones);
@@ -123,8 +133,13 @@ public class AsientoFormController {
     }
     
     private boolean controlarSaldo() {
-    	Double debe = 0.0;
-    	Double haber = 0.0;
+		actualizarDebeHaber();
+    	return Double.compare(debe, haber) == 0;
+    }
+    
+	private void actualizarDebeHaber(){
+		debe = 0.0;
+    	haber = 0.0;
     	for(Posicion posicion : posiciones) {
     		if(posicion.getDebeHaber() == TipoPosicion.DEBE) {
     			debe += posicion.getImporte();
@@ -132,9 +147,8 @@ public class AsientoFormController {
     			haber += posicion.getImporte();
     		}
     	}
-    	return Double.compare(debe, haber) == 0;
-    }
-    
+	}
+	
     private void cerrar() {
     	asientoForm.close();
     }
