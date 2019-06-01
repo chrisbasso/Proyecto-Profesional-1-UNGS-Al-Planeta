@@ -323,11 +323,13 @@ public class VentaFormController {
 			//Verificar si tiene bonificacion de puntos de promocion y aplicarlos
 			Promocion promoPuntos = new Promocion();
 			promoPuntos = this.ventaForm.getPromocion().getValue();
-			if ( promoPuntos.getTipoPromocion().equals("Puntos")) {
-				this.cantPuntosporVenta = promoPuntos.getDoubleValue() * this.cantPuntosporVenta;
+			if(promoPuntos !=null){
+				if ( promoPuntos.getTipoPromocion().equals("Puntos")) {
+					this.cantPuntosporVenta = promoPuntos.getDoubleValue() * this.cantPuntosporVenta;
+				}
 			}
-			
-			LocalDate fechaVencimiento = agregarAnios(Integer.parseInt(this.getCantAñosVencimientoPuntos()));
+
+			LocalDate fechaVencimiento = agregarAnios(Integer.parseInt(this.getCantAniosVencimientoPuntos()));
 			
 			LotePunto lotePunto = new LotePunto(LocalDate.now(), fechaVencimiento, this.cantPuntosporVenta , true, this.cantPuntosporVenta, cliente);
 			cliente.agregarPuntos(lotePunto);
@@ -434,7 +436,7 @@ public class VentaFormController {
 		return configuracionService.findValueByKey("pesos_por_punto");
 	}
 	
-	private String getCantAñosVencimientoPuntos() {
+	private String getCantAniosVencimientoPuntos() {
 		return configuracionService.findValueByKey("cant_anios_venc_puntos");
 	}
 }
