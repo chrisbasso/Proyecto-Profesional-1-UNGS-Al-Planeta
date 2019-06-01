@@ -3,7 +3,10 @@ package com.tp.proyecto1.controllers.reportes;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.Pago;
 import com.tp.proyecto1.model.pasajes.Transaccion;
+import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.model.users.User;
+import com.tp.proyecto1.model.viajes.Ciudad;
+import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.*;
 import com.tp.proyecto1.utils.BuscadorClientesComponent;
 import com.tp.proyecto1.utils.Inject;
@@ -36,17 +39,22 @@ public class ReportesController {
 	private ReportesView reportesView;
 
 	@Autowired
-	UserService userService;
+	private UserService userService;
 
 	@Autowired
-	ClienteService clienteService;
+	private ClienteService clienteService;
 
 	@Autowired
-	TransaccionService transaccionService;
+	private TransaccionService transaccionService;
 
 	@Autowired
-	PagosService pagosService;
+	private PagosService pagosService;
 
+	@Autowired
+	private ViajeService viajeService;
+
+	@Autowired
+	private SucursalService sucursalService;
 
 	public ReportesController() {
 		Inject.Inject(this);
@@ -74,19 +82,34 @@ public class ReportesController {
 		if(tipoReporte.equals(TipoReporte.CLIENTE.name())){
 			generarReportePorCliente(fechaDesde, fechaHasta);
 		}
+		if(tipoReporte.equals(TipoReporte.DESTINO.name())){
+			generarReportePorDestinos(fechaDesde, fechaHasta);
+		}
+		if(tipoReporte.equals(TipoReporte.LOCAL.name())){
+			generarReportePorLocal(fechaDesde, fechaHasta);
+		}
+	}
+
+	private void generarReportePorLocal(LocalDate fechaDesde, LocalDate fechaHasta) {
+		Sucursal sucursal = ((ComboBox<Sucursal>)reportesView.getFiltroDinamico()).getValue();
+		setReporteIngresos(fechaDesde, fechaHasta, sucursal);
+	}
+
+	private void generarReportePorDestinos(LocalDate fechaDesde, LocalDate fechaHasta) {
+
+		Ciudad ciudad = ((ComboBox<Ciudad>)reportesView.getFiltroDinamico()).getValue();
+		setReporteIngresos(fechaDesde, fechaHasta, ciudad);
+
 	}
 
 	private void generarReportePorVendedor(LocalDate fechaDesde, LocalDate fechaHasta) {
 		User vendedor = ((ComboBox<User>)reportesView.getFiltroDinamico()).getValue();
 		setReporteIngresos(fechaDesde, fechaHasta, vendedor);
-
 	}
 
 	private void generarReportePorCliente(LocalDate fechaDesde, LocalDate fechaHasta) {
-
 		Cliente cliente = ((BuscadorClientesComponent)reportesView.getFiltroDinamico()).getCliente();
 		setReporteIngresos(fechaDesde, fechaHasta, cliente);
-
 	}
 
 	private void setReporteIngresos(LocalDate fechaDesde, LocalDate fechaHasta, Object tipo) {
@@ -103,13 +126,21 @@ public class ReportesController {
 			transaccionExample.setVendedor((User)tipo);
 			nombreArchivo = "Reporte " + (((User) tipo).getUser()) +".xls";
 		}
+		if(tipo instanceof Ciudad){
+			transaccionExample.setViaje(new Viaje());
+			transaccionExample.getViaje().setCiudad((Ciudad)tipo);
+			nombreArchivo = "Reporte " + (((Ciudad) tipo).toString()) +".xls";
+		}
+		if(tipo instanceof Sucursal){
+			transaccionExample.setSucursal((Sucursal)tipo);
+			nombreArchivo = "Reporte " + (((Sucursal) tipo).getDescripcion()) +".xls";
+		}
 		Pago pagoExample = new Pago();
 		pagoExample.setTransaccion(transaccionExample);
 		List<Pago> pagos = pagosService.findPagos(pagoExample, fechaDesde, fechaHasta);
 		pagoGrid.setItems(pagos);
 		reportesView.setLayout();
 		reportesView.getHlCampos().add(new Anchor(new StreamResource(nombreArchivo, Exporter.exportAsExcel(pagoGrid)), "Exportar"));
-
 
 		if(reportesView.getComboTipoGrafico().getValue().equals("Anual")){
 			List<Double> listaMensual = new ArrayList<>(12);
@@ -175,6 +206,20 @@ public class ReportesController {
 			buscadorClientesComponent.getFiltro().setLabel("Cliente");
 			buscadorClientesComponent.getSearchButton().addThemeVariants(ButtonVariant.LUMO_SMALL);
 			reportesView.setFiltroDinamico(buscadorClientesComponent);
+			reportesView.setCampos();
+		}
+		if(reportesView.getComboTipoReporte().getValue().equals(TipoReporte.DESTINO.name())){
+			ComboBox<Ciudad> comboDestinos = new ComboBox<>("Destinos");
+			comboDestinos.setItemLabelGenerator(Ciudad::toString);
+			comboDestinos.setItems(viajeService.findAllCiudades());
+			reportesView.setFiltroDinamico(comboDestinos);
+			reportesView.setCampos();
+		}
+		if(reportesView.getComboTipoReporte().getValue().equals(TipoReporte.LOCAL.name())){
+			ComboBox<Sucursal> comboSucursales = new ComboBox<>("Sucursal");
+			comboSucursales.setItemLabelGenerator(Sucursal::getDescripcion);
+			comboSucursales.setItems(sucursalService.findAll());
+			reportesView.setFiltroDinamico(comboSucursales);
 			reportesView.setCampos();
 		}
 

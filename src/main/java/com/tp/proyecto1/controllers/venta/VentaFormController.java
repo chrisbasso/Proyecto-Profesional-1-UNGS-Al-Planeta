@@ -495,7 +495,7 @@ public class VentaFormController {
 		return configuracionService.findValueByKey("pesos_por_punto");
 	}
 	
-	private String getCantAñosVencimientoPuntos() {
+	private String getCantAniosVencimientoPuntos() {
 		return configuracionService.findValueByKey("cant_anios_venc_puntos");
 	}
 }
