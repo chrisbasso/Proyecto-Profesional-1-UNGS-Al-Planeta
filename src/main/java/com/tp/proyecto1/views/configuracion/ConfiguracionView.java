@@ -2,7 +2,7 @@ package com.tp.proyecto1.views.configuracion;
 
 import java.util.List;
 
-import org.omg.CORBA.portable.ValueFactory;
+//import org.omg.CORBA.portable.ValueFactory;
 
 import com.tp.proyecto1.model.configuraciones.Configuracion;
 import com.tp.proyecto1.utils.FilterGridLayout;

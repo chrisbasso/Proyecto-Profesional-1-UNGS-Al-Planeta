@@ -19,6 +19,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.textfield.TextFieldVariant;
 
 public class VentaForm extends Dialog {
 
@@ -41,7 +42,8 @@ public class VentaForm extends Dialog {
 	private TextField transporte;
 	private TextField fechaSalida;
 	private TextField horaSalida;
-
+	private TextField puntosObtenidos;
+	private TextField denoPromocion;
 	private Button btnSave;
 	private Button btnCancel;
 	private Button btnFinalizarCompra;
@@ -55,6 +57,8 @@ public class VentaForm extends Dialog {
 
 	}
 
+	
+
 	private void setComponents() {
 
 		id = new TextField();
@@ -66,6 +70,9 @@ public class VentaForm extends Dialog {
 		transporte= new TextField();
 		fechaSalida= new TextField();
 		horaSalida= new TextField();
+		puntosObtenidos = new TextField();
+		puntosObtenidos.setPattern("[0-9]*");
+		denoPromocion = new TextField();
 
 		btnFinalizarCompra = new Button("Finalizar Compra");
 		btnSave	  = new Button("Guardar");
@@ -88,11 +95,9 @@ public class VentaForm extends Dialog {
 		saldoPagar = new NumberField();
 		saldoPagar.setPrefixComponent(new Span("$"));
 		saldoPagar.setPreventInvalidInput(true);
-		saldoPagar.setEnabled(false);
 		subtotal = new NumberField();
 		subtotal.setPrefixComponent(new Span("$"));
 		subtotal.setPreventInvalidInput(true);
-		subtotal.setEnabled(false);
 		pasajerosGridComponent = new PasajerosGridComponent();
 		promocion = new ComboBox<>();
 	}
@@ -113,6 +118,8 @@ public class VentaForm extends Dialog {
 		form.addFormItem(formaPago, "Forma de Pago (*)");
 		form.addFormItem(saldoPagar, "Saldo a Pagar");
 		form.addFormItem(promocion, "Promocion");
+		form.addFormItem(puntosObtenidos, "Puntos Conseguidos");
+		form.addFormItem(denoPromocion, "Deno. Promocion");
 	}
 
 	private void setLayouts() {
@@ -294,5 +301,27 @@ public class VentaForm extends Dialog {
 
 	public void setPromocion(ComboBox<Promocion> promocion) {
 		this.promocion = promocion;
+	}
+
+
+
+	public TextField getPuntosObtenidos() {
+		return puntosObtenidos;
+	}
+
+
+
+	public void setPuntosObtenidos(TextField puntosObtenidos) {
+		this.puntosObtenidos = puntosObtenidos;
+	}
+	
+	public TextField getDenoPromocion() {
+		return denoPromocion;
+	}
+
+
+
+	public void setDenoPromocion(TextField denoPromocion) {
+		this.denoPromocion = denoPromocion;
 	}
 }
