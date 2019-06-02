@@ -1,8 +1,11 @@
 package com.tp.proyecto1.services;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -11,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tp.proyecto1.model.contabilidad.Asiento;
 import com.tp.proyecto1.model.contabilidad.Cabecera;
 import com.tp.proyecto1.model.contabilidad.Cuenta;
+import com.tp.proyecto1.model.contabilidad.Egreso;
 import com.tp.proyecto1.model.contabilidad.Posicion;
+import com.tp.proyecto1.model.contabilidad.TipoCuenta;
 import com.tp.proyecto1.repository.contabilidad.AsientoRepository;
 import com.tp.proyecto1.repository.contabilidad.CabeceraRepository;
 import com.tp.proyecto1.repository.contabilidad.CuentaRepository;
@@ -29,27 +34,16 @@ public class AsientoService {
 	private PosicionRepository posicionRepository;
 	
 	@Transactional
-	public void save(Asiento asiento, Cabecera cabecera,List<Posicion>posiciones){
-		cabeceraRepository.save(cabecera);
-		posicionRepository.saveAll(posiciones);
+	public void save(Asiento asiento){
+		cabeceraRepository.save(asiento.getCabecera());
+		posicionRepository.saveAll(asiento.getPosiciones());
 		asientoRepository.save(asiento);
 	}
 	
 	@Transactional
-	public void save(Asiento asiento){
-		asientoRepository.save(asiento);
-	}
-
-	@Transactional
 	public List<Asiento> findAll(){
 		return this.asientoRepository.findAll();
 	}
-
-	@Transactional
-	public List<Cuenta> findAllCuentas(){
-		return this.cuentaRepository.findAll();
-	}
-
 
 	@Transactional
 	public List<Asiento> findAsientos(Asiento asiento){
@@ -75,7 +69,7 @@ public class AsientoService {
 	public Optional<Asiento> findById(Long id) {		
 		return asientoRepository.findById(id);
 	}
-	
+
 	@Transactional
 	public List<Cuenta> findCuentas(){
 		return cuentaRepository.findAll();
@@ -84,6 +78,23 @@ public class AsientoService {
 	@Transactional
 	public void saveCuenta(Cuenta cuenta){
 		cuentaRepository.save(cuenta);
+	}
+	
+	@Transactional
+	public List <Egreso> findEgresos(LocalDate desde, LocalDate hasta){		
+		List <Asiento> asientos = asientoRepository.findAllByCabecera_FechaContabilizacionBetween(desde, hasta); 
+		List <Egreso> egresos = new ArrayList <Egreso>();
+		for(Asiento asiento : asientos) {
+			for(Posicion posicion : asiento.getPosiciones()) {
+				if(posicion.getCuenta().getTipoCuenta().equals(TipoCuenta.EGRESO)) {
+					Egreso candidato = Egreso.getInstancia(asiento.getId(), asiento.getCabecera(), posicion);
+					if(candidato != null) {
+						egresos.add(candidato);
+					}
+				}
+			}
+		}		
+		return egresos;		
 	}
 
 }

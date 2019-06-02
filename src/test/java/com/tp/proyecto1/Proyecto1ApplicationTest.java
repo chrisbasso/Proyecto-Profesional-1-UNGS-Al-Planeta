@@ -1,7 +1,12 @@
 package com.tp.proyecto1;
 
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.boot.CommandLineRunner;
+
 import com.tp.proyecto1.repository.clientes.ClienteRepository;
-import com.tp.proyecto1.repository.contabilidad.CuentaRepository;
 import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
 import com.tp.proyecto1.repository.pasajes.PasajeVentaRepository;
 import com.tp.proyecto1.repository.pasajes.ReservaRepository;
@@ -9,12 +14,12 @@ import com.tp.proyecto1.repository.pasajes.TransaccionRepository;
 import com.tp.proyecto1.repository.sucursales.SucursalRepository;
 import com.tp.proyecto1.repository.viajes.PaisRepository;
 import com.tp.proyecto1.repository.viajes.PromocionRepository;
-import com.tp.proyecto1.services.*;
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.boot.CommandLineRunner;
-
-import static org.junit.Assert.assertEquals;
+import com.tp.proyecto1.services.AsientoService;
+import com.tp.proyecto1.services.ConfiguracionService;
+import com.tp.proyecto1.services.TagDestinoService;
+import com.tp.proyecto1.services.UserService;
+import com.tp.proyecto1.services.VentaService;
+import com.tp.proyecto1.services.ViajeService;
 
 public class Proyecto1ApplicationTest {
 
@@ -42,11 +47,11 @@ public class Proyecto1ApplicationTest {
 		final PaisRepository paisRepository = null;
 		final TransaccionRepository transaccionRepository = null;
 		final SucursalRepository sucursalRepository = null;
-		final CuentaRepository cuentaRepository = null;
+		final AsientoService asientoService = null;
 		final CommandLineRunner expectedResult = null;
 
 		// Run the test
-		final CommandLineRunner result = proyecto1ApplicationUnderTest.loadData(userService, viajeService, ventaService, configuracionService, reservaRepository, clienteRepository, formaDePagoRepository, pasajeVentaRepository, promocionRepository, configService, tagDestinoService, paisRepository, transaccionRepository, sucursalRepository, cuentaRepository);
+		final CommandLineRunner result = proyecto1ApplicationUnderTest.loadData(userService, viajeService, ventaService, configuracionService, reservaRepository, clienteRepository, formaDePagoRepository, pasajeVentaRepository, promocionRepository, configService, tagDestinoService, paisRepository, transaccionRepository, sucursalRepository, asientoService);
 
 		// Verify the results
 		assertEquals(expectedResult, result);

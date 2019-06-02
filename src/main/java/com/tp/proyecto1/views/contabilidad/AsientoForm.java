@@ -65,7 +65,7 @@ public class AsientoForm extends Dialog{
 		inicializarCabecera();
     	fechaContabilizacion.setValue(asiento.getFechaContabilizacion());
     	fechaContabilizacion.setEnabled(false);
-    	sucursal.setValue(asiento.getSucursal());
+    	sucursal.setItems(asiento.getSucursal());
     	sucursal.setEnabled(false);
     	textoCabecera.setValue(asiento.getTextoCabecera());
     	textoCabecera.setEnabled(false); 
@@ -112,7 +112,6 @@ public class AsientoForm extends Dialog{
     
     private void inicializarActions() {
     	btnGuardar = new Button("Guardar",VaadinIcon.CHECK_CIRCLE.create());
-    	btnGuardar.setEnabled(false);
     	btnCancelar = new Button("Cancelar",VaadinIcon.CLOSE_CIRCLE.create());
     	actions = new HorizontalLayout();
     	actions.add(btnGuardar,btnCancelar);
@@ -179,7 +178,10 @@ public class AsientoForm extends Dialog{
     }
     
     public LocalDate getFechaSeleccionada() {
-    	return fechaContabilizacion.getValue(); 
+    	if(fechaContabilizacion.getValue() != null) {
+    		return fechaContabilizacion.getEmptyValue();
+    	}
+    	return fechaContabilizacion.getValue();
     }
     
     public String getTextoCabecera() {
@@ -203,15 +205,19 @@ public class AsientoForm extends Dialog{
     }
     
     public void habilitarPosiciones() {
-    	bloquearCabecera();
     	tipoPosicion.setEnabled(true);
     	cuenta.setEnabled(true);
         importe.setEnabled(true);    	
     }
-	
-	private void bloquearCabecera(){
+    
+    public void bloquearPosiciones() {
+    	tipoPosicion.setEnabled(false);
+    	cuenta.setEnabled(false);
+        importe.setEnabled(false);    	
+    }
+    
+	public void bloquearCabecera(){
 		fechaContabilizacion.setEnabled(false);	
-    	textoCabecera.setEnabled(false);	
     	sucursal.setEnabled(false);  	
 	}
     

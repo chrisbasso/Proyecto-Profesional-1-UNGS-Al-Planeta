@@ -47,12 +47,14 @@ public class AsientoServiceTest {
 		final Asiento asiento = null;
 		final Cabecera cabecera = null;
 		final List<Posicion> posiciones = Arrays.asList();
+		asiento.setCabecera(cabecera);
+		asiento.setPosiciones(posiciones);
 		when(mockCabeceraRepository.save(null)).thenReturn(null);
 		when(mockPosicionRepository.saveAll(null)).thenReturn(Arrays.asList());
 		when(mockAsientoRepository.save(null)).thenReturn(null);
 
 		// Run the test
-		asientoServiceUnderTest.save(asiento, cabecera, posiciones);
+		asientoServiceUnderTest.save(asiento);
 
 		// Verify the results
 	}
@@ -89,7 +91,7 @@ public class AsientoServiceTest {
 		when(mockCuentaRepository.findAll()).thenReturn(Arrays.asList());
 
 		// Run the test
-		final List<Cuenta> result = asientoServiceUnderTest.findAllCuentas();
+		final List<Cuenta> result = asientoServiceUnderTest.findCuentas();
 
 		// Verify the results
 		assertEquals(expectedResult, result);

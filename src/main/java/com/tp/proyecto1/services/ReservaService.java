@@ -20,8 +20,8 @@ public class ReservaService {
 	private ReservaRepository reservaRepository;
 
 	@Transactional
-	public void save(Reserva reserva){
-		reservaRepository.save(reserva);
+	public Long save(Reserva reserva){
+		return reservaRepository.save(reserva).getId();
 	}
 
 	@Transactional

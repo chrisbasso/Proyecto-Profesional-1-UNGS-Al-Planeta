@@ -147,9 +147,9 @@ public class ReservaFormController {
 			reserva.setSucursal(Proyecto1Application.sucursal);
 			reserva.setVendedor(Proyecto1Application.logUser);
 			reserva.setFecha(LocalDate.now());
-			reservaService.save(reserva);
+			Long id = reservaService.save(reserva);
 			viajeService.save(viaje);
-			mensajeGuardadoCierreForm();
+			mensajeGuardadoCierreForm(id);
 		}else {
 			Notification.show("Lo sentimos, no quedan pasajes disponibles en el viaje seleccionado.");
 			reservaForm.close();
@@ -178,9 +178,9 @@ public class ReservaFormController {
 			reserva.setPasajes(pasajes);
 			actualizarTransaccionEnPagos(reserva);
 			reserva.setPagos(listaDePagos);
-			reservaService.save(reserva);
+			Long id = reservaService.save(reserva);
 			viajeService.save(viaje);
-			mensajeGuardadoCierreForm();
+			mensajeGuardadoCierreForm(id);
 		}else {
 			Notification.show("Lo sentimos, no pudimos actualizar los pasajes disponibles en el viaje seleccionado.");
 			reservaForm.close();
@@ -252,21 +252,16 @@ public class ReservaFormController {
 	/*
 	 * Gestión de mensajes al cerrar el form
 	 */
-	private void mensajeGuardadoCierreForm() {
-		mensajeReservaGuardada();
+	private void mensajeGuardadoCierreForm(Long id) {
+		mensajeReservaGuardada(id);
 		mensajeSaldoViaje();
 		reservaForm.close();
 	}
 	/*
 	 * Intentar recuperar el nro de reserva generado en la BD
 	 */
-	private void mensajeReservaGuardada() {
-		Long idGuardada = reservaService.findReservaId(reserva);
-		if(idGuardada > -1) {
-			Notification.show("Reserva guardada con éxito." + "\n Número de reserva: " + idGuardada.toString());	
-		}else {
-			Notification.show("Reserva guardada con éxito."); 
-		}
+	private void mensajeReservaGuardada(Long id) {
+		Notification.show("Reserva guardada con éxito." + "\n Número de reserva: " + id.toString());	
 	}
 	/*
 	 * Recuperar fecha máxima de la configuración y mostrar el mensaje del saldo
