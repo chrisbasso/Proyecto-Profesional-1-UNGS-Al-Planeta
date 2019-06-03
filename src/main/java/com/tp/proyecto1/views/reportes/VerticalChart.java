@@ -90,8 +90,8 @@ public class VerticalChart extends Div {
 		}
 
 		add(barChart);
-		setWidth("45%");
-		setHeight("45%");
+		setWidth("50%");
+		setHeight("50%");
 	}
 }
 

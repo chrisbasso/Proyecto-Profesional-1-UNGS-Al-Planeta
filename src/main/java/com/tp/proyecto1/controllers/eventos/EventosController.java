@@ -1,9 +1,11 @@
 package com.tp.proyecto1.controllers.eventos;
 
 
+import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.clientes.Persona;
 import com.tp.proyecto1.model.eventos.Evento;
 import com.tp.proyecto1.model.eventos.Reclamo;
+import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.services.EventoService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.ConfirmationDialog;
@@ -15,6 +17,8 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
+import java.util.List;
 
 
 @Controller
@@ -66,6 +70,7 @@ public class EventosController {
 		confirmationDialog.open();
 		confirmationDialog.getConfirmButton().addClickListener(e->{
 			evento.setAbierto(false);
+			evento.setCerradorEvento(Proyecto1Application.logUser);
 			eventoService.save(evento);
 			listarEventos();
 		});
@@ -98,10 +103,22 @@ public class EventosController {
 		eventoConsulta.setAbierto(eventosView.getCheckAbierto().getValue());
         if(checkFiltros()){
             setParametrosBusqueda(eventoConsulta);
-            eventosView.getGrid().setItems(eventoService.findEventos(eventoConsulta));
+			List<Evento> eventos = eventoService.findEventos(eventoConsulta);
+			eventos.stream().forEach(e-> verificarUsuarioCierre(e));
+            eventosView.getGrid().setItems(eventos);
         }else{
-            eventosView.getGrid().setItems(eventoService.findAll());
+			List<Evento> eventos = eventoService.findAll();
+			eventos.stream().forEach(e-> verificarUsuarioCierre(e));
+            eventosView.getGrid().setItems(eventos);
         }
+	}
+
+	private void verificarUsuarioCierre(Evento e) {
+		if(e.getCerradorEvento()==null){
+			User usuarioVacio = new User();
+			usuarioVacio.setUser("");
+			e.setCerradorEvento(usuarioVacio);
+		}
 	}
 
 	private void setParametrosBusqueda(Evento eventoBusqueda) {

@@ -47,8 +47,8 @@ public class VentaForm extends Dialog {
 	private Button btnSave;
 	private Button btnCancel;
 	private Button btnFinalizarCompra;
-	
-	
+
+
 	public VentaForm() {
 
 		setComponents();
@@ -57,7 +57,7 @@ public class VentaForm extends Dialog {
 
 	}
 
-	
+
 
 	private void setComponents() {
 
@@ -160,7 +160,7 @@ public class VentaForm extends Dialog {
 	public void setFormaPago(ComboBox<FormaDePago> formaPago) {
 		this.formaPago = formaPago;
 	}
-	
+
 	public void setFormaPago(String formaPagoId) {
 		this.formaPago.setId(formaPagoId);
 	}
@@ -253,7 +253,7 @@ public class VentaForm extends Dialog {
 
     public TextField getCodTransporte() {
 		return codTransporte;
-	}	
+	}
 
 	public void setCodTransporte(TextField codTransporte) {
 		this.codTransporte = codTransporte;
@@ -314,7 +314,7 @@ public class VentaForm extends Dialog {
 	public void setPuntosObtenidos(TextField puntosObtenidos) {
 		this.puntosObtenidos = puntosObtenidos;
 	}
-	
+
 	public TextField getDenoPromocion() {
 		return denoPromocion;
 	}

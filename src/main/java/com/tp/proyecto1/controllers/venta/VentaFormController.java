@@ -17,6 +17,9 @@ import com.tp.proyecto1.model.viajes.Pais;
 import com.tp.proyecto1.model.viajes.Promocion;
 import com.tp.proyecto1.services.*;
 import com.tp.proyecto1.utils.Inject;
+import com.tp.proyecto1.views.ventas.ComprobanteVenta;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.dependency.JavaScript;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
 import com.tp.proyecto1.model.clientes.Cliente;
@@ -293,6 +296,7 @@ public class VentaFormController {
 		ventaService.save(venta);
 		//ventaService.save(setNewVenta());
         ventaForm.close();
+		imprimirComprobante(venta);
       //Si viene de una reserva
         if (this.reserva != null) {
         	this.reserva.inactivar();
@@ -300,7 +304,8 @@ public class VentaFormController {
             this.reservaService.save(reserva);
         }
         changeHandler.onChange();
-        Notification.show("PasajeVenta comprado. Lote de Puntos Conseguidos");		
+        Notification.show("PasajeVenta comprado. Lote de Puntos Conseguidos");
+
 	}
 
 	private void saveVenta(Venta venta) {
@@ -310,7 +315,15 @@ public class VentaFormController {
             Notification.show("PasajeVenta Guardado");
             changeHandler.onChange();
 	}
-	
+
+	private void imprimirComprobante(Venta venta) {
+
+		ComprobanteVenta comprobante = new ComprobanteVenta(venta);
+		comprobante.open();
+		UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
+				"  print(); self.close();}, 1000);");
+	}
+
 	private Venta setNewVenta() {
 		this.precioFinal = 0.0;
 		Venta venta = new Venta();

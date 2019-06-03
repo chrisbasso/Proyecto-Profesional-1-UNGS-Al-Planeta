@@ -36,8 +36,8 @@ public class DonutChart extends Div {
 								.build())
 						.build());
 		add(donutChart);
-		setWidth("30%");
-		setHeight("30%");
+		setWidth("35%");
+		setHeight("35%");
 	}
 }
 

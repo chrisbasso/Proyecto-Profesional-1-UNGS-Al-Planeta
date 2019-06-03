@@ -3,12 +3,15 @@ package com.tp.proyecto1.controllers.clientes;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.eventos.Evento;
 import com.tp.proyecto1.model.eventos.Reclamo;
+import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.services.EventoService;
 import com.tp.proyecto1.utils.GenericDialog;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.eventos.EventosClienteWindow;
 import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 public class EventosClienteWindowController {
 
@@ -64,8 +67,18 @@ public class EventosClienteWindowController {
 		return tipo;
 	}
 	private void listarEventos() {
-		this.view.getGrid().setItems(eventoService.findEventosByPersona(cliente));
+		List<Evento> eventos = eventoService.findEventosByPersona(cliente);
+		eventos.stream().forEach(e-> verificarUsuarioCierre(e));
+		this.view.getGrid().setItems();
+	}
 
+
+	private void verificarUsuarioCierre(Evento e) {
+		if(e.getCerradorEvento()==null){
+			User usuarioVacio = new User();
+			usuarioVacio.setUser("");
+			e.setCerradorEvento(usuarioVacio);
+		}
 	}
 
 

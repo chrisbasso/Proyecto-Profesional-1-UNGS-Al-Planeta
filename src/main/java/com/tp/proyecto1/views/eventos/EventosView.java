@@ -41,7 +41,6 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 
 	@Override
 	public void setLayout() {
-
 		HorizontalLayout hlSpace = new HorizontalLayout();
 		hlSpace.setWidthFull();
 		this.hlActions.add(idFilter,idClienteFilter,nombreFilter,apellidoFilter,fechaFilter,checkAbierto,hlSpace,searchButton,newConsultaButton);
@@ -49,9 +48,12 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 
 	@Override
 	public void setGrid() {
-		grid.setColumns("id", "persona.id", "persona.nombre", "persona.apellido", "fecha", "hora","usuarioLogueado.user", "prioridad");
+		grid.setColumns("id", "persona.id", "persona.nombre", "persona.apellido", "fecha", "hora","creadorEvento.user","usuarioAsignado.user", "cerradorEvento.user", "prioridad");
 		grid.getColumnByKey("id").setHeader("Nº Evento");
 		grid.getColumnByKey("persona.id").setHeader("Nº Cliente/Interesado");
+		grid.getColumnByKey("creadorEvento.user").setHeader("Creador por:");
+		grid.getColumnByKey("usuarioAsignado.user").setHeader("Asignado a:");
+		grid.getColumnByKey("cerradorEvento.user").setHeader("Cerrado por:");
 		grid.getColumnByKey("id").setWidth("100px").setFlexGrow(0);
 	}
 

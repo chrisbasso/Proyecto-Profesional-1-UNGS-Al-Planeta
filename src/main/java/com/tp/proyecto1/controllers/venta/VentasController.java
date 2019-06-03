@@ -9,8 +9,10 @@ import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.ConfirmationDialog;
 import com.tp.proyecto1.utils.Inject;
+import com.tp.proyecto1.views.ventas.ComprobanteVenta;
 import com.tp.proyecto1.views.ventas.VentaView;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -58,8 +60,19 @@ public class VentasController {
         ventaView.getPaisFilter().addValueChangeListener(e->setComboCiudades());
         setChangeHandler(this::listVentas);
     	ventaView.getSearchButton().addClickListener(e->listVentas());
+    	ventaView.getBtnComprobante().addClickListener(e->imprimirComprobante());
     }
-    private void setComboCiudades() {
+
+	private void imprimirComprobante() {
+		Venta venta = ventaView.getGrid().asSingleSelect().getValue();
+		ComprobanteVenta comprobante = new ComprobanteVenta(venta);
+		comprobante.open();
+		UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
+				"  print(); self.close();}, 1000);");
+
+	}
+
+	private void setComboCiudades() {
 
         Pais pais = ventaView.getPaisFilter().getValue();
         ventaView.getCiudadFilter().setItems(pais.getCiudades());

@@ -22,8 +22,15 @@ public class Evento {
 	private LocalTime hora;
 	@ManyToOne
 	private Persona persona;
-	@OneToOne
-	private User usuarioLogueado;
+
+	@ManyToOne
+	private User creadorEvento;
+
+	@ManyToOne
+	private User cerradorEvento;
+
+	@ManyToOne
+	private User usuarioAsignado;
 
 	private Boolean isAbierto = true;
 
@@ -64,12 +71,36 @@ public class Evento {
 		this.persona = persona;
 	}
 
-	public User getUsuarioLogueado() {
-		return usuarioLogueado;
+	public User getCreadorEvento() {
+		return creadorEvento;
 	}
 
-	public void setUsuarioLogueado(User usuarioLogueado) {
-		this.usuarioLogueado = usuarioLogueado;
+	public void setCreadorEvento(User creadorEvento) {
+		this.creadorEvento = creadorEvento;
+	}
+
+	public User getCerradorEvento() {
+		return cerradorEvento;
+	}
+
+	public void setCerradorEvento(User cerradorEvento) {
+		this.cerradorEvento = cerradorEvento;
+	}
+
+	public User getUsuarioAsignado() {
+		return usuarioAsignado;
+	}
+
+	public void setUsuarioAsignado(User usuarioAsignado) {
+		this.usuarioAsignado = usuarioAsignado;
+	}
+
+	public Boolean getAbierto() {
+		return isAbierto;
+	}
+
+	public void setAbierto(Boolean abierto) {
+		isAbierto = abierto;
 	}
 
 	public Long getId() {
@@ -106,12 +137,11 @@ public class Evento {
 				Objects.equals(fecha, evento.fecha) &&
 				Objects.equals(hora, evento.hora) &&
 				Objects.equals(persona, evento.persona) &&
-				Objects.equals(usuarioLogueado, evento.usuarioLogueado) &&
 				Objects.equals(prioridad, evento.prioridad);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, mensaje, fecha, hora, persona, usuarioLogueado, prioridad);
+		return Objects.hash(id, mensaje, fecha, hora, persona, prioridad);
 	}
 }

@@ -88,9 +88,10 @@ public class ConsultaFormController {
             }
             evento.setFecha(LocalDate.now());
             evento.setHora(LocalTime.now());
-            evento.setUsuarioLogueado(Proyecto1Application.logUser);
+            evento.setCreadorEvento(Proyecto1Application.logUser);
+            evento.setUsuarioAsignado(Proyecto1Application.logUser);
         }else{
-            evento.setUsuarioLogueado(consultaForm.getComboUsuarios().getValue());
+            evento.setUsuarioAsignado(consultaForm.getComboUsuarios().getValue());
         }
         evento.setMensaje(consultaForm.getTextAreaDescripcion().getValue());
         evento.setPrioridad(consultaForm.getComboPrioridad().getValue());
@@ -145,7 +146,7 @@ public class ConsultaFormController {
         }else{
             consultaForm.getBuscadorClientes().getFiltro().setValue(evento.getPersona().getId().toString());
         }
-        consultaForm.getComboUsuarios().setValue(evento.getUsuarioLogueado());
+        consultaForm.getComboUsuarios().setValue(evento.getUsuarioAsignado());
         consultaForm.getTextAreaDescripcion().setValue(evento.getMensaje());
         consultaForm.getComboPrioridad().setValue(evento.getPrioridad());
         consultaForm.getCheckInteresado().setEnabled(false);
