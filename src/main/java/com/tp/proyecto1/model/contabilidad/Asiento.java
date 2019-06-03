@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -19,7 +20,7 @@ public class Asiento {
 	private Long id;	
 	@OneToOne
 	private Cabecera cabecera;
-	@OneToMany
+	@OneToMany(fetch = FetchType.EAGER)
 	private List<Posicion> posiciones;
 	
 	public Asiento() {		

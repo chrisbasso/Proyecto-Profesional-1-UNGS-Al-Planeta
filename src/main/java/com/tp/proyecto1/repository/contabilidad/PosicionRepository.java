@@ -7,5 +7,5 @@ import com.tp.proyecto1.model.contabilidad.Posicion;
 
 @Repository
 public interface PosicionRepository extends JpaRepository<Posicion, Long> {
-
+	
 }

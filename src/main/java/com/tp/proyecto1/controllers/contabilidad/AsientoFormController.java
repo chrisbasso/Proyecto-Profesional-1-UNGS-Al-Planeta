@@ -60,6 +60,7 @@ public class AsientoFormController {
 		asientoForm = new AsientoForm();
 		cargarCombos();
 		setListeners();
+		asientoForm.bloquearPosiciones();
 		asientoForm.open();
 	}
 
@@ -72,7 +73,7 @@ public class AsientoFormController {
     private void setListeners() {
     	// Cabecera del asiento
     	asientoForm.setFechaListener(e->validacionCabecera());
-    	asientoForm.setTextoListener(e->validacionCabecera());
+    	//asientoForm.setTextoListener(e->validacionCabecera());
     	asientoForm.setSucursalListener(e->validacionCabecera());
     	// Posicion nueva
     	asientoForm.setCuentaListener(e->validacionBtnAgregar());
@@ -85,19 +86,13 @@ public class AsientoFormController {
     }
     
     private void validacionCabecera() {
-    	if(asientoForm.getFechaSeleccionada() != null && 
-    			asientoForm.getSucursal() != null) {
-    		asientoForm.habilitarPosiciones();
-    		cabecera = new Cabecera(LocalDate.now(), 
-    				asientoForm.getFechaSeleccionada(), Proyecto1Application.logUser,
-    				asientoForm.getTextoCabecera(),asientoForm.getSucursal());
+    	if(asientoForm.getFechaSeleccionada() != null && asientoForm.getSucursal() != null) {
+    		asientoForm.habilitarPosiciones();    		
     	}    	 
     }
     
     private void validacionBtnAgregar() {
-    	if(asientoForm.getTipoPosicion() != null &&
-    			asientoForm.getCuenta() != null && 
-    			asientoForm.getImporte() != null) {
+    	if(asientoForm.getTipoPosicion() != null && asientoForm.getCuenta() != null && asientoForm.getImporte() != null) {
     		asientoForm.habilitarBtnAgregar();
     	}else {
     		asientoForm.deshabilitarBtnAgregar();
@@ -123,16 +118,31 @@ public class AsientoFormController {
 	}
 	
     private void guardarAsiento() {
-    	if(controlarSaldo()) {
+    	if(faltanDatosCabecera()) {
+    		Notification.show("No se completaron todos los datos de la cabecera.");
+    	}else if(faltanPosiciones()) {
+    		Notification.show("Muy pocas posiciones, imposible guardar.");
+    	}else if(saldoEsCero()) {
+    		cabecera = new Cabecera(LocalDate.now(), 
+    				asientoForm.getFechaSeleccionada(), Proyecto1Application.logUser,
+    				asientoForm.getTextoCabecera(),asientoForm.getSucursal());
     		Asiento asiento = new Asiento(cabecera,posiciones);
-        	asientoService.save(asiento, cabecera, posiciones);    	
+        	asientoService.save(asiento);    	
         	cerrar();	
     	}else {
     		Notification.show("El asiento no balancea, no es posible guardar.");
     	}
     }
     
-    private boolean controlarSaldo() {
+    private boolean faltanDatosCabecera() {
+    	return (asientoForm.getFechaSeleccionada() != null && asientoForm.getSucursal() != null);
+    }
+    
+    private boolean faltanPosiciones() {
+    	return posiciones.size()<2;
+    }
+    
+    private boolean saldoEsCero() {
 		actualizarDebeHaber();
     	return Double.compare(debe, haber) == 0;
     }

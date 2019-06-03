@@ -34,7 +34,6 @@ public class AsientosController {
     private AsientoFormController asientoFormController;
     private AsientoView asientoView;
     private CuentaController cuentaController;
-    private ChangeHandler changeHandler;
     
     public AsientosController() {
         Inject.Inject(this);
@@ -57,6 +56,7 @@ public class AsientosController {
     private void mostrarAsiento(Asiento asiento) {
     	asientoFormController = new AsientoFormController();
     	asientoFormController.getFormVisualizar(asiento);
+    	
     	asientoFormController.setChangeHandler(this::listAsientos);    	
     }
     
@@ -79,7 +79,6 @@ public class AsientosController {
 			asiento.setAnulado(Proyecto1Application.logUser);						
 			asientoService.save(asiento);			
 			Notification.show("Asiento anulado");
-			changeHandler.onChange();
 		});
 		confirmationDialog.open();
 	}
