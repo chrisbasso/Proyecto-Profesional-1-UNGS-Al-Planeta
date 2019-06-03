@@ -9,15 +9,16 @@ public class Cuenta {
 	@Id
 	@GeneratedValue
 	private Long id;
+
 	@Column(unique = true)
-	private int numeroCuenta;
+	private Integer numeroCuenta;
 	private String descripcion;
 	private TipoCuenta tipoCuenta;
 
 	public Cuenta() {		
 	}
 	
-	public Cuenta(int numeroCuenta, String descripcion, TipoCuenta tipoCuenta) {
+	public Cuenta(Integer numeroCuenta, String descripcion, TipoCuenta tipoCuenta) {
 		this.numeroCuenta = numeroCuenta;
 		this.descripcion = descripcion;
 		this.tipoCuenta = tipoCuenta;
@@ -31,11 +32,11 @@ public class Cuenta {
 		this.id = id;
 	}
 
-	public int getNumeroCuenta() {
+	public Integer getNumeroCuenta() {
 		return numeroCuenta;
 	}
 
-	public void setNumeroCuenta(int numeroCuenta) {
+	public void setNumeroCuenta(Integer numeroCuenta) {
 		this.numeroCuenta = numeroCuenta;
 	}
 
