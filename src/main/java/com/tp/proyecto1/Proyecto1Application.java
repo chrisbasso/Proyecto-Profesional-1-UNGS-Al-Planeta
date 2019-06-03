@@ -119,6 +119,14 @@ public class Proyecto1Application {
 						promocionRepository.save(promocion);
 					}
 				}
+				
+				Promocion promocionExamplePasajesCero = new Promocion();
+				promocionExamplePasajesCero.setCantidadPasajesRestantes(0);
+				List<Promocion> promocionesPasajesCero = promocionRepository.findAll(Example.of(promocionExamplePasajesCero));
+				for (Promocion promocion : promocionesPasajesCero) {
+					promocion.setActivo(Boolean.FALSE);
+					promocionRepository.save(promocion);
+				}
 
 			}
 		};

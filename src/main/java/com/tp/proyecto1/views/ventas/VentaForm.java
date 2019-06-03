@@ -25,14 +25,18 @@ public class VentaForm extends Dialog {
 
 	private VerticalLayout mainLayout = new VerticalLayout();
 	private FormLayout form = new FormLayout();
+	private FormLayout formPuntos = new FormLayout();
 	private BuscadorClientesComponent cliente;
 	private Label descripcionCliente;
 	private ComboBox<FormaDePago> formaPago;
 //	private NumberField cantidadPasaje;
 	private Checkbox usoPuntosCheck;
+	private TextField puntosDisponibles;
+	private NumberField puntosaUsar;
 	private NumberField saldoPagar;
 	private NumberField subtotal;
 	private PasajerosGridComponent pasajerosGridComponent;
+	private TextField espacio;
 
 	private TextField id;
 	private ComboBox<Pais> pais;
@@ -83,13 +87,14 @@ public class VentaForm extends Dialog {
 		descripcionCliente = new Label();
 		cliente = new BuscadorClientesComponent(descripcionCliente);
 		cliente.getFiltro().setRequired(true);
+		cliente.getFiltro().setHeight("40px");
 //		cantidadPasaje = new NumberField();
 //		cantidadPasaje.setMin(1);
 //		cantidadPasaje.setMax(6);
 //		cantidadPasaje.setValue((double) 1);
 //		cantidadPasaje.setHasControls(true);
-		usoPuntosCheck = new Checkbox("Uso de Puntos");
-		usoPuntosCheck.setValue(true);
+		usoPuntosCheck = new Checkbox();
+		usoPuntosCheck.setValue(false);
 		usoPuntosCheck.setMinWidth("135px");
 		usoPuntosCheck.setEnabled(false);
 		saldoPagar = new NumberField();
@@ -99,7 +104,15 @@ public class VentaForm extends Dialog {
 		subtotal.setPrefixComponent(new Span("$"));
 		subtotal.setPreventInvalidInput(true);
 		pasajerosGridComponent = new PasajerosGridComponent();
+		pasajerosGridComponent.getGrid().setHeight("130px");
 		promocion = new ComboBox<>();
+		puntosDisponibles = new TextField();
+		puntosaUsar = new NumberField();
+		puntosaUsar.setHasControls(true);
+		puntosaUsar.setMin(0);
+		espacio = new TextField();
+		espacio.setVisible(false);
+		
 	}
 
 	private void setForm() {
@@ -113,13 +126,18 @@ public class VentaForm extends Dialog {
 		form.addFormItem(cliente, "Nro de Cliente (*)");
 		form.addFormItem(descripcionCliente, "Descripción");
 		//form.addFormItem(cantidadPasaje, "Cantidad de Pasajes");
-		FormItem totalItem = form.addFormItem(subtotal, "Subtotal");
-		totalItem.add(usoPuntosCheck);
+		form.addFormItem(subtotal, "Subtotal");
 		form.addFormItem(formaPago, "Forma de Pago (*)");
 		form.addFormItem(saldoPagar, "Saldo a Pagar");
 		form.addFormItem(promocion, "Promocion");
 		form.addFormItem(puntosObtenidos, "Puntos Conseguidos");
 		form.addFormItem(denoPromocion, "Deno. Promocion");
+		//FormItem totalItem = form.addFormItem(subtotal, "Subtotal");
+		//totalItem.add(usoPuntosCheck);
+		formPuntos.addFormItem(usoPuntosCheck, "Uso de Puntos");
+		formPuntos.addFormItem(espacio, "");
+		formPuntos.addFormItem(puntosDisponibles, "Puntos Disponibles");
+		formPuntos.addFormItem(puntosaUsar, "Puntos a Usar");
 	}
 
 	private void setLayouts() {
@@ -127,7 +145,7 @@ public class VentaForm extends Dialog {
 		actions.add(btnSave, btnCancel, btnFinalizarCompra);
 
 		mainLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
-		mainLayout.add(form, pasajerosGridComponent, actions);
+		mainLayout.add(form, pasajerosGridComponent, formPuntos, actions);
 		mainLayout.setSizeFull();
 
 		this.add(mainLayout);
@@ -323,5 +341,29 @@ public class VentaForm extends Dialog {
 
 	public void setDenoPromocion(TextField denoPromocion) {
 		this.denoPromocion = denoPromocion;
+	}
+
+
+
+	public TextField getPuntosDisponibles() {
+		return puntosDisponibles;
+	}
+
+
+
+	public NumberField getPuntosaUsar() {
+		return puntosaUsar;
+	}
+
+
+
+	public void setPuntosDisponibles(TextField puntosDisponibles) {
+		this.puntosDisponibles = puntosDisponibles;
+	}
+
+
+
+	public void setPuntosaUsar(NumberField puntosaUsar) {
+		this.puntosaUsar = puntosaUsar;
 	}
 }

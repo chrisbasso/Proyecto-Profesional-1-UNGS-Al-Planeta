@@ -45,6 +45,8 @@ public class Promocion
 	
 	protected Integer cantidadPasajes;
 	
+	protected Integer cantidadPasajesRestantes;
+	
 	@ManyToMany(fetch = FetchType.EAGER)
 	protected Set<Viaje> viajesAfectados;
 	
@@ -67,6 +69,7 @@ public class Promocion
 		setCodigoPromocion(codigoPromocion);
 		setDoubleValue(nroFloat);
 		setCantidadPasajes(cantidadPasajes2);
+		setCantidadPasajesRestantes(cantidadPasajes2);
 		viajesAfectados = new TreeSet<Viaje>();
 		ciudadesAfectadas = new TreeSet<Ciudad>();
 		setActivo(activo);
@@ -180,6 +183,32 @@ public class Promocion
 	public void setActivo(Boolean activo)
 	{
 		this.activo = activo;
+	}
+
+	public Integer getCantidadPasajesRestantes() {
+		return cantidadPasajesRestantes;
+	}
+
+	public void setCantidadPasajesRestantes(Integer cantidadPasajesRestantes) {
+		this.cantidadPasajesRestantes = cantidadPasajesRestantes;
+	}
+	
+	public boolean restarPasajes(Integer cantPasajes) {
+		if(this.cantidadPasajesRestantes == 0 || this.cantidadPasajesRestantes < cantPasajes) {
+			return false;
+		}else{
+			this.cantidadPasajesRestantes -= cantPasajes;
+			return true;
+		}
+	}
+	
+	public boolean agregarPasajes(Integer cantPasajes) {
+		if(this.cantidadPasajesRestantes + cantPasajes > this.cantidadPasajes) {
+			return false;
+		}else{
+			this.cantidadPasajesRestantes += cantPasajes;
+			return true;
+		}
 	}
 
 	@Override
