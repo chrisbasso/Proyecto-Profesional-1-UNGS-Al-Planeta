@@ -106,8 +106,10 @@ public class AsientoForm extends Dialog{
 		posiciones.addThemeVariants(GridVariant.MATERIAL_COLUMN_DIVIDERS);
 		posiciones.setSelectionMode(Grid.SelectionMode.NONE);
 		posiciones.setHeightByRows(true);
-		posiciones.setColumns("tipoPosicion", "cuenta", "importe");
+		posiciones.setColumns("tipoPosicion", "cuenta.numeroCuenta","cuenta.descripcion", "importe");
 		posiciones.getColumnByKey("tipoPosicion").setHeader("D/H");
+		posiciones.getColumnByKey("cuenta.numeroCuenta").setHeader("Nro Cuenta");
+		posiciones.getColumnByKey("cuenta.descripcion").setHeader("Descripcion");
 	}
     
     private void inicializarActions() {
@@ -118,17 +120,7 @@ public class AsientoForm extends Dialog{
     }
     
     private void inicializarMain() {
-		HorizontalLayout etiquetas = new HorizontalLayout();
-		sumaDebe = new TextField();
-		sumaDebe.setEnabled(false);		
-		sumaHaber = new TextField();
-		sumaHaber.setEnabled(false);
-		saldo = new TextField();
-		saldo.setEnabled(false);
-		etiquetas.add(sumaDebe);
-		etiquetas.add(sumaHaber);
-		etiquetas.add(saldo);
-				
+    	HorizontalLayout etiquetas = crearEtiquetas("0", "0", "0");				
     	mainLayout = new VerticalLayout();
     	mainLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         mainLayout.add(formCabecera);
@@ -143,17 +135,7 @@ public class AsientoForm extends Dialog{
     }
     
     private void inicializarMainVisualizar(String debe, String haber, String saldo) {
-		HorizontalLayout etiquetas = new HorizontalLayout();
-		sumaDebe = new TextField(debe);
-		sumaDebe.setEnabled(false);		
-		sumaHaber = new TextField(haber);
-		sumaHaber.setEnabled(false);
-		this.saldo = new TextField(saldo);
-		this.saldo.setEnabled(false);
-		etiquetas.add(sumaDebe);
-		etiquetas.add(sumaHaber);
-		etiquetas.add(this.saldo);
-				
+		HorizontalLayout etiquetas = crearEtiquetas(debe, haber, saldo);				
     	mainLayout = new VerticalLayout();
     	mainLayout.setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.CENTER);
         mainLayout.add(formCabecera);
@@ -164,6 +146,23 @@ public class AsientoForm extends Dialog{
     	this.setWidth("800px");
         this.setHeight("100%");
     }
+
+    private HorizontalLayout crearEtiquetas(String debe, String haber, String saldo) {
+		HorizontalLayout etiquetas = new HorizontalLayout();
+		sumaDebe = new TextField("Suma Debe");
+		sumaDebe.setValue(debe);
+		sumaDebe.setEnabled(false);		
+		sumaHaber = new TextField("Suma Haber");
+		sumaHaber.setValue(haber);
+		sumaHaber.setEnabled(false);
+		this.saldo = new TextField("Saldo");
+		this.saldo.setValue(saldo);
+		this.saldo.setEnabled(false);
+		etiquetas.add(sumaDebe);
+		etiquetas.add(sumaHaber);
+		etiquetas.add(this.saldo);
+		return etiquetas;
+	}
 
     public void cargarComboSucursal(List<Sucursal>sucursales) {
     	sucursal.setItems(sucursales);
@@ -178,30 +177,51 @@ public class AsientoForm extends Dialog{
     }
     
     public LocalDate getFechaSeleccionada() {
+    	LocalDate ret = null;
     	if(fechaContabilizacion.getValue() != null) {
-    		return fechaContabilizacion.getEmptyValue();
+    		ret = fechaContabilizacion.getValue();
     	}
-    	return fechaContabilizacion.getValue();
+    	return ret;
     }
     
     public String getTextoCabecera() {
-    	return textoCabecera.getValue();
+    	String ret = "";
+    	if(textoCabecera.getValue() != null) {
+    		ret = textoCabecera.getValue();
+    	}
+    	return ret;
     }
     
     public Sucursal getSucursal() {
-    	return sucursal.getValue();
+    	Sucursal ret = null;
+    	if(sucursal.getValue() != null) {
+    		ret = sucursal.getValue();
+    	}
+    	return ret;
     }
     
     public TipoPosicion getTipoPosicion() {
-    	return tipoPosicion.getValue();
+    	TipoPosicion ret = null;
+    	if(tipoPosicion.getValue() != null) {
+    		ret = tipoPosicion.getValue();
+    	}
+    	return ret;
     }
     
     public Cuenta getCuenta() {
-    	return cuenta.getValue();
+    	Cuenta ret = null;
+    	if(cuenta.getValue() != null) {
+    		ret = cuenta.getValue();
+    	}
+    	return ret;
     }
     
     public Double getImporte() {
-    	return importe.getValue();
+    	Double ret = null;
+    	if(importe.getValue() != null) {
+    		ret = importe.getValue();
+    	}
+    	return ret;
     }
     
     public void habilitarPosiciones() {
@@ -256,6 +276,7 @@ public class AsientoForm extends Dialog{
 	}		
 	
 	public void actualizarGridPosiciones(List <Posicion> posiciones){
+		this.posiciones.removeAllColumns();
 		this.posiciones.setItems(posiciones);
 	}
 	

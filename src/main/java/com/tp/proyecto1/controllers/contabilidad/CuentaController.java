@@ -43,17 +43,29 @@ public class CuentaController {
 	}
 	
 	private void setListeners() {
-    	cuentaForm.setBtnGuardarListener(e->validacion());
+		cuentaForm.setTipoCuentaListener(e->validacionDatos());
+		cuentaForm.setNumeroListener(e->validacionDatos());
+		cuentaForm.setDescripcionListener(e->validacionDatos());
+		cuentaForm.setBtnGuardarListener(e->validacionGuardado());
 	}
 	
-	private void validacion(){		
+	private void validacionDatos() {
+		if(cuentaForm.getTipoCuenta() != null && 
+				cuentaForm.getNumero() != 0 && 
+				cuentaForm.getDescripcion() != "" ) {
+			
+			cuentaForm.habilitarBtnGuardar();
+		}
+	}
+	
+	private void validacionGuardado(){		
 		int numeroCtaNv = cuentaForm.getNumero();
 		String descripCtaNv = cuentaForm.getDescripcion();
 		TipoCuenta tipoCtaNv = cuentaForm.getTipoCuenta();
 		boolean crear = true;
 		for(Cuenta cuenta : cuentas){
 			if(cuenta.getNumeroCuenta() == numeroCtaNv){
-				Notification.show("Ya existe esa cuenta.");
+				Notification.show("Ya existe una cuenta con ese número, con la descripcion " + cuenta.getDescripcion());
 				crear = false;
 			}
 		}
@@ -65,7 +77,7 @@ public class CuentaController {
 	private void guardarCuenta(String descripcion, int numero, TipoCuenta tipo){
 		Cuenta cuentaNueva = new Cuenta(numero, descripcion, tipo);
 		asientoService.saveCuenta(cuentaNueva);
-		Notification.show("Se creo la cuenta " + descripcion + ".");
+		Notification.show("Se creo la cuenta " + cuentaNueva.toString() + ".");
 		cuentaForm.close();
 	}
 }

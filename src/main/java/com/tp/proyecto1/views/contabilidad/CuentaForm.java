@@ -4,8 +4,11 @@ import java.util.List;
 
 import com.tp.proyecto1.model.contabilidad.Cuenta;
 import com.tp.proyecto1.model.contabilidad.TipoCuenta;
+import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.HasValue.ValueChangeListener;
+import com.vaadin.flow.component.KeyUpEvent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -88,11 +91,19 @@ public class CuentaForm extends Dialog{
     }
 
     public int getNumero() {
-    	return numero.getValue().intValue();
+    	int ret = 0;
+    	if(numero.getValue() != null) {
+    		ret = numero.getValue().intValue();
+    	}
+    	return ret;
     }
     
     public String getDescripcion() {
-    	return descripcion.getValue();
+    	String ret = "";
+    	if(descripcion.getValue() != null) {
+    		ret = descripcion.getValue();
+    	}
+    	return ret;
     }
     
     public TipoCuenta getTipoCuenta() {
@@ -110,7 +121,19 @@ public class CuentaForm extends Dialog{
     public void deshabilitarBtnGuardar() {
     	btnGuardar.setEnabled(false);
     }
-	
+
+    public void setNumeroListener(ComponentEventListener<KeyUpEvent> e) {
+        numero.addKeyUpListener(e);
+    }
+
+    public void setDescripcionListener(ComponentEventListener<KeyUpEvent> e) {
+        descripcion.addKeyUpListener(e);
+    }
+    
+    public void setTipoCuentaListener(ValueChangeListener<? super ComponentValueChangeEvent<ComboBox<TipoCuenta>, TipoCuenta>> e) {
+        cmbTipoCuenta.addValueChangeListener(e);
+    }
+    
     public void setBtnGuardarListener(ComponentEventListener<ClickEvent<Button>> e) {
         btnGuardar.addClickListener(e);
     }
