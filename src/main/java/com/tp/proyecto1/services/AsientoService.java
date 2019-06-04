@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -72,7 +73,7 @@ public class AsientoService {
 
 	@Transactional
 	public List<Cuenta> findCuentas(){
-		return cuentaRepository.findAll();
+		return cuentaRepository.findAll(Sort.by("numeroCuenta"));
 	}
 
 	@Transactional
