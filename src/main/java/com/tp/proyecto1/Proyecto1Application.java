@@ -2,7 +2,6 @@ package com.tp.proyecto1;
 
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
@@ -18,9 +17,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
 
-import com.tp.proyecto1.controllers.reserva.ReservaREST;
 import com.tp.proyecto1.model.contabilidad.Cuenta;
 import com.tp.proyecto1.model.contabilidad.TipoCuenta;
+import com.tp.proyecto1.model.lotePunto.LotePunto;
 import com.tp.proyecto1.model.pasajes.EstadoTransaccion;
 import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.model.sucursales.Sucursal;
@@ -29,9 +28,10 @@ import com.tp.proyecto1.model.viajes.Ciudad;
 import com.tp.proyecto1.model.viajes.Pais;
 import com.tp.proyecto1.model.viajes.Promocion;
 import com.tp.proyecto1.model.viajes.TagDestino;
-import com.tp.proyecto1.model.viajes.Transporte;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.repository.clientes.ClienteRepository;
+import com.tp.proyecto1.repository.lotePuntos.LotePuntoRepository;
+import com.tp.proyecto1.repository.contabilidad.CuentaRepository;
 import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
 import com.tp.proyecto1.repository.pasajes.PasajeVentaRepository;
 import com.tp.proyecto1.repository.pasajes.ReservaRepository;
@@ -64,17 +64,19 @@ public class Proyecto1Application {
 	public CommandLineRunner loadData(UserService userService,
 									  ViajeService viajeService,
 									  VentaService ventaService,
-									  ConfiguracionService configService,
+									  ConfiguracionService configuracionService,
 									  ReservaRepository reservaRepository,
 									  ClienteRepository clienteRepository,
 									  FormaDePagoRepository formaDePagoRepository,
 									  PasajeVentaRepository pasajeVentaRepository,
 									  PromocionRepository promocionRepository,
+									  ConfiguracionService configService,
 									  TagDestinoService tagDestinoService,
 									  PaisRepository paisRepository,
 									  TransaccionRepository transaccionRepository,
 									  SucursalRepository sucursalRepository,
-									  AsientoService asientoService) {
+									  AsientoService asientoService,
+									  LotePuntoRepository lotePuntoRepository) {
 		return args -> {
 			crearUsuarios(userService);
 			crearTiposTransportes(viajeService);
@@ -82,15 +84,14 @@ public class Proyecto1Application {
 			crearConfiguracion(configService);
 			crearTagsDestino(tagDestinoService);
 			crearPaisesCiudades(paisRepository);
-			crearViajes(viajeService);
 			setSurcursales(sucursalRepository);
 			crearCuentas(asientoService);
-			procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository);
+			procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository, lotePuntoRepository);
 
 		};
 	}
 
-	private void procesoVertificarVencimientos(ViajeService viajeService, ReservaRepository reservaRepository, PromocionRepository promocionRepository) {
+	private void procesoVertificarVencimientos(ViajeService viajeService, ReservaRepository reservaRepository, PromocionRepository promocionRepository, LotePuntoRepository lotePuntoRepository) {
 		Timer timer = new Timer();
 
 		TimerTask task = new TimerTask() {
@@ -100,19 +101,12 @@ public class Proyecto1Application {
 			{
 				log.info("Verificando Vencimientos...");
 
-				List<Reserva> reservas = reservaRepository.findAll();				
+				List<Reserva> reservas = reservaRepository.findAllByViaje_FechaSalida(LocalDate.now().plusDays(5));
 				for (Reserva reserva : reservas) {
-					boolean seDebeAnular = false;
-					if(!reserva.getEstadoTransaccion().equals(EstadoTransaccion.VENDIDA)) {
-						if(ReservaREST.esAnulablePorVencimientoFechaReserva(reserva)) {
-							seDebeAnular = true;
-						}else if(ReservaREST.esAnulablePorVencimientoPago(reserva)) {
-							seDebeAnular = true;
-						}
-					}					
-					if(seDebeAnular) {
-						reserva.setEstadoTransaccion(EstadoTransaccion.VENCIDA);
+					if(reserva.isActivo()){
+						log.info(reserva.getViaje().getFechaSalida().toString());
 						reserva.inactivar();
+						reserva.setEstadoTransaccion(EstadoTransaccion.VENCIDA);
 						reservaRepository.save(reserva);
 					}
 				}
@@ -144,6 +138,14 @@ public class Proyecto1Application {
 				for (Promocion promocion : promocionesPasajesCero) {
 					promocion.setActivo(Boolean.FALSE);
 					promocionRepository.save(promocion);
+				}
+				
+				LotePunto lotePuntoExample = new LotePunto();
+				lotePuntoExample.setFechaVencimiento(LocalDate.now().minusDays(1));
+				List<LotePunto> lotePuntos = lotePuntoRepository.findAll(Example.of(lotePuntoExample));
+				for(LotePunto lotePunto : lotePuntos) {
+					lotePunto.setActivo(Boolean.FALSE);
+					lotePuntoRepository.save(lotePunto);
 				}
 
 			}
@@ -210,11 +212,9 @@ public class Proyecto1Application {
 	}
 
 	private void crearConfiguracion(ConfiguracionService configService) {
-		configService.createConfiguracionIfNotExist("reserva_porcentaje_pago_parcial-cifra", "30");
-		configService.createConfiguracionIfNotExist("reserva_vencimiento_pago_parcial-dias", "10");
-		configService.createConfiguracionIfNotExist("reserva_vencimiento_reserva-dias", "5");
+		configService.createConfiguracionIfNotExist("reserva_fecha_maxima", "3");
 		configService.createConfiguracionIfNotExist("pesos_por_punto", "10");
-		configService.createConfiguracionIfNotExist("cant_anios_venc_puntos", "1");	
+		configService.createConfiguracionIfNotExist("cant_anios_venc_puntos", "1");
 	}
 
 	private void crearFormasDePago(VentaService ventaService) {
@@ -258,14 +258,4 @@ public class Proyecto1Application {
 			asientoService.saveCuenta(new Cuenta(504,"Mantenimiento", TipoCuenta.EGRESO));			
 		}
 	}
-	
-	private void crearViajes(ViajeService viajeService) {
-		for (int i = 0; i<5; i++) {
-	        Transporte transporte = new Transporte("codigo " + i,viajeService.findAllTipoTransportes().get(0), i*5, "clase " + i);
-			Viaje viaje = new Viaje(viajeService.findAllCiudades().get(0), transporte, LocalDate.now().plusDays(10), LocalTime.now(), i*2000.0, "Viaje " + i, true);
-			viajeService.save(viaje);
-		}
-		
-	}
 }
-

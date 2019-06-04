@@ -21,7 +21,7 @@ public class PasajerosGridComponent extends VerticalLayout {
 	private Grid<Pasajero> grid = new Grid<>();
 	private List<Pasajero> pasajerosList = new ArrayList<>();
 	private Editor<Pasajero> editor;
-
+	private Collection<Button> editButtons;
 	public PasajerosGridComponent() {
 
 		setLayout();
@@ -95,7 +95,7 @@ public class PasajerosGridComponent extends VerticalLayout {
 						"DNI no puede estar vacío").bind("dni");
 		columnDNI.setEditorComponent(fieldDni);
 
-		Collection<Button> editButtons = Collections
+		editButtons = Collections
 				.newSetFromMap(new WeakHashMap<>());
 
 		editor.addCloseListener(event -> {

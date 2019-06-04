@@ -24,7 +24,9 @@ import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
+import com.tp.proyecto1.views.reserva.ComprobanteReserva;
 import com.tp.proyecto1.views.reserva.ReservaForm;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
 
@@ -149,12 +151,20 @@ public class ReservaFormController {
 			reserva.setFecha(LocalDate.now());
 			Long id = reservaService.save(reserva);
 			viajeService.save(viaje);
+			imprimirComprobante(reserva);
 			mensajeGuardadoCierreForm(id);
 		}else {
 			Notification.show("Lo sentimos, no quedan pasajes disponibles en el viaje seleccionado.");
 			reservaForm.close();
 		}
 	}	
+	private void imprimirComprobante(Reserva reserva)
+	{
+		ComprobanteReserva comprobante = new ComprobanteReserva(reserva);
+		comprobante.open();
+		UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
+				"  print(); self.close();}, 1000);");
+	}
 	/*
 	 *  Iniciar el form para modificaciones de reservas
 	 */

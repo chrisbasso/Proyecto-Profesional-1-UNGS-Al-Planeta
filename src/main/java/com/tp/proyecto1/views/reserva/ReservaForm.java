@@ -220,7 +220,6 @@ public class ReservaForm extends Dialog{
 		actualizarPagos(pago);
 		habilitarBtnAgregarPago();
 	}
-
 	
 	public void setListenerCantPasajes(ValueChangeListener<? super ComponentValueChangeEvent<NumberField, Double>> e) {
 		cantidadPasajes.addValueChangeListener(e);

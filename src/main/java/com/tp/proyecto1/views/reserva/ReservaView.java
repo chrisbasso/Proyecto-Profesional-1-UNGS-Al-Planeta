@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.tp.proyecto1.model.pasajes.Reserva;
+import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.model.viajes.Ciudad;
 import com.tp.proyecto1.model.viajes.Pais;
 import com.tp.proyecto1.model.viajes.Viaje;
@@ -14,6 +15,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
@@ -57,6 +59,11 @@ public class ReservaView extends FilterGridLayout<Reserva> {
         this.hlFooter.add(btnComprobante, btnVender);
         hlSpace.setWidthFull();
         this.hlActions.add(numeroClienteFilter, paisFilter, ciudadFilter, codTransporteFilter,fechaFilter,hlSpace, btnBuscar);
+    }
+    
+    public Grid<Reserva> getGrid()
+    {
+    	return this.grid;
     }
 
     private void setGrid() {

@@ -55,17 +55,26 @@ public class ComprobanteVenta extends Dialog {
 	private void setComponents() {
 
 		cliente.setValue(venta.getCliente().getNombreyApellido());
+		cliente.setReadOnly(true);
 		destino.setValue(venta.getViaje().getCiudad().toString());
+		destino.setReadOnly(true);
 		diaHora.setValue(venta.getViaje().getFechaSalida().toString() + " " + venta.getViaje().getHoraSalida().toString());
+		diaHora.setReadOnly(true);
 		transporte.setValue(venta.getViaje().getTransporte().getTipo().getDescripcion());
+		transporte.setReadOnly(true);
 		codTransporte.setValue(venta.getViaje().getTransporte().getCodTransporte());
+		codTransporte.setReadOnly(true);
 		clase.setValue(venta.getViaje().getTransporte().getClase());
+		clase.setReadOnly(true);
 		recomendacion.setValue(venta.getViaje().getRecomendacion());
+		recomendacion.setReadOnly(true);
 		List<Pasajero> pasajeros = venta.getPasajes().stream().map(e-> e.getPasajero()).collect(Collectors.toList());
 		this.pasajeros.setPasajerosList(pasajeros);
 		this.pasajeros.setGrid();
 		this.pasajeros.setModoConsulta();
+		
 		precio.setValue(venta.getImporteTotal().toString());
+		precio.setReadOnly(true);
 
 	}
 
