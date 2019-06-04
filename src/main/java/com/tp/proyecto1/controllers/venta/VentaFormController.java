@@ -260,6 +260,11 @@ public class VentaFormController {
 		ventaForm.getCliente().getSearchButton().setVisible(false);
 		ventaForm.getFormaPago().setReadOnly(true);
 		ventaForm.getPromocion().setReadOnly(true);
+		ventaForm.getDenoPromocion().setReadOnly(true);
+		ventaForm.getPromocion().setValue(ventaForm.getPromocion().getValue());
+		//this.modificarDenoPromo();
+		//ventaForm.getPuntosObtenidos().setReadOnly(true);
+		//this.setPuntosDisponibles();
 	}	
 	
 	private void setPuntosDisponibles() {
@@ -296,11 +301,14 @@ public class VentaFormController {
         	this.puntosaUsarVenta = this.ventaForm.getPuntosaUsar().getValue().intValue();
         	List<LotePunto> lotesPuntosModificados = new ArrayList<>();
         	lotesPuntosModificados = lotesPuntos.stream().map(lote-> restarLotePunto(lote)).collect(Collectors.toList());//deja solo los lotes  no vencidos
-        	lotesPuntosModificados.isEmpty();
+        	for(LotePunto lotePunto : lotesPuntosModificados) {
+        		lotePuntoService.save(lotePunto);
+        	}
 		}
 		
 			
 	}
+	
 	private LotePunto restarLotePunto(LotePunto lote) {
 		if (!(this.puntosaUsarVenta == 0)) {
 			if(lote.getCantidadRestante() > this.puntosaUsarVenta) {
@@ -315,7 +323,7 @@ public class VentaFormController {
 				lote.setCantidadRestante(0);
 				this.puntosaUsarVenta = 0 ;
 			}
-			lotePuntoService.save(lote);
+			//lotePuntoService.save(lote);
 		}
 		return lote;
 	}
@@ -505,6 +513,16 @@ public class VentaFormController {
 
 		venta.setCliente(cliente);		
 		
+		//puntos obtenidos de la compra
+		if(ventaForm.getSaldoPagar().getValue() > 0) {
+			LocalDate fechaVencimiento = LocalDate.now().plusYears(Integer.parseInt(this.getCantAniosVencimientoPuntos()));
+			
+			LotePunto lotePunto = new LotePunto(LocalDate.now(), fechaVencimiento, this.cantPuntosPorVenta , true, this.cantPuntosPorVenta, cliente);
+			cliente.agregarPuntos(lotePunto);
+			venta.setCliente(cliente);
+			clienteService.save(cliente);
+		}
+		
 		String formaPagoPuntos;///mejora siguiente version, que setee la nueva forma de pago
 		if(this.ventaForm.getPuntosaUsar().getValue()!=null) {
 			if(this.ventaForm.getPuntosaUsar().getValue() > 0.0 ) this.restarPuntosaLotesDePuntos();
@@ -550,22 +568,12 @@ public class VentaFormController {
 		viaje.restarPasajes(venta.getPasajes().size());
 		venta.setViaje(viaje);
 		viajeService.save(viaje);
-		
-		//puntos obtenidos de la compra
-		if(ventaForm.getSaldoPagar().getValue() > 0) {
-			LocalDate fechaVencimiento = LocalDate.now().plusYears(Integer.parseInt(this.getCantAniosVencimientoPuntos()));
-			
-			LotePunto lotePunto = new LotePunto(LocalDate.now(), fechaVencimiento, this.cantPuntosPorVenta , true, this.cantPuntosPorVenta, cliente);
-			cliente.agregarPuntos(lotePunto);
-			venta.setCliente(cliente);
-			clienteService.save(cliente);
-		}
 			
 		if(this.ventaForm.getPromocion().getValue() != null) {
 			Promocion promocion = new Promocion();
 			promocion = this.ventaForm.getPromocion().getValue();
-			
-			promocion.restarPasajes(venta.getCantidadPasajes());
+			Integer cantPasajes = ventaForm.getPasajerosGridComponent().getPasajerosList().size();
+			if (promocion.getCantidadPasajesRestantes()!= null) if(promocion.getCantidadPasajesRestantes() > 0)	promocion.restarPasajes(cantPasajes);
 			venta.setPromocion(promocion);
 			promocionService.save(promocion);			
 		}
