@@ -1,11 +1,7 @@
 package com.tp.proyecto1.controllers.venta;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -204,36 +200,8 @@ public class VentaFormController {
 		ventaForm.getPromocion().addValueChangeListener(e-> this.modificarDenoPromo());
 		ventaForm.getPromocion().addValueChangeListener(e-> this.modificarSaldoaPagar());
 		ventaForm.getUsoPuntosCheck().addValueChangeListener(e-> this.configSectorPuntos());
-		ventaForm.getPuntosaUsar().addValueChangeListener(e->this.modificarSaldoaPagar());
-	}
-
-	private void habilitarFinalizarCompra() {
-		if(ventaForm.getPuntosaUsar().getValue() != null) {
-			Integer cantPuntosLimite = ventaForm.getSaldoPagar().getValue().intValue()/10;
-			if (ventaForm.getPuntosaUsar().getValue() > 0 && ventaForm.getPuntosaUsar().getValue() <= cantPuntosLimite) {
-				this.ventaForm.getBtnFinalizarCompra().setEnabled(true);
-				this.modificarSaldoPagarPorPuntos();
-			}
-			else {
-				this.ventaForm.getBtnFinalizarCompra().setEnabled(false);
-			}
-		}
-	}
-
-	private void configSectorPuntos() {
-		Boolean isValido = this.ventaForm.getUsoPuntosCheck().getValue();
-		
-		this.ventaForm.getPuntosDisponibles().setEnabled(isValido);
-		this.ventaForm.getPuntosaUsar().setEnabled(isValido);
-		this.ventaForm.getPuntosaUsar().setMax(ventaForm.getSaldoPagar().getValue().intValue()/10);
-		this.ventaForm.getPuntosaUsar().clear();
-		
-		this.ventaForm.getPasajerosGridComponent().getNewPasajero().setEnabled(!isValido);
-		this.ventaForm.getPasajerosGridComponent().getRemoveLastButton().setEnabled(!isValido);
-		this.ventaForm.getPromocion().setEnabled(!isValido);
-		this.ventaForm.getCliente().setEnabled(!isValido);
-		this.ventaForm.getFormaPago().setEnabled(!isValido);
-		this.ventaForm.getBtnFinalizarCompra().setEnabled(!isValido);
+		//ventaForm.getPuntosaUsar().addValueChangeListener(e->this.modificarSaldoaPagar());
+		ventaForm.getPuntosaUsar().addValueChangeListener(e->this.modificarSaldoPagarPorPuntos());
 	}
 
 	private void modificarDenoPromo() {
@@ -311,7 +279,25 @@ public class VentaFormController {
 			}
 		}
 	}
-
+	
+	private void validarCompra() {
+		boolean isValido = false; 
+		if(ventaForm.getFormaPago().getValue() != null && !ventaForm.getCliente().getFiltro().getValue().isEmpty()) {
+			if (this.reserva != null) {
+				if (this.cantPasajesReserva == ventaForm.getPasajerosGridComponent().getPasajerosList().size()) {
+					isValido = true;
+				}
+			}
+			else {
+				if (ventaForm.getPasajerosGridComponent().getPasajerosList().size() > 0) {
+					isValido = true;
+				}
+			}
+		}
+		ventaForm.getBtnFinalizarCompra().setEnabled(isValido);
+		ventaForm.getUsoPuntosCheck().setEnabled(isValido);
+	}
+	
 	private void validarCantPasajes() {
 		//Si viene de una reserva
 		if (this.reserva !=null) {
@@ -326,52 +312,118 @@ public class VentaFormController {
 		this.validarCompra();
 	}
 	
+	private Boolean habilitarFinalizarCompra() {
+		Boolean isActivo = Boolean.FALSE;
+		if(ventaForm.getPuntosaUsar().getValue() != null) {
+			Integer cantPuntosLimite = ventaForm.getSubtotal().getValue().intValue()/10;
+			if (ventaForm.getPuntosaUsar().getValue() >= 0 && ventaForm.getPuntosaUsar().getValue() <= cantPuntosLimite) {
+				this.ventaForm.getBtnFinalizarCompra().setEnabled(true);
+//				this.modificarSaldoPagarPorPuntos(); comente esto para probar otro enfoque
+				isActivo = Boolean.TRUE;
+			}
+			else {
+				this.ventaForm.getBtnFinalizarCompra().setEnabled(false);
+				isActivo = Boolean.FALSE;
+			}
+			return isActivo;
+		}
+		return Boolean.TRUE;
+	}
+
+	private void configSectorPuntos() {
+		Boolean isValido = this.ventaForm.getUsoPuntosCheck().getValue();
+		
+		this.ventaForm.getPuntosDisponibles().setEnabled(isValido);
+		this.ventaForm.getPuntosaUsar().setEnabled(isValido);
+		this.ventaForm.getPuntosaUsar().setMax(ventaForm.getSaldoPagar().getValue().intValue()/10);
+		this.ventaForm.getPuntosaUsar().clear();
+		
+		this.ventaForm.getPasajerosGridComponent().getNewPasajero().setEnabled(!isValido);
+		this.ventaForm.getPasajerosGridComponent().getRemoveLastButton().setEnabled(!isValido);
+		this.ventaForm.getPromocion().setEnabled(!isValido);
+		this.ventaForm.getCliente().setEnabled(!isValido);
+		this.ventaForm.getFormaPago().setEnabled(!isValido);
+		this.ventaForm.getBtnFinalizarCompra().setEnabled(!isValido);
+		if (!isValido) this.modificarSaldoaPagar();
+	}
 	//Incrementa o decrementa los campos de saldo a pagar y subtotal dependiendo la cant. de pasajeros
 	private void modificarSaldoaPagar() {
 		if (this.reserva == null) {
-			
 			Double precio = viaje.getPrecio();
 			ventaForm.getSubtotal().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
-			//ventaForm.getSaldoPagar().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
 			ventaForm.getSaldoPagar().setValue(ventaForm.getSubtotal().getValue());
-			this.habilitarFinalizarCompra();
 			this.generarDescuentos();
 			this.generarPuntos();
-			
-			
 			//validar que se pueda habilitar el boton de finalizar compra
 			this.validarCompra();
-			
 		}
 		else {
 			ventaForm.getSaldoPagar().setValue(ventaForm.getSubtotal().getValue());
-			this.habilitarFinalizarCompra();
 			this.generarDescuentos();
 			this.generarPuntos();
-			
-			
 			this.validarCantPasajes();
-			
 		}
 	}
-	
+	 
 	private void modificarSaldoPagarPorPuntos() {
 		if (this.ventaForm.getUsoPuntosCheck().getValue()) {
-			Integer puntosaUsar = this.ventaForm.getPuntosaUsar().getValue().intValue();
-			if (puntosaUsar != null) {
-				if (puntosaUsar > 0) {
+			if ( this.ventaForm.getPuntosaUsar().getValue() != null) {
+				Integer puntosaUsar = this.ventaForm.getPuntosaUsar().getValue().intValue();
+				if (puntosaUsar >= 0) {
+					Double precio = 1.0;
+					if(viaje != null){
+						precio = viaje.getPrecio();
+						ventaForm.getSubtotal().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
+					}
+					
+					ventaForm.getSaldoPagar().setValue(ventaForm.getSubtotal().getValue());
+					
+					Promocion promoDescuento = new Promocion();
+					promoDescuento = this.ventaForm.getPromocion().getValue();
+					if (promoDescuento != null) {
+						if (promoDescuento.getTipoPromocion().equals("Descuento")) this.generarDescuentos();
+					}
+
+					Integer pesosPorPunto = Integer.parseInt(this.getPesosPorPunto());
 					Double saldoaPagar = this.ventaForm.getSaldoPagar().getValue();
-					Integer puntosObtenidos = Integer.parseInt(this.ventaForm.getPuntosObtenidos().getValue());
-					saldoaPagar = saldoaPagar - (puntosaUsar * 10);
-					this.ventaForm.getSaldoPagar().setValue(saldoaPagar);
-					puntosObtenidos = puntosObtenidos - puntosaUsar;
-					this.ventaForm.getPuntosObtenidos().setValue(puntosObtenidos.toString());
+					saldoaPagar = saldoaPagar - (puntosaUsar * pesosPorPunto);
+					if (saldoaPagar >= 0) this.ventaForm.getSaldoPagar().setValue(saldoaPagar);					
+					
+					this.generarPuntos();
+					this.habilitarFinalizarCompra();
 				}
-				
+					
 			}
 		}
 	}
 
+	private void generarPuntos() {
+		Integer pesosPorPunto = Integer.parseInt(this.getPesosPorPunto());
+		this.cantPuntosPorVenta =  this.ventaForm.getSaldoPagar().getValue().intValue()/pesosPorPunto;
+		
+		//Verificar si tiene bonificacion de puntos de promocion y aplicarlos
+		Promocion promoPuntos = new Promocion();
+		promoPuntos = this.ventaForm.getPromocion().getValue();
+		if (promoPuntos != null) {
+			if (promoPuntos.getTipoPromocion().equals("Puntos")) this.cantPuntosPorVenta = promoPuntos.getDoubleValue() * this.cantPuntosPorVenta;
+		}
+		this.ventaForm.getPuntosObtenidos().setValue(this.cantPuntosPorVenta.toString());
+	}
+
+	private void generarDescuentos() {
+		//Verificar si tiene descuento de promocion y aplicarlos
+		Promocion promoDescuento = new Promocion();
+		promoDescuento = this.ventaForm.getPromocion().getValue();
+		if (promoDescuento != null) {
+			if (promoDescuento.getTipoPromocion().equals("Descuento")) {
+				this.ventaForm.getSaldoPagar().setValue(this.ventaForm.getSaldoPagar().getValue() * ((100 - promoDescuento.getDoubleValue().doubleValue())/100) );
+			}
+		}
+		else {
+			this.ventaForm.getSaldoPagar().setValue(this.ventaForm.getSubtotal().getValue());
+		}
+	}
+	
 	private void newVenta() {
 		Venta venta =  setNewVenta();
 		ventaService.save(venta);
@@ -395,14 +447,6 @@ public class VentaFormController {
             ventaForm.close();
             Notification.show("PasajeVenta Guardado");
             changeHandler.onChange();
-	}
-
-	private void imprimirComprobante(Venta venta) {
-
-		ComprobanteVenta comprobante = new ComprobanteVenta(venta);
-		comprobante.open();
-		UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
-				"  print(); self.close();}, 1000);");
 	}
 
 	private Venta setNewVenta() {
@@ -477,88 +521,11 @@ public class VentaFormController {
 		return venta;
 	}
 	
-	//en la seccion de uso de puntos colocar aplicar puntos
-//	if (ventaForm.getUsoPuntosCheck().getValue()/*colocar campos que no tienen que estar vacios a la hora de esta validacion*/) {
-//		this.modificarSaldoPagarPorPuntos();
-//	}
-//	
-//	//Descuento por promocion sobre el precio total
-//	this.modificarSaldoPagarPorPromocion();	
-//
-
-	private void generarPuntos() {
-		Integer pesosPorPunto = Integer.parseInt(this.getPesosPorPunto());
-		this.cantPuntosPorVenta =  this.ventaForm.getSaldoPagar().getValue().intValue()/pesosPorPunto;
-		
-		//Verificar si tiene bonificacion de puntos de promocion y aplicarlos
-		Promocion promoPuntos = new Promocion();
-		promoPuntos = this.ventaForm.getPromocion().getValue();
-		if (promoPuntos != null) {
-			if (promoPuntos.getTipoPromocion().equals("Puntos")) this.cantPuntosPorVenta = promoPuntos.getDoubleValue() * this.cantPuntosPorVenta;
-		}
-		this.ventaForm.getPuntosObtenidos().setValue(this.cantPuntosPorVenta.toString());
-	}
-
-	private void generarDescuentos() {
-		//Verificar si tiene descuento de promocion y aplicarlos
-		Promocion promoDescuento = new Promocion();
-		promoDescuento = this.ventaForm.getPromocion().getValue();
-		if (promoDescuento != null) {
-			if (promoDescuento.getTipoPromocion().equals("Descuento")) this.ventaForm.getSaldoPagar().setValue(this.ventaForm.getSaldoPagar().getValue() * ((100 - promoDescuento.getDoubleValue().doubleValue())/100) );
-		}
-		else {
-			this.ventaForm.getSaldoPagar().setValue(this.ventaForm.getSubtotal().getValue());
-		}
-	}
-
-
-	private void generarPuntosDeVenta(Cliente cliente, Venta venta) {
-		if (this.precioFinal > 0) {
-			Integer pesosPorPunto = Integer.parseInt(this.getPesosPorPunto());
-			this.cantPuntosPorVenta =  this.precioFinal.intValue()/pesosPorPunto;
-			
-			//Verificar si tiene bonificacion de puntos de promocion y aplicarlos
-			Promocion promoPuntos = new Promocion();
-			promoPuntos = this.ventaForm.getPromocion().getValue();
-			if (promoPuntos.getTipoPromocion().equals("Puntos")) this.cantPuntosPorVenta = promoPuntos.getDoubleValue() * this.cantPuntosPorVenta;
-			
-			LocalDate fechaVencimiento = LocalDate.now().plusYears(Integer.parseInt(this.getCantAniosVencimientoPuntos()));
-			
-			LotePunto lotePunto = new LotePunto(LocalDate.now(), fechaVencimiento, this.cantPuntosPorVenta , true, this.cantPuntosPorVenta, cliente);
-			cliente.agregarPuntos(lotePunto);
-			venta.setCliente(cliente);
-			clienteService.save(cliente);
-		}		
-	}
-
-/*
-	private LocalDate agregarAnios(int cantAnios) {
-		Calendar fechaVencimiento = Calendar.getInstance();
-		Date fecha = new Date();
-		fechaVencimiento.setTime(fecha);
-		fechaVencimiento.add(Calendar.YEAR, cantAnios);
-
-		return fechaVencimiento.getTime().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-	}
-*/
-
-
-	private void validarCompra() {
-		boolean isValido = false; 
-		if(ventaForm.getFormaPago().getValue() != null && !ventaForm.getCliente().getFiltro().getValue().isEmpty()) {
-			if (this.reserva != null) {
-				if (this.cantPasajesReserva == ventaForm.getPasajerosGridComponent().getPasajerosList().size()) {
-					isValido = true;
-				}
-			}
-			else {
-				if (ventaForm.getPasajerosGridComponent().getPasajerosList().size() > 0) {
-					isValido = true;
-				}
-			}
-		}
-		ventaForm.getBtnFinalizarCompra().setEnabled(isValido);
-		ventaForm.getUsoPuntosCheck().setEnabled(isValido);
+	private void imprimirComprobante(Venta venta) {
+		ComprobanteVenta comprobante = new ComprobanteVenta(venta);
+		comprobante.open();
+		UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
+				"  print(); self.close();}, 1000);");
 	}
 	
     //NO USO ESTA PODEROSA TECNICA
