@@ -23,8 +23,8 @@ public class ConfiguracionService {
 		private static final Logger log = LoggerFactory.getLogger(ConfiguracionService.class);
 
 		@Transactional
-		public void save(Configuracion config){
-			configuracionRepository.save(config);
+		public Configuracion save(Configuracion config){
+			return configuracionRepository.save(config);
 		}
 
 		@Transactional

@@ -53,6 +53,10 @@ public class ConfiguracionView  extends FilterGridLayout<Configuracion> {
     	grid.addComponentColumn(e).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);    	
     }
     
+    public void agregarColumnaEditar(ValueProvider<Configuracion, Button> e) {
+    	grid.addComponentColumn(e).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);    	
+    }
+    
     public void cargarConfiguraciones(List <Configuracion> configuraciones) {
     	grid.setItems(configuraciones);
     }
