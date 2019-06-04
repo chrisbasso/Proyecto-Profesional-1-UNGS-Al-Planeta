@@ -135,7 +135,7 @@ public class AsientoFormController {
     }
     
     private boolean faltanDatosCabecera() {
-    	return (asientoForm.getFechaSeleccionada() != null && asientoForm.getSucursal() != null);
+    	return (asientoForm.getFechaSeleccionada() == null || asientoForm.getSucursal() == null);
     }
     
     private boolean faltanPosiciones() {

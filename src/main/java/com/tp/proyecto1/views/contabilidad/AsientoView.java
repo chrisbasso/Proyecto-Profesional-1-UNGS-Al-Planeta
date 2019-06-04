@@ -40,7 +40,7 @@ public class AsientoView extends FilterGridLayout<Asiento> {
         fechaFilter = new DatePicker("Fecha Contab.");        
         btnAgregar = new Button("Asiento", VaadinIcon.PLUS.create());
         btnAgregar.setMinWidth("110px");
-        btnABMCuentas = new Button("ABM Cuentas", VaadinIcon.TOOLS.create());
+        btnABMCuentas = new Button("Cuenta", VaadinIcon.TOOLS.create());
         btnABMCuentas.setMinWidth("110px");
         btnBuscar = new Button("Buscar", VaadinIcon.SEARCH.create());
         btnBuscar.setMinWidth("110px");

@@ -1,6 +1,7 @@
 package com.tp.proyecto1.views.contabilidad;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.tp.proyecto1.model.contabilidad.Asiento;
@@ -65,7 +66,10 @@ public class AsientoForm extends Dialog{
 		inicializarCabecera();
     	fechaContabilizacion.setValue(asiento.getFechaContabilizacion());
     	fechaContabilizacion.setEnabled(false);
-    	sucursal.setItems(asiento.getSucursal());
+    	List <Sucursal> sucursales = new ArrayList<Sucursal>();
+    	sucursales.add(asiento.getSucursal());
+    	sucursal.setItems(sucursales);
+    	sucursal.setValue(asiento.getSucursal());
     	sucursal.setEnabled(false);
     	textoCabecera.setValue(asiento.getTextoCabecera());
     	textoCabecera.setEnabled(false); 
@@ -276,7 +280,6 @@ public class AsientoForm extends Dialog{
 	}		
 	
 	public void actualizarGridPosiciones(List <Posicion> posiciones){
-		this.posiciones.removeAllColumns();
 		this.posiciones.setItems(posiciones);
 	}
 	
