@@ -160,7 +160,6 @@ public class ReservaFormController {
 	}	
 	private void imprimirComprobante(Reserva reserva)
 	{
-		System.out.println(reserva);
 		ComprobanteReserva comprobante = new ComprobanteReserva(reserva);
 		comprobante.open();
 		UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
