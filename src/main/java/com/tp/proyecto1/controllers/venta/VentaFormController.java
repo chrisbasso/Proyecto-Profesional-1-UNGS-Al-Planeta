@@ -1,6 +1,7 @@
 package com.tp.proyecto1.controllers.venta;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -80,7 +81,9 @@ public class VentaFormController {
 	private Binder<Viaje> binderViaje;  //NO LOS USO
 	private Binder<Cliente> binderCliente;//NO LOS USO
 	
-	private Double pagoParcial; 
+	private Double pagoParcial;
+
+	private Integer puntosaUsarVenta; 
 	
 	public VentaFormController(Viaje viaje) {
 		Inject.Inject(this);
@@ -128,7 +131,6 @@ public class VentaFormController {
 		ventaForm.setSubtotalDouble(0.0); 
 		ventaForm.getPuntosDisponibles().setEnabled(false);
 		ventaForm.getPuntosaUsar().setEnabled(false);
-		
 		this.setPromociones();
 		
 		if (this.reserva != null){
@@ -270,7 +272,9 @@ public class VentaFormController {
 			if(cliente.isPresent()){
                 clienteSeleccionado = cliente.get();
                 List<LotePunto> lotesPuntos = lotePuntoService.findAllByCliente(clienteSeleccionado);
-            	for (LotePunto lote : lotesPuntos) {
+                List<LotePunto> lotesPuntosActivos = new ArrayList<>();
+                lotesPuntosActivos = lotesPuntos.stream().filter(lote -> lote.getActivo()).collect(Collectors.toList());//deja solo los lotes  no vencidos
+            	for (LotePunto lote : lotesPuntosActivos) {
             		cantPuntosTotales += lote.getCantidadRestante();
             	}
             	
@@ -278,6 +282,42 @@ public class VentaFormController {
             	this.ventaForm.getPuntosaUsar().setMax(cantPuntosTotales);
 			}
 		}
+	}
+	
+	private void restarPuntosaLotesDePuntos() {
+		Cliente clienteSeleccionado = new Cliente();
+		Optional<Cliente> cliente = clienteService.findById(Long.parseLong(ventaForm.getCliente().getFiltro().getValue()));
+
+		if(cliente.isPresent()){
+            clienteSeleccionado = cliente.get();
+            List<LotePunto> lotesPuntos = lotePuntoService.findAllByCliente(clienteSeleccionado);
+ 
+        	Integer puntoDisponibles = Integer.parseInt(this.ventaForm.getPuntosDisponibles().getValue());
+        	this.puntosaUsarVenta = this.ventaForm.getPuntosaUsar().getValue().intValue();
+        	List<LotePunto> lotesPuntosModificados = new ArrayList<>();
+        	lotesPuntosModificados = lotesPuntos.stream().map(lote-> restarLotePunto(lote)).collect(Collectors.toList());//deja solo los lotes  no vencidos
+        	lotesPuntosModificados.isEmpty();
+		}
+		
+			
+	}
+	private LotePunto restarLotePunto(LotePunto lote) {
+		if (!(this.puntosaUsarVenta == 0)) {
+			if(lote.getCantidadRestante() > this.puntosaUsarVenta) {
+					lote.setCantidadRestante(lote.getCantidadRestante()-this.puntosaUsarVenta);
+					this.puntosaUsarVenta = 0 ;
+			}
+			else if(lote.getCantidadRestante() < this.puntosaUsarVenta) {
+				this.puntosaUsarVenta = this.puntosaUsarVenta - lote.getCantidadRestante();
+				lote.setCantidadRestante(0);
+			}
+			else {
+				lote.setCantidadRestante(0);
+				this.puntosaUsarVenta = 0 ;
+			}
+			lotePuntoService.save(lote);
+		}
+		return lote;
 	}
 	
 	private void validarCompra() {
@@ -465,14 +505,25 @@ public class VentaFormController {
 
 		venta.setCliente(cliente);		
 		
+		String formaPagoPuntos;///mejora siguiente version, que setee la nueva forma de pago
+		if(this.ventaForm.getPuntosaUsar().getValue()!=null) {
+			if(this.ventaForm.getPuntosaUsar().getValue() > 0.0 ) this.restarPuntosaLotesDePuntos();
+			if(ventaForm.getSaldoPagar().getValue() == 0.0) formaPagoPuntos = "Puntos";
+			else formaPagoPuntos = formaPago.getDescripcion() + " + Puntos";
+			
+			formaPago.setDescripcion(formaPagoPuntos);
+		}
+		
+		
+		
 		Pago pagoVenta = new Pago();
 		//PAGOS: Si viene de una reserva
 		if (this.reserva !=null) {
 			
-			Pago pagoReserva = new Pago(venta, null, pagoParcial, LocalDate.now());
+			Pago pagoReserva = new Pago(venta, null, pagoParcial, LocalDate.now());//le pongo null por ahora sino traer lo q tenia en reserva
 			venta.agregarPago(pagoReserva);
 						
-			pagoVenta = new Pago(venta, formaPago, ventaForm.getSaldoPagar().getValue(),  LocalDate.now());//tiro null pointer al hacer la prueba q esta en la hoja
+			pagoVenta = new Pago(venta, formaPago, ventaForm.getSaldoPagar().getValue(),  LocalDate.now());
 			venta.agregarPago(pagoVenta);
 			
 			this.viaje = reserva.getViaje();
@@ -484,9 +535,8 @@ public class VentaFormController {
 		else {
 			this.precioFinal = ventaForm.getSaldoPagar().getValue();
 			
-			pagoVenta = new Pago(venta, formaPago, this.precioFinal,  LocalDate.now());//tiro null pointer al hacer la prueba q esta en la hoja
+			pagoVenta = new Pago(venta, formaPago, this.precioFinal,  LocalDate.now());
 			venta.agregarPago(pagoVenta);
-			
 			
 			venta.setEstadoTransaccion(EstadoTransaccion.CREADA);
 			}
@@ -501,6 +551,7 @@ public class VentaFormController {
 		venta.setViaje(viaje);
 		viajeService.save(viaje);
 		
+		//puntos obtenidos de la compra
 		if(ventaForm.getSaldoPagar().getValue() > 0) {
 			LocalDate fechaVencimiento = LocalDate.now().plusYears(Integer.parseInt(this.getCantAniosVencimientoPuntos()));
 			
@@ -509,7 +560,6 @@ public class VentaFormController {
 			venta.setCliente(cliente);
 			clienteService.save(cliente);
 		}
-		
 			
 		if(this.ventaForm.getPromocion().getValue() != null) {
 			Promocion promocion = new Promocion();
@@ -519,7 +569,7 @@ public class VentaFormController {
 			venta.setPromocion(promocion);
 			promocionService.save(promocion);			
 		}
-				
+		
 		venta.setImporteTotal(this.precioFinal);//si es el caso que viene de reserva le paso igual el importe total, sino faltaria un campo en que diga importeVenta/parcial
 		
 		return venta;

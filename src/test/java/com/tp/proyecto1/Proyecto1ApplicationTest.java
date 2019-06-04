@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.springframework.boot.CommandLineRunner;
 
 import com.tp.proyecto1.repository.clientes.ClienteRepository;
+import com.tp.proyecto1.repository.lotePuntos.LotePuntoRepository;
 import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
 import com.tp.proyecto1.repository.pasajes.PasajeVentaRepository;
 import com.tp.proyecto1.repository.pasajes.ReservaRepository;
@@ -48,10 +49,11 @@ public class Proyecto1ApplicationTest {
 		final TransaccionRepository transaccionRepository = null;
 		final SucursalRepository sucursalRepository = null;
 		final AsientoService asientoService = null;
+		final LotePuntoRepository lotePuntoRepository = null;
 		final CommandLineRunner expectedResult = null;
 
 		// Run the test
-		final CommandLineRunner result = proyecto1ApplicationUnderTest.loadData(userService, viajeService, ventaService, configuracionService, reservaRepository, clienteRepository, formaDePagoRepository, pasajeVentaRepository, promocionRepository, configService, tagDestinoService, paisRepository, transaccionRepository, sucursalRepository, asientoService);
+		final CommandLineRunner result = proyecto1ApplicationUnderTest.loadData(userService, viajeService, ventaService, configuracionService, reservaRepository, clienteRepository, formaDePagoRepository, pasajeVentaRepository, promocionRepository, configService, tagDestinoService, paisRepository, transaccionRepository, sucursalRepository, asientoService, lotePuntoRepository);
 
 		// Verify the results
 		assertEquals(expectedResult, result);

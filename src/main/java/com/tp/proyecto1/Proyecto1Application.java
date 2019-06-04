@@ -19,6 +19,7 @@ import org.springframework.data.domain.Example;
 
 import com.tp.proyecto1.model.contabilidad.Cuenta;
 import com.tp.proyecto1.model.contabilidad.TipoCuenta;
+import com.tp.proyecto1.model.lotePunto.LotePunto;
 import com.tp.proyecto1.model.pasajes.EstadoTransaccion;
 import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.model.sucursales.Sucursal;
@@ -30,6 +31,7 @@ import com.tp.proyecto1.model.viajes.TagDestino;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.repository.clientes.ClienteRepository;
 import com.tp.proyecto1.repository.contabilidad.CuentaRepository;
+import com.tp.proyecto1.repository.lotePuntos.LotePuntoRepository;
 import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
 import com.tp.proyecto1.repository.pasajes.PasajeVentaRepository;
 import com.tp.proyecto1.repository.pasajes.ReservaRepository;
@@ -73,7 +75,8 @@ public class Proyecto1Application {
 									  PaisRepository paisRepository,
 									  TransaccionRepository transaccionRepository,
 									  SucursalRepository sucursalRepository,
-									  AsientoService asientoService) {
+									  AsientoService asientoService,
+									  LotePuntoRepository lotePuntoRepository) {
 		return args -> {
 			crearUsuarios(userService);
 			crearTiposTransportes(viajeService);
@@ -83,12 +86,12 @@ public class Proyecto1Application {
 			crearPaisesCiudades(paisRepository);
 			setSurcursales(sucursalRepository);
 			crearCuentas(asientoService);
-			procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository);
+			procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository, lotePuntoRepository);
 
 		};
 	}
 
-	private void procesoVertificarVencimientos(ViajeService viajeService, ReservaRepository reservaRepository, PromocionRepository promocionRepository) {
+	private void procesoVertificarVencimientos(ViajeService viajeService, ReservaRepository reservaRepository, PromocionRepository promocionRepository, LotePuntoRepository lotePuntoRepository) {
 		Timer timer = new Timer();
 
 		TimerTask task = new TimerTask() {
@@ -135,6 +138,14 @@ public class Proyecto1Application {
 				for (Promocion promocion : promocionesPasajesCero) {
 					promocion.setActivo(Boolean.FALSE);
 					promocionRepository.save(promocion);
+				}
+				
+				LotePunto lotePuntoExample = new LotePunto();
+				lotePuntoExample.setFechaVencimiento(LocalDate.now().minusDays(1));
+				List<LotePunto> lotePuntos = lotePuntoRepository.findAll(Example.of(lotePuntoExample));
+				for(LotePunto lotePunto : lotePuntos) {
+					lotePunto.setActivo(Boolean.FALSE);
+					lotePuntoRepository.save(lotePunto);
 				}
 
 			}
