@@ -11,12 +11,16 @@ import org.springframework.stereotype.Controller;
 import com.tp.proyecto1.controllers.venta.VentaFormController;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.Reserva;
+import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.services.ReservaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.ConfirmationDialog;
 import com.tp.proyecto1.utils.Inject;
+import com.tp.proyecto1.views.reserva.ComprobanteReserva;
 import com.tp.proyecto1.views.reserva.ReservaView;
+import com.tp.proyecto1.views.ventas.ComprobanteVenta;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -99,10 +103,20 @@ public class ReservasController {
     	setChangeHandler(this::listReservas);
     	reservaView.setBtnBuscarListener(e->listReservas());
     	reservaView.setBtnVenderListener(e-> venderReserva());
+    	reservaView.getBtnComprobante().addClickListener(e->imprimirComprobante());
     }
 
 
-    private void setComboCiudades() {
+    private void imprimirComprobante()
+	{
+    	Reserva reserva = reservaView.getGrid().asSingleSelect().getValue();
+		ComprobanteReserva comprobante = new ComprobanteReserva(reserva);
+		comprobante.open();
+		UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
+				"  print(); self.close();}, 1000);");
+	}
+
+	private void setComboCiudades() {
 
         Pais pais = reservaView.getPaisFilter().getValue();
         reservaView.getCiudadFilter().setItems(pais.getCiudades());
