@@ -312,22 +312,20 @@ public class VentaFormController {
 		this.validarCompra();
 	}
 	
-	private Boolean habilitarFinalizarCompra() {
+	private void habilitarFinalizarCompra() {
 		Boolean isActivo = Boolean.FALSE;
 		if(ventaForm.getPuntosaUsar().getValue() != null) {
 			Integer cantPuntosLimite = ventaForm.getSubtotal().getValue().intValue()/10;
 			if (ventaForm.getPuntosaUsar().getValue() >= 0 && ventaForm.getPuntosaUsar().getValue() <= cantPuntosLimite) {
 				this.ventaForm.getBtnFinalizarCompra().setEnabled(true);
-//				this.modificarSaldoPagarPorPuntos(); comente esto para probar otro enfoque
-				isActivo = Boolean.TRUE;
 			}
 			else {
 				this.ventaForm.getBtnFinalizarCompra().setEnabled(false);
 				isActivo = Boolean.FALSE;
 			}
-			return isActivo;
+		
 		}
-		return Boolean.TRUE;
+	
 	}
 
 	private void configSectorPuntos() {
@@ -369,30 +367,36 @@ public class VentaFormController {
 		if (this.ventaForm.getUsoPuntosCheck().getValue()) {
 			if ( this.ventaForm.getPuntosaUsar().getValue() != null) {
 				Integer puntosaUsar = this.ventaForm.getPuntosaUsar().getValue().intValue();
-				if (puntosaUsar >= 0) {
-					Double precio = 1.0;
-					if(viaje != null){
-						precio = viaje.getPrecio();
-						ventaForm.getSubtotal().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
-					}
-					
-					ventaForm.getSaldoPagar().setValue(ventaForm.getSubtotal().getValue());
-					
-					Promocion promoDescuento = new Promocion();
-					promoDescuento = this.ventaForm.getPromocion().getValue();
-					if (promoDescuento != null) {
-						if (promoDescuento.getTipoPromocion().equals("Descuento")) this.generarDescuentos();
-					}
-
-					Integer pesosPorPunto = Integer.parseInt(this.getPesosPorPunto());
-					Double saldoaPagar = this.ventaForm.getSaldoPagar().getValue();
-					saldoaPagar = saldoaPagar - (puntosaUsar * pesosPorPunto);
-					if (saldoaPagar >= 0) this.ventaForm.getSaldoPagar().setValue(saldoaPagar);					
-					
-					this.generarPuntos();
-					this.habilitarFinalizarCompra();
+				Integer cantPuntosDisponibles = Integer.parseInt(ventaForm.getPuntosDisponibles().getValue());
+				if(puntosaUsar <= cantPuntosDisponibles ) {
+					if (puntosaUsar >= 0) {
+						Double precio = 1.0;
+						if(viaje != null){
+							precio = viaje.getPrecio();
+							ventaForm.getSubtotal().setValue(precio * ventaForm.getPasajerosGridComponent().getPasajerosList().size());
+						}
+						
+						ventaForm.getSaldoPagar().setValue(ventaForm.getSubtotal().getValue());
+						
+						Promocion promoDescuento = new Promocion();
+						promoDescuento = this.ventaForm.getPromocion().getValue();
+						if (promoDescuento != null) {
+							if (promoDescuento.getTipoPromocion().equals("Descuento")) this.generarDescuentos();
+						}
+	
+						Integer pesosPorPunto = Integer.parseInt(this.getPesosPorPunto());
+						Double saldoaPagar = this.ventaForm.getSaldoPagar().getValue();
+						saldoaPagar = saldoaPagar - (puntosaUsar * pesosPorPunto);
+						if (saldoaPagar >= 0) this.ventaForm.getSaldoPagar().setValue(saldoaPagar);					
+						
+						this.generarPuntos();
+						this.habilitarFinalizarCompra();
+					}	
 				}
-					
+				else {
+					this.ventaForm.getBtnFinalizarCompra().setEnabled(false);
+					Notification.show("AVISO! Puntos a Usar mayores a Puntos Disponibles");
+				}
 			}
 		}
 	}
