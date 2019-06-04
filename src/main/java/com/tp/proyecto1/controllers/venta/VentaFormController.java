@@ -74,6 +74,8 @@ public class VentaFormController {
 
 	private Integer cantPuntosPorVenta;
 	
+	private Integer cantPuntosDisponibles;
+	
 	private Double precioFinal;
 	
 	private Binder<PasajeVenta> binderPasajeVenta;
@@ -261,10 +263,11 @@ public class VentaFormController {
 		ventaForm.getFormaPago().setReadOnly(true);
 		ventaForm.getPromocion().setReadOnly(true);
 		ventaForm.getDenoPromocion().setReadOnly(true);
-		ventaForm.getPromocion().setValue(ventaForm.getPromocion().getValue());
-		//this.modificarDenoPromo();
-		//ventaForm.getPuntosObtenidos().setReadOnly(true);
-		//this.setPuntosDisponibles();
+		if(venta.getPromocion() != null) {
+			ventaForm.getPromocion().setValue(venta.getPromocion());
+			ventaForm.getDenoPromocion().setValue(venta.getPromocion().getDoubleValue().toString());
+		}
+		ventaForm.getPuntosObtenidos().setReadOnly(true);
 	}	
 	
 	private void setPuntosDisponibles() {
@@ -531,8 +534,6 @@ public class VentaFormController {
 			
 			formaPago.setDescripcion(formaPagoPuntos);
 		}
-		
-		
 		
 		Pago pagoVenta = new Pago();
 		//PAGOS: Si viene de una reserva
