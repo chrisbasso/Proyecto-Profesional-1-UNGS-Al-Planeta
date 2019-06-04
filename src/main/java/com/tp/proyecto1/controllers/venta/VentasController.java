@@ -68,7 +68,7 @@ public class VentasController {
 		ComprobanteVenta comprobante = new ComprobanteVenta(venta);
 		comprobante.open();
 		UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
-				"  print(); self.close();}, 1000);");
+				"  print(); }, 1000);");//self.close();
 
 	}
 
