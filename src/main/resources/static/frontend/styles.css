@@ -10,9 +10,9 @@ h3 {
     color: midnightblue;
 }
 
-vaadin-grid-cell-content{
-    font-size: var(--lumo-font-size-xs);
-    padding: var(--lumo-space-s) var(--lumo-space-s);
-}
+/*vaadin-grid-cell-content{*/
+    /*font-size: var(--lumo-font-size-xs);*/
+    /*padding: var(--lumo-space-s) var(--lumo-space-s);*/
+/*}*/
 
 

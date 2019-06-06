@@ -12,7 +12,7 @@ public class EventosClienteWindow extends Dialog {
 
 		setComponents();
 		this.add(grid);
-		this.setWidth("950px");
+		this.setWidth("1020px");
 		this.setHeight("400px");
 
 	}

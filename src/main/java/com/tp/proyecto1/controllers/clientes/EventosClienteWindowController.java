@@ -69,7 +69,7 @@ public class EventosClienteWindowController {
 	private void listarEventos() {
 		List<Evento> eventos = eventoService.findEventosByPersona(cliente);
 		eventos.stream().forEach(e-> verificarUsuarioCierre(e));
-		this.view.getGrid().setItems();
+		this.view.getGrid().setItems(eventos);
 	}
 
 
