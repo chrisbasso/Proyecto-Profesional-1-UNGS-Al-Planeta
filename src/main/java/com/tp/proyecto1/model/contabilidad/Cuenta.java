@@ -3,11 +3,14 @@ package com.tp.proyecto1.model.contabilidad;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 @Entity
 public class Cuenta {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generador_cuenta")
+	@SequenceGenerator(name="generador_cuenta", sequenceName = "secuencia_cuenta")
 	private Long id;
 
 	@Column(unique = true)

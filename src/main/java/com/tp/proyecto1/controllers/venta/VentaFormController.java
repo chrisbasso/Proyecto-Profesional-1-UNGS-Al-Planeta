@@ -482,9 +482,9 @@ public class VentaFormController {
 	private void newVenta() {
 		Venta venta =  setNewVenta();
 		ventaService.save(venta);
+		imprimirComprobante(venta);
 		//ventaService.save(setNewVenta());
         ventaForm.close();
-		imprimirComprobante(venta);
       //Si viene de una reserva
         if (this.reserva != null) {
         	this.reserva.inactivar();

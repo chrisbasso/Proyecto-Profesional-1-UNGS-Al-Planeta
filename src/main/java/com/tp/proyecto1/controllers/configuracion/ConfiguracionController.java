@@ -2,22 +2,19 @@ package com.tp.proyecto1.controllers.configuracion;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.configuraciones.Configuracion;
-import com.tp.proyecto1.model.contabilidad.Cabecera;
-import com.tp.proyecto1.model.contabilidad.Posicion;
-import com.tp.proyecto1.model.users.User;
+import com.tp.proyecto1.repository.configuraciones.ConfiguracionRepository;
 import com.tp.proyecto1.services.ConfiguracionService;
 import com.tp.proyecto1.utils.ChangeHandler;
-import com.tp.proyecto1.utils.ConfirmationDialog;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.configuracion.ConfiguracionView;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Input;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -30,7 +27,6 @@ public class ConfiguracionController {
     private ConfiguracionService configuracionService;
     private ConfiguracionFormController configuracionFormController;
     private ConfiguracionView configuracionView;
-    private ChangeHandler changeHandler;
 
 	public ConfiguracionController () {
         Inject.Inject(this);
@@ -42,6 +38,7 @@ public class ConfiguracionController {
 	
     private void agregarBotonesEdicion() {
     	configuracionView.agregarColumnaVisualizar(this::createViewButton);
+    	configuracionView.agregarColumnaEditar(this::createEditButton);
     }
     
     private Button createViewButton(Configuracion configuracion) {
@@ -49,10 +46,42 @@ public class ConfiguracionController {
     		return btnVer;
     }
     
+    private Button createEditButton(Configuracion configuracion) {
+        Button btnEditar = new Button(VaadinIcon.PENCIL.create(), clickEvent -> editarConfiguracion(configuracion));
+    		return btnEditar;
+    }
+    
     private void mostrarConfiguracion(Configuracion configuracion) {
     	configuracionFormController = new ConfiguracionFormController();
     	configuracionFormController.getFormVisualizar(configuracion);
     	configuracionFormController.setChangeHandler(this::listConfiguraciones);    	
+    }
+    
+    private void editarConfiguracion(Configuracion configuracion) {
+    	String clave = "Configuracion: " + configuracion.getClave();
+    	String valorActual = "Valor a modificar: " + configuracion.getValue();
+    	Dialog dialog = new Dialog();
+    	Input input = new Input();
+    	    	
+    	dialog.add(clave);
+    	dialog.add(valorActual);
+    	dialog.add(input);
+    	dialog.open();
+    	input.getElement().callFunction("focus");
+    	dialog.addDialogCloseActionListener(e-> {
+    		nuevoValor(input.getValue(), configuracion);
+    		dialog.close();
+    	});    	
+    }
+    
+    private void nuevoValor(String nuevoValor, Configuracion configuracion) {
+    	if(nuevoValor != "") {
+    		configuracion.setValue(nuevoValor);
+    		configuracionService.save(configuracion);
+    		refreshConfiguraciones();
+    	}else {
+    		Notification.show("Sin modificacion");
+    	}
     }
     
     private void setListeners() {
@@ -102,5 +131,5 @@ public class ConfiguracionController {
     
  	public ConfiguracionView getConfiguracionView(){
         return configuracionView;
-    }	
+    }
 }
