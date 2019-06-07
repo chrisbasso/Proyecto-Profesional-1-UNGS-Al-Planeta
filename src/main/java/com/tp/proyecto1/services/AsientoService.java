@@ -35,10 +35,10 @@ public class AsientoService {
 	private PosicionRepository posicionRepository;
 	
 	@Transactional
-	public void save(Asiento asiento){
+	public Long save(Asiento asiento){
 		cabeceraRepository.save(asiento.getCabecera());
 		posicionRepository.saveAll(asiento.getPosiciones());
-		asientoRepository.save(asiento);
+		return asientoRepository.save(asiento).getId();
 	}
 	
 	@Transactional
@@ -74,6 +74,11 @@ public class AsientoService {
 	@Transactional
 	public List<Cuenta> findCuentas(){
 		return cuentaRepository.findAll(Sort.by("numeroCuenta"));
+	}
+
+	@Transactional
+	public Cuenta findCuenta(Integer numeroCuenta){
+		return cuentaRepository.findBynumeroCuenta(numeroCuenta);
 	}
 
 	@Transactional

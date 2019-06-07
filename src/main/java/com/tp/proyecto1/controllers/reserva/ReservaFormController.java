@@ -5,13 +5,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tp.proyecto1.Proyecto1Application;
-import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.tp.proyecto1.Proyecto1Application;
+import com.tp.proyecto1.controllers.contabilidad.AsientoREST;
 import com.tp.proyecto1.model.clientes.Cliente;
-import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.tp.proyecto1.model.pasajes.Pago;
 import com.tp.proyecto1.model.pasajes.Pasaje;
 import com.tp.proyecto1.model.pasajes.PasajeReserva;
@@ -132,7 +131,7 @@ public class ReservaFormController {
 		}
 		
 		if(reserva == null) {
-			guardarNuevaReserva(pasajes, importeTotal, cliente);
+			guardarNuevaReserva(pasajes, importeTotal, cliente);			
 		}else { 
 			guardarReservaModificada(pasajes, importeTotal);
 		}
@@ -150,6 +149,7 @@ public class ReservaFormController {
 			reserva.setVendedor(Proyecto1Application.logUser);
 			reserva.setFecha(LocalDate.now());
 			Long id = reservaService.save(reserva);
+			AsientoREST.contabilizarNuevaReserva(reserva);
 			viajeService.save(viaje);
 			imprimirComprobante(reserva);
 			mensajeGuardadoCierreForm(id);

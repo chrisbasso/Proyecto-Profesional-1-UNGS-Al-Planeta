@@ -249,6 +249,8 @@ public class Proyecto1Application {
 		userService.createUserIfNotExist(userAdmin);
 		User userEmployee = new User("pepe", "pepe", userService.getRoles());
 		userService.createUserIfNotExist(userEmployee);
+		User userBatch = new User("batch", "batch", userService.getRoles());
+		userService.createUserIfNotExist(userBatch);
 	}
 	
 	private void crearCuentas(AsientoService asientoService) {
@@ -256,8 +258,10 @@ public class Proyecto1Application {
 			asientoService.saveCuenta(new Cuenta(100, "Efectivo", TipoCuenta.ACTIVO));
 			asientoService.saveCuenta(new Cuenta(101, "Banco", TipoCuenta.ACTIVO));
 			asientoService.saveCuenta(new Cuenta(102, "Tarjetas de credito", TipoCuenta.ACTIVO));
+			asientoService.saveCuenta(new Cuenta(103, "Clientes por cobrar", TipoCuenta.ACTIVO));
 			asientoService.saveCuenta(new Cuenta(200, "Proveedores", TipoCuenta.PASIVO));
 			asientoService.saveCuenta(new Cuenta(201, "Sueldos", TipoCuenta.PASIVO));
+			asientoService.saveCuenta(new Cuenta(202, "Pasajes reservados", TipoCuenta.PASIVO));
 			asientoService.saveCuenta(new Cuenta(300, "Patrimonio Neto", TipoCuenta.PN));
 			asientoService.saveCuenta(new Cuenta(400, "Ventas", TipoCuenta.INGRESO));
 			asientoService.saveCuenta(new Cuenta(401, "Reservas vencidas", TipoCuenta.INGRESO));
