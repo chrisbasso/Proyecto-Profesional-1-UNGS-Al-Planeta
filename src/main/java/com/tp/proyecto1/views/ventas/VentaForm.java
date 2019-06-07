@@ -138,7 +138,6 @@ public class VentaForm extends Dialog {
 		formPuntos.addFormItem(espacio, "");
 		formPuntos.addFormItem(puntosDisponibles, "Puntos Disponibles");
 		formPuntos.addFormItem(puntosaUsar, "Puntos a Usar");
-		formPuntos.setEnabled(false);
 	}
 
 	private void setLayouts() {

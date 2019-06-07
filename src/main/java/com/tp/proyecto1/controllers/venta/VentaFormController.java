@@ -268,6 +268,8 @@ public class VentaFormController {
 			ventaForm.getDenoPromocion().setValue(venta.getPromocion().getDoubleValue().toString());
 		}
 		ventaForm.getPuntosObtenidos().setReadOnly(true);
+		ventaForm.getUsoPuntosCheck().setReadOnly(true);
+		ventaForm.getPuntosaUsar().setReadOnly(true);
 	}	
 	
 	private void setPuntosDisponibles() {
