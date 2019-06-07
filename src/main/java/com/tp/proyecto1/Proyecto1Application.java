@@ -105,7 +105,7 @@ public class Proyecto1Application {
 				List<Reserva> reservas = reservaRepository.findAll();				
 				for (Reserva reserva : reservas) {
 					boolean seDebeAnular = false;
-					if(!reserva.getEstadoTransaccion().equals(EstadoTransaccion.VENDIDA)) {
+					if(!(EstadoTransaccion.VENDIDA).equals(reserva.getEstadoTransaccion())) {
 						if(ReservaREST.esAnulablePorVencimientoFechaReserva(reserva)) {
 							seDebeAnular = true;
 						}else if(ReservaREST.esAnulablePorVencimientoPago(reserva)) {
@@ -272,7 +272,7 @@ public class Proyecto1Application {
 			asientoService.saveCuenta(new Cuenta(504,"Mantenimiento", TipoCuenta.EGRESO));			
 		}
 	}
-	/*
+	
 	private void crearViajes(ViajeService viajeService) {
 		for (int i = 0; i<5; i++) {
 	        Transporte transporte = new Transporte("codigo " + i,viajeService.findAllTipoTransportes().get(0), i*5, "clase " + i);
@@ -280,5 +280,5 @@ public class Proyecto1Application {
 			viajeService.save(viaje);
 		}
 		
-	}*/
+	}
 }

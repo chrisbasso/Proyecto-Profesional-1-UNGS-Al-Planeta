@@ -66,7 +66,9 @@ public class ComprobanteVenta extends Dialog {
 		codTransporte.setReadOnly(true);
 		clase.setValue(venta.getViaje().getTransporte().getClase());
 		clase.setReadOnly(true);
-		recomendacion.setValue(venta.getViaje().getRecomendacion());
+		if(venta.getViaje().getRecomendacion()!=null){
+			recomendacion.setValue(venta.getViaje().getRecomendacion());
+		}
 		recomendacion.setReadOnly(true);
 		List<Pasajero> pasajeros = venta.getPasajes().stream().map(e-> e.getPasajero()).collect(Collectors.toList());
 		this.pasajeros.setPasajerosList(pasajeros);
