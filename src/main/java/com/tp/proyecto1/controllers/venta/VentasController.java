@@ -8,6 +8,7 @@ import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.ConfirmationDialog;
+import com.tp.proyecto1.utils.EnviadorDeMail;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.ventas.ComprobanteVenta;
 import com.tp.proyecto1.views.ventas.VentaView;
@@ -61,6 +62,7 @@ public class VentasController {
         setChangeHandler(this::listVentas);
     	ventaView.getSearchButton().addClickListener(e->listVentas());
     	ventaView.getBtnComprobante().addClickListener(e->imprimirComprobante());
+    	//ventaView.getBtnEnvioMail().addClickListener(e->EnviadorDeMail.enviarConGMail("gmonteblack.gm@gmail.com", "mail de Prueba", "emo sido engañado"));
     }
 
 	private void imprimirComprobante() {

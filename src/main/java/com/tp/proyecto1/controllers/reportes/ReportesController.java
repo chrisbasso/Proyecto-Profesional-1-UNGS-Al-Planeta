@@ -120,13 +120,13 @@ public class ReportesController {
 
 	private void setReporteEgresos(LocalDate fechaDesde, LocalDate fechaHasta, Sucursal sucursal) {
 
-		String nombreArchivo = "";
+		String nombreArchivo;
 		Grid<Egreso> egresoGrid = new Grid<>(Egreso.class);
 		setGridEgreso(egresoGrid);
 		reportesView.setGridDinamico(egresoGrid);
 
 		List<Egreso> egresos = asientoService.findEgresos(fechaDesde, fechaHasta);
-		egresos = egresos.stream().filter(e-> e.getIdSucursal()==sucursal.getId()).collect(Collectors.toList());
+		egresos = egresos.stream().filter(e-> e.getIdSucursal().equals(sucursal.getId())).collect(Collectors.toList());
 
 		nombreArchivo = "Reporte Egresos " +  sucursal.getDescripcion() +".xls";
 
@@ -148,13 +148,7 @@ public class ReportesController {
 				int indiceMes = egreso.getCabecera().getFechaContabilizacion().getMonthValue()-1;
 				listaMensual.set(indiceMes,listaMensual.get(indiceMes) + egreso.getPosicion().getImporte());
 			}
-			AreaChart areaChart = new AreaChart(listaMensual, "anual");
-			DonutChart donutChart = new DonutChart(listaMensual, "anual");
-			VerticalChart verticalChart = new VerticalChart(listaMensual, "anual");
-			HorizontalLayout hlGraficos = new HorizontalLayout();
-			hlGraficos.setSizeFull();
-			hlGraficos.add(areaChart,donutChart,verticalChart);
-			reportesView.add(hlGraficos);
+			setGraficosAnual(listaMensual);
 		}else{
 			List<Egreso> egresosMesElegido = egresos.stream().filter(e-> e.getCabecera().getFechaContabilizacion().getMonthValue()==reportesView.getComboBoxMeses().getValue()).collect(Collectors.toList());
 			List<Double> listaDias = new ArrayList<>(31);
@@ -165,15 +159,29 @@ public class ReportesController {
 				int indiceDia = egreso.getCabecera().getFechaContabilizacion().getDayOfMonth();
 				listaDias.set(indiceDia,listaDias.get(indiceDia) + egreso.getPosicion().getImporte());
 			}
-			AreaChart areaChart = new AreaChart(listaDias, "mensual");
-			DonutChart donutChart = new DonutChart(listaDias, "mensual");
-			VerticalChart verticalChart = new VerticalChart(listaDias, "mensual");
-			HorizontalLayout hlGraficos = new HorizontalLayout();
-			hlGraficos.setSizeFull();
-			hlGraficos.add(areaChart,donutChart,verticalChart);
-			reportesView.add(hlGraficos);
+			setGraficosMensual(listaDias);
 		}
 		
+	}
+
+	private void setGraficosMensual(List<Double> listaDias) {
+		AreaChart areaChart = new AreaChart(listaDias, "mensual");
+		DonutChart donutChart = new DonutChart(listaDias, "mensual");
+		VerticalChart verticalChart = new VerticalChart(listaDias, "mensual");
+		HorizontalLayout hlGraficos = new HorizontalLayout();
+		hlGraficos.setSizeFull();
+		hlGraficos.add(areaChart,donutChart,verticalChart);
+		reportesView.add(hlGraficos);
+	}
+
+	private void setGraficosAnual(List<Double> listaMensual) {
+		AreaChart areaChart = new AreaChart(listaMensual, "anual");
+		DonutChart donutChart = new DonutChart(listaMensual, "anual");
+		VerticalChart verticalChart = new VerticalChart(listaMensual, "anual");
+		HorizontalLayout hlGraficos = new HorizontalLayout();
+		hlGraficos.setSizeFull();
+		hlGraficos.add(areaChart,donutChart,verticalChart);
+		reportesView.add(hlGraficos);
 	}
 
 	private void setGridEgreso(Grid<Egreso> egresoGrid) {
@@ -231,13 +239,7 @@ public class ReportesController {
 				int indiceMes = pago.getFechaDePago().getMonthValue()-1;
 				listaMensual.set(indiceMes,listaMensual.get(indiceMes) + pago.getImporte());
 			}
-			AreaChart areaChart = new AreaChart(listaMensual, "anual");
-			DonutChart donutChart = new DonutChart(listaMensual, "anual");
-			VerticalChart verticalChart = new VerticalChart(listaMensual, "anual");
-			HorizontalLayout hlGraficos = new HorizontalLayout();
-			hlGraficos.setSizeFull();
-			hlGraficos.add(areaChart,donutChart,verticalChart);
-			reportesView.add(hlGraficos);
+			setGraficosAnual(listaMensual);
 		}else{
 			List<Pago> pagosMesElegido = pagos.stream().filter(e-> e.getFechaDePago().getMonthValue()==reportesView.getComboBoxMeses().getValue()).collect(Collectors.toList());
 			List<Double> listaDias = new ArrayList<>(31);
@@ -248,13 +250,7 @@ public class ReportesController {
 				int indiceDia = pago.getFechaDePago().getDayOfMonth();
 				listaDias.set(indiceDia,listaDias.get(indiceDia) + pago.getImporte());
 			}
-			AreaChart areaChart = new AreaChart(listaDias, "mensual");
-			DonutChart donutChart = new DonutChart(listaDias, "mensual");
-			VerticalChart verticalChart = new VerticalChart(listaDias, "mensual");
-			HorizontalLayout hlGraficos = new HorizontalLayout();
-			hlGraficos.setSizeFull();
-			hlGraficos.add(areaChart,donutChart,verticalChart);
-			reportesView.add(hlGraficos);
+			setGraficosMensual(listaDias);
 		}
 
 	}

@@ -84,7 +84,7 @@ public class Proyecto1Application {
 			crearConfiguracion(configService);
 			crearTagsDestino(tagDestinoService);
 			crearPaisesCiudades(paisRepository);
-			//crearViajes(viajeService);
+		//	crearViajes(viajeService);
 			setSurcursales(sucursalRepository);
 			crearCuentas(asientoService);
 			procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository, lotePuntoRepository);
