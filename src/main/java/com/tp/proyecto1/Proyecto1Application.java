@@ -84,7 +84,7 @@ public class Proyecto1Application {
 			crearConfiguracion(configService);
 			crearTagsDestino(tagDestinoService);
 			crearPaisesCiudades(paisRepository);
-			crearViajes(viajeService);
+			//crearViajes(viajeService);
 			setSurcursales(sucursalRepository);
 			crearCuentas(asientoService);
 			procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository, lotePuntoRepository);
@@ -105,7 +105,7 @@ public class Proyecto1Application {
 				List<Reserva> reservas = reservaRepository.findAll();				
 				for (Reserva reserva : reservas) {
 					boolean seDebeAnular = false;
-					if(!reserva.getEstadoTransaccion().equals(EstadoTransaccion.VENDIDA)) {
+					if(!(EstadoTransaccion.VENDIDA).equals(reserva.getEstadoTransaccion())) {
 						if(ReservaREST.esAnulablePorVencimientoFechaReserva(reserva)) {
 							seDebeAnular = true;
 						}else if(ReservaREST.esAnulablePorVencimientoPago(reserva)) {

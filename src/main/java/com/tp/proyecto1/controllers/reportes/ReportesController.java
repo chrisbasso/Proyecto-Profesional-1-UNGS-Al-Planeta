@@ -1,6 +1,7 @@
 package com.tp.proyecto1.controllers.reportes;
 
 import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.model.contabilidad.Egreso;
 import com.tp.proyecto1.model.pasajes.Pago;
 import com.tp.proyecto1.model.pasajes.Transaccion;
 import com.tp.proyecto1.model.sucursales.Sucursal;
@@ -42,12 +43,6 @@ public class ReportesController {
 	private UserService userService;
 
 	@Autowired
-	private ClienteService clienteService;
-
-	@Autowired
-	private TransaccionService transaccionService;
-
-	@Autowired
 	private PagosService pagosService;
 
 	@Autowired
@@ -55,6 +50,9 @@ public class ReportesController {
 
 	@Autowired
 	private SucursalService sucursalService;
+	
+	@Autowired
+	private AsientoService asientoService;
 
 	public ReportesController() {
 		Inject.Inject(this);
@@ -88,6 +86,14 @@ public class ReportesController {
 		if(tipoReporte.equals(TipoReporte.LOCAL.name())){
 			generarReportePorLocal(fechaDesde, fechaHasta);
 		}
+		if(tipoReporte.equals(TipoReporte.EGRESOS.name())){
+			generarReportePorEgresos(fechaDesde, fechaHasta);
+		}
+	}
+
+	private void generarReportePorEgresos(LocalDate fechaDesde, LocalDate fechaHasta) {
+		Sucursal sucursal = ((ComboBox<Sucursal>)reportesView.getFiltroDinamico()).getValue();
+		setReporteEgresos(fechaDesde, fechaHasta, sucursal);
 	}
 
 	private void generarReportePorLocal(LocalDate fechaDesde, LocalDate fechaHasta) {
@@ -112,11 +118,80 @@ public class ReportesController {
 		setReporteIngresos(fechaDesde, fechaHasta, cliente);
 	}
 
+	private void setReporteEgresos(LocalDate fechaDesde, LocalDate fechaHasta, Sucursal sucursal) {
+
+		String nombreArchivo = "";
+		Grid<Egreso> egresoGrid = new Grid<>(Egreso.class);
+		setGridEgreso(egresoGrid);
+		reportesView.setGridDinamico(egresoGrid);
+
+		List<Egreso> egresos = asientoService.findEgresos(fechaDesde, fechaHasta);
+		egresos = egresos.stream().filter(e-> e.getIdSucursal()==sucursal.getId()).collect(Collectors.toList());
+
+		nombreArchivo = "Reporte Egresos " +  sucursal.getDescripcion() +".xls";
+
+		double totalImporte = 0;
+		for (Egreso egreso : egresos) {
+			totalImporte += egreso.getPosicion().getImporte();
+		}
+		egresoGrid.setItems(egresos);
+		egresoGrid.getColumnByKey("posicion.importe").setFooter("Total: $ " + totalImporte);
+		reportesView.setLayout();
+		reportesView.getHlCampos().add(new Anchor(new StreamResource(nombreArchivo, Exporter.exportAsExcel(egresoGrid)), "Exportar"));
+
+		if(reportesView.getComboTipoGrafico().getValue().equals("Anual")){
+			List<Double> listaMensual = new ArrayList<>(12);
+			for (int i = 0; i < 12; i++) {
+				listaMensual.add(0.0);
+			}
+			for (Egreso egreso : egresos) {
+				int indiceMes = egreso.getCabecera().getFechaContabilizacion().getMonthValue()-1;
+				listaMensual.set(indiceMes,listaMensual.get(indiceMes) + egreso.getPosicion().getImporte());
+			}
+			AreaChart areaChart = new AreaChart(listaMensual, "anual");
+			DonutChart donutChart = new DonutChart(listaMensual, "anual");
+			VerticalChart verticalChart = new VerticalChart(listaMensual, "anual");
+			HorizontalLayout hlGraficos = new HorizontalLayout();
+			hlGraficos.setSizeFull();
+			hlGraficos.add(areaChart,donutChart,verticalChart);
+			reportesView.add(hlGraficos);
+		}else{
+			List<Egreso> egresosMesElegido = egresos.stream().filter(e-> e.getCabecera().getFechaContabilizacion().getMonthValue()==reportesView.getComboBoxMeses().getValue()).collect(Collectors.toList());
+			List<Double> listaDias = new ArrayList<>(31);
+			for (int i = 0; i < 31; i++) {
+				listaDias.add(0.0);
+			}
+			for (Egreso egreso : egresosMesElegido) {
+				int indiceDia = egreso.getCabecera().getFechaContabilizacion().getDayOfMonth();
+				listaDias.set(indiceDia,listaDias.get(indiceDia) + egreso.getPosicion().getImporte());
+			}
+			AreaChart areaChart = new AreaChart(listaDias, "mensual");
+			DonutChart donutChart = new DonutChart(listaDias, "mensual");
+			VerticalChart verticalChart = new VerticalChart(listaDias, "mensual");
+			HorizontalLayout hlGraficos = new HorizontalLayout();
+			hlGraficos.setSizeFull();
+			hlGraficos.add(areaChart,donutChart,verticalChart);
+			reportesView.add(hlGraficos);
+		}
+		
+	}
+
+	private void setGridEgreso(Grid<Egreso> egresoGrid) {
+
+		egresoGrid.setHeight("200px");
+		egresoGrid.setColumns("idAsiento", "cabecera.fechaContabilizacion","cabecera.textoCabecera","cabecera.sucursal.descripcion","posicion.cuenta.descripcion", "posicion.importe");
+		egresoGrid.getColumnByKey("idAsiento").setWidth("90px").setFlexGrow(0);
+		egresoGrid.getColumnByKey("cabecera.sucursal.descripcion").setHeader("Sucursal");
+		egresoGrid.getColumnByKey("posicion.cuenta.descripcion").setHeader("Cuenta");
+
+	}
+
 	private void setReporteIngresos(LocalDate fechaDesde, LocalDate fechaHasta, Object tipo) {
 		String nombreArchivo = "";
 		Grid<Pago> pagoGrid = new Grid<>(Pago.class);
 		setGridPago(pagoGrid);
 		reportesView.setGridDinamico(pagoGrid);
+
 		Transaccion transaccionExample = new Transaccion();
 		if(tipo instanceof Cliente){
 			transaccionExample.setCliente((Cliente)tipo);
@@ -138,7 +213,12 @@ public class ReportesController {
 		Pago pagoExample = new Pago();
 		pagoExample.setTransaccion(transaccionExample);
 		List<Pago> pagos = pagosService.findPagos(pagoExample, fechaDesde, fechaHasta);
+		double totalImporte = 0;
+		for (Pago pago : pagos) {
+			totalImporte += pago.getImporte();
+		}
 		pagoGrid.setItems(pagos);
+		pagoGrid.getColumnByKey("importe").setFooter("Total: $ " + totalImporte);
 		reportesView.setLayout();
 		reportesView.getHlCampos().add(new Anchor(new StreamResource(nombreArchivo, Exporter.exportAsExcel(pagoGrid)), "Exportar"));
 
@@ -190,6 +270,7 @@ public class ReportesController {
 		pagoGrid.getColumnByKey("transaccion.cliente.id").setHeader("ID Cliente");
 		pagoGrid.getColumnByKey("transaccion.cliente").setHeader("Cliente");
 		pagoGrid.getColumnByKey("transaccion.viaje.ciudad.nombre").setHeader("Destino");
+
 	}
 
 	private void setFiltroDinamico() {
@@ -215,13 +296,15 @@ public class ReportesController {
 			reportesView.setFiltroDinamico(comboDestinos);
 			reportesView.setCampos();
 		}
-		if(reportesView.getComboTipoReporte().getValue().equals(TipoReporte.LOCAL.name())){
+		if(reportesView.getComboTipoReporte().getValue().equals(TipoReporte.LOCAL.name()) ||
+				reportesView.getComboTipoReporte().getValue().equals(TipoReporte.EGRESOS.name())){
 			ComboBox<Sucursal> comboSucursales = new ComboBox<>("Sucursal");
 			comboSucursales.setItemLabelGenerator(Sucursal::getDescripcion);
 			comboSucursales.setItems(sucursalService.findAll());
 			reportesView.setFiltroDinamico(comboSucursales);
 			reportesView.setCampos();
 		}
+
 
 	}
 
