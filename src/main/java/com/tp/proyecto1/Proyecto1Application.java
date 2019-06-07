@@ -84,7 +84,7 @@ public class Proyecto1Application {
 			crearConfiguracion(configService);
 			crearTagsDestino(tagDestinoService);
 			crearPaisesCiudades(paisRepository);
-			crearViajes(viajeService);
+		//	crearViajes(viajeService);
 			setSurcursales(sucursalRepository);
 			crearCuentas(asientoService);
 			procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository, lotePuntoRepository);
@@ -268,7 +268,7 @@ public class Proyecto1Application {
 			asientoService.saveCuenta(new Cuenta(504,"Mantenimiento", TipoCuenta.EGRESO));			
 		}
 	}
-	
+	/*
 	private void crearViajes(ViajeService viajeService) {
 		for (int i = 0; i<5; i++) {
 	        Transporte transporte = new Transporte("codigo " + i,viajeService.findAllTipoTransportes().get(0), i*5, "clase " + i);
@@ -276,5 +276,5 @@ public class Proyecto1Application {
 			viajeService.save(viaje);
 		}
 		
-	}
+	}*/
 }

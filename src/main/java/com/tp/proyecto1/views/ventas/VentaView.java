@@ -25,6 +25,7 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
     private DatePicker fechaFilter;
     private Button searchButton;
     private Button btnComprobante;
+    private Button btnEnvioMail;
 	private Checkbox activosCheck;
 
 
@@ -50,12 +51,14 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
         this.activosCheck = new Checkbox("Solo Activos");
 		this.activosCheck.setMinWidth("140px");
 		activosCheck.setValue(true);
+		this.btnEnvioMail = new Button("Enviar Mail", VaadinIcon.MAILBOX.create());
     }
 
     @Override
     public void setLayout() {
 
         HorizontalLayout hlSpace = new HorizontalLayout();
+        //this.hlFooter.add(btnComprobante,btnEnvioMail);
         this.hlFooter.add(btnComprobante);
         hlSpace.setWidthFull();
         this.hlActions.add(numeroClienteFilter, paisFilter, ciudadFilter, codTransporteFilter,fechaFilter,activosCheck, hlSpace, searchButton);
@@ -140,5 +143,13 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
 
 	public void setActivosCheck(Checkbox activosCheck) {
 		this.activosCheck = activosCheck;
+	}
+
+	public Button getBtnEnvioMail() {
+		return btnEnvioMail;
+	}
+
+	public void setBtnEnvioMail(Button btnEnvioMail) {
+		this.btnEnvioMail = btnEnvioMail;
 	}
 }
