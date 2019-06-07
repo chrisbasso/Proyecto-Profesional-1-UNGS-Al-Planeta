@@ -77,8 +77,8 @@ public class AsientoService {
 	}
 
 	@Transactional
-	public Cuenta findCuenta(Integer numeroCuenta){
-		return cuentaRepository.findBynumeroCuenta(numeroCuenta);
+	public Cuenta findCuentaByNumero(Integer numeroCuenta){
+		return cuentaRepository.findByNumeroCuenta(numeroCuenta);
 	}
 
 	@Transactional

@@ -17,11 +17,11 @@ import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.services.AsientoService;
+import com.tp.proyecto1.utils.Inject;
 
 public class AsientoREST {
 
 	private static AsientoREST instancia;
-	
 	@Autowired
 	private AsientoService asientoService;
 	private Asiento asiento;
@@ -40,15 +40,16 @@ public class AsientoREST {
 	private Double importePagoCuentaCorriente;
 
 	private AsientoREST() {
+		Inject.Inject(this);
 		cabecera = new Cabecera();
 		posiciones = new ArrayList<Posicion>();
-		cuentaReserva = asientoService.findCuenta(202);
-		cuentaVenta = asientoService.findCuenta(400);
-		cuentaPagoEfvo = asientoService.findCuenta(100);
-		cuentaPagoBanco = asientoService.findCuenta(101);
-		cuentaPagoTarjeta = asientoService.findCuenta(102);
-		cuentaCliente = asientoService.findCuenta(103);
-		cuentaReservaVencida= asientoService.findCuenta(401);
+		cuentaReserva = asientoService.findCuentaByNumero(202);
+		cuentaVenta = asientoService.findCuentaByNumero(400);
+		cuentaPagoEfvo = asientoService.findCuentaByNumero(100);
+		cuentaPagoBanco = asientoService.findCuentaByNumero(101);
+		cuentaPagoTarjeta = asientoService.findCuentaByNumero(102);
+		cuentaCliente = asientoService.findCuentaByNumero(103);
+		cuentaReservaVencida= asientoService.findCuentaByNumero(401);
 		importePagoEfectivo = 0.0;
 		importePagoDebito = 0.0;
 		importePagoTarjeta = 0.0;
@@ -66,7 +67,7 @@ public class AsientoREST {
 	
 	public static Long contabilizarNuevaReserva(Reserva reserva) {
 		AsientoREST nuevoAsiento = getInstancia();
-		nuevoAsiento.setCabeceraAsientoReserva(reserva.getFecha(), reserva.getVendedor(), reserva.getSucursal());
+		nuevoAsiento.setCabeceraAsiento(reserva.getFecha(), reserva.getVendedor(), reserva.getSucursal(), "Contabilización de reserva");
 		Double sumaDePagos = 0.0;
 		if(reserva.getPagos().size()>0) {
 			sumaDePagos = nuevoAsiento.tratarNuevosPagos(reserva.getPagos());
@@ -80,7 +81,7 @@ public class AsientoREST {
 	
 	public static Long contabilizarDevolucionReserva(Reserva reserva) {
 		AsientoREST nuevoAsiento = getInstancia();
-		nuevoAsiento.setCabeceraAsientoReserva(reserva.getFechaInactivacion(), reserva.getVendedor(), reserva.getSucursal());
+		nuevoAsiento.setCabeceraAsiento(reserva.getFechaInactivacion(), reserva.getVendedor(), reserva.getSucursal(), "Devolución de reserva");
 		Double sumaDePagos = 0.0;
 		if(reserva.getPagos().size()>0) {
 			sumaDePagos = nuevoAsiento.tratarDevolucionPagos(reserva.getPagos());
@@ -94,7 +95,7 @@ public class AsientoREST {
 	
 	public static Long contabilizarReservaVencida(Reserva reserva, User usuarioBatch) {
 		AsientoREST nuevoAsiento = getInstancia();
-		nuevoAsiento.setCabeceraAsientoReserva(LocalDate.now(), usuarioBatch, reserva.getSucursal());
+		nuevoAsiento.setCabeceraAsiento(LocalDate.now(), usuarioBatch, reserva.getSucursal(), "Reserva vencida");
 		Double sumaDePagos = 0.0;
 		if(reserva.getPagos().size()>0) {
 			sumaDePagos = nuevoAsiento.tratarGananciaPagos(reserva.getPagos());
@@ -108,7 +109,7 @@ public class AsientoREST {
 	
 	public static Long contabilizarNuevaVenta(Venta venta) {
 		AsientoREST nuevoAsiento = getInstancia();
-		nuevoAsiento.setCabeceraAsientoReserva(venta.getFecha(), venta.getVendedor(), venta.getSucursal());
+		nuevoAsiento.setCabeceraAsiento(venta.getFecha(), venta.getVendedor(), venta.getSucursal(), "Contabilización de venta");
 		Double sumaDePagos = 0.0;
 		if(venta.getPagos().size()>0) {
 			sumaDePagos = nuevoAsiento.tratarNuevosPagos(venta.getPagos());
@@ -120,11 +121,11 @@ public class AsientoREST {
 		return 0L;
 	}
 	
-	private void setCabeceraAsientoReserva(LocalDate fecha,User usuario,Sucursal sucursal) {
+	private void setCabeceraAsiento(LocalDate fecha,User usuario,Sucursal sucursal, String textoCabecera) {
 		cabecera.setFechaRegistro(fecha);
 		cabecera.setFechaContabilizacion(fecha);		
 		cabecera.setUsuario(usuario);
-		cabecera.setTextoCabecera("Contabilización de reserva");
+		cabecera.setTextoCabecera(textoCabecera);
 		cabecera.setSucursal(sucursal);
 	}
 	

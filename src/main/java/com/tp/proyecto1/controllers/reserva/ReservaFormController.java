@@ -151,7 +151,7 @@ public class ReservaFormController {
 			Long id = reservaService.save(reserva);
 			AsientoREST.contabilizarNuevaReserva(reserva);
 			viajeService.save(viaje);
-			imprimirComprobante(reserva);
+		//	imprimirComprobante(reserva);
 			mensajeGuardadoCierreForm(id);
 		}else {
 			Notification.show("Lo sentimos, no quedan pasajes disponibles en el viaje seleccionado.");

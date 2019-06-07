@@ -84,7 +84,7 @@ public class Proyecto1Application {
 			crearConfiguracion(configService);
 			crearTagsDestino(tagDestinoService);
 			crearPaisesCiudades(paisRepository);
-		//	crearViajes(viajeService);
+			crearViajes(viajeService);
 			setSurcursales(sucursalRepository);
 			crearCuentas(asientoService);
 			procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository, lotePuntoRepository);
@@ -274,11 +274,12 @@ public class Proyecto1Application {
 	}
 	
 	private void crearViajes(ViajeService viajeService) {
-		for (int i = 0; i<5; i++) {
-	        Transporte transporte = new Transporte("codigo " + i,viajeService.findAllTipoTransportes().get(0), i*5, "clase " + i);
-			Viaje viaje = new Viaje(viajeService.findAllCiudades().get(0), transporte, LocalDate.now().plusDays(10), LocalTime.now(), i*2000.0, "Viaje " + i, true);
-			viajeService.save(viaje);
+		if(viajeService.findAll().size()==0) {
+			for (int i = 0; i<5; i++) {
+		        Transporte transporte = new Transporte("codigo " + i,viajeService.findAllTipoTransportes().get(0), i*5, "clase " + i);
+				Viaje viaje = new Viaje(viajeService.findAllCiudades().get(0), transporte, LocalDate.now().plusDays(10), LocalTime.now(), i*2000.0, "Viaje " + i, true);
+				viajeService.save(viaje);
+			}	
 		}
-		
 	}
 }

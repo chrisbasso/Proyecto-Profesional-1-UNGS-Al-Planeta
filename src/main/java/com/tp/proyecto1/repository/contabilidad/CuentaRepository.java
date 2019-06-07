@@ -8,6 +8,6 @@ import com.tp.proyecto1.model.contabilidad.Cuenta;
 @Repository
 public interface CuentaRepository extends JpaRepository<Cuenta, Long> {
 
-	Cuenta findBynumeroCuenta(Integer numeroCuenta);
+	Cuenta findByNumeroCuenta(Integer numeroCuenta);
 
 }

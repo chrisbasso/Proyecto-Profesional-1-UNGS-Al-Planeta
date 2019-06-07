@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.tp.proyecto1.Proyecto1Application;
+import com.tp.proyecto1.controllers.contabilidad.AsientoREST;
 import com.tp.proyecto1.model.pasajes.*;
 import com.tp.proyecto1.model.viajes.Pais;
 import com.tp.proyecto1.model.viajes.Promocion;
@@ -484,6 +485,7 @@ public class VentaFormController {
 	private void newVenta() {
 		Venta venta =  setNewVenta();
 		ventaService.save(venta);
+		AsientoREST.contabilizarNuevaVenta(venta);
 		imprimirComprobante(venta);
 		//ventaService.save(setNewVenta());
         ventaForm.close();
