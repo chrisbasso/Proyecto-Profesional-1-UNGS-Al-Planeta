@@ -2,13 +2,16 @@ package com.tp.proyecto1.model.contabilidad;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 
 @Entity
 public class Posicion {
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generador_posicion")
+	@SequenceGenerator(name="generador_posicion", sequenceName = "secuencia_posicion")
 	private Long id;	
 	@OneToOne
 	private Cuenta cuenta;

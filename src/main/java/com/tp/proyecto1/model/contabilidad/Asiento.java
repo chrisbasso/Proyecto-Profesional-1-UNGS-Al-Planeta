@@ -6,17 +6,21 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 
 import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.model.users.User;
 
 @Entity
 public class Asiento {
+	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generador_asiento")
+	@SequenceGenerator(name="generador_asiento", sequenceName = "secuencia_asiento")	
 	private Long id;	
 	@OneToOne
 	private Cabecera cabecera;
