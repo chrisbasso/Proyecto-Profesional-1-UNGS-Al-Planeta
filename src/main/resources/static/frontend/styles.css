@@ -15,4 +15,12 @@ h3 {
     /*padding: var(--lumo-space-s) var(--lumo-space-s);*/
 /*}*/
 
+.selected-menu {
+	font-style: italic;
+	text-decoration: underline;
+}
 
+.normal-menu {
+  	font-style: normal;
+  	text-decoration: none;
+}
