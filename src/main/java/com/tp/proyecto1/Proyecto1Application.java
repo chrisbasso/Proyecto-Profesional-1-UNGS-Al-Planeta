@@ -87,7 +87,7 @@ public class Proyecto1Application {
 			crearViajes(viajeService);
 			setSurcursales(sucursalRepository);
 			crearCuentas(asientoService);
-			procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository, lotePuntoRepository);
+			//procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository, lotePuntoRepository);
 
 		};
 	}

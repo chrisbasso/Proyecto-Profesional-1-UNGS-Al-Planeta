@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tp.proyecto1.controllers.clientes.ClientesController;
 import com.tp.proyecto1.controllers.configuracion.ConfiguracionController;
-import com.tp.proyecto1.controllers.contabilidad.AsientosController;
+import com.tp.proyecto1.controllers.contabilidad.MenuContabilidadController;
 import com.tp.proyecto1.controllers.eventos.EventosController;
 import com.tp.proyecto1.controllers.login.LoginController;
 import com.tp.proyecto1.controllers.promociones.PromocionesController;
@@ -12,11 +12,11 @@ import com.tp.proyecto1.controllers.reportes.ReportesController;
 import com.tp.proyecto1.controllers.reserva.ReservasController;
 import com.tp.proyecto1.controllers.venta.VentasController;
 import com.tp.proyecto1.controllers.viajes.ViajesController;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
@@ -42,14 +42,13 @@ public class MainView extends VerticalLayout {
 	@Autowired
 	private ReservasController reservasController;
 	@Autowired
-	private AsientosController asientosController;
-	@Autowired
 	private PromocionesController promocionesController;
 	@Autowired
 	private ReportesController reportesController;
 	@Autowired
 	private ConfiguracionController configuracionController;
-
+	private MenuContabilidadController menuContabilidadController;
+	
 	private VerticalLayout mainLayout;
 	private AppLayout appLayout;
 	private AppLayoutMenu menu;
@@ -65,6 +64,7 @@ public class MainView extends VerticalLayout {
 	private AppLayoutMenuItem logout;
 	
 	public MainView() {
+		menuContabilidadController = new MenuContabilidadController (this);
 		setLayouts();
 		setMainPage();
 	}
@@ -95,7 +95,6 @@ public class MainView extends VerticalLayout {
 	private void openMenu() {
 		appLayout = new AppLayout();
 		appLayout.setBranding(getLogo());
-		this.add(mainLayout);
 		mainLayout.add(appLayout);
 		menu = appLayout.createMenu();
 		
@@ -159,7 +158,7 @@ public class MainView extends VerticalLayout {
 
 	private void openContabilidadView(){
 		actualizarMenuSeleccionado(contabilidad);
-		appLayout.setContent(asientosController.getAsientosView());
+		appLayout.setContent(menuContabilidadController.getMenuView());
 	}
 	
 	private void openReportesView() {
@@ -178,7 +177,11 @@ public class MainView extends VerticalLayout {
 		loginController.setChangeHandler(this::openMenu);
 	}
 	
-
+	public void actualizarView(Object view) {
+		appLayout.removeContent();
+		appLayout.setContent((Component) view);
+	}
+	
 	private void actualizarMenuSeleccionado(AppLayoutMenuItem menu) {
 		if(viajes.equals(menu)) {
 			viajes.setClassName("selected-menu");	

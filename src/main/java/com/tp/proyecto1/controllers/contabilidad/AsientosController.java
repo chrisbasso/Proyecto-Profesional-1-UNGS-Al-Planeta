@@ -33,7 +33,6 @@ public class AsientosController {
     private UserService userService;
     private AsientoFormController asientoFormController;
     private AsientoView asientoView;
-    private CuentaController cuentaController;
     
     public AsientosController() {
         Inject.Inject(this);
@@ -56,7 +55,6 @@ public class AsientosController {
     private void mostrarAsiento(Asiento asiento) {
     	asientoFormController = new AsientoFormController();
     	asientoFormController.getFormVisualizar(asiento);
-    	
     	asientoFormController.setChangeHandler(this::listAsientos);    	
     }
     
@@ -84,15 +82,7 @@ public class AsientosController {
 	}
 
     private void setListeners() {
-    	asientoView.setBtnAgregarListener(e->crearAsiento());
-    	asientoView.setBtnCuentasListener(e->abmCuentas());
     	asientoView.setBtnBuscarListener(e->listAsientos());    	
-    }
-    
-    private void crearAsiento() {
-    	asientoFormController = new AsientoFormController();
-    	asientoFormController.getFormCrear();
-    	asientoFormController.setChangeHandler(this::listAsientos);
     }
     
     private void listAsientos() {
@@ -134,11 +124,6 @@ public class AsientosController {
     private boolean checkFiltros() {
         return asientoView.getValueUsuario()==null || asientoView.getValueNumeroAsiento() == null  ||
                 asientoView.getValueFecha() == null;
-    }
-    
-    private void abmCuentas(){
-    	cuentaController = new CuentaController();
-    	cuentaController.getFormCrear();    	
     }
     
     private void refreshAsientos() {
