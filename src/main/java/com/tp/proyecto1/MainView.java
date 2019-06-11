@@ -1,5 +1,6 @@
 package com.tp.proyecto1;
 
+import com.vaadin.flow.component.tabs.TabVariant;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tp.proyecto1.controllers.clientes.ClientesController;
@@ -110,7 +111,18 @@ public class MainView extends VerticalLayout {
 		logout = new AppLayoutMenuItem(VaadinIcon.USER.create(),
 				"Logout " + Proyecto1Application.logUser.getUser(),
 				e->loginController.logout());
-				
+
+		viajes.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		promociones.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		ventas.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		reservas.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		clientes.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		eventos.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		contabilidad.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		reportes.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		configuraciones.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		logout.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+
 		menu.addMenuItems(viajes, promociones, ventas, reservas, clientes, eventos, contabilidad, reportes, configuraciones, logout);
 		//Cargamos la lista de viajes en la página inicial
 		openViajesView();
