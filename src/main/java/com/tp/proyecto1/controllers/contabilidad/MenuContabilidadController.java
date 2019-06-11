@@ -1,16 +1,11 @@
 package com.tp.proyecto1.controllers.contabilidad;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.tp.proyecto1.MainView;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.contabilidad.MenuContabilidad;
-import com.tp.proyecto1.views.contabilidad.ReporteCaja;
-import com.tp.proyecto1.views.contabilidad.ReporteContabilidad;
 import com.vaadin.flow.spring.annotation.UIScope;
 
 @Controller
@@ -25,18 +20,19 @@ public class MenuContabilidadController {
 	CuentaFormController cuentaFormController;
 	@Autowired
 	CuentasController cuentasController;
-	
+	@Autowired
+	SalidaCajaFormController salidaCajaFormController;
+	@Autowired
+	MovimientosCajaController movimientosCajaController;
+
 	private MainView observer;
 	private MenuContabilidad menuView;
-	private ReporteContabilidad reporteView;
-	private ReporteCaja reporteCajaView;
 	
 	public MenuContabilidadController(MainView observer) {
 		Inject.Inject(this);
 		this.observer = observer;
 		menuView = new MenuContabilidad();
 		agregarListeners();
-		actualizarEtiquetas();
 	}
 	
 	public MenuContabilidad getMenuView() {
@@ -48,8 +44,8 @@ public class MenuContabilidadController {
 		menuView.visualizarAsientosAsientosListener(e->visualizarAsientos());
 		menuView.agregarCuentasListener(e->agregarCuentas());
 		menuView.visualizarCuentasListener(e->visualizarCuentas());
-		menuView.reporteCajaListener(e->reporteCaja());
-		menuView.reporteCuentasListener(e->reporteCuentas());
+		menuView.agregarSalidaCajaListener(e->nuevaSalidaCaja());
+		menuView.visualizarMovimintosCajaListener(e->visualizarMovCaja());
 	}
 	
 	private void agregarAsientos() {
@@ -68,23 +64,12 @@ public class MenuContabilidadController {
 		observer.actualizarView(cuentasController.getCuentasView());
 	}
 
-	private void reporteCaja() {
-		this.reporteCajaView = new ReporteCaja();
-		observer.actualizarView(reporteCajaView);
+	private void nuevaSalidaCaja() {
+		salidaCajaFormController.cargarNuevaSalidaCaja();		
 	}
 	
-	private void reporteCuentas() {
-		this.reporteView = new ReporteContabilidad();
-		observer.actualizarView(reporteView);
+	private void visualizarMovCaja() {
+		observer.actualizarView(movimientosCajaController.getMovimientosView());
 	}
 	
-	private void actualizarEtiquetas() {
-		menuView.borrarEtiquetas();
-		menuView.cargarEtiquetas(generarEtiquetas());
-	}
-
-	private Map<String, String> generarEtiquetas() {
-		Map<String, String> nuevasEtiquetas = new HashMap<String, String>();
-		return nuevasEtiquetas;
-	}
 }

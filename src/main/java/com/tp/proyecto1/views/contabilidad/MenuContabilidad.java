@@ -1,41 +1,28 @@
 package com.tp.proyecto1.views.contabilidad;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.tabs.Tab;
-import com.vaadin.flow.component.tabs.Tabs;
 
 public class MenuContabilidad extends HorizontalLayout{
 
-	private HorizontalLayout mainLayout;
 	private HorizontalLayout botonera;
-	private HorizontalLayout etiquetas;
 	private VerticalLayout asientos;
 	private VerticalLayout cuentas;
-	private VerticalLayout reportes;
+	private VerticalLayout caja;
 	private Button agregarAsientos;
 	private Button visualizarAsientos;
 	private Button agregarCuentas;
 	private Button visualizarCuentas;
-	private Button reporteCaja;
-	private Button reporteCuentas;
+	private Button agregarSalidaCaja;
+	private Button visualizarMovimientosCaja;
 	
 	public MenuContabilidad() {
 		inicializarLayout();
 		inicializarComponentes();
-
 	}
 
 	private void inicializarLayout() {		
@@ -45,20 +32,11 @@ public class MenuContabilidad extends HorizontalLayout{
 		asientos.getStyle().set("border", "1px solid #9E9E9E");
 		asientos.setHeightFull();
 		cuentas = new VerticalLayout();
-		cuentas.getStyle().set("border", "1px solid #9E9E9E");
 		cuentas.setHeightFull();
-		reportes = new VerticalLayout();
-		reportes.getStyle().set("border", "1px solid #9E9E9E");
-		reportes.setHeightFull();
-		botonera.add(asientos, cuentas, reportes);
+		caja = new VerticalLayout();
+		caja.setHeightFull();
+		botonera.add(asientos, cuentas, caja);
 		this.add(botonera);
-		
-		etiquetas = new HorizontalLayout();
-		etiquetas.setWidthFull();
-		etiquetas.getStyle().set("border", "1px solid #9E9E9E");
-		Label lblEtiquetas = new Label("ETIQUETAS");
-		etiquetas.add(lblEtiquetas);
-		this.add(etiquetas);
 	}
 
 	private void inicializarComponentes() {
@@ -80,27 +58,16 @@ public class MenuContabilidad extends HorizontalLayout{
 		visualizarCuentas.setText("Visualizar cuentas");
 		cuentas.add(lblCuentas, agregarCuentas, visualizarCuentas);
 
-		Label lblReportes = new Label("REPORTES");
-		reporteCaja = new Button();
-		reporteCaja.setSizeFull();
-		reporteCaja.setText("Reporte caja");
-		reporteCuentas = new Button();
-		reporteCuentas.setSizeFull();
-		reporteCuentas.setText("Mayores por cuenta");
-		reportes.add(lblReportes, reporteCaja, reporteCuentas);
-	}
-	
-	public void borrarEtiquetas() {
-		etiquetas.removeAll();
+		Label lblCaja = new Label("CAJA");
+		agregarSalidaCaja = new Button();
+		agregarSalidaCaja.setSizeFull();
+		agregarSalidaCaja.setText("Registrar salida de caja");
+		visualizarMovimientosCaja = new Button();
+		visualizarMovimientosCaja.setSizeFull();
+		visualizarMovimientosCaja.setText("Visualizar movimientos de caja");
+		caja.add(lblCaja, agregarSalidaCaja, visualizarMovimientosCaja);
 	}
 
-	public void cargarEtiquetas(Map <String, String> nuevasEtiquetas) {
-		for(Map.Entry<String, String> entry : nuevasEtiquetas.entrySet()) {
-			etiquetas.add(entry.getKey());
-			etiquetas.add(entry.getValue());
-		}		
-	}
-	
 	public void agregarAsientosListener(ComponentEventListener<ClickEvent<Button>> listener) {
 		agregarAsientos.addClickListener(listener);
 	}
@@ -117,11 +84,11 @@ public class MenuContabilidad extends HorizontalLayout{
 		visualizarCuentas.addClickListener(listener);
 	}
 
-	public void reporteCajaListener(ComponentEventListener<ClickEvent<Button>> listener) {
-		reporteCaja.addClickListener(listener);
+	public void agregarSalidaCajaListener(ComponentEventListener<ClickEvent<Button>> listener) {
+		agregarSalidaCaja.addClickListener(listener);
 	}
 
-	public void reporteCuentasListener(ComponentEventListener<ClickEvent<Button>> listener) {
-		reporteCuentas.addClickListener(listener);
+	public void visualizarMovimintosCajaListener(ComponentEventListener<ClickEvent<Button>> listener) {
+		visualizarMovimientosCaja.addClickListener(listener);
 	}
 }

@@ -34,6 +34,7 @@ public class AsientoREST {
 	private Cuenta cuentaPagoTarjeta;
 	private Cuenta cuentaCliente;	
 	private Cuenta cuentaReservaVencida;
+	private Cuenta cuentaSalidaCaja;
 	private Double importePagoEfectivo;
 	private Double importePagoDebito;
 	private Double importePagoTarjeta;
@@ -50,6 +51,7 @@ public class AsientoREST {
 		cuentaPagoTarjeta = asientoService.findCuentaByNumero(102);
 		cuentaCliente = asientoService.findCuentaByNumero(103);
 		cuentaReservaVencida= asientoService.findCuentaByNumero(401);
+		cuentaSalidaCaja= asientoService.findCuentaByNumero(100);
 		importePagoEfectivo = 0.0;
 		importePagoDebito = 0.0;
 		importePagoTarjeta = 0.0;
@@ -119,6 +121,16 @@ public class AsientoREST {
 			return nuevoAsiento.contabilizarAsiento();
 		}
 		return 0L;
+	}
+	
+	public static Long contabilizarSalidaCaja(LocalDate fecha, String txtCab, Sucursal suc,
+			Cuenta cta, Double impte, User usuario) {
+		
+		AsientoREST nuevoAsiento = getInstancia();
+		nuevoAsiento.setCabeceraAsiento(fecha, usuario, suc, txtCab);
+		nuevoAsiento.agregarPosicion(TipoPosicion.DEBE, cta, impte);
+		nuevoAsiento.cerrarAsientoSalidaPago(impte);
+		return nuevoAsiento.contabilizarAsiento();
 	}
 	
 	private void setCabeceraAsiento(LocalDate fecha,User usuario,Sucursal sucursal, String textoCabecera) {
@@ -211,11 +223,17 @@ public class AsientoREST {
 	private void cerrarAsientoVenta(Double sumaDePagos) {
 		agregarPosicion(TipoPosicion.HABER, cuentaVenta, sumaDePagos);
 	}
-
+	
+	private void cerrarAsientoSalidaPago(Double impte) {
+		agregarPosicion(TipoPosicion.HABER, cuentaSalidaCaja, impte);
+	}
+	
 	private Long contabilizarAsiento() {
 		asiento = new Asiento();
 		asiento.setCabecera(cabecera);
 		asiento.setPosiciones(posiciones);		
 		return asientoService.save(asiento);
-	}	
+	}
+	
+	
 }
