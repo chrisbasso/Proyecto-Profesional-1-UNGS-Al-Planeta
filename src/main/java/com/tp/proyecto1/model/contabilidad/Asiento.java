@@ -102,4 +102,8 @@ public class Asiento {
 	public Double getSaldo() {
 		return getSumaDebe() - getSumaHaber();  
 	}
+	
+	public Posicion getPosicionPorIndice(int index) {
+		return posiciones.get(index);
+	}
 }

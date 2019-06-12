@@ -87,7 +87,7 @@ public class Proyecto1Application {
 			crearViajes(viajeService);
 			setSurcursales(sucursalRepository);
 			crearCuentas(asientoService);
-			procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository, lotePuntoRepository);
+			//procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository, lotePuntoRepository);
 
 		};
 	}
@@ -224,7 +224,8 @@ public class Proyecto1Application {
 		configService.createConfiguracionIfNotExist("reserva_vencimiento_pago_parcial-dias", "10");
 		configService.createConfiguracionIfNotExist("reserva_vencimiento_reserva-dias", "5");
 		configService.createConfiguracionIfNotExist("pesos_por_punto", "10");
-		configService.createConfiguracionIfNotExist("cant_anios_venc_puntos", "1");	
+		configService.createConfiguracionIfNotExist("cant_anios_venc_puntos", "1");
+		configService.createConfiguracionIfNotExist("movimiento_caja-numero_cuenta","100");
 	}
 
 	private void crearFormasDePago(VentaService ventaService) {

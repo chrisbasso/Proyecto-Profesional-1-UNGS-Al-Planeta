@@ -16,7 +16,7 @@ import com.vaadin.flow.spring.annotation.UIScope;
 
 @Controller
 @UIScope
-public class CuentaController {
+public class CuentaFormController {
 
 	@Autowired
 	private AsientoService asientoService;	
@@ -24,7 +24,7 @@ public class CuentaController {
 	private List<TipoCuenta> tipoCuentas;
 	private CuentaForm cuentaForm;
 
-	public CuentaController(){
+	public CuentaFormController(){
 		Inject.Inject(this);
 		cuentas = asientoService.findCuentas();
 		tipoCuentas = TipoCuenta.getAllTipos();
