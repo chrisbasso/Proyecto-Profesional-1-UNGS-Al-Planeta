@@ -26,6 +26,7 @@ public class MovimientosCajaView extends FilterGridLayout<MovimientoCaja> {
     private NumberField idUsuarioFilter;
     private ComboBox<Sucursal> sucursalFilter;    
     private Button btnBuscar;
+    private Button btnAgregar;
     private FormLayout saldosPorSucursal; 
 
     public MovimientosCajaView() {
@@ -39,23 +40,28 @@ public class MovimientosCajaView extends FilterGridLayout<MovimientoCaja> {
         fechaFilter = new DatePicker("Fecha Contab.");
         idUsuarioFilter = new NumberField("ID Usuario");
         sucursalFilter = new ComboBox<Sucursal>();
+        sucursalFilter.setLabel("Sucursal");
         btnBuscar = new Button("Buscar", VaadinIcon.SEARCH.create());
         btnBuscar.setMinWidth("110px");
+        btnAgregar = new Button("Agregar", VaadinIcon.PLUS.create());
+        btnAgregar.setMinWidth("110px");
         saldosPorSucursal = new FormLayout();
     }
 
     private void setLayout() {
         HorizontalLayout hlSpace = new HorizontalLayout();
-        this.hlFooter.add(saldosPorSucursal);
         hlSpace.setWidthFull();
-        this.hlActions.add(idUsuarioFilter,fechaFilter, sucursalFilter, btnBuscar);
+        this.hlActions.add(idUsuarioFilter,fechaFilter, sucursalFilter, btnBuscar, hlSpace, btnAgregar);
+        this.hlFooter.setWidthFull();
+        this.hlFooter.add(saldosPorSucursal);
+        this.hlFooter.setAlignItems(Alignment.BASELINE);
     }
 
     private void setGrid() {
-        grid.setColumns("cabecera.fechaContabilizacion", "cabecera.sucursal", "cabecera.usuario.user", "cabecera.textoCabecera", "posicion.importe");
+        grid.setColumns("cabecera.fechaContabilizacion", "cabecera.sucursal", "cabecera.usuario.user", "cabecera.textoCabecera", "importe");
         grid.getColumnByKey("cabecera.fechaContabilizacion").setHeader("Fecha");
         grid.getColumnByKey("cabecera.usuario.user").setHeader("Usuario");
-        grid.getColumnByKey("cabecera.textoCabecera").setHeader("Texto Cabecera");
+        grid.getColumnByKey("cabecera.textoCabecera").setHeader("Texto");
     }
 
     public void agregarColumnaVisualizar(ValueProvider<MovimientoCaja, Button> e) {
@@ -113,5 +119,9 @@ public class MovimientosCajaView extends FilterGridLayout<MovimientoCaja> {
 
     public void setBtnBuscarListener(ComponentEventListener<ClickEvent<Button>> e) {
         btnBuscar.addClickListener(e);
+    }
+    
+    public void setBtnAgregarListener(ComponentEventListener<ClickEvent<Button>> e) {
+        btnAgregar.addClickListener(e);
     }
 }

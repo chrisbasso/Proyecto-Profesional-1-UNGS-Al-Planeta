@@ -24,21 +24,27 @@ public class MovimientosCajaController {
 	private AsientoService asientoService;
 	@Autowired
 	private SucursalService sucursalService;
+	@Autowired
+	private SalidaCajaFormController salidaCajaFormController;
 	
 	private MovimientosCajaView view;
 	private List <MovimientoCaja> movimientos;
 	
-	
 	public MovimientosCajaController() {
 		Inject.Inject(this);
-		cargarUltimosMovimientos();
-		view = new MovimientosCajaView();
-		view.cargarComboSucursal(sucursalService.findAll());		
-		view.cargarMovimientos(movimientos);
-		view.cargarEtiquetasSaldos(totalizarValores());
 	}
 
-	private void cargarUltimosMovimientos() {
+	public MovimientosCajaView getMovimientosView() {
+		view = new MovimientosCajaView();
+		view.cargarComboSucursal(sucursalService.findAll());
+		cargarMovimientosDelMes();
+		view.cargarMovimientos(movimientos);
+		view.cargarEtiquetasSaldos(totalizarValores());
+		agregarListeners();
+		return view;
+	}
+
+	private void cargarMovimientosDelMes() {
 		int diasDelMes = LocalDate.now().getMonth().length(LocalDate.now().isLeapYear());
 		LocalDate desde = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 1);
 		LocalDate hasta = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), diasDelMes);
@@ -50,7 +56,7 @@ public class MovimientosCajaController {
 		
 		for (MovimientoCaja movimientoCaja : movimientos) {
 			Sucursal suc = movimientoCaja.getCabecera().getSucursal();
-			Double valorIteracion = movimientoCaja.getPosicion().getImporte();
+			Double valorIteracion = movimientoCaja.getImporte();
 		
 			if(ret.containsKey(suc)) {
 				Double valorAnterior = ret.get(suc);
@@ -63,7 +69,16 @@ public class MovimientosCajaController {
 		return ret;
 	}
 	
-	public MovimientosCajaView getMovimientosView() {
-		return view;
+	private void agregarListeners() {
+		view.setBtnAgregarListener(e->nuevoEgreso());
+		view.setBtnBuscarListener(e->buscarMovimientos());
 	}
+
+	private void nuevoEgreso() {
+		salidaCajaFormController.cargarNuevaSalidaCaja();
+	}
+
+	private void buscarMovimientos() {
+		// TODO Auto-generated method stub
+	}	
 }

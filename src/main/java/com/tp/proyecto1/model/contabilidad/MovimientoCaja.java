@@ -1,7 +1,5 @@
 package com.tp.proyecto1.model.contabilidad;
 
-import com.tp.proyecto1.services.ConfiguracionService;
-
 public class MovimientoCaja {
 	
 	private static MovimientoCaja instancia;
@@ -11,11 +9,10 @@ public class MovimientoCaja {
 	private Posicion posicion;
 
 	public static MovimientoCaja getInstancia(Long idAsiento, Cabecera cabecera, Posicion posicion) {
-		ConfiguracionService confService = new ConfiguracionService();
-		String cuentaCaja = confService.findValueByKey("movimiento_caja-numero_cuenta");
+		String cuentaCaja = "100";
 		
 		instancia = null;
-		if(posicion.getCuenta().toString().equals(cuentaCaja)) {
+		if(posicion.getCuenta().getNumeroCuenta().toString().equals(cuentaCaja)) {
 			instancia = new MovimientoCaja(idAsiento, cabecera, posicion);	
 		}
 		return instancia;
@@ -69,5 +66,13 @@ public class MovimientoCaja {
 	
 	public int getDia() {
 		return cabecera.getFechaContabilizacion().getDayOfMonth();
+	}
+	
+	public Double getImporte() {
+		if(posicion.getDebeHaber().equals(TipoPosicion.DEBE)) {
+			return posicion.getImporte();
+		}else {
+			return (posicion.getImporte() * -1);
+		}
 	}
 }
