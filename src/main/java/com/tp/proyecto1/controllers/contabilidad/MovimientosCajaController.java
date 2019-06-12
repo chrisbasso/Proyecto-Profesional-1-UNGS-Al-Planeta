@@ -29,6 +29,7 @@ public class MovimientosCajaController {
 	
 	private MovimientosCajaView view;
 	private List <MovimientoCaja> movimientos;
+	private ChangeHandler changeHandler;
 	
 	public MovimientosCajaController() {
 		Inject.Inject(this);
@@ -37,14 +38,14 @@ public class MovimientosCajaController {
 	public MovimientosCajaView getMovimientosView() {
 		view = new MovimientosCajaView();
 		view.cargarComboSucursal(sucursalService.findAll());
-		cargarMovimientosDelMes();
+		leerMovimientosDelMes();
 		view.cargarMovimientos(movimientos);
 		view.cargarEtiquetasSaldos(totalizarValores());
 		agregarListeners();
 		return view;
 	}
 
-	private void cargarMovimientosDelMes() {
+	private void leerMovimientosDelMes() {
 		int diasDelMes = LocalDate.now().getMonth().length(LocalDate.now().isLeapYear());
 		LocalDate desde = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), 1);
 		LocalDate hasta = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), diasDelMes);
@@ -70,15 +71,40 @@ public class MovimientosCajaController {
 	}
 	
 	private void agregarListeners() {
+		setChangeHandler(this::refrescarLista);
 		view.setBtnAgregarListener(e->nuevoEgreso());
 		view.setBtnBuscarListener(e->buscarMovimientos());
 	}
 
 	private void nuevoEgreso() {
 		salidaCajaFormController.cargarNuevaSalidaCaja();
+		salidaCajaFormController.setChangeHandler(this::refrescarLista);
 	}
 
 	private void buscarMovimientos() {
-		// TODO Auto-generated method stub
+		LocalDate fecha = view.getValueFecha();
+		Usuario usuario = view.getValueUsuario();
+		Sucursal suc = view.getValueSucursal();
+		
+		if(fecha != null){
+			if(usuario != null){
+				if(suc != null){
+					MovimientoCaja movEjemplo = new MovimientoCaja();
+					Cabecera cabEjemplo = new Cabecera();
+					cabEjemplo.setFechaContabilizacion(fecha);
+					Posicion posEjemplo = new Posicion();
+					movimientos = asientoService.findMovimientosCaja(fecha, usuario, suc);
+					refrescarLista();
+				}
+			}
+		}
 	}	
+		
+	private void refrescarLista(){	
+		view.cargarMovimientos(movimientos);
+	}
+	
+	private void setChangeHandler(ChangeHandler h) {
+		changeHandler = h;
+	}
 }
