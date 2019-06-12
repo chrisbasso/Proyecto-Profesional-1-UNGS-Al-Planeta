@@ -37,6 +37,7 @@ public class SalidaCajaFormController {
 	private Sucursal sucursal;
 	private Cuenta cuenta;
     private Double importe;
+	private ChangeHandler changeHandler;
 	
 	public SalidaCajaFormController() {
 		Inject.Inject(this);
@@ -87,6 +88,7 @@ public class SalidaCajaFormController {
 		if(controlTodosValoresIngresados()) {
 			prepararDatosAsiento();
 	    	contabilizar();	
+			changeHandler.onChange();
 		}    
 	}
 	
@@ -102,5 +104,10 @@ public class SalidaCajaFormController {
     	AsientoREST.contabilizarSalidaCaja(fechaContabilizacion, textoCabecera, sucursal, cuenta, importe, Proyecto1Application.logUser);
     	Notification.show("Guardado");
     	salidaCajaFormView.close();
+	}
+	
+	
+	public void setChangeHandler(ChangeHandler h) {
+		changeHandler = h;
 	}
 }
