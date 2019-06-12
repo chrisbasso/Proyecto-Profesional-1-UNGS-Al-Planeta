@@ -133,6 +133,21 @@ public class AsientoREST {
 		return nuevoAsiento.contabilizarAsiento();
 	}
 	
+	public static Long anularAsiento(Asiento asientoPorAnular, User usuario){
+		AsientoREST nuevoAsiento = getInstancia();
+		nuevoAsiento.setCabecera(LocalDate.now(), usuario, asientoPorAnular.getSucursal(),"Anular asiento: " + asientoPorAnular.getId());
+		
+		for(Posicion posicion : asientoPorAnular.getPosiciones()){
+			Posicion posicionRevertida = Posicion.revertirPosicion(posicion);
+			nuevoAsiento.agregarPosicion(posicionRevertida);
+		}
+		
+		Long idAnulacion = nuevoAsiento.contabilizarAsiento();
+		asientoPorAnular.setAnulado(usuario);
+		asientoService.save(asientoPorAnular);
+		return idAnulacion;
+	}
+	
 	private void setCabeceraAsiento(LocalDate fecha,User usuario,Sucursal sucursal, String textoCabecera) {
 		cabecera.setFechaRegistro(fecha);
 		cabecera.setFechaContabilizacion(fecha);		
@@ -207,6 +222,10 @@ public class AsientoREST {
 		posiciones.add(new Posicion(debeHaber, cuenta, importe));
 	}
 	
+	private void agregarPosicion(Posicion posicion){
+		posiciones.add(posicion);
+	}
+	
 	private void cerrarAsientoReserva(Double sumaDePagos) {
 		agregarPosicion(TipoPosicion.HABER, cuentaReserva, sumaDePagos);
 	}
@@ -233,7 +252,5 @@ public class AsientoREST {
 		asiento.setCabecera(cabecera);
 		asiento.setPosiciones(posiciones);		
 		return asientoService.save(asiento);
-	}
-	
-	
+	}	
 }
