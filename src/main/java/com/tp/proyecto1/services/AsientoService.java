@@ -122,5 +122,21 @@ public class AsientoService {
 		}
 		return movimientos;
 	}
-
+	
+	@Transactional
+	public List<MovimientoCaja> findMovimientosCajaFiltrado(LocalDate fecha, Usuario usuario, Sucursal suc){
+		List<MovimientoCaja> movimientos = new ArrayList<MovimientoCaja>();
+		List <Asiento> asientos = asientoRepository.findAllByCabecera_FechaContabilizacionBetween(fecha, fecha);
+		for (Asiento asiento : asientos) {
+			if(asiento.getUsuario().equals(usuario) && asiento.getSucursal().equals(suc)){
+				for (Posicion posicion : asiento.getPosiciones()) {
+					MovimientoCaja movim = MovimientoCaja.getInstancia(asiento.getId(), asiento.getCabecera(), posicion); 
+					if(movim != null) {
+						movimientos.add(movim);
+					}
+				}			
+			}
+		}
+		return movimientos;
+	}
 }
