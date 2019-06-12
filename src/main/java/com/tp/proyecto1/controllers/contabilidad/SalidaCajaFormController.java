@@ -14,7 +14,13 @@ import com.tp.proyecto1.services.AsientoService;
 import com.tp.proyecto1.services.SucursalService;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.contabilidad.SalidaCajaForm;
+import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
+import com.vaadin.flow.component.HasValue.ValueChangeListener;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.textfield.NumberField;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 
 @Controller
@@ -58,27 +64,35 @@ public class SalidaCajaFormController {
 	}	
 	
 	private void agregarListener() {
-		salidaCajaFormView.btnAgregarListener(e->validacionGuardar());
+		salidaCajaFormView.btnAgregarListener(e->guardar());
+		salidaCajaFormView.fechaContabilizacionListener(e->valorIngresado());				
+		salidaCajaFormView.sucursalListener(e->valorIngresado());		
+		salidaCajaFormView.cuentaListener(e->valorIngresado());		
+		salidaCajaFormView.importeListener(e->valorIngresado());
 	}
 	
-	private void validacionGuardar() {
-	    if(salidaCajaFormView.getFechaContabilizacion()!=null && 
-	    		salidaCajaFormView.getTexto()!=null &&
+	private void valorIngresado() {
+		boolean habilitarGuardado = controlTodosValoresIngresados();
+		salidaCajaFormView.habilitarBtnGuardado(habilitarGuardado);
+	}
+	
+	private boolean controlTodosValoresIngresados() {
+		return (salidaCajaFormView.getFechaContabilizacion()!=null && 
 	    		salidaCajaFormView.getSucursal()!=null &&
 	    		salidaCajaFormView.getCuenta()!=null &&
-	    		salidaCajaFormView.getimporte()!=null) {
-	    	
-	    	Notification.show("Acá va el método grabar");
-	    	prepararDatosAsiento();
-	    	contabilizar();
-	    }else {
-			Notification.show("Faltan datos");	    	
-	    }
+	    		salidaCajaFormView.getimporte()!=null);
+	}
+	
+	private void guardar() {
+		if(controlTodosValoresIngresados()) {
+			prepararDatosAsiento();
+	    	contabilizar();	
+		}    
 	}
 	
 	private void prepararDatosAsiento() {
 		fechaContabilizacion = salidaCajaFormView.getFechaContabilizacion();	
-		textoCabecera = salidaCajaFormView.getTexto();
+		textoCabecera = salidaCajaFormView.getCuenta().toString();
 		sucursal = salidaCajaFormView.getSucursal();
 		cuenta =  salidaCajaFormView.getCuenta();
 	    importe = salidaCajaFormView.getimporte();
@@ -86,5 +100,7 @@ public class SalidaCajaFormController {
 	
 	private void contabilizar() {
     	AsientoREST.contabilizarSalidaCaja(fechaContabilizacion, textoCabecera, sucursal, cuenta, importe, Proyecto1Application.logUser);
+    	Notification.show("Guardado");
+    	salidaCajaFormView.close();
 	}
 }

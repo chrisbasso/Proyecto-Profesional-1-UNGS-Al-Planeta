@@ -6,8 +6,10 @@ import java.util.List;
 
 import com.tp.proyecto1.model.contabilidad.Cuenta;
 import com.tp.proyecto1.model.sucursales.Sucursal;
+import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -20,7 +22,6 @@ import com.vaadin.flow.component.textfield.TextField;
 public class SalidaCajaForm extends Dialog{
 
 	private DatePicker fechaContabilizacion;	
-	private TextField textoCabecera;
 	private ComboBox<Sucursal> sucursal;
 	private ComboBox<Cuenta> cuenta;
     private NumberField importe;
@@ -36,14 +37,24 @@ public class SalidaCajaForm extends Dialog{
 	private void inicializarComponentes() {
     	fechaContabilizacion = new DatePicker();
     	fechaContabilizacion.setRequired(true);
+    	fechaContabilizacion.setLabel("Fecha");
+    	fechaContabilizacion.setValue(LocalDate.now());
     	sucursal = new ComboBox<Sucursal>();
-    	textoCabecera = new TextField();
+    	sucursal.setLabel("Sucursal");
     	cuenta = new ComboBox<Cuenta>();
-    	cuenta.setRequired(true);    	
+    	cuenta.setLabel("Gasto");
+    	cuenta.setRequired(true);
     	importe = new NumberField();
+    	importe.setLabel("Importe");
     	importe.setPrefixComponent(new Span("$"));
     	btnAgregar = new Button("Agregar esta posicion", VaadinIcon.PLUS.create());
-    	btnAgregar.setEnabled(false);    	    	
+    	btnAgregar.setEnabled(false);
+    	
+    	this.add(fechaContabilizacion);
+    	this.add(sucursal);
+    	this.add(cuenta);
+    	this.add(importe);
+    	this.add(btnAgregar);
     }
     
     public void cargarComboCuentas(List <Cuenta> items) {
@@ -58,18 +69,30 @@ public class SalidaCajaForm extends Dialog{
     	btnAgregar.addClickListener(e);
     }
     
+    public void habilitarBtnGuardado(Boolean activar) {
+    	btnAgregar.setEnabled(activar);
+    }
+    
+	public void fechaContabilizacionListener(ValueChangeListener<? super ComponentValueChangeEvent<DatePicker, LocalDate>> e) {
+		fechaContabilizacion.addValueChangeListener(e);
+	}
+	
+	public void sucursalListener(ValueChangeListener<? super ComponentValueChangeEvent<ComboBox<Sucursal>, Sucursal>> e) {
+		sucursal.addValueChangeListener(e);
+	}
+	
+	public void cuentaListener(ValueChangeListener<? super ComponentValueChangeEvent<ComboBox<Cuenta>, Cuenta>> e) {
+		cuenta.addValueChangeListener(e);
+	}
+	
+	public void importeListener(ValueChangeListener<? super ComponentValueChangeEvent<NumberField, Double>> e) {
+		importe.addValueChangeListener(e);
+	}
+    
     public LocalDate getFechaContabilizacion() {
     	LocalDate ret = null;
     	if(fechaContabilizacion.getValue() != null) {
     		ret = fechaContabilizacion.getValue();
-    	}
-    	return ret;
-    }
-    
-    public String getTexto() {
-    	String ret = null;
-    	if(textoCabecera.getValue() != null) {
-    		ret = textoCabecera.getValue();
     	}
     	return ret;
     }
@@ -109,7 +132,6 @@ public class SalidaCajaForm extends Dialog{
     
     private void cargarDatos(LocalDate fecha, String txt, Sucursal suc, Cuenta cta, Double impte) {
     	fechaContabilizacion.setValue(fecha);
-    	textoCabecera.setValue(txt);
     	/* 
     	 * Es necesario agregar una lista primero para evitar el error 
     	 * de Vaadin en el setValue.
@@ -132,7 +154,6 @@ public class SalidaCajaForm extends Dialog{
     
     private void fijarSoloLectura() {
     	fechaContabilizacion.setReadOnly(true);
-    	textoCabecera.setReadOnly(true);
     	sucursal.setReadOnly(true);
     	cuenta.setReadOnly(true);
     	importe.setReadOnly(true);

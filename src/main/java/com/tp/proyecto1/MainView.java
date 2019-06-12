@@ -1,11 +1,10 @@
 package com.tp.proyecto1;
 
-import com.vaadin.flow.component.tabs.TabVariant;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tp.proyecto1.controllers.clientes.ClientesController;
 import com.tp.proyecto1.controllers.configuracion.ConfiguracionController;
-import com.tp.proyecto1.controllers.contabilidad.MenuContabilidadController;
+import com.tp.proyecto1.controllers.contabilidad.MovimientosCajaController;
 import com.tp.proyecto1.controllers.eventos.EventosController;
 import com.tp.proyecto1.controllers.login.LoginController;
 import com.tp.proyecto1.controllers.promociones.PromocionesController;
@@ -24,6 +23,7 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.router.Route;
 
 @Route
@@ -48,7 +48,9 @@ public class MainView extends VerticalLayout {
 	private ReportesController reportesController;
 	@Autowired
 	private ConfiguracionController configuracionController;
-	private MenuContabilidadController menuContabilidadController;
+//	private MenuContabilidadController menuContabilidadController;
+	@Autowired
+	MovimientosCajaController movimientosCajaController;
 	
 	private VerticalLayout mainLayout;
 	private AppLayout appLayout;
@@ -59,14 +61,14 @@ public class MainView extends VerticalLayout {
 	private AppLayoutMenuItem reservas;
 	private AppLayoutMenuItem clientes;
 	private AppLayoutMenuItem eventos;
-	private AppLayoutMenuItem contabilidad;
+	private AppLayoutMenuItem caja;
 	private AppLayoutMenuItem reportes;
 	private AppLayoutMenuItem configuraciones;
 	private AppLayoutMenuItem logout;
 	
 	public MainView() {
-		menuContabilidadController = new MenuContabilidadController (this);
-		setLayouts();
+//		menuContabilidadController = new MenuContabilidadController (this);
+		setLayouts();		
 		setMainPage();
 	}
 
@@ -105,7 +107,7 @@ public class MainView extends VerticalLayout {
 		reservas = new AppLayoutMenuItem(VaadinIcon.CALENDAR_CLOCK.create(),"Reservas", e->openReservasView());
 		clientes = new AppLayoutMenuItem(VaadinIcon.GROUP.create(),"Clientes", e -> openClientesView());
 		eventos = new AppLayoutMenuItem(VaadinIcon.PHONE.create(),"Eventos", e -> openEventosView());
-		contabilidad = new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Contabilidad", e -> openContabilidadView());
+		caja = new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Caja", e -> openCajaView());
 		reportes = new AppLayoutMenuItem(VaadinIcon.CHART_3D.create(), "Reportes", e-> openReportesView());
 		configuraciones = new AppLayoutMenuItem(VaadinIcon.COGS.create(),"Configuración", e-> openConfiguracionView());
 		logout = new AppLayoutMenuItem(VaadinIcon.USER.create(),
@@ -118,12 +120,12 @@ public class MainView extends VerticalLayout {
 		reservas.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		clientes.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		eventos.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
-		contabilidad.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		caja.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		reportes.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		configuraciones.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		logout.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 
-		menu.addMenuItems(viajes, promociones, ventas, reservas, clientes, eventos, contabilidad, reportes, configuraciones, logout);
+		menu.addMenuItems(viajes, promociones, ventas, reservas, clientes, eventos, caja, reportes, configuraciones, logout);
 		//Cargamos la lista de viajes en la página inicial
 		openViajesView();
 	}
@@ -168,9 +170,9 @@ public class MainView extends VerticalLayout {
 //		eventosController.getChangeHandler().onChange();
 	}
 
-	private void openContabilidadView(){
-		actualizarMenuSeleccionado(contabilidad);
-		appLayout.setContent(menuContabilidadController.getMenuView());
+	private void openCajaView(){
+		actualizarMenuSeleccionado(caja);
+		appLayout.setContent(movimientosCajaController.getMovimientosView());
 	}
 	
 	private void openReportesView() {
@@ -231,10 +233,10 @@ public class MainView extends VerticalLayout {
 			eventos.setClassName("normal-menu");
 		}
 		
-		if(contabilidad.equals(menu)) {
-			contabilidad.setClassName("selected-menu");	
+		if(caja.equals(menu)) {
+			caja.setClassName("selected-menu");	
 		}else {
-			contabilidad.setClassName("normal-menu");
+			caja.setClassName("normal-menu");
 		}
 		
 		if(reportes.equals(menu)) {
