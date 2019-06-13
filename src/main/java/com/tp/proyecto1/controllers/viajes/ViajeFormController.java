@@ -10,7 +10,6 @@ import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.Result;
@@ -44,7 +43,6 @@ public class ViajeFormController {
     private ChangeHandler changeHandler;
 
     private Binder<Viaje> binderViaje = new Binder<>();
-    //private Binder<Ciudad> binderDestino = new Binder<>();
     private Binder<Transporte> binderTransporte = new Binder<>();
 
     private Viaje viaje;
@@ -58,18 +56,26 @@ public class ViajeFormController {
     }
 
     private void setComponents() {
-        viajeForm.getPais().setItems(viajeService.findAllPaises());
+        viajeForm.getContinenteOrigen().setItems(viajeService.findAllContinente());
+        viajeForm.getContinenteDestino().setItems(viajeService.findAllContinente());
         viajeForm.getTransporte().setItems(viajeService.findAllTipoTransportes());
         viajeForm.getTagDestino().setItems(tagDestinoService.findAll());
     }
 
     private void setListeners() {
-        viajeForm.getPais().addValueChangeListener(e -> setComboCiudades());
-        viajeForm.getBtnSave().addClickListener(e -> saveViaje(viaje));
+        viajeForm.getContinenteOrigen().addValueChangeListener(e -> setComboPaises(e.getValue(),viajeForm.getPaisOrigen()));
+		viajeForm.getPaisOrigen().addValueChangeListener(e -> setComboProvincias(e.getValue(),viajeForm.getProvinciaOrigen()));
+		viajeForm.getProvinciaOrigen().addValueChangeListener(e -> setComboCiudades(e.getValue(), viajeForm.getCiudadOrigen()));
+
+		viajeForm.getContinenteDestino().addValueChangeListener(e -> setComboPaises(e.getValue(),viajeForm.getPaisDestino()));
+		viajeForm.getPaisDestino().addValueChangeListener(e -> setComboProvincias(e.getValue(),viajeForm.getProvinciaDestino()));
+		viajeForm.getProvinciaDestino().addValueChangeListener(e -> setComboCiudades(e.getValue(), viajeForm.getCiudadDEstino()));
+
+
+		viajeForm.getBtnSave().addClickListener(e -> saveViaje(viaje));
         viajeForm.getBtnCancel().addClickListener(e -> viajeForm.close());
         viajeForm.getBtnNuevoPais().addClickListener(e -> agregarPais());
-        viajeForm.getPais().addValueChangeListener(e -> habilitarNuevaCiudad());
-        viajeForm.getBtnNuevaCiudad().addClickListener(e -> agregarCiudad());
+        viajeForm.getProvinciaDestino().addValueChangeListener(e -> habilitarNuevaCiudad());
         viajeForm.getBtnNuevoTag().addClickListener(e->agregarTag());
 
     }
@@ -82,22 +88,9 @@ public class ViajeFormController {
         }
     }
 
-    private void agregarCiudad() {
-
-        if(!viajeForm.getCompNuevaCiudad().isEmpty()){
-            Pais pais = viajeForm.getPais().getValue();
-            Ciudad nuevaCiudad = new Ciudad(viajeForm.getCompNuevaCiudad().getValue());
-            pais.getCiudades().add(nuevaCiudad);
-            nuevaCiudad.setPais(pais);
-            viajeService.savePais(pais);
-            viajeForm.getCiudad().setItems(pais.getCiudades());
-
-        }
-    }
-
     private void habilitarNuevaCiudad() {
 
-        if(viajeForm.getPais().getValue()!=null){
+        if(viajeForm.getProvinciaDestino().getValue()!=null){
             viajeForm.getBtnNuevaCiudad().setEnabled(true);
         }else{
             viajeForm.getBtnNuevaCiudad().setEnabled(false);
@@ -108,16 +101,28 @@ public class ViajeFormController {
         if(!viajeForm.getCompNuevoPais().isEmpty()){
             Pais nuevoPais = new Pais(viajeForm.getCompNuevoPais().getValue());
             viajeService.savePais(nuevoPais);
-            viajeForm.getPais().setItems(viajeService.findAllPaises());
+            viajeForm.getProvinciaDestino().setItems(viajeService.findAllProvincias());
         }
     }
 
-    private void setComboCiudades() {
-
-        Pais pais = viajeForm.getPais().getValue();
-        viajeForm.getCiudad().setItems(pais.getCiudades());
-
+    private void setComboCiudades(Provincia provincia, ComboBox<Ciudad> comboCiudad) {
+    	comboCiudad.clear();
+		if (provincia != null) {
+			comboCiudad.setItems(provincia.getCiudades());
+		}
     }
+	private void setComboPaises(Continente continente, ComboBox<Pais> comboPaises) {
+    	comboPaises.clear();
+		if (continente != null) {
+			comboPaises.setItems(continente.getPaises());
+		}
+	}
+	private void setComboProvincias(Pais pais, ComboBox<Provincia> comboProvincia) {
+    	comboProvincia.clear();
+		if (pais != null) {
+			comboProvincia.setItems(pais.getProvincias());
+		}
+	}
 
     private void saveViaje(Viaje viaje) {
 
@@ -137,8 +142,9 @@ public class ViajeFormController {
 
     private Viaje setNewViaje() {
 
-       // String pais = viajeForm.getPais().getValue();
-        Ciudad ciudad = viajeForm.getCiudad().getValue();
+       // String pais = viajeForm.getProvinciaDestino().getValue();
+        Ciudad ciudadDestino = viajeForm.getCiudadDEstino().getValue();
+        Ciudad ciudadOrigen = viajeForm.getCiudadOrigen().getValue();
         LocalDate fechaSalida = viajeForm.getFechaSalida().getValue();
         LocalTime horaSalida = viajeForm.getHoraSalida().getValue();
         TipoTransporte tipoTransporte = viajeForm.getTransporte().getValue();
@@ -153,7 +159,7 @@ public class ViajeFormController {
         Integer cantidadDias = viajeForm.getCantidadDias().getValue().intValue();
         Integer cantidadHoras = viajeForm.getCantidadHoras().getValue().intValue();
         Transporte transporte = new Transporte(codTransporte,tipoTransporte, capacidad, clase);
-        Viaje viaje = new Viaje(ciudad,transporte,fechaSalida,horaSalida,precio,descipcion, true);
+        Viaje viaje = new Viaje(ciudadDestino,ciudadOrigen,transporte,fechaSalida,horaSalida,precio,descipcion, true);
         viaje.getTagsDestino().addAll(tagsDestino);
         viaje.setRecomendacion(recomendacion);
         viaje.setDuracionDias(cantidadDias);
@@ -163,8 +169,19 @@ public class ViajeFormController {
 
     public void setComponentsValues(Viaje viaje) {
         this.viaje = viaje;
-        viajeForm.getPais().setItems(viajeService.findAllPaises());
-        viajeForm.getPais().setValue(viaje.getCiudad().getPais());
+		viajeForm.getContinenteDestino().setItems(viajeService.findAllContinente());
+		viajeForm.getContinenteDestino().setValue(viaje.getDestino().getProvincia().getPais().getContinente());
+		viajeForm.getContinenteOrigen().setItems(viajeService.findAllContinente());
+		viajeForm.getContinenteOrigen().setValue(viaje.getOrigen().getProvincia().getPais().getContinente());
+		viajeForm.getPaisDestino().setItems(viajeService.findAllPaises());
+		viajeForm.getPaisDestino().setValue(viaje.getDestino().getProvincia().getPais());
+		viajeForm.getPaisOrigen().setItems(viajeService.findAllPaises());
+		viajeForm.getPaisOrigen().setValue(viaje.getOrigen().getProvincia().getPais());
+		viajeForm.getProvinciaDestino().setItems(viajeService.findAllProvincias());
+        viajeForm.getProvinciaDestino().setValue(viaje.getDestino().getProvincia());
+		viajeForm.getProvinciaOrigen().setItems(viajeService.findAllProvincias());
+		viajeForm.getProvinciaOrigen().setValue(viaje.getOrigen().getProvincia());
+
         binderViaje.setBean(viaje);
         binderTransporte.setBean(viaje.getTransporte());
         setBinders();
@@ -172,7 +189,8 @@ public class ViajeFormController {
 
     private void setBinders() {
 
-        setBinderFieldCiudad(viajeForm.getCiudad(), Viaje::getCiudad, Viaje::setCiudad, true);
+        setBinderFieldCiudad(viajeForm.getCiudadDEstino(), Viaje::getDestino, Viaje::setDestino, true);
+        setBinderFieldCiudad(viajeForm.getCiudadOrigen(), Viaje::getOrigen, Viaje::setOrigen, true);
         setBinderDatePickerViaje(viajeForm.getFechaSalida(), Viaje::getFechaSalida, Viaje::setFechaSalida, true);
         setBinderTimePickerViaje(viajeForm.getHoraSalida(), Viaje::getHoraSalida, Viaje::setHoraSalida, true);
         setBinderComboTipoTransporte(viajeForm.getTransporte(), Transporte::getTipo, Transporte::setTipo, true);

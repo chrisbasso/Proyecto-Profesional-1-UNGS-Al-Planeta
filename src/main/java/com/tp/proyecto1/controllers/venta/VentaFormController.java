@@ -13,13 +13,12 @@ import java.util.stream.Collectors;
 import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.controllers.contabilidad.AsientoREST;
 import com.tp.proyecto1.model.pasajes.*;
-import com.tp.proyecto1.model.viajes.Pais;
 import com.tp.proyecto1.model.viajes.Promocion;
+import com.tp.proyecto1.model.viajes.Provincia;
 import com.tp.proyecto1.services.*;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.ventas.ComprobanteVenta;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.dependency.JavaScript;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.*;
 import com.tp.proyecto1.model.clientes.Cliente;
@@ -107,15 +106,34 @@ public class VentaFormController {
 	}
 	
 	private void setComponentesLectura(Viaje viaje) {
-		ventaForm.getPais().setItems(viajeService.findAllPaises());
-		ventaForm.getPais().setValue(viaje.getCiudad().getPais());
-		ventaForm.getCiudad().setValue(viaje.getCiudad());
+		ventaForm.getContinenteDestino().setItems(viajeService.findAllContinente());
+		ventaForm.getContinenteDestino().setValue(viaje.getDestino().getProvincia().getPais().getContinente());
+		ventaForm.getContinenteOrigen().setItems(viajeService.findAllContinente());
+		ventaForm.getContinenteOrigen().setValue(viaje.getOrigen().getProvincia().getPais().getContinente());
+		ventaForm.getPaisDestino().setItems(viajeService.findAllPaises());
+		ventaForm.getPaisDestino().setValue(viaje.getDestino().getProvincia().getPais());
+		ventaForm.getPaisOrigen().setItems(viajeService.findAllPaises());
+		ventaForm.getPaisOrigen().setValue(viaje.getOrigen().getProvincia().getPais());
+		ventaForm.getProvinciaDestino().setItems(viajeService.findAllProvincias());
+		ventaForm.getProvinciaDestino().setValue(viaje.getDestino().getProvincia());
+		ventaForm.getProvinciaOrigen().setItems(viajeService.findAllProvincias());
+		ventaForm.getProvinciaOrigen().setValue(viaje.getOrigen().getProvincia());
+		ventaForm.getCiudadDEstino().setItems(viajeService.findAllCiudades());
+		ventaForm.getCiudadDEstino().setValue(viaje.getDestino());
+		ventaForm.getCiudadOrigen().setItems(viajeService.findAllCiudades());
+		ventaForm.getCiudadOrigen().setValue(viaje.getOrigen());
 		ventaForm.getCodTransporte().setValue(viaje.getTransporte().getCodTransporte());
 		ventaForm.getTransporte().setValue(viaje.getTransporte().getTipo().getDescripcion());
 		ventaForm.getFechaSalida().setValue(viaje.getFechaSalida().toString());
 		ventaForm.getHoraSalida().setValue(viaje.getHoraSalida().toString());
-		ventaForm.getPais().setReadOnly(true);
-		ventaForm.getCiudad().setReadOnly(true);
+		ventaForm.getProvinciaDestino().setReadOnly(true);
+		ventaForm.getCiudadDEstino().setReadOnly(true);
+		ventaForm.getPaisDestino().setReadOnly(true);
+		ventaForm.getContinenteDestino().setReadOnly(true);
+		ventaForm.getProvinciaOrigen().setReadOnly(true);
+		ventaForm.getCiudadOrigen().setReadOnly(true);
+		ventaForm.getContinenteOrigen().setReadOnly(true);
+		ventaForm.getPaisOrigen().setReadOnly(true);
 		ventaForm.getCodTransporte().setReadOnly(true);
 		ventaForm.getTransporte().setReadOnly(true);
 		ventaForm.getFechaSalida().setReadOnly(true);
@@ -128,7 +146,7 @@ public class VentaFormController {
 	}	
 
 	private void setComponents() {		
-		ventaForm.getPais().setItems(viajeService.findAllPaises());
+//		ventaForm.getProvincia().setItems(viajeService.findAllProvincias());
 		ventaForm.getFormaPago().setItems(ventaService.findAllFomaDePagos());
 		ventaForm.setSaldoPagarDouble(0.0);
 		ventaForm.setSubtotalDouble(0.0); 
@@ -171,11 +189,11 @@ public class VentaFormController {
 		Set<Promocion> promoViaje = new HashSet<>();
 		
 		if (this.reserva !=null) {
-			promoCiudad = promocionService.findByCiudadesAfectadas(this.reserva.getViaje().getCiudad());
+			promoCiudad = promocionService.findByCiudadesAfectadas(this.reserva.getViaje().getDestino());
 			promoViaje = promocionService.findByViajesAfectados(this.reserva.getViaje());
 		}
 		else {
-			promoCiudad = promocionService.findByCiudadesAfectadas(this.viaje.getCiudad());
+			promoCiudad = promocionService.findByCiudadesAfectadas(this.viaje.getDestino());
 			promoViaje = promocionService.findByViajesAfectados(this.viaje);
 		}
 		
@@ -193,7 +211,7 @@ public class VentaFormController {
 	}
 
 	private void setListeners() {
-		ventaForm.getPais().addValueChangeListener(e->setComboCiudades());
+//		ventaForm.getProvincia().addValueChangeListener(e->setComboCiudades());
 		ventaForm.getBtnSave().addClickListener(e-> saveVenta(venta));//en el modo edit
 		ventaForm.getBtnCancel().addClickListener(e->ventaForm.close());
 		ventaForm.getBtnFinalizarCompra().addClickListener(e-> newVenta());//en el modo compra pasajes de viajes, y para reserva venta
@@ -227,19 +245,19 @@ public class VentaFormController {
 		}
 	}
 
-	private void setComboCiudades() {
-
-		Pais pais = ventaForm.getPais().getValue();
-		ventaForm.getCiudad().setItems(pais.getCiudades());
-
-	}
+//	private void setComboCiudades() {
+//
+//		Provincia provincia = ventaForm.getProvincia().getValue();
+//		ventaForm.getCiudad().setItems(provincia.getCiudades());
+//
+//	}
 	
 	public void setComponentsValues(Venta venta) {
 
 		this.venta = venta;
 
-		ventaForm.getPais().setValue(venta.getViaje().getCiudad().getPais());
-		ventaForm.getCiudad().setValue(venta.getViaje().getCiudad());
+//		ventaForm.getProvincia().setValue(venta.getViaje().getDestino().getProvincia());
+//		ventaForm.getCiudad().setValue(venta.getViaje().getDestino());
 		ventaForm.getHoraSalida().setValue(venta.getViaje().getHoraSalida().toString());
 		ventaForm.getFechaSalida().setValue(venta.getViaje().getFechaSalida().toString());
 		ventaForm.getTransporte().setValue(venta.getViaje().getTransporte().getTipo().getDescripcion());

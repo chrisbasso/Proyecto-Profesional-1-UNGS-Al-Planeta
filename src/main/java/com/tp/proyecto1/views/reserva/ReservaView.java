@@ -4,10 +4,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.tp.proyecto1.model.pasajes.Reserva;
-import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.model.viajes.Ciudad;
 import com.tp.proyecto1.model.viajes.Pais;
-import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.model.viajes.Provincia;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -25,7 +24,7 @@ import com.vaadin.flow.function.ValueProvider;
 public class ReservaView extends FilterGridLayout<Reserva> {
 
     private NumberField numeroClienteFilter;
-    private ComboBox<Pais> paisFilter;
+    private ComboBox<Provincia> provinciaFilter;
     private ComboBox<Ciudad> ciudadFilter;
     private TextField codTransporteFilter;
     private DatePicker fechaFilter;
@@ -42,8 +41,8 @@ public class ReservaView extends FilterGridLayout<Reserva> {
 
     private void setComponents() {
         this.numeroClienteFilter = new NumberField("Nº Cliente");
-        this.paisFilter = new ComboBox<>("País");
-        this.paisFilter.setItemLabelGenerator(Pais::getNombre);
+        this.provinciaFilter = new ComboBox<>("Provincia");
+        this.provinciaFilter.setItemLabelGenerator(Provincia::getNombre);
         this.ciudadFilter = new ComboBox<>("Ciudad");
         this.ciudadFilter.setItemLabelGenerator(Ciudad::getNombre);
         this.codTransporteFilter = new TextField("Cod. Transporte");
@@ -58,7 +57,7 @@ public class ReservaView extends FilterGridLayout<Reserva> {
         HorizontalLayout hlSpace = new HorizontalLayout();
         this.hlFooter.add(btnComprobante, btnVender);
         hlSpace.setWidthFull();
-        this.hlActions.add(numeroClienteFilter, paisFilter, ciudadFilter, codTransporteFilter,fechaFilter,hlSpace, btnBuscar);
+        this.hlActions.add(numeroClienteFilter, provinciaFilter, ciudadFilter, codTransporteFilter,fechaFilter,hlSpace, btnBuscar);
     }
     
     public Grid<Reserva> getGrid()
@@ -67,12 +66,13 @@ public class ReservaView extends FilterGridLayout<Reserva> {
     }
 
     private void setGrid() {
-        grid.setColumns("cliente.id", "cliente.nombre", "cliente.apellido", "cliente.dni", "viaje.ciudad.nombre",
-                "viaje.ciudad.pais.nombre", "viaje.transporte.codTransporte", "viaje.fechaSalida","viaje.precio");
+        grid.setColumns("cliente.id", "cliente.nombre", "cliente.apellido", "cliente.dni", "viaje.destino.nombre",
+                "viaje.destino.provincia.nombre","viaje.destino.provincia.pais.nombre", "viaje.transporte.codTransporte", "viaje.fechaSalida","viaje.precio");
         grid.getColumnByKey("cliente.id").setHeader("Nº Cliente");
         grid.getColumnByKey("cliente.id").setWidth("100px").setFlexGrow(0);
-        grid.getColumnByKey("viaje.ciudad.pais.nombre").setHeader("País");
-        grid.getColumnByKey("viaje.ciudad.nombre").setHeader("Ciudad");
+        grid.getColumnByKey("viaje.destino.provincia.nombre").setHeader("Provincia");
+        grid.getColumnByKey("viaje.destino.provincia.pais.nombre").setHeader("País");
+        grid.getColumnByKey("viaje.destino.nombre").setHeader("Ciudad");
     }
     
     public void agregarColumnaEdicion(ValueProvider<Reserva, Button> e) {
@@ -93,8 +93,8 @@ public class ReservaView extends FilterGridLayout<Reserva> {
 
     public String getValuePais() {
     	String pais = "";
-    	if(paisFilter.getValue() != null) {
-    		pais = paisFilter.getValue().getNombre();
+    	if(provinciaFilter.getValue() != null) {
+    		pais = provinciaFilter.getValue().getNombre();
     	}
         return pais;
     }
@@ -155,12 +155,12 @@ public class ReservaView extends FilterGridLayout<Reserva> {
         return numeroClienteFilter;
     }
 
-    public ComboBox<Pais> getPaisFilter() {
-        return paisFilter;
+    public ComboBox<Provincia> getProvinciaFilter() {
+        return provinciaFilter;
     }
 
-    public void setPaisFilter(ComboBox<Pais> paisFilter) {
-        this.paisFilter = paisFilter;
+    public void setProvinciaFilter(ComboBox<Provincia> provinciaFilter) {
+        this.provinciaFilter = provinciaFilter;
     }
 
     public ComboBox<Ciudad> getCiudadFilter() {

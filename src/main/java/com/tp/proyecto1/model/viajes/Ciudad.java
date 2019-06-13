@@ -13,7 +13,7 @@ public class Ciudad {
     private String nombre;
 
     @ManyToOne
-    private Pais pais;
+    private Provincia provincia;
 
     public Ciudad() {
     }
@@ -30,13 +30,6 @@ public class Ciudad {
         this.id = id;
     }
 
-    public Pais getPais() {
-        return pais;
-    }
-
-    public void setPais(Pais pais) {
-        this.pais = pais;
-    }
 
     public String getNombre() {
         return nombre;
@@ -45,11 +38,19 @@ public class Ciudad {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    
-    @Override
+
+	public Provincia getProvincia() {
+		return provincia;
+	}
+
+	public void setProvincia(Provincia provincia) {
+		this.provincia = provincia;
+	}
+
+	@Override
     public String toString()
     {
-    	return getNombre() + ", " + getPais();
+    	return getNombre() + ", " + provincia;
     }
 
 

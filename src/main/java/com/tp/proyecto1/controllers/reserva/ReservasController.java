@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import com.tp.proyecto1.controllers.venta.VentaFormController;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.Reserva;
-import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.services.ReservaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
@@ -19,7 +18,6 @@ import com.tp.proyecto1.utils.ConfirmationDialog;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.reserva.ComprobanteReserva;
 import com.tp.proyecto1.views.reserva.ReservaView;
-import com.tp.proyecto1.views.ventas.ComprobanteVenta;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -95,11 +93,11 @@ public class ReservasController {
 	}
 
     private void setComponents() {
-        reservaView.getPaisFilter().setItems(viajeService.findAllPaises());
+        reservaView.getProvinciaFilter().setItems(viajeService.findAllProvincias());
     }
 
     private void setListeners() {
-        reservaView.getPaisFilter().addValueChangeListener(e->setComboCiudades());
+        reservaView.getProvinciaFilter().addValueChangeListener(e->setComboCiudades());
     	setChangeHandler(this::listReservas);
     	reservaView.setBtnBuscarListener(e->listReservas());
     	reservaView.setBtnVenderListener(e-> venderReserva());
@@ -118,8 +116,8 @@ public class ReservasController {
 
 	private void setComboCiudades() {
 
-        Pais pais = reservaView.getPaisFilter().getValue();
-        reservaView.getCiudadFilter().setItems(pais.getCiudades());
+        Provincia provincia = reservaView.getProvinciaFilter().getValue();
+        reservaView.getCiudadFilter().setItems(provincia.getCiudades());
 
     }
 
@@ -150,7 +148,7 @@ public class ReservasController {
         Transporte transporte = new Transporte();
         Viaje viaje = new Viaje();
         Ciudad ciudad = new Ciudad();
-        viaje.setCiudad(ciudad);
+        viaje.setDestino(ciudad);
         viaje.setTransporte(transporte);
         viaje.setActivo(true);
         reservaBusqueda.setViaje(viaje);
@@ -158,10 +156,10 @@ public class ReservasController {
             reservaBusqueda.getCliente().setId(reservaView.getValueNumeroCliente());
         }
         if(!reservaView.getCiudadFilter().isEmpty()){
-            reservaBusqueda.getViaje().setCiudad(reservaView.getCiudadFilter().getValue());
+            reservaBusqueda.getViaje().setDestino(reservaView.getCiudadFilter().getValue());
         }
-        if(!reservaView.getPaisFilter().isEmpty()){
-            reservaBusqueda.getViaje().getCiudad().setPais(reservaView.getPaisFilter().getValue());
+        if(!reservaView.getProvinciaFilter().isEmpty()){
+            reservaBusqueda.getViaje().getDestino().setProvincia(reservaView.getProvinciaFilter().getValue());
         }
         if(!reservaView.getValueCodTransporte().equals("")){
             reservaBusqueda.getViaje().getTransporte().setCodTransporte(reservaView.getValueCodTransporte());

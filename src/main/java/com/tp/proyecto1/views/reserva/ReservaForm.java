@@ -26,8 +26,14 @@ public class ReservaForm extends Dialog{
     private HorizontalLayout actions;
     private Viaje viaje;
     private TextField id;
-	private TextField pais;
-	private TextField ciudad;
+	private TextField provinciaDestino;
+	private TextField ciudadDestino;
+	private TextField continenteDestino;
+	private TextField paisDestino;
+	private TextField provinciaOrigen;
+	private TextField ciudadOrigen;
+	private TextField continenteOrigen;
+	private TextField paisOrigen;
 	private TextField codTransporte;
 	private TextField transporte;
 	private TextField fecha;
@@ -61,8 +67,14 @@ public class ReservaForm extends Dialog{
 
 	private void iniciliazarCampos() {
 		id = new TextField();  
-		pais= new TextField();
-		ciudad= new TextField();
+		provinciaDestino = new TextField();
+		ciudadDestino = new TextField();
+		continenteDestino = new TextField();
+		paisDestino = new TextField();
+		provinciaOrigen = new TextField();
+		ciudadOrigen = new TextField();
+		continenteOrigen = new TextField();
+		paisOrigen = new TextField();
 		codTransporte= new TextField();
 		transporte= new TextField();
 		fecha = new TextField();
@@ -91,8 +103,14 @@ public class ReservaForm extends Dialog{
 
 	private void cargarValores() {
 		id.setValue(viaje.getId().toString());
-    	pais.setValue(viaje.getCiudad().getPais().getNombre());
-    	ciudad.setValue(viaje.getCiudad().getNombre());
+    	provinciaDestino.setValue(viaje.getDestino().getProvincia().getNombre());
+    	ciudadDestino.setValue(viaje.getDestino().getNombre());
+    	paisDestino.setValue(viaje.getDestino().getProvincia().getPais().getNombre());
+    	continenteDestino.setValue(viaje.getDestino().getProvincia().getPais().getContinente().getNombre());
+		provinciaOrigen.setValue(viaje.getOrigen().getProvincia().getNombre());
+		ciudadOrigen.setValue(viaje.getOrigen().getNombre());
+		paisOrigen.setValue(viaje.getOrigen().getProvincia().getPais().getNombre());
+		continenteOrigen.setValue(viaje.getOrigen().getProvincia().getPais().getContinente().getNombre());
     	codTransporte.setValue(viaje.getTransporte().getCodTransporte());
     	transporte.setValue(viaje.getTransporte().getTipo().getDescripcion());
     	fecha.setValue(viaje.getFechaSalida().toString());
@@ -104,8 +122,14 @@ public class ReservaForm extends Dialog{
     
     private void setReadOnly() {
     	id.setReadOnly(true);  
-		pais.setReadOnly(true);  
-		ciudad.setReadOnly(true);  
+		provinciaDestino.setReadOnly(true);
+		ciudadDestino.setReadOnly(true);
+		paisDestino.setReadOnly(true);
+		continenteDestino.setReadOnly(true);
+		provinciaOrigen.setReadOnly(true);
+		ciudadOrigen.setReadOnly(true);
+		paisOrigen.setReadOnly(true);
+		continenteOrigen.setReadOnly(true);
 		codTransporte.setReadOnly(true);  
 		transporte.setReadOnly(true);  
 		fecha.setReadOnly(true);
@@ -121,9 +145,16 @@ public class ReservaForm extends Dialog{
 		pagos.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.BASELINE);
 		pagos.add(sumaDePagos, btnAgregarPago);
 		
-		form = new FormLayout();    	
-    	form.addFormItem(pais, "País");
-    	form.addFormItem(ciudad, "Ciudad");
+		form = new FormLayout();
+		form.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 4));
+		form.addFormItem(continenteOrigen, "Continente Origen");
+		form.addFormItem(paisOrigen, "Pais Origen");
+		form.addFormItem(provinciaOrigen, "Provincia Origen");
+		form.addFormItem(ciudadOrigen, "Ciudad Origen");
+		form.addFormItem(continenteDestino, "Continente Destino");
+		form.addFormItem(paisDestino, "País Destino");
+		form.addFormItem(provinciaDestino, "Provincia Destino");
+		form.addFormItem(ciudadDestino, "Ciudad Destino");
     	form.addFormItem(codTransporte, "Cod Transporte");
     	form.addFormItem(transporte, "Transporte");
     	form.addFormItem(fecha, "Fecha");
@@ -151,7 +182,7 @@ public class ReservaForm extends Dialog{
         mainLayout.add(form,actions);
         mainLayout.setSizeFull();
     	this.add(mainLayout);
-        this.setWidth("800px");
+        this.setWidth("1370px");
         this.setHeight("100%");
 	}
 

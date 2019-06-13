@@ -1,16 +1,12 @@
 package com.tp.proyecto1.views.viajes;
 
-import com.tp.proyecto1.model.viajes.Ciudad;
-import com.tp.proyecto1.model.viajes.Pais;
-import com.tp.proyecto1.model.viajes.TagDestino;
-import com.tp.proyecto1.model.viajes.TipoTransporte;
+import com.tp.proyecto1.model.viajes.*;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.NativeButton;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -26,8 +22,14 @@ public class ViajeForm extends Dialog {
 
     private VerticalLayout mainLayout = new VerticalLayout();
     private FormLayout form = new FormLayout();
-    private ComboBox<Pais> pais;
-    private ComboBox<Ciudad> ciudad;
+    private ComboBox<Provincia> provinciaDestino;
+    private ComboBox<Ciudad> ciudadDEstino;
+    private ComboBox<Continente> continenteDestino;
+    private ComboBox<Pais> paisDestino;
+    private ComboBox<Provincia> provinciaOrigen;
+    private ComboBox<Ciudad> ciudadOrigen;
+    private ComboBox<Continente> continenteOrigen;
+    private ComboBox<Pais> paisOrigen;
     private ComboBox<TipoTransporte> transporte;
     private TextField codTransporte;
     private TextField clase;
@@ -71,10 +73,24 @@ public class ViajeForm extends Dialog {
         capacidad = new TextField();
         capacidad.setPattern("[0-9]*");
         capacidad.setPreventInvalidInput(true);
-        ciudad = new ComboBox<>();
-        ciudad.setItemLabelGenerator(Ciudad::getNombre);
-        pais = new ComboBox<>();
-        pais.setItemLabelGenerator(Pais::getNombre);
+        ciudadDEstino = new ComboBox<>();
+        ciudadDEstino.setItemLabelGenerator(Ciudad::getNombre);
+        provinciaDestino = new ComboBox<>();
+        provinciaDestino.setItemLabelGenerator(Provincia::getNombre);
+        continenteDestino = new ComboBox<>();
+        continenteDestino.setItemLabelGenerator(Continente::getNombre);
+        paisDestino = new ComboBox<>();
+        paisDestino.setItemLabelGenerator(Pais::getNombre);
+
+        ciudadOrigen = new ComboBox<>();
+        ciudadOrigen.setItemLabelGenerator(Ciudad::getNombre);
+        provinciaOrigen = new ComboBox<>();
+        provinciaOrigen.setItemLabelGenerator(Provincia::getNombre);
+        continenteOrigen = new ComboBox<>();
+        continenteOrigen.setItemLabelGenerator(Continente::getNombre);
+        paisOrigen = new ComboBox<>();
+        paisOrigen.setItemLabelGenerator(Pais::getNombre);
+
         fechaSalida = new DatePicker();
         horaSalida = new TimePicker();
         cantidadDias = new NumberField();
@@ -92,9 +108,9 @@ public class ViajeForm extends Dialog {
         textAreaRecomendaciones = new TextArea("Recomendaciones");
 
         textAreaDescripcion.setHeight("80px");
-        textAreaDescripcion.setWidth("770px");
+        textAreaDescripcion.setWidth("1350px");
         textAreaRecomendaciones.setHeight("80px");
-        textAreaRecomendaciones.setWidth("770px");
+        textAreaRecomendaciones.setWidth("1350px");
         precio.setWidth("192px");
         precio.setMin(0);
         precio.setPreventInvalidInput(true);
@@ -105,26 +121,23 @@ public class ViajeForm extends Dialog {
         btnNuevoPais.addThemeVariants(ButtonVariant.LUMO_SMALL);
         btnNuevoTag.addThemeVariants(ButtonVariant.LUMO_SMALL);
 
-        btnNuevaCiudad.setEnabled(false);
+        btnNuevaCiudad.setEnabled(false );
+
+        form.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 4));
 
     }
 
     private void setForm() {
 
-        FormLayout.FormItem paisItem = form.addFormItem(pais,"País");
-        HorizontalLayout hlPais = new HorizontalLayout();
-        compNuevoPais.setWidth("112px");
-        compNuevoPais.addThemeVariants(TextFieldVariant.LUMO_SMALL);
-        hlPais.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
-        hlPais.add(compNuevoPais,btnNuevoPais);
-        paisItem.add(hlPais);
-        FormLayout.FormItem ciudadItem = form.addFormItem(ciudad,"Ciudad");
-        HorizontalLayout hlCiudad = new HorizontalLayout();
-        compNuevaCiudad.setWidth("112px");
-        compNuevaCiudad.addThemeVariants(TextFieldVariant.LUMO_SMALL);
-        hlCiudad.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.END);
-        hlCiudad.add(compNuevaCiudad,btnNuevaCiudad);
-        ciudadItem.add(hlCiudad);
+        form.addFormItem(continenteOrigen, "Continente Origen");
+        form.addFormItem(paisOrigen, "Pais Origen");
+        form.addFormItem(provinciaOrigen, "Provincia Origen");
+        form.addFormItem(ciudadOrigen, "Ciudad Origen");
+        form.addFormItem(continenteDestino, "Continente Destino");
+        form.addFormItem(paisDestino, "País Destino");
+        form.addFormItem(provinciaDestino, "Provincia Destino");
+        form.addFormItem(ciudadDEstino, "Ciudad Destino");
+
         form.addFormItem(fechaSalida, "Fecha Salida");
         form.addFormItem(horaSalida, "Hora Salida");
         form.addFormItem(cantidadDias, "Días");
@@ -153,7 +166,7 @@ public class ViajeForm extends Dialog {
         mainLayout.setSizeFull();
 
         this.add(mainLayout);
-        this.setWidth("800px");
+        this.setWidth("1370px");
         this.setHeight("100%");
 
     }
@@ -175,20 +188,20 @@ public class ViajeForm extends Dialog {
     }
 
 
-    public ComboBox<Pais> getPais() {
-        return pais;
+    public ComboBox<Provincia> getProvinciaDestino() {
+        return provinciaDestino;
     }
 
-    public void setPais(ComboBox<Pais> pais) {
-        this.pais = pais;
+    public void setProvinciaDestino(ComboBox<Provincia> provinciaDestino) {
+        this.provinciaDestino = provinciaDestino;
     }
 
-    public ComboBox<Ciudad> getCiudad() {
-        return ciudad;
+    public ComboBox<Ciudad> getCiudadDEstino() {
+        return ciudadDEstino;
     }
 
-    public void setCiudad(ComboBox<Ciudad> ciudad) {
-        this.ciudad = ciudad;
+    public void setCiudadDEstino(ComboBox<Ciudad> ciudadDEstino) {
+        this.ciudadDEstino = ciudadDEstino;
     }
 
     public ComboBox<TipoTransporte> getTransporte() {
@@ -349,5 +362,53 @@ public class ViajeForm extends Dialog {
 
     public void setTextAreaRecomendaciones(TextArea textAreaRecomendaciones) {
         this.textAreaRecomendaciones = textAreaRecomendaciones;
+    }
+
+    public ComboBox<Continente> getContinenteDestino() {
+        return continenteDestino;
+    }
+
+    public void setContinenteDestino(ComboBox<Continente> continenteDestino) {
+        this.continenteDestino = continenteDestino;
+    }
+
+    public ComboBox<Pais> getPaisDestino() {
+        return paisDestino;
+    }
+
+    public void setPaisDestino(ComboBox<Pais> paisDestino) {
+        this.paisDestino = paisDestino;
+    }
+
+    public ComboBox<Provincia> getProvinciaOrigen() {
+        return provinciaOrigen;
+    }
+
+    public void setProvinciaOrigen(ComboBox<Provincia> provinciaOrigen) {
+        this.provinciaOrigen = provinciaOrigen;
+    }
+
+    public ComboBox<Ciudad> getCiudadOrigen() {
+        return ciudadOrigen;
+    }
+
+    public void setCiudadOrigen(ComboBox<Ciudad> ciudadOrigen) {
+        this.ciudadOrigen = ciudadOrigen;
+    }
+
+    public ComboBox<Continente> getContinenteOrigen() {
+        return continenteOrigen;
+    }
+
+    public void setContinenteOrigen(ComboBox<Continente> continenteOrigen) {
+        this.continenteOrigen = continenteOrigen;
+    }
+
+    public ComboBox<Pais> getPaisOrigen() {
+        return paisOrigen;
+    }
+
+    public void setPaisOrigen(ComboBox<Pais> paisOrigen) {
+        this.paisOrigen = paisOrigen;
     }
 }

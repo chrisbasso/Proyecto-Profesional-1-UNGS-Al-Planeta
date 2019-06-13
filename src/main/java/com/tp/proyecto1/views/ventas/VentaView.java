@@ -3,6 +3,7 @@ package com.tp.proyecto1.views.ventas;
 import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.model.viajes.Ciudad;
 import com.tp.proyecto1.model.viajes.Pais;
+import com.tp.proyecto1.model.viajes.Provincia;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.tp.proyecto1.utils.View;
 import com.vaadin.flow.component.button.Button;
@@ -19,7 +20,7 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
 
 
     private NumberField numeroClienteFilter;
-    private ComboBox<Pais> paisFilter;
+    private ComboBox<Provincia> provinciaFilter;
     private ComboBox<Ciudad> ciudadFilter;
     private TextField codTransporteFilter;
     private DatePicker fechaFilter;
@@ -39,8 +40,8 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
     @Override
     public void setComponents() {
         this.numeroClienteFilter = new NumberField("Nº Cliente");
-        this.paisFilter = new ComboBox<>("País");
-        this.paisFilter.setItemLabelGenerator(Pais::getNombre);
+        this.provinciaFilter = new ComboBox<>("Provincia");
+        this.provinciaFilter.setItemLabelGenerator(Provincia::getNombre);
         this.ciudadFilter = new ComboBox<>("Ciudad");
         this.ciudadFilter.setItemLabelGenerator(Ciudad::getNombre);
         this.codTransporteFilter = new TextField("Cod. Transporte");
@@ -61,19 +62,20 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
         //this.hlFooter.add(btnComprobante,btnEnvioMail);
         this.hlFooter.add(btnComprobante);
         hlSpace.setWidthFull();
-        this.hlActions.add(numeroClienteFilter, paisFilter, ciudadFilter, codTransporteFilter,fechaFilter,activosCheck, hlSpace, searchButton);
+        this.hlActions.add(numeroClienteFilter, provinciaFilter, ciudadFilter, codTransporteFilter,fechaFilter,activosCheck, hlSpace, searchButton);
 
     }
 
     @Override
     public void setGrid() {
 
-        grid.setColumns("cliente.id", "cliente.nombre", "cliente.apellido", "cliente.dni", "viaje.ciudad.nombre",
-                "viaje.ciudad.pais.nombre", "viaje.transporte.codTransporte", "viaje.fechaSalida","importeTotal");
+        grid.setColumns("cliente.id", "cliente.nombre", "cliente.apellido", "cliente.dni", "viaje.destino.nombre",
+                "viaje.destino.provincia.nombre", "viaje.destino.provincia.pais.nombre","viaje.transporte.codTransporte", "viaje.fechaSalida","importeTotal");
         grid.getColumnByKey("cliente.id").setHeader("Nº Cliente");
         grid.getColumnByKey("cliente.id").setWidth("100px").setFlexGrow(0);
-        grid.getColumnByKey("viaje.ciudad.pais.nombre").setHeader("País");
-        grid.getColumnByKey("viaje.ciudad.nombre").setHeader("Ciudad");
+        grid.getColumnByKey("viaje.destino.provincia.nombre").setHeader("Provincia");
+        grid.getColumnByKey("viaje.destino.provincia.pais.nombre").setHeader("País");
+        grid.getColumnByKey("viaje.destino.nombre").setHeader("Ciudad");
 
     }
 
@@ -89,12 +91,12 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
         return grid;
     }
 
-    public ComboBox<Pais> getPaisFilter() {
-        return paisFilter;
+    public ComboBox<Provincia> getProvinciaFilter() {
+        return provinciaFilter;
     }
 
-    public void setPaisFilter(ComboBox<Pais> paisFilter) {
-        this.paisFilter = paisFilter;
+    public void setProvinciaFilter(ComboBox<Provincia> provinciaFilter) {
+        this.provinciaFilter = provinciaFilter;
     }
 
     public ComboBox<Ciudad> getCiudadFilter() {

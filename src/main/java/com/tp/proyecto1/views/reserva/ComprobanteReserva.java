@@ -36,7 +36,7 @@ public class ComprobanteReserva extends Dialog {
 
 		cliente.setValue(reserva.getCliente().getNombreyApellido());
 		cliente.setReadOnly(true);
-		destino.setValue(reserva.getViaje().getCiudad().toString());
+		destino.setValue(reserva.getViaje().getDestino().toString());
 		destino.setReadOnly(true);
 		diaHora.setValue(reserva.getViaje().getFechaSalida().toString() + " " + reserva.getViaje().getHoraSalida().toString());
 		diaHora.setReadOnly(true);

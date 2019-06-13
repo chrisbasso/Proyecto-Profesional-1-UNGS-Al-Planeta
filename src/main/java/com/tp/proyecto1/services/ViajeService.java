@@ -30,6 +30,10 @@ public class ViajeService {
 
     @Autowired
     private CiudadRepository ciudadRepository;
+    @Autowired
+    private ProvinciaRepository provinciaRepository;
+    @Autowired
+    private ContinenteRepository continenteRepository;
 
     private static final Logger log = LoggerFactory.getLogger(ViajeService.class);
 
@@ -79,10 +83,18 @@ public class ViajeService {
     }
 
     @Transactional
+    public List<Provincia> findAllProvincias() {
+        return provinciaRepository.findAll();
+    }
+
+    @Transactional
     public List<Pais> findAllPaises() {
-
         return paisRepository.findAll();
+    }
 
+    @Transactional
+    public List<Continente> findAllContinente() {
+        return continenteRepository.findAll();
     }
 
     @Transactional

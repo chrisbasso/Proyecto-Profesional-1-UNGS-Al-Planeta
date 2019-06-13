@@ -15,7 +15,10 @@ public class Viaje {
 	private Long id;
 
 	@OneToOne
-	private Ciudad ciudad;
+	private Ciudad destino;
+
+	@OneToOne
+	private Ciudad origen;
 
 	private String recomendacion;
 
@@ -38,8 +41,9 @@ public class Viaje {
 	public Viaje() {
 	}
 
-	public Viaje(Ciudad ciudad, Transporte transporte, LocalDate fechaSalida, LocalTime horaSalida, Double precio, String descripcion, Boolean activo) {
-		this.ciudad = ciudad;
+	public Viaje(Ciudad destino, Ciudad origen, Transporte transporte, LocalDate fechaSalida, LocalTime horaSalida, Double precio, String descripcion, Boolean activo) {
+		this.destino = destino;
+		this.origen = origen;
 		this.transporte = transporte;
 		this.fechaSalida = fechaSalida;
 		this.horaSalida = horaSalida;
@@ -85,6 +89,17 @@ public class Viaje {
 		this.duracionHoras = duracionHoras;
 	}
 
+	public Ciudad getOrigen() {
+		return origen;
+	}
+
+	public void setOrigen(Ciudad origen) {
+		this.origen = origen;
+	}
+
+	public Boolean getActivo() {
+		return activo;
+	}
 
 	public Transporte getTransporte() {
 		return transporte;
@@ -148,12 +163,12 @@ public class Viaje {
 				Objects.equals(descripcion, viaje.descripcion);
 	}
 
-	public Ciudad getCiudad() {
-		return ciudad;
+	public Ciudad getDestino() {
+		return destino;
 	}
 
-	public void setCiudad(Ciudad ciudad) {
-		this.ciudad = ciudad;
+	public void setDestino(Ciudad destino) {
+		this.destino = destino;
 	}
 
 	public String getRecomendacion() {
@@ -174,12 +189,12 @@ public class Viaje {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, ciudad, transporte, fechaSalida, horaSalida, precio, descripcion, activo);
+		return Objects.hash(id, destino, transporte, fechaSalida, horaSalida, precio, descripcion, activo);
 	}
 	
 	@Override
 	public String toString()
 	{
-		return getCiudad().toString() + ", " + getFechaSalida().toString() + " "  +  getHoraSalida().toString() + ", " + getTransporte().getTipo().getDescripcion();
+		return getDestino().toString() + ", " + getFechaSalida().toString() + " "  +  getHoraSalida().toString() + ", " + getTransporte().getTipo().getDescripcion();
 	}
 }

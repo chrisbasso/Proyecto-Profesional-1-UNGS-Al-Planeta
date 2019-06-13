@@ -15,7 +15,10 @@ public class Pais {
     private String nombre;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Ciudad> ciudades = new HashSet<>();
+    private Set<Provincia> provincias = new HashSet<>();
+
+    @ManyToOne
+    private Continente continente;
 
     public Pais() {
     }
@@ -32,12 +35,20 @@ public class Pais {
         this.id = id;
     }
 
-    public Set<Ciudad> getCiudades() {
-        return ciudades;
+    public Set<Provincia> getProvincias() {
+        return provincias;
     }
 
-    public void setCiudades(Set<Ciudad> ciudades) {
-        this.ciudades = ciudades;
+    public void setProvincias(Set<Provincia> provincias) {
+        this.provincias = provincias;
+    }
+
+    public Continente getContinente() {
+        return continente;
+    }
+
+    public void setContinente(Continente continente) {
+        this.continente = continente;
     }
 
     public String getNombre() {
@@ -47,7 +58,9 @@ public class Pais {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    
+
+
+
     @Override
     public String toString()
     {

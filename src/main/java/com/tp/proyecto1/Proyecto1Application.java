@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.tp.proyecto1.model.viajes.*;
+import com.tp.proyecto1.repository.viajes.ContinenteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -25,12 +27,6 @@ import com.tp.proyecto1.model.pasajes.EstadoTransaccion;
 import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.model.users.User;
-import com.tp.proyecto1.model.viajes.Ciudad;
-import com.tp.proyecto1.model.viajes.Pais;
-import com.tp.proyecto1.model.viajes.Promocion;
-import com.tp.proyecto1.model.viajes.TagDestino;
-import com.tp.proyecto1.model.viajes.Transporte;
-import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.repository.clientes.ClienteRepository;
 import com.tp.proyecto1.repository.lotePuntos.LotePuntoRepository;
 import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
@@ -76,18 +72,19 @@ public class Proyecto1Application {
 									  TransaccionRepository transaccionRepository,
 									  SucursalRepository sucursalRepository,
 									  AsientoService asientoService,
-									  LotePuntoRepository lotePuntoRepository) {
+									  LotePuntoRepository lotePuntoRepository,
+									  ContinenteRepository continenteRepository) {
 		return args -> {
 			crearUsuarios(userService);
 			crearTiposTransportes(viajeService);
 			crearFormasDePago(ventaService);
 			crearConfiguracion(configService);
 			crearTagsDestino(tagDestinoService);
-			crearPaisesCiudades(paisRepository);
-			crearViajes(viajeService);
+			crearPaisesCiudades(continenteRepository);
+			//crearViajes(viajeService);
 			setSurcursales(sucursalRepository);
 			crearCuentas(asientoService);
-			//procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository, lotePuntoRepository);
+			procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository, lotePuntoRepository);
 
 		};
 	}
@@ -172,39 +169,48 @@ public class Proyecto1Application {
 
 	}
 
-	private void crearPaisesCiudades(PaisRepository paisRepository) {
-		if(paisRepository.findAll().isEmpty()){
-			Pais argentina = new Pais();
-			argentina.setNombre("Argentina");
-			Ciudad buenosAires = new Ciudad();
-			buenosAires.setNombre("Buenos Aires");
-			buenosAires.setPais(argentina);
-			Ciudad mendoza = new Ciudad();
-			mendoza.setNombre("Mendoza");
-			mendoza.setPais(argentina);
-			Ciudad misiones = new Ciudad();
-			misiones.setNombre("Misiones");
-			misiones.setPais(argentina);
-			Set<Ciudad> ciudadesArgentina = new HashSet<>();
-			ciudadesArgentina.add(buenosAires);
-			ciudadesArgentina.add(misiones);
-			ciudadesArgentina.add(mendoza);
-			argentina.setCiudades(ciudadesArgentina);
-			paisRepository.save(argentina);
+	private void crearPaisesCiudades(ContinenteRepository continenteRepository) {
+		if(continenteRepository.findAll().isEmpty()){
 
-			Pais brasil = new Pais();
-			brasil.setNombre("Brasil");
-			Ciudad sanPablo = new Ciudad();
-			sanPablo.setNombre("San Pablo");
-			sanPablo.setPais(brasil);
-			Ciudad rioJaneiro = new Ciudad();
-			rioJaneiro.setNombre("Rio de Janeiro");
-			rioJaneiro.setPais(brasil);
-			Set<Ciudad> ciudadesBrasil = new HashSet<>();
-			ciudadesBrasil.add(rioJaneiro);
-			ciudadesBrasil.add(sanPablo);
-			brasil.setCiudades(ciudadesBrasil);
-			paisRepository.save(brasil);
+			Continente america = new Continente("America");
+			Continente europa = new Continente("Europa");
+			Continente asia = new Continente("Asia");
+			Continente oceania = new Continente("Oceania");
+			Continente africa = new Continente("Africa");
+
+			Pais argentina = new Pais("Argentina");
+			Pais brasil = new Pais("Brasil");
+
+			Provincia buenosAires = new Provincia("Buenos Aires");
+			Provincia mendoza = new Provincia("Mendoza");
+			Provincia misiones = new Provincia("Misiones");
+
+			Ciudad laPlata = new Ciudad("La Plata");
+			Ciudad posadas = new Ciudad("Posadas");
+
+			laPlata.setProvincia(buenosAires);
+			posadas.setProvincia(misiones);
+
+			buenosAires.getCiudades().add(laPlata);
+			misiones.getCiudades().add(posadas);
+			buenosAires.setPais(argentina);
+			misiones.setPais(argentina);
+			mendoza.setPais(argentina);
+
+			argentina.getProvincias().add(buenosAires);
+			argentina.getProvincias().add(mendoza);
+			argentina.getProvincias().add(misiones);
+			argentina.setContinente(america);
+			brasil.setContinente(america);
+
+			america.getPaises().add(argentina);
+			america.getPaises().add(brasil);
+
+			continenteRepository.save(america);
+			continenteRepository.save(europa);
+			continenteRepository.save(asia);
+			continenteRepository.save(oceania);
+			continenteRepository.save(africa);
 		}
 	}
 
@@ -277,7 +283,7 @@ public class Proyecto1Application {
 		if(viajeService.findAll().size()==0) {
 			for (int i = 0; i<5; i++) {
 		        Transporte transporte = new Transporte("codigo " + i,viajeService.findAllTipoTransportes().get(0), i*5, "clase " + i);
-				Viaje viaje = new Viaje(viajeService.findAllCiudades().get(0), transporte, LocalDate.now().plusDays(10), LocalTime.now(), i*2000.0, "Viaje " + i, true);
+				Viaje viaje = new Viaje(viajeService.findAllCiudades().get(0), viajeService.findAllCiudades().get(1), transporte, LocalDate.now().plusDays(10), LocalTime.now(), i*2000.0, "Viaje " + i, true);
 				viajeService.save(viaje);
 			}	
 		}

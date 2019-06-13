@@ -1,9 +1,7 @@
 package com.tp.proyecto1.views.ventas;
 
 import com.tp.proyecto1.model.pasajes.FormaDePago;
-import com.tp.proyecto1.model.viajes.Ciudad;
-import com.tp.proyecto1.model.viajes.Pais;
-import com.tp.proyecto1.model.viajes.Promocion;
+import com.tp.proyecto1.model.viajes.*;
 import com.tp.proyecto1.utils.BuscadorClientesComponent;
 import com.tp.proyecto1.utils.PasajerosGridComponent;
 import com.vaadin.flow.component.button.Button;
@@ -11,7 +9,6 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.formlayout.FormLayout.FormItem;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -19,7 +16,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.textfield.TextFieldVariant;
 
 public class VentaForm extends Dialog {
 
@@ -39,8 +35,14 @@ public class VentaForm extends Dialog {
 	private TextField espacio;
 
 	private TextField id;
-	private ComboBox<Pais> pais;
-	private ComboBox<Ciudad> ciudad;
+	private ComboBox<Provincia> provinciaDestino;
+	private ComboBox<Ciudad> ciudadDEstino;
+	private ComboBox<Continente> continenteDestino;
+	private ComboBox<Pais> paisDestino;
+	private ComboBox<Provincia> provinciaOrigen;
+	private ComboBox<Ciudad> ciudadOrigen;
+	private ComboBox<Continente> continenteOrigen;
+	private ComboBox<Pais> paisOrigen;
 	private ComboBox<Promocion> promocion;
 	private TextField codTransporte;
 	private TextField transporte;
@@ -62,14 +64,25 @@ public class VentaForm extends Dialog {
 	}
 
 
-
 	private void setComponents() {
 
 		id = new TextField();
-		pais= new ComboBox<>();
-		pais.setItemLabelGenerator(Pais::getNombre);
-		ciudad= new ComboBox<>();
-		ciudad.setItemLabelGenerator(Ciudad::getNombre);
+		ciudadDEstino = new ComboBox<>();
+		ciudadDEstino.setItemLabelGenerator(Ciudad::getNombre);
+		provinciaDestino = new ComboBox<>();
+		provinciaDestino.setItemLabelGenerator(Provincia::getNombre);
+		continenteDestino = new ComboBox<>();
+		continenteDestino.setItemLabelGenerator(Continente::getNombre);
+		paisDestino = new ComboBox<>();
+		paisDestino.setItemLabelGenerator(Pais::getNombre);
+		ciudadOrigen = new ComboBox<>();
+		ciudadOrigen.setItemLabelGenerator(Ciudad::getNombre);
+		provinciaOrigen = new ComboBox<>();
+		provinciaOrigen.setItemLabelGenerator(Provincia::getNombre);
+		continenteOrigen = new ComboBox<>();
+		continenteOrigen.setItemLabelGenerator(Continente::getNombre);
+		paisOrigen = new ComboBox<>();
+		paisOrigen.setItemLabelGenerator(Pais::getNombre);
 		codTransporte= new TextField();
 		transporte= new TextField();
 		fechaSalida= new TextField();
@@ -104,7 +117,7 @@ public class VentaForm extends Dialog {
 		subtotal.setPrefixComponent(new Span("$"));
 		subtotal.setPreventInvalidInput(true);
 		pasajerosGridComponent = new PasajerosGridComponent();
-		pasajerosGridComponent.getGrid().setHeight("130px");
+		pasajerosGridComponent.getGrid().setHeight("110px");
 		promocion = new ComboBox<>();
 		puntosDisponibles = new TextField();
 		puntosaUsar = new NumberField();
@@ -117,23 +130,28 @@ public class VentaForm extends Dialog {
 
 	private void setForm() {
 
-		form.addFormItem(pais, "País");
-		form.addFormItem(ciudad, "Ciudad");
+		form.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 4));
+
+		form.addFormItem(continenteOrigen, "Continente Origen");
+		form.addFormItem(paisOrigen, "Pais Origen");
+		form.addFormItem(provinciaOrigen, "Provincia Origen");
+		form.addFormItem(ciudadOrigen, "Ciudad Origen");
+		form.addFormItem(continenteDestino, "Continente Destino");
+		form.addFormItem(paisDestino, "País Destino");
+		form.addFormItem(provinciaDestino, "Provincia Destino");
+		form.addFormItem(ciudadDEstino, "Ciudad Destino");
 		form.addFormItem(codTransporte, "Cod Transporte");
 		form.addFormItem(transporte, "Transporte");
 		form.addFormItem(fechaSalida, "Fecha Salida");
 		form.addFormItem(horaSalida, "Hora Salida");
 		form.addFormItem(cliente, "Nro de Cliente (*)");
 		form.addFormItem(descripcionCliente, "Descripción");
-		//form.addFormItem(cantidadPasaje, "Cantidad de Pasajes");
 		form.addFormItem(subtotal, "Subtotal");
 		form.addFormItem(formaPago, "Forma de Pago (*)");
 		form.addFormItem(saldoPagar, "Saldo a Pagar");
 		form.addFormItem(promocion, "Promocion");
 		form.addFormItem(puntosObtenidos, "Puntos Conseguidos");
 		form.addFormItem(denoPromocion, "Deno. Promocion");
-		//FormItem totalItem = form.addFormItem(subtotal, "Subtotal");
-		//totalItem.add(usoPuntosCheck);
 		formPuntos.addFormItem(usoPuntosCheck, "Uso de Puntos");
 		formPuntos.addFormItem(espacio, "");
 		formPuntos.addFormItem(puntosDisponibles, "Puntos Disponibles");
@@ -149,7 +167,7 @@ public class VentaForm extends Dialog {
 		mainLayout.setSizeFull();
 
 		this.add(mainLayout);
-		this.setWidth("800px");
+		this.setWidth("1370px");
 		this.setHeight("100%");
 		this.setCloseOnOutsideClick(false);
 	}
@@ -190,13 +208,7 @@ public class VentaForm extends Dialog {
 	public void setCliente(BuscadorClientesComponent cliente) {
 		this.cliente = cliente;
 	}
-//
-//	public NumberField getCantidadPasaje() {
-//		return cantidadPasaje;
-//	}
-//	public void setCantidadPasaje(NumberField cantidadPasaje) {
-//		this.cantidadPasaje = cantidadPasaje;
-//	}
+
 	public Checkbox getUsoPuntosCheck() {
 		return usoPuntosCheck;
 	}
@@ -253,23 +265,92 @@ public class VentaForm extends Dialog {
 		this.pasajerosGridComponent = pasajerosGridComponent;
 	}
 
-    public ComboBox<Pais> getPais() {
-        return pais;
-    }
+	public FormLayout getFormPuntos() {
+		return formPuntos;
+	}
 
-    public void setPais(ComboBox<Pais> pais) {
-        this.pais = pais;
-    }
+	public void setFormPuntos(FormLayout formPuntos) {
+		this.formPuntos = formPuntos;
+	}
 
-    public ComboBox<Ciudad> getCiudad() {
-        return ciudad;
-    }
+	public TextField getEspacio() {
+		return espacio;
+	}
 
-    public void setCiudad(ComboBox<Ciudad> ciudad) {
-        this.ciudad = ciudad;
-    }
+	public void setEspacio(TextField espacio) {
+		this.espacio = espacio;
+	}
 
-    public TextField getCodTransporte() {
+
+	public void setId(TextField id) {
+		this.id = id;
+	}
+
+	public ComboBox<Provincia> getProvinciaDestino() {
+		return provinciaDestino;
+	}
+
+	public void setProvinciaDestino(ComboBox<Provincia> provinciaDestino) {
+		this.provinciaDestino = provinciaDestino;
+	}
+
+	public ComboBox<Ciudad> getCiudadDEstino() {
+		return ciudadDEstino;
+	}
+
+	public void setCiudadDEstino(ComboBox<Ciudad> ciudadDEstino) {
+		this.ciudadDEstino = ciudadDEstino;
+	}
+
+	public ComboBox<Continente> getContinenteDestino() {
+		return continenteDestino;
+	}
+
+	public void setContinenteDestino(ComboBox<Continente> continenteDestino) {
+		this.continenteDestino = continenteDestino;
+	}
+
+	public ComboBox<Pais> getPaisDestino() {
+		return paisDestino;
+	}
+
+	public void setPaisDestino(ComboBox<Pais> paisDestino) {
+		this.paisDestino = paisDestino;
+	}
+
+	public ComboBox<Provincia> getProvinciaOrigen() {
+		return provinciaOrigen;
+	}
+
+	public void setProvinciaOrigen(ComboBox<Provincia> provinciaOrigen) {
+		this.provinciaOrigen = provinciaOrigen;
+	}
+
+	public ComboBox<Ciudad> getCiudadOrigen() {
+		return ciudadOrigen;
+	}
+
+	public void setCiudadOrigen(ComboBox<Ciudad> ciudadOrigen) {
+		this.ciudadOrigen = ciudadOrigen;
+	}
+
+	public ComboBox<Continente> getContinenteOrigen() {
+		return continenteOrigen;
+	}
+
+	public void setContinenteOrigen(ComboBox<Continente> continenteOrigen) {
+		this.continenteOrigen = continenteOrigen;
+	}
+
+	public ComboBox<Pais> getPaisOrigen() {
+		return paisOrigen;
+	}
+
+	public void setPaisOrigen(ComboBox<Pais> paisOrigen) {
+		this.paisOrigen = paisOrigen;
+	}
+
+	public TextField getCodTransporte() {
 		return codTransporte;
 	}
 

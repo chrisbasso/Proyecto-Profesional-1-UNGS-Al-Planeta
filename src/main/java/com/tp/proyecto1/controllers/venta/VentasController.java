@@ -8,7 +8,6 @@ import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.ConfirmationDialog;
-import com.tp.proyecto1.utils.EnviadorDeMail;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.ventas.ComprobanteVenta;
 import com.tp.proyecto1.views.ventas.VentaView;
@@ -52,13 +51,13 @@ public class VentasController {
     }
 
     private void setComponents() {
-        ventaView.getPaisFilter().setItems(viajeService.findAllPaises());
+        ventaView.getProvinciaFilter().setItems(viajeService.findAllProvincias());
         this.ventaView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
         this.ventaView.getGrid().addComponentColumn(this::createRemoveButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
     }
 
     private void setListeners() {
-        ventaView.getPaisFilter().addValueChangeListener(e->setComboCiudades());
+        ventaView.getProvinciaFilter().addValueChangeListener(e->setComboCiudades());
         setChangeHandler(this::listVentas);
     	ventaView.getSearchButton().addClickListener(e->listVentas());
     	ventaView.getBtnComprobante().addClickListener(e->imprimirComprobante());
@@ -76,8 +75,8 @@ public class VentasController {
 
 	private void setComboCiudades() {
 
-        Pais pais = ventaView.getPaisFilter().getValue();
-        ventaView.getCiudadFilter().setItems(pais.getCiudades());
+        Provincia provincia = ventaView.getProvinciaFilter().getValue();
+        ventaView.getCiudadFilter().setItems(provincia.getCiudades());
 
     }
 
@@ -165,7 +164,7 @@ public class VentasController {
         Transporte transporte = new Transporte();
         Viaje viaje = new Viaje();
         Ciudad ciudad = new Ciudad();
-        viaje.setCiudad(ciudad);
+        viaje.setDestino(ciudad);
         viaje.setTransporte(transporte);
         viaje.setActivo(true);
         venta.setViaje(viaje);
@@ -173,10 +172,10 @@ public class VentasController {
             venta.getCliente().setId(ventaView.getNumeroClienteFilter().getValue().longValue());
         }
         if(!ventaView.getCiudadFilter().isEmpty()){
-            venta.getViaje().setCiudad(ventaView.getCiudadFilter().getValue());
+            venta.getViaje().setDestino(ventaView.getCiudadFilter().getValue());
         }
-        if(!ventaView.getPaisFilter().isEmpty()){
-            venta.getViaje().getCiudad().setPais(ventaView.getPaisFilter().getValue());
+        if(!ventaView.getProvinciaFilter().isEmpty()){
+            venta.getViaje().getDestino().setProvincia(ventaView.getProvinciaFilter().getValue());
         }
         if(!ventaView.getCodTransporteFilter().isEmpty()){
             venta.getViaje().getTransporte().setCodTransporte(ventaView.getCodTransporteFilter().getValue());
@@ -194,7 +193,7 @@ public class VentasController {
     }
 
     private boolean checkFiltros() {
-        return !ventaView.getPaisFilter().isEmpty() || !ventaView.getCiudadFilter().isEmpty() ||
+        return !ventaView.getProvinciaFilter().isEmpty() || !ventaView.getCiudadFilter().isEmpty() ||
                 !ventaView.getCodTransporteFilter().isEmpty() || !ventaView.getNumeroClienteFilter().isEmpty() ||
                  !ventaView.getFechaFilter().isEmpty() ||
                  ventaView.getActivosCheck().getValue();

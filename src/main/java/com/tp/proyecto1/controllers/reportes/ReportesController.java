@@ -211,7 +211,7 @@ public class ReportesController {
 		}
 		if(tipo instanceof Ciudad){
 			transaccionExample.setViaje(new Viaje());
-			transaccionExample.getViaje().setCiudad((Ciudad)tipo);
+			transaccionExample.getViaje().setDestino((Ciudad)tipo);
 			nombreArchivo = "Reporte " + (((Ciudad) tipo).toString()) +".xls";
 		}
 		if(tipo instanceof Sucursal){

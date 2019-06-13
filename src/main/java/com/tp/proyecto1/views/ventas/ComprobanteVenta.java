@@ -1,24 +1,12 @@
 package com.tp.proyecto1.views.ventas;
 
-import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.tp.proyecto1.model.pasajes.Pasajero;
 import com.tp.proyecto1.model.pasajes.Venta;
-import com.tp.proyecto1.model.viajes.Ciudad;
-import com.tp.proyecto1.model.viajes.Pais;
-import com.tp.proyecto1.model.viajes.Promocion;
-import com.tp.proyecto1.utils.BuscadorClientesComponent;
 import com.tp.proyecto1.utils.PasajerosGridComponent;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 
 import java.util.List;
@@ -56,7 +44,7 @@ public class ComprobanteVenta extends Dialog {
 
 		cliente.setValue(venta.getCliente().getNombreyApellido());
 		cliente.setReadOnly(true);
-		destino.setValue(venta.getViaje().getCiudad().toString());
+		destino.setValue(venta.getViaje().getDestino().toString());
 		destino.setReadOnly(true);
 		diaHora.setValue(venta.getViaje().getFechaSalida().toString() + " " + venta.getViaje().getHoraSalida().toString());
 		diaHora.setReadOnly(true);
