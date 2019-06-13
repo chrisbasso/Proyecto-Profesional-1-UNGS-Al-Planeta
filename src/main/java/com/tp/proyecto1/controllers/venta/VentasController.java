@@ -61,7 +61,7 @@ public class VentasController {
         setChangeHandler(this::listVentas);
     	ventaView.getSearchButton().addClickListener(e->listVentas());
     	ventaView.getBtnComprobante().addClickListener(e->imprimirComprobante());
-    	//ventaView.getBtnEnvioMail().addClickListener(e->EnviadorDeMail.enviarConGMail("gmonteblack.gm@gmail.com", "mail de Prueba", "emo sido engañado"));
+    	ventaView.getBtnEnvioMail().addClickListener(e->EnviadorDeMail.enviarConGmail("gmonteblack.gm@gmail.com", "mail de Prueba", "emo sido engañado"));
     }
 
 	private void imprimirComprobante() {

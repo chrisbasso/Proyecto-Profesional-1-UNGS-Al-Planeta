@@ -34,6 +34,7 @@ public class AsientoREST {
 	private Cuenta cuentaPagoTarjeta;
 	private Cuenta cuentaCliente;	
 	private Cuenta cuentaReservaVencida;
+	private Cuenta cuentaSalidaCaja;
 	private Double importePagoEfectivo;
 	private Double importePagoDebito;
 	private Double importePagoTarjeta;
@@ -50,6 +51,7 @@ public class AsientoREST {
 		cuentaPagoTarjeta = asientoService.findCuentaByNumero(102);
 		cuentaCliente = asientoService.findCuentaByNumero(103);
 		cuentaReservaVencida= asientoService.findCuentaByNumero(401);
+		cuentaSalidaCaja= asientoService.findCuentaByNumero(100);
 		importePagoEfectivo = 0.0;
 		importePagoDebito = 0.0;
 		importePagoTarjeta = 0.0;
@@ -57,12 +59,8 @@ public class AsientoREST {
 	}
 
 	private static AsientoREST getInstancia() {
-		if(instancia != null) {
-			return instancia;
-		}else {
-			instancia = new AsientoREST();
-			return instancia;
-		}		
+		instancia = new AsientoREST();
+		return instancia;
 	}
 	
 	public static Long contabilizarNuevaReserva(Reserva reserva) {
@@ -121,6 +119,35 @@ public class AsientoREST {
 		return 0L;
 	}
 	
+	public static Long contabilizarSalidaCaja(LocalDate fecha, String txtCab, Sucursal suc,
+			Cuenta cta, Double impte, User usuario) {
+		
+		AsientoREST nuevoAsiento = getInstancia();
+		nuevoAsiento.setCabeceraAsiento(fecha, usuario, suc, txtCab);
+		nuevoAsiento.agregarPosicion(TipoPosicion.DEBE, cta, impte);
+		nuevoAsiento.cerrarAsientoSalidaPago(impte);
+		return nuevoAsiento.contabilizarAsiento();
+	}
+	
+	public static Long anularAsiento(Asiento asientoPorAnular, User usuario){
+		AsientoREST nuevoAsiento = getInstancia();
+		nuevoAsiento.setCabeceraAsiento(LocalDate.now(), usuario, asientoPorAnular.getSucursal(),"Anular asiento: " + asientoPorAnular.getId());
+		
+		for(Posicion posicion : asientoPorAnular.getPosiciones()){
+			Posicion posicionRevertida = Posicion.revertirPosicion(posicion);
+			nuevoAsiento.agregarPosicion(posicionRevertida);
+		}
+		
+		Long idAnulacion = nuevoAsiento.contabilizarAsiento();
+		nuevoAsiento.anular(asientoPorAnular, usuario);
+		return idAnulacion;
+	}
+	
+	private void anular(Asiento asientoPorAnular, User usuario) {
+		asientoPorAnular.setAnulado(usuario);
+		asientoService.save(asientoPorAnular);		
+	}
+
 	private void setCabeceraAsiento(LocalDate fecha,User usuario,Sucursal sucursal, String textoCabecera) {
 		cabecera.setFechaRegistro(fecha);
 		cabecera.setFechaContabilizacion(fecha);		
@@ -195,6 +222,10 @@ public class AsientoREST {
 		posiciones.add(new Posicion(debeHaber, cuenta, importe));
 	}
 	
+	private void agregarPosicion(Posicion posicion){
+		posiciones.add(posicion);
+	}
+	
 	private void cerrarAsientoReserva(Double sumaDePagos) {
 		agregarPosicion(TipoPosicion.HABER, cuentaReserva, sumaDePagos);
 	}
@@ -211,7 +242,11 @@ public class AsientoREST {
 	private void cerrarAsientoVenta(Double sumaDePagos) {
 		agregarPosicion(TipoPosicion.HABER, cuentaVenta, sumaDePagos);
 	}
-
+	
+	private void cerrarAsientoSalidaPago(Double impte) {
+		agregarPosicion(TipoPosicion.HABER, cuentaSalidaCaja, impte);
+	}
+	
 	private Long contabilizarAsiento() {
 		asiento = new Asiento();
 		asiento.setCabecera(cabecera);

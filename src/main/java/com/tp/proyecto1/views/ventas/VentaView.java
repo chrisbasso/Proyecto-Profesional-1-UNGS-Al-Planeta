@@ -59,8 +59,7 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
     public void setLayout() {
 
         HorizontalLayout hlSpace = new HorizontalLayout();
-        //this.hlFooter.add(btnComprobante,btnEnvioMail);
-        this.hlFooter.add(btnComprobante);
+        this.hlFooter.add(btnComprobante,btnEnvioMail);
         hlSpace.setWidthFull();
         this.hlActions.add(numeroClienteFilter, provinciaFilter, ciudadFilter, codTransporteFilter,fechaFilter,activosCheck, hlSpace, searchButton);
 

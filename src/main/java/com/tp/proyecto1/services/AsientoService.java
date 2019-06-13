@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.hibernate.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
@@ -13,11 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tp.proyecto1.model.contabilidad.Asiento;
-import com.tp.proyecto1.model.contabilidad.Cabecera;
 import com.tp.proyecto1.model.contabilidad.Cuenta;
 import com.tp.proyecto1.model.contabilidad.Egreso;
+import com.tp.proyecto1.model.contabilidad.MovimientoCaja;
 import com.tp.proyecto1.model.contabilidad.Posicion;
 import com.tp.proyecto1.model.contabilidad.TipoCuenta;
+import com.tp.proyecto1.model.sucursales.Sucursal;
+import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.repository.contabilidad.AsientoRepository;
 import com.tp.proyecto1.repository.contabilidad.CabeceraRepository;
 import com.tp.proyecto1.repository.contabilidad.CuentaRepository;
@@ -102,5 +103,42 @@ public class AsientoService {
 		}		
 		return egresos;		
 	}
-
+	
+	@Transactional
+	public List<Cuenta> findCuentasGasto(){
+		return cuentaRepository.findByTipoCuenta(TipoCuenta.EGRESO);
+	}
+	
+	@Transactional
+	public List<MovimientoCaja> findMovimientosCaja(LocalDate desde, LocalDate hasta){
+		List<MovimientoCaja> movimientos = new ArrayList<MovimientoCaja>();
+		
+		List <Asiento> asientos = asientoRepository.findAllByCabecera_FechaContabilizacionBetween(desde, hasta);
+		for (Asiento asiento : asientos) {
+			for (Posicion posicion : asiento.getPosiciones()) {
+				MovimientoCaja movim = MovimientoCaja.getInstancia(asiento.getId(), asiento.getCabecera(), posicion); 
+				if(movim != null) {
+					movimientos.add(movim);
+				}
+			}			
+		}
+		return movimientos;
+	}
+	
+	@Transactional
+	public List<MovimientoCaja> findMovimientosCajaFiltrado(LocalDate fecha, User usuario, Sucursal suc){
+		List<MovimientoCaja> movimientos = new ArrayList<MovimientoCaja>();
+		List <Asiento> asientos = asientoRepository.findAllByCabecera_FechaContabilizacionBetween(fecha, fecha);
+		for (Asiento asiento : asientos) {
+			if(asiento.getUsuario().equals(usuario) && asiento.getSucursal().equals(suc)){
+				for (Posicion posicion : asiento.getPosiciones()) {
+					MovimientoCaja movim = MovimientoCaja.getInstancia(asiento.getId(), asiento.getCabecera(), posicion); 
+					if(movim != null) {
+						movimientos.add(movim);
+					}
+				}			
+			}
+		}
+		return movimientos;
+	}
 }
