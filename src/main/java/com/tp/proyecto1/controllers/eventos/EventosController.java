@@ -2,15 +2,11 @@ package com.tp.proyecto1.controllers.eventos;
 
 
 import com.tp.proyecto1.Proyecto1Application;
-import com.tp.proyecto1.controllers.reserva.ReservaFormController;
 import com.tp.proyecto1.model.clientes.Persona;
 import com.tp.proyecto1.model.eventos.Consulta;
 import com.tp.proyecto1.model.eventos.Evento;
 import com.tp.proyecto1.model.eventos.Reclamo;
-import com.tp.proyecto1.model.eventos.Recordatorio;
 import com.tp.proyecto1.model.users.User;
-import com.tp.proyecto1.model.viajes.Promocion;
-import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.EventoService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.ConfirmationDialog;
@@ -19,8 +15,6 @@ import com.tp.proyecto1.views.eventos.EventosView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -97,31 +91,6 @@ public class EventosController {
 		setChangeHandler(this::listarEventos);
 		eventosView.getNewConsultaButton().addClickListener(e->openConsultaForm());
 		eventosView.getSearchButton().addClickListener(e->listarEventos());
-		eventosView.getBtnAgregarRecordatorio().addClickListener(e->openRecordatorioForm());
-	}
-
-	private void openRecordatorioForm()
-	{
-		Evento seleccionado = eventosView.getGrid().asSingleSelect().getValue();
-    	if(seleccionado!=null)
-    	{    		
-    		if (!seleccionado.isAbierto())
-    		{
-    			Notification.show("Este evento esta cerrado.");
-    		}
-    		else
-    		{
-	    		RecordatorioFormController recordatorioFormController = new RecordatorioFormController();
-	    		recordatorioFormController.setEvento(seleccionado);
-	    		recordatorioFormController.getRecordatorioForm().getMensajeEvento().setText(seleccionado.getMensaje());
-	    		recordatorioFormController.getView().open();   	
-    		}
-    	}
-    	else
-    	{
-    		Notification.show("Seleccione un evento para agregar recordatorios.");
-    	}    
-		
 	}
 
 	private void openConsultaForm() {

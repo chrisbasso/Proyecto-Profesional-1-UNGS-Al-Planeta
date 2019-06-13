@@ -7,7 +7,6 @@ import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.repository.clientes.ClienteRepository;
 import com.tp.proyecto1.repository.clientes.InteresadoRepository;
 import com.tp.proyecto1.repository.eventos.EventoRepository;
-import com.tp.proyecto1.repository.eventos.RecordatorioRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;

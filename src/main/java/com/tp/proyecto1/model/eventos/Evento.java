@@ -33,11 +33,8 @@ public class Evento {
 	@ManyToOne
 	private User usuarioAsignado;
 
-	private LocalDate fechaCierre;
-	private LocalTime horaCierre;
-	
-	@OneToMany(fetch = FetchType.EAGER)
-	private List<Recordatorio> recordatorios;
+	private LocalDate fechaVencimiento;
+	private LocalTime horaVencimiento;
 	
 	private Boolean isAbierto;
 
@@ -135,8 +132,8 @@ public class Evento {
 				Objects.equals(mensaje, evento.mensaje) &&
 				Objects.equals(fecha, evento.fecha) &&
 				Objects.equals(hora, evento.hora) &&
-				Objects.equals(fechaCierre, evento.fechaCierre) &&
-				Objects.equals(horaCierre, evento.horaCierre) &&
+				Objects.equals(fechaVencimiento, evento.fechaVencimiento) &&
+				Objects.equals(horaVencimiento, evento.horaVencimiento) &&
 				Objects.equals(persona, evento.persona) &&
 				Objects.equals(prioridad, evento.prioridad);
 	}
@@ -146,33 +143,23 @@ public class Evento {
 		return Objects.hash(id, mensaje, fecha, hora, persona, prioridad);
 	}
 
-	public LocalDate getFechaCierre()
+	public LocalDate getFechaVencimiento()
 	{
-		return fechaCierre;
+		return fechaVencimiento;
 	}
 
-	public void setFechaCierre(LocalDate fechaCierre)
+	public void setFechaVencimiento(LocalDate fechaVencimiento)
 	{
-		this.fechaCierre = fechaCierre;
+		this.fechaVencimiento = fechaVencimiento;
 	}
 
-	public LocalTime getHoraCierre()
+	public LocalTime getHoraVencimiento()
 	{
-		return horaCierre;
+		return horaVencimiento;
 	}
 
-	public void setHoraCierre(LocalTime horaCierre)
+	public void setHoraVencimiento(LocalTime horaVencimiento)
 	{
-		this.horaCierre = horaCierre;
-	}
-
-	public List<Recordatorio> getRecordatorios()
-	{
-		return recordatorios;
-	}
-
-	public void setRecordatorios(List<Recordatorio> recordatorios)
-	{
-		this.recordatorios = recordatorios;
+		this.horaVencimiento = horaVencimiento;
 	}
 }

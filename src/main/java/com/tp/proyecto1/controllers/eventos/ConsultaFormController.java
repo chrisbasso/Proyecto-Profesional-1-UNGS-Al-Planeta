@@ -7,7 +7,6 @@ import com.tp.proyecto1.model.eventos.Consulta;
 import com.tp.proyecto1.model.eventos.Evento;
 import com.tp.proyecto1.model.eventos.Reclamo;
 import com.tp.proyecto1.model.users.User;
-import com.tp.proyecto1.model.viajes.TipoTransporte;
 import com.tp.proyecto1.services.EventoService;
 import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.utils.ChangeHandler;
@@ -95,6 +94,8 @@ public class ConsultaFormController {
             }
             evento.setFecha(LocalDate.now());
             evento.setHora(LocalTime.now());
+            evento.setFechaVencimiento(consultaForm.getFechaVencimiento().getValue());
+            evento.setHoraVencimiento(consultaForm.getHoraVencimiento().getValue());
             evento.setCreadorEvento(Proyecto1Application.logUser);
             evento.setUsuarioAsignado(Proyecto1Application.logUser);
         }
@@ -162,5 +163,7 @@ public class ConsultaFormController {
         consultaForm.getBuscadorClientes().setEnabled(false);
         consultaForm.getComboTipo().setEnabled(false);
         consultaForm.getComboUsuarios().setEnabled(true);
+        consultaForm.getFechaVencimiento().setValue(evento.getFechaVencimiento());
+        consultaForm.getHoraVencimiento().setValue(evento.getHoraVencimiento());
     }
 }
