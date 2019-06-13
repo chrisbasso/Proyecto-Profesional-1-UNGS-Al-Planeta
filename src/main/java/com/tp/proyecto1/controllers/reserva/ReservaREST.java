@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.model.viajes.Viaje;
@@ -11,10 +12,10 @@ import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.services.ConfiguracionService;
 import com.tp.proyecto1.services.ReservaService;
 import com.tp.proyecto1.services.ViajeService;
-
+@Component
 public class ReservaREST {
 	@Autowired
-	private ConfiguracionService ConfigService;
+	private ConfiguracionService configService;
 	@Autowired
 	private ReservaService reservaService;
 	@Autowired
@@ -26,35 +27,27 @@ public class ReservaREST {
 	private static final String configuracionVencimientoReserva = "reserva_vencimiento_reserva-dias";
 	private static final String configuracionVencimientoPagoParcial = "reserva_vencimiento_pago_parcial-dias";
 	private static final String configuracionPorcentajePagoParcial = "reserva_porcentaje_pago_parcial-cifra";
-
+	@Autowired
 	private ReservaREST() {
+		instancia = this;
 	}            
 
-	private static ReservaREST getInstancia(){                           
-		if(instancia != null){
-			return instancia;
-		}else{
-			instancia = new ReservaREST();
-			return instancia;
-		}                          
-	}
-
 	private String getConfiguracionDiasVencimientoReserva() {
-		return ConfigService.findValueByKey(configuracionVencimientoReserva);
+		return configService.findValueByKey(configuracionVencimientoReserva);
 	}
 
 	private String getConfiguracionPorcentajeReserva(){
-		return ConfigService.findValueByKey(configuracionPorcentajePagoParcial);      
+		return configService.findValueByKey(configuracionPorcentajePagoParcial);      
 	}
 
 	private String getConfiguracionDiasVencimientoPagoParcial(){
-		return ConfigService.findValueByKey(configuracionVencimientoPagoParcial);   
+		return configService.findValueByKey(configuracionVencimientoPagoParcial);   
 	}
 
 	public static boolean esReservablePorFecha(Viaje viaje) {
 		LocalDateTime presente = LocalDate.now().atStartOfDay();
 		LocalDateTime fechaViaje = viaje.getFechaSalida().atStartOfDay();                  
-		Integer diasAntesDelViaje = Integer.parseInt(getInstancia().getConfiguracionDiasVencimientoReserva());
+		Integer diasAntesDelViaje = Integer.parseInt(instancia.getConfiguracionDiasVencimientoReserva());
 		if(diasAntesDelViaje != null) {
 			return fechaViaje.minusDays(diasAntesDelViaje).isAfter(presente);
 		}
@@ -69,7 +62,7 @@ public class ReservaREST {
 		}else {
 			LocalDateTime presente = LocalDate.now().atStartOfDay();
 			LocalDateTime fechaViaje = reserva.getViaje().getFechaSalida().atStartOfDay();
-			Integer diasAntesDelViaje = Integer.parseInt(getInstancia().getConfiguracionDiasVencimientoPagoParcial());
+			Integer diasAntesDelViaje = Integer.parseInt(instancia.getConfiguracionDiasVencimientoPagoParcial());
 			if(diasAntesDelViaje != null) {
 				return fechaViaje.minusDays(diasAntesDelViaje).isAfter(presente);
 			}else {
@@ -91,6 +84,6 @@ public class ReservaREST {
 	}
 	
 	public static Double getConfiguracionPorcentajePagoReserva() {
-		return Double.valueOf(getInstancia().getConfiguracionPorcentajeReserva()); 
+		return Double.valueOf(instancia.getConfiguracionPorcentajeReserva()); 
 	}
 }

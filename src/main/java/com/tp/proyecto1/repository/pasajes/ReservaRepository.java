@@ -12,5 +12,7 @@ import java.util.List;
 public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
 	List<Reserva> findAllByViaje_FechaSalida(LocalDate fechaSalida);
-
+	List<Reserva> findAllByCliente_Id(Long idCliente);
+	List<Reserva> findAllByViaje_Id(Long idViaje);
+	List<Reserva> findAllByViaje_IdAndCliente_Id(Long idViaje, Long idCliente);
 }
