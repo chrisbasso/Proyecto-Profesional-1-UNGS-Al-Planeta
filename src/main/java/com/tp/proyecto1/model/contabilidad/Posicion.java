@@ -68,7 +68,7 @@ public class Posicion {
 			break;
 		}
 		posicRevertida.setCuenta(posicOriginal.getCuenta());
-		
+		posicRevertida.setImporte(posicOriginal.getImporte());		
 		return posicRevertida;
 	}
 	

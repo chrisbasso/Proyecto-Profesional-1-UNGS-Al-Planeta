@@ -17,6 +17,7 @@ import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.function.ValueProvider;
 
@@ -26,8 +27,7 @@ public class MovimientosCajaView extends FilterGridLayout<MovimientoCaja> {
     private NumberField idUsuarioFilter;
     private ComboBox<Sucursal> sucursalFilter;    
     private Button btnBuscar;
-    private Button btnAgregar;
-    private FormLayout saldosPorSucursal; 
+    private Button btnAgregar; 
 
     public MovimientosCajaView() {
         super(MovimientoCaja.class);
@@ -44,30 +44,22 @@ public class MovimientosCajaView extends FilterGridLayout<MovimientoCaja> {
         btnBuscar = new Button("Buscar", VaadinIcon.SEARCH.create());
         btnBuscar.setMinWidth("110px");
         btnAgregar = new Button("Agregar", VaadinIcon.PLUS.create());
-        btnAgregar.setMinWidth("110px");
-        saldosPorSucursal = new FormLayout();
+        btnAgregar.setMinWidth("110px");     
     }
 
     private void setLayout() {
         HorizontalLayout hlSpace = new HorizontalLayout();
         hlSpace.setWidthFull();
         this.hlActions.add(idUsuarioFilter,fechaFilter, sucursalFilter, btnBuscar, hlSpace, btnAgregar);
-        this.hlFooter.setWidthFull();
-        this.hlFooter.add(saldosPorSucursal);
-        this.hlFooter.setAlignItems(Alignment.BASELINE);
     }
 
     private void setGrid() {
-        grid.setColumns("cabecera.fechaContabilizacion", "cabecera.sucursal", "cabecera.usuario.user", "cabecera.textoCabecera", "importe");
+        grid.setColumns("cabecera.fechaContabilizacion", "idAsiento", "cabecera.sucursal", "cabecera.usuario.user", "cabecera.textoCabecera", "importe");
         grid.getColumnByKey("cabecera.fechaContabilizacion").setHeader("Fecha");
         grid.getColumnByKey("cabecera.usuario.user").setHeader("Usuario");
         grid.getColumnByKey("cabecera.textoCabecera").setHeader("Texto");
     }
 
-    public void agregarColumnaVisualizar(ValueProvider<MovimientoCaja, Button> e) {
-    	grid.addComponentColumn(e).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);    	
-    }
-    
     public void agregarColumnaBorrado(ValueProvider<MovimientoCaja, Button> e) {
     	grid.addComponentColumn(e).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);    	
     }
@@ -105,11 +97,18 @@ public class MovimientosCajaView extends FilterGridLayout<MovimientoCaja> {
     }
     
     public void cargarEtiquetasSaldos(Map<Sucursal, Double> map) {
+    	this.hlFooter.removeAll();
+        this.hlFooter.setWidthFull();
+        VerticalLayout etiqueta = new VerticalLayout();
+    	etiqueta.add("Saldos por sucursal");
+    	this.hlFooter.add(etiqueta);
     	for (Map.Entry<Sucursal, Double> valor : map.entrySet()) {
     		Label sucursal = new Label(valor.getKey().getDescripcion().toString());
-    		Label total = new Label(valor.getValue().toString());
-    		saldosPorSucursal.addFormItem(sucursal, "Sucursal");
-    		saldosPorSucursal.addFormItem(total, "Total");
+    		Label total = new Label("$ " + valor.getValue().toString());
+    		VerticalLayout cuadro = new VerticalLayout();
+    		cuadro.add(sucursal);    
+    		cuadro.add(total);    		
+    		this.hlFooter.add(cuadro);    		
 		}
     }
     

@@ -4,10 +4,13 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.tp.proyecto1.Proyecto1Application;
+import com.tp.proyecto1.model.contabilidad.Asiento;
 import com.tp.proyecto1.model.contabilidad.Cabecera;
 import com.tp.proyecto1.model.contabilidad.MovimientoCaja;
 import com.tp.proyecto1.model.contabilidad.Posicion;
@@ -19,6 +22,9 @@ import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.contabilidad.MovimientosCajaView;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
 
 @Controller
@@ -49,6 +55,7 @@ public class MovimientosCajaController {
 		view.cargarMovimientos(movimientos);
 		view.cargarEtiquetasSaldos(totalizarValores());
 		agregarListeners();
+		view.agregarColumnaBorrado(this::createDeleteButton);
 		return view;
 	}
 
@@ -78,14 +85,31 @@ public class MovimientosCajaController {
 	}
 	
 	private void agregarListeners() {
-		setChangeHandler(this::refrescarLista);
+		setChangeHandler(this::refrescarDatosVista);
 		view.setBtnAgregarListener(e->nuevoEgreso());
 		view.setBtnBuscarListener(e->buscarMovimientos());
 	}
+	
+	private Button createDeleteButton(MovimientoCaja movimiento){
+        Button btnBorrar = new Button(VaadinIcon.TRASH.create(), clickEvent -> borrarMovimiento(movimiento));
+    		if(movimiento.getCabecera().isAnulado()){
+    			btnBorrar.setEnabled(false);
+    		}
+    		return btnBorrar;
+	}
 
+	private void borrarMovimiento(MovimientoCaja movimiento) {
+		Optional<Asiento> asientoPorAnular = asientoService.findById(movimiento.getIdAsiento());
+		if(asientoPorAnular.isPresent()) {
+			Long idAnulac = AsientoREST.anularAsiento(asientoPorAnular.get(), Proyecto1Application.logUser);
+			Notification.show("Movimiento anulado con el registro: " + idAnulac);			
+		}		
+		refrescarDatosVista();
+	}
+	
 	private void nuevoEgreso() {
 		salidaCajaFormController.cargarNuevaSalidaCaja();
-		salidaCajaFormController.setChangeHandler(this::refrescarLista);
+		salidaCajaFormController.setChangeHandler(this::refrescarDatosVista);
 	}
 
 	private void buscarMovimientos() {
@@ -101,7 +125,7 @@ public class MovimientosCajaController {
 					Posicion posEjemplo = new Posicion();
 					MovimientoCaja movEjemplo = MovimientoCaja.getInstancia(0L, cabEjemplo, posEjemplo);
 					movimientos = asientoService.findMovimientosCajaFiltrado(fecha, usuario, suc);
-					refrescarLista();
+					refrescarDatosVista();
 				}
 			}
 		}
@@ -111,8 +135,10 @@ public class MovimientosCajaController {
 		return userService.getUserById(id);
 	}
 	
-	private void refrescarLista(){	
+	private void refrescarDatosVista() {
+		leerMovimientosDelMes();
 		view.cargarMovimientos(movimientos);
+		view.cargarEtiquetasSaldos(totalizarValores());
 	}
 	
 	private void setChangeHandler(ChangeHandler h) {

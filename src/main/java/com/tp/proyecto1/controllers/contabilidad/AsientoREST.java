@@ -59,12 +59,8 @@ public class AsientoREST {
 	}
 
 	private static AsientoREST getInstancia() {
-		if(instancia != null) {
-			return instancia;
-		}else {
-			instancia = new AsientoREST();
-			return instancia;
-		}		
+		instancia = new AsientoREST();
+		return instancia;
 	}
 	
 	public static Long contabilizarNuevaReserva(Reserva reserva) {
