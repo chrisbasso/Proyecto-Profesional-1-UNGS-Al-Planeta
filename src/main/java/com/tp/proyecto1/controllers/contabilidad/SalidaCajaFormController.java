@@ -12,15 +12,10 @@ import com.tp.proyecto1.model.contabilidad.Egreso;
 import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.services.AsientoService;
 import com.tp.proyecto1.services.SucursalService;
+import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.contabilidad.SalidaCajaForm;
-import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
-import com.vaadin.flow.component.HasValue.ValueChangeListener;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.textfield.NumberField;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 
 @Controller

@@ -53,4 +53,23 @@ public class Posicion {
 			return "H";
 		}
 	}
+	
+	public static Posicion revertirPosicion(Posicion posicOriginal) {
+		Posicion posicRevertida = new Posicion();
+		posicRevertida.setCuenta(posicOriginal.getCuenta());
+		switch (posicOriginal.getDebeHaber()) {
+		case DEBE:
+			posicRevertida.setDebeHaber(TipoPosicion.HABER);
+			break;
+		case HABER:
+			posicRevertida.setDebeHaber(TipoPosicion.DEBE);
+			break;
+		default:
+			break;
+		}
+		posicRevertida.setCuenta(posicOriginal.getCuenta());
+		
+		return posicRevertida;
+	}
+	
 }

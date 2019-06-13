@@ -135,7 +135,7 @@ public class AsientoREST {
 	
 	public static Long anularAsiento(Asiento asientoPorAnular, User usuario){
 		AsientoREST nuevoAsiento = getInstancia();
-		nuevoAsiento.setCabecera(LocalDate.now(), usuario, asientoPorAnular.getSucursal(),"Anular asiento: " + asientoPorAnular.getId());
+		nuevoAsiento.setCabeceraAsiento(LocalDate.now(), usuario, asientoPorAnular.getSucursal(),"Anular asiento: " + asientoPorAnular.getId());
 		
 		for(Posicion posicion : asientoPorAnular.getPosiciones()){
 			Posicion posicionRevertida = Posicion.revertirPosicion(posicion);
@@ -143,11 +143,15 @@ public class AsientoREST {
 		}
 		
 		Long idAnulacion = nuevoAsiento.contabilizarAsiento();
-		asientoPorAnular.setAnulado(usuario);
-		asientoService.save(asientoPorAnular);
+		nuevoAsiento.anular(asientoPorAnular, usuario);
 		return idAnulacion;
 	}
 	
+	private void anular(Asiento asientoPorAnular, User usuario) {
+		asientoPorAnular.setAnulado(usuario);
+		asientoService.save(asientoPorAnular);		
+	}
+
 	private void setCabeceraAsiento(LocalDate fecha,User usuario,Sucursal sucursal, String textoCabecera) {
 		cabecera.setFechaRegistro(fecha);
 		cabecera.setFechaContabilizacion(fecha);		

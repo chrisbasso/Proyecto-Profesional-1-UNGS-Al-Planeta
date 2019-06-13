@@ -8,10 +8,15 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.tp.proyecto1.model.contabilidad.Cabecera;
 import com.tp.proyecto1.model.contabilidad.MovimientoCaja;
+import com.tp.proyecto1.model.contabilidad.Posicion;
 import com.tp.proyecto1.model.sucursales.Sucursal;
+import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.services.AsientoService;
 import com.tp.proyecto1.services.SucursalService;
+import com.tp.proyecto1.services.UserService;
+import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.contabilidad.MovimientosCajaView;
 import com.vaadin.flow.spring.annotation.UIScope;
@@ -26,6 +31,8 @@ public class MovimientosCajaController {
 	private SucursalService sucursalService;
 	@Autowired
 	private SalidaCajaFormController salidaCajaFormController;
+	@Autowired
+	private UserService userService;
 	
 	private MovimientosCajaView view;
 	private List <MovimientoCaja> movimientos;
@@ -83,23 +90,27 @@ public class MovimientosCajaController {
 
 	private void buscarMovimientos() {
 		LocalDate fecha = view.getValueFecha();
-		Usuario usuario = view.getValueUsuario();
+		User usuario = buscarConId(view.getValueUsuario());
 		Sucursal suc = view.getValueSucursal();
 		
 		if(fecha != null){
 			if(usuario != null){
 				if(suc != null){
-					MovimientoCaja movEjemplo = new MovimientoCaja();
 					Cabecera cabEjemplo = new Cabecera();
 					cabEjemplo.setFechaContabilizacion(fecha);
 					Posicion posEjemplo = new Posicion();
-					movimientos = asientoService.findMovimientosCaja(fecha, usuario, suc);
+					MovimientoCaja movEjemplo = MovimientoCaja.getInstancia(0L, cabEjemplo, posEjemplo);
+					movimientos = asientoService.findMovimientosCajaFiltrado(fecha, usuario, suc);
 					refrescarLista();
 				}
 			}
 		}
 	}	
 		
+	private User buscarConId(Long id) {
+		return userService.getUserById(id);
+	}
+	
 	private void refrescarLista(){	
 		view.cargarMovimientos(movimientos);
 	}
