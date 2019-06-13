@@ -11,6 +11,7 @@ import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.contabilidad.Asiento;
 import com.tp.proyecto1.model.contabilidad.Cabecera;
 import com.tp.proyecto1.model.contabilidad.Cuenta;
+import com.tp.proyecto1.model.contabilidad.Modulo;
 import com.tp.proyecto1.model.contabilidad.Posicion;
 import com.tp.proyecto1.model.contabilidad.TipoPosicion;
 import com.tp.proyecto1.model.sucursales.Sucursal;
@@ -125,7 +126,7 @@ public class AsientoFormController {
     	}else if(saldoEsCero()) {
     		cabecera = new Cabecera(LocalDate.now(), 
     				asientoForm.getFechaSeleccionada(), Proyecto1Application.logUser,
-    				asientoForm.getTextoCabecera(),asientoForm.getSucursal());
+    				asientoForm.getTextoCabecera(),asientoForm.getSucursal(), Modulo.CONTABILIDAD);
     		Asiento asiento = new Asiento(cabecera,posiciones);
         	asientoService.save(asiento);    	
         	cerrar();	

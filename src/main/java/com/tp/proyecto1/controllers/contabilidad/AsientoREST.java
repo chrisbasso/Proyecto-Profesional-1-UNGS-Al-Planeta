@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.tp.proyecto1.model.contabilidad.Asiento;
 import com.tp.proyecto1.model.contabilidad.Cabecera;
 import com.tp.proyecto1.model.contabilidad.Cuenta;
+import com.tp.proyecto1.model.contabilidad.Modulo;
 import com.tp.proyecto1.model.contabilidad.Posicion;
 import com.tp.proyecto1.model.contabilidad.TipoPosicion;
 import com.tp.proyecto1.model.pasajes.Pago;
@@ -18,11 +20,9 @@ import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.services.AsientoService;
 import com.tp.proyecto1.utils.Inject;
-
+@Component
 public class AsientoREST {
-
 	private static AsientoREST instancia;
-	@Autowired
 	private AsientoService asientoService;
 	private Asiento asiento;
 	private Cabecera cabecera;
@@ -39,9 +39,10 @@ public class AsientoREST {
 	private Double importePagoDebito;
 	private Double importePagoTarjeta;
 	private Double importePagoCuentaCorriente;
-
-	private AsientoREST() {
-		Inject.Inject(this);
+	
+	@Autowired
+	private AsientoREST(AsientoService asientoService) {
+		this.asientoService = asientoService;
 		cabecera = new Cabecera();
 		posiciones = new ArrayList<Posicion>();
 		cuentaReserva = asientoService.findCuentaByNumero(202);
@@ -56,16 +57,12 @@ public class AsientoREST {
 		importePagoDebito = 0.0;
 		importePagoTarjeta = 0.0;
 		importePagoCuentaCorriente= 0.0;
-	}
-
-	private static AsientoREST getInstancia() {
-		instancia = new AsientoREST();
-		return instancia;
+		instancia = this;
 	}
 	
 	public static Long contabilizarNuevaReserva(Reserva reserva) {
-		AsientoREST nuevoAsiento = getInstancia();
-		nuevoAsiento.setCabeceraAsiento(reserva.getFecha(), reserva.getVendedor(), reserva.getSucursal(), "Contabilización de reserva");
+		AsientoREST nuevoAsiento = instancia;
+		nuevoAsiento.setCabeceraAsiento(reserva.getFecha(), reserva.getVendedor(), reserva.getSucursal(), "Contabilización de reserva", Modulo.RESERVAS);
 		Double sumaDePagos = 0.0;
 		if(reserva.getPagos().size()>0) {
 			sumaDePagos = nuevoAsiento.tratarNuevosPagos(reserva.getPagos());
@@ -78,8 +75,8 @@ public class AsientoREST {
 	}
 	
 	public static Long contabilizarDevolucionReserva(Reserva reserva) {
-		AsientoREST nuevoAsiento = getInstancia();
-		nuevoAsiento.setCabeceraAsiento(reserva.getFechaInactivacion(), reserva.getVendedor(), reserva.getSucursal(), "Devolución de reserva");
+		AsientoREST nuevoAsiento = instancia;
+		nuevoAsiento.setCabeceraAsiento(reserva.getFechaInactivacion(), reserva.getVendedor(), reserva.getSucursal(), "Devolución de reserva", Modulo.RESERVAS);
 		Double sumaDePagos = 0.0;
 		if(reserva.getPagos().size()>0) {
 			sumaDePagos = nuevoAsiento.tratarDevolucionPagos(reserva.getPagos());
@@ -92,8 +89,8 @@ public class AsientoREST {
 	}
 	
 	public static Long contabilizarReservaVencida(Reserva reserva, User usuarioBatch) {
-		AsientoREST nuevoAsiento = getInstancia();
-		nuevoAsiento.setCabeceraAsiento(LocalDate.now(), usuarioBatch, reserva.getSucursal(), "Reserva vencida");
+		AsientoREST nuevoAsiento = instancia;
+		nuevoAsiento.setCabeceraAsiento(LocalDate.now(), usuarioBatch, reserva.getSucursal(), "Reserva vencida", Modulo.RESERVAS);
 		Double sumaDePagos = 0.0;
 		if(reserva.getPagos().size()>0) {
 			sumaDePagos = nuevoAsiento.tratarGananciaPagos(reserva.getPagos());
@@ -106,8 +103,8 @@ public class AsientoREST {
 	}
 	
 	public static Long contabilizarNuevaVenta(Venta venta) {
-		AsientoREST nuevoAsiento = getInstancia();
-		nuevoAsiento.setCabeceraAsiento(venta.getFecha(), venta.getVendedor(), venta.getSucursal(), "Contabilización de venta");
+		AsientoREST nuevoAsiento = instancia;
+		nuevoAsiento.setCabeceraAsiento(venta.getFecha(), venta.getVendedor(), venta.getSucursal(), "Contabilización de venta", Modulo.VENTAS);
 		Double sumaDePagos = 0.0;
 		if(venta.getPagos().size()>0) {
 			sumaDePagos = nuevoAsiento.tratarNuevosPagos(venta.getPagos());
@@ -122,16 +119,16 @@ public class AsientoREST {
 	public static Long contabilizarSalidaCaja(LocalDate fecha, String txtCab, Sucursal suc,
 			Cuenta cta, Double impte, User usuario) {
 		
-		AsientoREST nuevoAsiento = getInstancia();
-		nuevoAsiento.setCabeceraAsiento(fecha, usuario, suc, txtCab);
+		AsientoREST nuevoAsiento = instancia;
+		nuevoAsiento.setCabeceraAsiento(fecha, usuario, suc, txtCab, Modulo.TESORERIA);
 		nuevoAsiento.agregarPosicion(TipoPosicion.DEBE, cta, impte);
 		nuevoAsiento.cerrarAsientoSalidaPago(impte);
 		return nuevoAsiento.contabilizarAsiento();
 	}
 	
 	public static Long anularAsiento(Asiento asientoPorAnular, User usuario){
-		AsientoREST nuevoAsiento = getInstancia();
-		nuevoAsiento.setCabeceraAsiento(LocalDate.now(), usuario, asientoPorAnular.getSucursal(),"Anular asiento: " + asientoPorAnular.getId());
+		AsientoREST nuevoAsiento = instancia;
+		nuevoAsiento.setCabeceraAsiento(LocalDate.now(), usuario, asientoPorAnular.getSucursal(),"Anular asiento: " + asientoPorAnular.getId(), asientoPorAnular.getCabecera().getModulo());
 		
 		for(Posicion posicion : asientoPorAnular.getPosiciones()){
 			Posicion posicionRevertida = Posicion.revertirPosicion(posicion);
@@ -148,12 +145,13 @@ public class AsientoREST {
 		asientoService.save(asientoPorAnular);		
 	}
 
-	private void setCabeceraAsiento(LocalDate fecha,User usuario,Sucursal sucursal, String textoCabecera) {
+	private void setCabeceraAsiento(LocalDate fecha,User usuario,Sucursal sucursal, String textoCabecera, Modulo modulo) {
 		cabecera.setFechaRegistro(fecha);
 		cabecera.setFechaContabilizacion(fecha);		
 		cabecera.setUsuario(usuario);
 		cabecera.setTextoCabecera(textoCabecera);
 		cabecera.setSucursal(sucursal);
+		cabecera.setModulo(modulo);
 	}
 	
 	private Double tratarNuevosPagos(List <Pago> pagos) {

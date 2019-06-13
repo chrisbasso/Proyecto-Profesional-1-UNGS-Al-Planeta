@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.contabilidad.Asiento;
 import com.tp.proyecto1.model.contabilidad.Cabecera;
+import com.tp.proyecto1.model.contabilidad.Modulo;
 import com.tp.proyecto1.model.contabilidad.MovimientoCaja;
 import com.tp.proyecto1.model.contabilidad.Posicion;
 import com.tp.proyecto1.model.sucursales.Sucursal;
@@ -92,7 +93,7 @@ public class MovimientosCajaController {
 	
 	private Button createDeleteButton(MovimientoCaja movimiento){
         Button btnBorrar = new Button(VaadinIcon.TRASH.create(), clickEvent -> borrarMovimiento(movimiento));
-    		if(movimiento.getCabecera().isAnulado()){
+    		if(movimiento.getCabecera().isAnulado() || !movimiento.getCabecera().getModulo().equals(Modulo.TESORERIA)){
     			btnBorrar.setEnabled(false);
     		}
     		return btnBorrar;
