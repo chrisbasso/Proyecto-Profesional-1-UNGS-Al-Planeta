@@ -33,6 +33,8 @@ public class Persona {
     }
 
     public Persona(String nombre, String apellido) {
+        this.nombre = nombre;
+        this.apellido = apellido;
     }
 
     public Long getId() {
