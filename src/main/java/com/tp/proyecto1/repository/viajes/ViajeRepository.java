@@ -11,5 +11,5 @@ import com.tp.proyecto1.model.viajes.Viaje;
 @Repository
 public interface ViajeRepository extends JpaRepository<Viaje, Long> {
 
-	List <Viaje> findByCiudad(Ciudad ciudad);
+	List <Viaje> findByDestino(Ciudad ciudad);
 }

@@ -137,7 +137,7 @@ public class ViajeService {
     
     @Transactional
     public List <Viaje> findByCiudad(Ciudad ciudad){
-    	return viajeRepository.findByCiudad(ciudad);
+    	return viajeRepository.findByDestino(ciudad);
     }
     
     @Transactional
@@ -151,7 +151,7 @@ public class ViajeService {
     		}
     		if(!ciudades.isEmpty()) {
     			for(Ciudad ciudad : ciudades) {
-        			viajesPorPais.addAll(viajeRepository.findByCiudad(ciudad));
+        			viajesPorPais.addAll(viajeRepository.findByDestino(ciudad));
         		}	
     		}    		
     		return viajesPorPais;

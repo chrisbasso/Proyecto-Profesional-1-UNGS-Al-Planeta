@@ -122,8 +122,8 @@ public class ReservasController {
     private void validarViaje(){
     	Long id = reservaView.getValueNumeroViaje();  
     	if( id != 0L) {
-    		Optional<Viaje> viaje = viajeService.findById(id);
-    		if(!viaje.isPresent()) {
+    		Viaje viaje = viajeService.findById(id);
+    		if(viaje.equals(null)){
     			Notification.show("No existe un viaje con ese ID");    			
     		}
     	}
