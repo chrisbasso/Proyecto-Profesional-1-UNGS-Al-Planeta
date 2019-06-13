@@ -68,21 +68,28 @@ public class ConsultaFormController {
 
     private void saveConsulta() {
 
-        if(evento==null){
-            if(consultaForm.getComboTipo().getValue().equals("Consulta")){
+        if(evento==null)
+        {
+            if(consultaForm.getComboTipo().getValue().equals("Consulta"))
+            {
                 evento = new Consulta();
-            }else{
+            }
+            else
+            {
                 evento = new Reclamo();
             }
-            if(consultaForm.getCheckInteresado().getValue()){
+            evento.setAbierto(true);
+            if(consultaForm.getCheckInteresado().getValue())
+            {
                 Interesado interesado = new Interesado();
                 interesado.setApellido(consultaForm.getApellido().getValue());
                 interesado.setNombre(consultaForm.getNombre().getValue());
                 interesado.setEmail(consultaForm.getEmail().getValue());
                 interesado.setTelefono(consultaForm.getTelefono().getValue());
-                evento.setPersona(interesado);
-
-            }else{
+                evento.setPersona(interesado);  
+            }
+            else
+            {
                 Cliente cliente = consultaForm.getBuscadorClientes().getCliente();
                 evento.setPersona(cliente);
             }
@@ -90,12 +97,14 @@ public class ConsultaFormController {
             evento.setHora(LocalTime.now());
             evento.setCreadorEvento(Proyecto1Application.logUser);
             evento.setUsuarioAsignado(Proyecto1Application.logUser);
-        }else{
+        }
+        else
+        {
             evento.setUsuarioAsignado(consultaForm.getComboUsuarios().getValue());
         }
         evento.setMensaje(consultaForm.getTextAreaDescripcion().getValue());
         evento.setPrioridad(consultaForm.getComboPrioridad().getValue());
-
+       
         eventoService.save(this.evento);
         changeHandler.onChange();
         consultaForm.close();

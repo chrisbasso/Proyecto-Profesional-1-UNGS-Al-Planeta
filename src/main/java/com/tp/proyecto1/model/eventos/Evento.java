@@ -7,6 +7,7 @@ import com.tp.proyecto1.model.users.User;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -32,7 +33,13 @@ public class Evento {
 	@ManyToOne
 	private User usuarioAsignado;
 
-	private Boolean isAbierto = true;
+	private LocalDate fechaCierre;
+	private LocalTime horaCierre;
+	
+	@OneToMany(fetch = FetchType.EAGER)
+	private List<Recordatorio> recordatorios;
+	
+	private Boolean isAbierto;
 
 	private String prioridad;
 
@@ -95,14 +102,6 @@ public class Evento {
 		this.usuarioAsignado = usuarioAsignado;
 	}
 
-	public Boolean getAbierto() {
-		return isAbierto;
-	}
-
-	public void setAbierto(Boolean abierto) {
-		isAbierto = abierto;
-	}
-
 	public Long getId() {
 		return id;
 	}
@@ -119,11 +118,11 @@ public class Evento {
 		this.prioridad = prioridad;
 	}
 
-	public boolean isAbierto() {
+	public Boolean isAbierto() {
 		return isAbierto;
 	}
 
-	public void setAbierto(boolean abierto) {
+	public void setAbierto(Boolean abierto) {
 		isAbierto = abierto;
 	}
 
@@ -136,6 +135,8 @@ public class Evento {
 				Objects.equals(mensaje, evento.mensaje) &&
 				Objects.equals(fecha, evento.fecha) &&
 				Objects.equals(hora, evento.hora) &&
+				Objects.equals(fechaCierre, evento.fechaCierre) &&
+				Objects.equals(horaCierre, evento.horaCierre) &&
 				Objects.equals(persona, evento.persona) &&
 				Objects.equals(prioridad, evento.prioridad);
 	}
@@ -143,5 +144,35 @@ public class Evento {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, mensaje, fecha, hora, persona, prioridad);
+	}
+
+	public LocalDate getFechaCierre()
+	{
+		return fechaCierre;
+	}
+
+	public void setFechaCierre(LocalDate fechaCierre)
+	{
+		this.fechaCierre = fechaCierre;
+	}
+
+	public LocalTime getHoraCierre()
+	{
+		return horaCierre;
+	}
+
+	public void setHoraCierre(LocalTime horaCierre)
+	{
+		this.horaCierre = horaCierre;
+	}
+
+	public List<Recordatorio> getRecordatorios()
+	{
+		return recordatorios;
+	}
+
+	public void setRecordatorios(List<Recordatorio> recordatorios)
+	{
+		this.recordatorios = recordatorios;
 	}
 }

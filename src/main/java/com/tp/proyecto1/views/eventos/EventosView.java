@@ -23,6 +23,7 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 	private Button searchButton = new Button("Buscar", VaadinIcon.SEARCH.create());
 	private Button newConsultaButton = new Button("Nueva Evento");
 	private Checkbox checkAbierto = new Checkbox("Solo Abiertos");
+	private Button btnAgregarRecordatorio = new Button("Agregar recordatorio");
 
 	public EventosView() {
 		super(Evento.class);
@@ -43,6 +44,7 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 	public void setLayout() {
 		HorizontalLayout hlSpace = new HorizontalLayout();
 		hlSpace.setWidthFull();
+		this.hlFooter.add(btnAgregarRecordatorio);
 		this.hlActions.add(idFilter,idClienteFilter,nombreFilter,apellidoFilter,fechaFilter,checkAbierto,hlSpace,searchButton,newConsultaButton);
 	}
 
@@ -123,6 +125,16 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 
 	public void setNewConsultaButton(Button newConsultaButton) {
 		this.newConsultaButton = newConsultaButton;
+	}
+
+	public Button getBtnAgregarRecordatorio()
+	{
+		return btnAgregarRecordatorio;
+	}
+
+	public void setBtnAgregarRecordatorio(Button btnAgregarRecordatorio)
+	{
+		this.btnAgregarRecordatorio = btnAgregarRecordatorio;
 	}
 
 }

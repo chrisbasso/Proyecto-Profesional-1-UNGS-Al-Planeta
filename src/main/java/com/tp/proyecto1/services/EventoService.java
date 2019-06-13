@@ -7,6 +7,8 @@ import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.repository.clientes.ClienteRepository;
 import com.tp.proyecto1.repository.clientes.InteresadoRepository;
 import com.tp.proyecto1.repository.eventos.EventoRepository;
+import com.tp.proyecto1.repository.eventos.RecordatorioRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class EventoService {
 
 	@Transactional
 	public void save(Evento evento){
+		
 		eventoRepository.save(evento);
 		if(evento.getPersona() instanceof Interesado){
 			interesadoRepository.save((Interesado) evento.getPersona());
@@ -35,7 +38,8 @@ public class EventoService {
 	}
 
 	@Transactional
-	public List<Evento> findAll(){
+	public List<Evento> findAll()
+	{
 		return this.eventoRepository.findAll();
 	}
 
@@ -44,7 +48,8 @@ public class EventoService {
 		return eventoRepository.findAllByPersona(persona);
 	}
 
-	public List<Evento> findEventos(Evento eventoConsulta) {
+	public List<Evento> findEventos(Evento eventoConsulta)
+	{
 		return eventoRepository.findAll(Example.of(eventoConsulta));
 	}
 }

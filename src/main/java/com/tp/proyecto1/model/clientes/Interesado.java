@@ -9,9 +9,6 @@ import java.util.Objects;
 @Entity
 public class Interesado extends Persona{
 
-    @Id
-    @GeneratedValue
-    private Long id;
 
 
     public Interesado() {

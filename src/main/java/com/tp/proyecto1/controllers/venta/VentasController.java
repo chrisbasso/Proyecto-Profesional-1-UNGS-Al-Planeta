@@ -8,6 +8,7 @@ import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.ConfirmationDialog;
+import com.tp.proyecto1.utils.EnviadorDeMail;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.ventas.ComprobanteVenta;
 import com.tp.proyecto1.views.ventas.VentaView;
