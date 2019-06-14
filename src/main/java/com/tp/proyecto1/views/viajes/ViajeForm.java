@@ -121,7 +121,7 @@ public class ViajeForm extends Dialog {
         btnNuevoPais.addThemeVariants(ButtonVariant.LUMO_SMALL);
         btnNuevoTag.addThemeVariants(ButtonVariant.LUMO_SMALL);
 
-        btnNuevaCiudad.setEnabled(false );
+        btnNuevaCiudad.setEnabled(false);
 
         form.setResponsiveSteps(new FormLayout.ResponsiveStep("0", 4));
 

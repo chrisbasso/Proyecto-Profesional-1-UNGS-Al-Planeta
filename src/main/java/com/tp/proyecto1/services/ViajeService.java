@@ -108,12 +108,40 @@ public class ViajeService {
     public void saveTagDestino(TagDestino tag) {
     	tagDestinoRepository.save(tag);
     }
+
     @Transactional
-    public void savePais(Pais pais) {
-        paisRepository.save(pais);
+    public boolean savePais(Pais pais) {
+        Pais paisExiste = paisRepository.findByNombreIgnoreCase(pais.getNombre());
+        if (paisExiste == null) {
+            paisRepository.save(pais);
+            pais.getContinente().getPaises().add(pais);
+            continenteRepository.save(pais.getContinente());
+            return true;
+        }
+        return false;
     }
     @Transactional
-    public void saveCiudad(Ciudad ciudad) {
-        ciudadRepository.save(ciudad);
+    public boolean saveCiudad(Ciudad ciudad) {
+        Ciudad ciudadExiste = ciudadRepository.findByNombreIgnoreCase(ciudad.getNombre());
+        if (ciudadExiste == null) {
+            ciudadRepository.save(ciudad);
+            ciudad.getProvincia().getCiudades().add(ciudad);
+            provinciaRepository.save(ciudad.getProvincia());
+            return true;
+        }
+        return false;
     }
+
+    @Transactional
+    public boolean saveProvincia(Provincia provincia) {
+        Provincia provinciaExiste = provinciaRepository.findByNombreIgnoreCase(provincia.getNombre());
+        if (provinciaExiste == null) {
+            provinciaRepository.save(provincia);
+            provincia.getPais().getProvincias().add(provincia);
+            paisRepository.save(provincia.getPais());
+            return true;
+        }
+        return false;
+    }
+
 }

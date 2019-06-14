@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CiudadRepository extends JpaRepository<Ciudad, Long> {
+
+	Ciudad findByNombreIgnoreCase(String nombre);
+
 }

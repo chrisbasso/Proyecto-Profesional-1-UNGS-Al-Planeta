@@ -23,6 +23,7 @@ public class ViajesView extends FilterGridLayout<Viaje> implements View {
 	private DatePicker fechaDesdeFilter;
 	private DatePicker fechaHastaFilter;
 	private Checkbox activosCheck;
+	private Button nuevoDestino;
 	private Button searchButton;
 	private Button newViajeButton;
 	private Button btnReservar;
@@ -51,6 +52,8 @@ public class ViajesView extends FilterGridLayout<Viaje> implements View {
 		this.searchButton.setMinWidth("105px");
 		this.newViajeButton = new Button("Nuevo", VaadinIcon.PLUS.create());
 		this.newViajeButton.setMinWidth("105px");
+		this.nuevoDestino = new Button("Destino",VaadinIcon.PLUS.create());
+		this.nuevoDestino.setMinWidth("110px");
 		this.activosCheck = new Checkbox("Solo Activos");
 		this.transporteFilter = new ComboBox<>("Transporte");
 		this.transporteFilter.setWidth("130px");
@@ -69,7 +72,7 @@ public class ViajesView extends FilterGridLayout<Viaje> implements View {
 		HorizontalLayout hlSpace = new HorizontalLayout();
 		this.hlFooter.add(btnReservar, btnComprar);
 		hlSpace.setWidthFull();
-		this.hlActions.add(idFilter, provinciaFilter, ciudadFilter, codTransporteFilter, transporteFilter,fechaDesdeFilter,fechaHastaFilter,activosCheck,hlSpace, searchButton, newViajeButton);
+		this.hlActions.add(idFilter, provinciaFilter, ciudadFilter, codTransporteFilter, transporteFilter,fechaDesdeFilter,fechaHastaFilter,activosCheck,hlSpace, searchButton,nuevoDestino, newViajeButton);
 	}
 
 	public void setGrid() {
@@ -118,6 +121,13 @@ public class ViajesView extends FilterGridLayout<Viaje> implements View {
 		this.searchButton = searchButton;
 	}
 
+	public Button getNuevoDestino() {
+		return nuevoDestino;
+	}
+
+	public void setNuevoDestino(Button nuevoDestino) {
+		this.nuevoDestino = nuevoDestino;
+	}
 
 	public TextField getCodTransporteFilter() {
 		return codTransporteFilter;

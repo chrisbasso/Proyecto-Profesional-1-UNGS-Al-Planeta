@@ -29,6 +29,8 @@ public class ViajesController {
     private ViajeFormController viajeFormController;
 
     private VentaFormController ventaFormController;
+
+    private DestinosFormController destinosController;
     
 	private ReservaFormController reservaFormController; 
 
@@ -55,6 +57,14 @@ public class ViajesController {
         viajesView.getSearchButton().addClickListener(e-> listViajes());
         viajesView.getBtnReservar().addClickListener(e-> openNewReservaForm());
         viajesView.getBtnComprar().addClickListener(e-> openNewVentaForm());
+        viajesView.getNuevoDestino().addClickListener(e->openNewDestinoForm());
+
+    }
+
+    private void openNewDestinoForm() {
+
+        destinosController = new DestinosFormController();
+        destinosController.getDestinosForm().open();
 
     }
 
@@ -152,6 +162,5 @@ public class ViajesController {
     public ViajesView getView(){
         return viajesView;
     }
-
 
 }

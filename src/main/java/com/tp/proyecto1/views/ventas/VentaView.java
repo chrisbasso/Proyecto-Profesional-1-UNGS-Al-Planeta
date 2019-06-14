@@ -18,17 +18,16 @@ import com.vaadin.flow.component.textfield.TextField;
 
 public class VentaView extends FilterGridLayout<Venta> implements View {
 
-
     private NumberField numeroClienteFilter;
     private ComboBox<Provincia> provinciaFilter;
     private ComboBox<Ciudad> ciudadFilter;
     private TextField codTransporteFilter;
     private DatePicker fechaFilter;
+
     private Button searchButton;
     private Button btnComprobante;
     private Button btnEnvioMail;
 	private Checkbox activosCheck;
-
 
     public VentaView() {
         super(Venta.class);
@@ -153,4 +152,5 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
 	public void setBtnEnvioMail(Button btnEnvioMail) {
 		this.btnEnvioMail = btnEnvioMail;
 	}
+
 }
