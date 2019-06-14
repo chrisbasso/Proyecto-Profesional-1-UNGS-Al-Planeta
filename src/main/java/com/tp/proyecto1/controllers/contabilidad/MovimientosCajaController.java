@@ -39,7 +39,7 @@ public class MovimientosCajaController {
 	@Autowired
 	private SalidaCajaFormController salidaCajaFormController;
 	@Autowired
-	private UserService userService;
+	private UserService usuarioService;
 	
 	private MovimientosCajaView view;
 	private List <MovimientoCaja> movimientos;
@@ -55,8 +55,8 @@ public class MovimientosCajaController {
 		leerMovimientosDelMes();
 		view.cargarMovimientos(movimientos);
 		view.cargarEtiquetasSaldos(totalizarValores());
-		agregarListeners();
 		view.agregarColumnaBorrado(this::createDeleteButton);
+		agregarListeners();
 		return view;
 	}
 
@@ -84,12 +84,6 @@ public class MovimientosCajaController {
 		return ret;
 	}
 	
-	private void agregarListeners() {
-		setChangeHandler(this::refrescarDatosVista);
-		view.setBtnAgregarListener(e->nuevoEgreso());
-		view.setBtnBuscarListener(e->buscarMovimientos());
-	}
-	
 	private Button createDeleteButton(MovimientoCaja movimiento){
         Button btnBorrar = new Button(VaadinIcon.TRASH.create(), clickEvent -> borrarMovimiento(movimiento));
     		if(movimiento.getCabecera().isAnulado() || !movimiento.getCabecera().getModulo().equals(Modulo.TESORERIA)){
@@ -107,6 +101,23 @@ public class MovimientosCajaController {
 		refrescarDatosVista();
 	}
 	
+	private void agregarListeners() {
+		setChangeHandler(this::refrescarDatosVista);
+		view.setUsuarioListener(e->validarUsuario());
+		view.setBtnAgregarListener(e->nuevoEgreso());
+		view.setBtnBuscarListener(e->buscarMovimientos());
+	}
+	
+	private void validarUsuario() {
+		Long id = view.getValueUsuario();
+		if(!id.equals(null)) {
+			User usuario = usuarioService.getUserById(id);
+			if(usuario.equals(null)) {
+				Notification.show("No existe un usuario con ese ID");
+			}
+		}
+	}
+	
 	private void nuevoEgreso() {
 		salidaCajaFormController.cargarNuevaSalidaCaja();
 		salidaCajaFormController.setChangeHandler(this::refrescarDatosVista);
@@ -114,29 +125,32 @@ public class MovimientosCajaController {
 
 	private void buscarMovimientos() {
 		LocalDate fecha = view.getValueFecha();
-		User usuario = buscarConId(view.getValueUsuario());
+		User usuario = null;
+		if(view.getValueUsuario() != null) {
+			usuario = usuarioService.getUserById(view.getValueUsuario());
+		}		
 		Sucursal suc = view.getValueSucursal();
 		
 		if(fecha != null){
 			if(usuario != null){
 				if(suc != null){
-					Cabecera cabEjemplo = new Cabecera();
-					cabEjemplo.setFechaContabilizacion(fecha);
-					Posicion posEjemplo = new Posicion();
-					MovimientoCaja movEjemplo = MovimientoCaja.getInstancia(0L, cabEjemplo, posEjemplo);
 					movimientos = asientoService.findMovimientosCajaFiltrado(fecha, usuario, suc);
-					refrescarDatosVista();
+					refrescarDatosVistaSinLeerMovimientos();
 				}
 			}
+		}else {
+			Notification.show("Debe ingresar sucursal, usuario y fecha para la búsqueda");
+			refrescarDatosVista();
 		}
 	}	
 		
-	private User buscarConId(Long id) {
-		return userService.getUserById(id);
-	}
-	
 	private void refrescarDatosVista() {
 		leerMovimientosDelMes();
+		view.cargarMovimientos(movimientos);
+		view.cargarEtiquetasSaldos(totalizarValores());
+	}
+	
+	private void refrescarDatosVistaSinLeerMovimientos() {
 		view.cargarMovimientos(movimientos);
 		view.cargarEtiquetasSaldos(totalizarValores());
 	}

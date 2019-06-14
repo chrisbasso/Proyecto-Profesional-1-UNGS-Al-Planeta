@@ -77,9 +77,9 @@ public class ViajeService {
     }
 
     @Transactional
-	public Viaje findById(Long id) {
+	public Optional <Viaje> findById(Long id) {
 		Optional <Viaje> viaje = viajeRepository.findById(id);
-		return viaje.orElse(null);
+		return viaje;
 	}
 
     @Transactional

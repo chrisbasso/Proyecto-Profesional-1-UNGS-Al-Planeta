@@ -1,5 +1,7 @@
 package com.tp.proyecto1.services;
 
+import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tp.proyecto1.model.pasajes.Reserva;
+import com.tp.proyecto1.model.viajes.Ciudad;
 import com.tp.proyecto1.repository.pasajes.ReservaRepository;
 
 @Service
@@ -65,5 +68,13 @@ public class ReservaService {
 	@Transactional
 	public List <Reserva> findByIdViajeIdCliente(Long idViaje, Long idCliente) {
 		return reservaRepository.findAllByViaje_IdAndCliente_Id(idViaje, idCliente);		
+	}
+
+	public List <Reserva> findByCiudad(Ciudad ciudad) {
+		return reservaRepository.findAllByViaje_Origen(ciudad);
+	}
+
+	public List <Reserva>  findByFecha(LocalDate fecha) {
+		return reservaRepository.findAllByFecha(fecha);
 	}	
 }

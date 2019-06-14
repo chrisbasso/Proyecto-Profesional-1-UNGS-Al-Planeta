@@ -7,8 +7,10 @@ import java.util.Map;
 import com.tp.proyecto1.model.contabilidad.MovimientoCaja;
 import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.utils.FilterGridLayout;
+import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -38,7 +40,7 @@ public class MovimientosCajaView extends FilterGridLayout<MovimientoCaja> {
 
     private void setComponents() {
         fechaFilter = new DatePicker("Fecha Contab.");
-        idUsuarioFilter = new NumberField("ID Usuario");
+        idUsuarioFilter = new NumberField("ID Usuario");        
         sucursalFilter = new ComboBox<Sucursal>();
         sucursalFilter.setLabel("Sucursal");
         btnBuscar = new Button("Buscar", VaadinIcon.SEARCH.create());
@@ -116,6 +118,10 @@ public class MovimientosCajaView extends FilterGridLayout<MovimientoCaja> {
     	return grid.asSingleSelect().getValue();
     }
 
+    public void setUsuarioListener(ValueChangeListener<? super ComponentValueChangeEvent<NumberField, Double>> e) {
+        idUsuarioFilter.addValueChangeListener(e);
+    }
+    
     public void setBtnBuscarListener(ComponentEventListener<ClickEvent<Button>> e) {
         btnBuscar.addClickListener(e);
     }
