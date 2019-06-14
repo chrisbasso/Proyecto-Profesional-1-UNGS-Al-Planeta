@@ -3,15 +3,27 @@ package com.tp.proyecto1.controllers.eventos;
 import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.clientes.Interesado;
+import com.tp.proyecto1.model.clientes.Persona;
 import com.tp.proyecto1.model.eventos.Consulta;
 import com.tp.proyecto1.model.eventos.Evento;
 import com.tp.proyecto1.model.eventos.Reclamo;
 import com.tp.proyecto1.model.users.User;
+import com.tp.proyecto1.model.viajes.Promocion;
+import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.EventoService;
 import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.eventos.ConsultaForm;
+import com.vaadin.flow.component.AbstractField;
+import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.textfield.EmailField;
+import com.vaadin.flow.component.timepicker.TimePicker;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.Setter;
+import com.vaadin.flow.function.SerializablePredicate;
+import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,12 +48,17 @@ public class ConsultaFormController {
     private UserService userService;
 
     private Evento evento;
+    
+    private Binder<Evento> binderEvento = new Binder<>();
+    
+    private Binder<Evento> binderPersona = new Binder<>();
 
     public ConsultaFormController() {
         Inject.Inject(this);
         this.consultaForm = new ConsultaForm();
         setListeners();
         setComponents();
+        setBinders();
     }
 
     private void setComponents() {
@@ -62,7 +79,7 @@ public class ConsultaFormController {
 
         consultaForm.getCheckInteresado().addValueChangeListener(e-> cambiarAinteresado());
         consultaForm.getCancel().addClickListener(e-> consultaForm.close());
-        consultaForm.getSave().addClickListener(e-> saveConsulta());
+        consultaForm.getBtnSave().addClickListener(e-> saveConsulta());
     }
 
     private void saveConsulta() {
@@ -94,8 +111,6 @@ public class ConsultaFormController {
             }
             evento.setFecha(LocalDate.now());
             evento.setHora(LocalTime.now());
-            evento.setFechaVencimiento(consultaForm.getFechaVencimiento().getValue());
-            evento.setHoraVencimiento(consultaForm.getHoraVencimiento().getValue());
             evento.setCreadorEvento(Proyecto1Application.logUser);
             evento.setUsuarioAsignado(Proyecto1Application.logUser);
         }
@@ -103,12 +118,40 @@ public class ConsultaFormController {
         {
             evento.setUsuarioAsignado(consultaForm.getComboUsuarios().getValue());
         }
+        if (consultaForm.getFechaVencimiento().getValue() != null &&
+        			consultaForm.getHoraVencimiento().getValue() != null)
+        {
+        	if ((evento.getFecha().isEqual(consultaForm.getFechaVencimiento().getValue())
+        				&& evento.getHora().isBefore(consultaForm.getHoraVencimiento().getValue()))
+        				|| evento.getFecha().isBefore(consultaForm.getFechaVencimiento().getValue()))
+        	{
+        		evento.setFechaVencimiento(consultaForm.getFechaVencimiento().getValue());
+                evento.setHoraVencimiento(consultaForm.getHoraVencimiento().getValue());
+        	}
+        	else
+        	{
+        		Notification.show("La fecha de vencimiento no es valida.");
+        		evento = null;
+        		throw new IllegalArgumentException("La fecha de vencimiento no es valida.");
+        	}
+        }
         evento.setMensaje(consultaForm.getTextAreaDescripcion().getValue());
         evento.setPrioridad(consultaForm.getComboPrioridad().getValue());
        
-        eventoService.save(this.evento);
-        changeHandler.onChange();
-        consultaForm.close();
+        if (binderEvento.writeBeanIfValid(evento)) {
+
+        	eventoService.save(this.evento);
+        	this.evento = null;
+            changeHandler.onChange();
+            Notification.show("Evento guardado.");
+            consultaForm.close();
+        }
+        else
+        {
+        	evento = null;
+        	 Notification.show("No se pudo guardar el evento. Revise los campos.");
+        }
+       
     }
 
     private void cambiarAinteresado() {
@@ -166,4 +209,84 @@ public class ConsultaFormController {
         consultaForm.getFechaVencimiento().setValue(evento.getFechaVencimiento());
         consultaForm.getHoraVencimiento().setValue(evento.getHoraVencimiento());
     }
+    
+    private void setBinders()
+    {
+    	setBinderFieldDescripcion(consultaForm.getTextAreaDescripcion(), Evento::getMensaje, Evento::setMensaje, true);
+    	setBinderFieldNombre(consultaForm.getNombre(), Persona::getNombre, Persona::setNombre, true);
+    	setBinderFieldApellido(consultaForm.getApellido(), Persona::getApellido, Persona::setApellido, true);
+    	setBinderFieldMail(consultaForm.getEmail(), Persona::getEmail, Persona::setEmail, true);
+    	setBinderFieldTelefono(consultaForm.getTelefono(), Persona::getTelefono, Persona::setTelefono, true);
+    	binderEvento.setBean(evento);
+    }
+    
+    private void setBinderFieldDescripcion(AbstractField field, ValueProvider<Evento, String> valueProvider, Setter<Evento, String> setter, boolean isRequiered){
+
+        SerializablePredicate<String> predicate = value -> !field.isEmpty();
+        Binder.Binding<Evento, String> binding;
+        if(isRequiered){
+           binding = binderEvento.forField(field)
+                    .withValidator(predicate, "El campo es obligatorio")
+                    .bind(valueProvider, setter);
+        }else{
+            binding = binderEvento.forField(field).bind(valueProvider, setter);
+        }
+        consultaForm.getBtnSave().addClickListener(event -> binding.validate());
+    }
+    
+    private void setBinderFieldNombre(AbstractField field, ValueProvider<Persona, String> valueProvider, Setter<Persona, String> setter, boolean isRequiered){
+
+        SerializablePredicate<String> predicate = value -> !field.isEmpty();
+        Binder.Binding<Persona, String> binding;
+        if(isRequiered){
+           binding = binderPersona.forField(field)
+                    .withValidator(predicate, "El campo es obligatorio")
+                    .bind(valueProvider, setter);
+        }else{
+            binding = binderPersona.forField(field).bind(valueProvider, setter);
+        }
+        consultaForm.getBtnSave().addClickListener(event -> binding.validate());
+    }
+    
+    private void setBinderFieldApellido(AbstractField field, ValueProvider<Persona, String> valueProvider, Setter<Persona, String> setter, boolean isRequiered){
+
+        SerializablePredicate<String> predicate = value -> !field.isEmpty();
+        Binder.Binding<Persona, String> binding;
+        if(isRequiered){
+           binding = binderPersona.forField(field)
+                    .withValidator(predicate, "El campo es obligatorio")
+                    .bind(valueProvider, setter);
+        }else{
+            binding = binderPersona.forField(field).bind(valueProvider, setter);
+        }
+        consultaForm.getBtnSave().addClickListener(event -> binding.validate());
+    }
+    private void setBinderFieldTelefono(AbstractField field, ValueProvider<Persona, String> valueProvider, Setter<Persona, String> setter, boolean isRequiered){
+
+        SerializablePredicate<String> predicate = value -> !field.isEmpty();
+        Binder.Binding<Persona, String> binding;
+        if(isRequiered){
+           binding = binderPersona.forField(field)
+                    .withValidator(predicate, "El campo es obligatorio")
+                    .bind(valueProvider, setter);
+        }else{
+            binding = binderPersona.forField(field).bind(valueProvider, setter);
+        }
+        consultaForm.getBtnSave().addClickListener(event -> binding.validate());
+    }
+    
+    private void setBinderFieldMail(AbstractField field, ValueProvider<Persona, String> valueProvider, Setter<Persona, String> setter, boolean isRequiered){
+
+        SerializablePredicate<String> predicate = value -> !field.isEmpty() ;
+        Binder.Binding<Persona, String> binding;
+        if(isRequiered){
+           binding = binderPersona.forField(field)
+                    .withValidator(predicate, "El campo es obligatorio")
+                    .bind(valueProvider, setter);
+        }else{
+            binding = binderPersona.forField(field).bind(valueProvider, setter);
+        }
+        consultaForm.getBtnSave().addClickListener(event -> binding.validate());
+    }
+    
 }

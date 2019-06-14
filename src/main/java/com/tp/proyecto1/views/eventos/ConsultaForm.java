@@ -128,7 +128,7 @@ public class ConsultaForm extends Dialog {
         return email;
     }
 
-    public Button getSave() {
+    public Button getBtnSave() {
         return save;
     }
 
