@@ -1,17 +1,34 @@
 package com.tp.proyecto1.services;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.tp.proyecto1.model.viajes.*;
-import com.tp.proyecto1.repository.viajes.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.tp.proyecto1.model.viajes.Ciudad;
+import com.tp.proyecto1.model.viajes.Continente;
+import com.tp.proyecto1.model.viajes.Pais;
+import com.tp.proyecto1.model.viajes.Provincia;
+import com.tp.proyecto1.model.viajes.TagDestino;
+import com.tp.proyecto1.model.viajes.TipoTransporte;
+import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.repository.viajes.CiudadRepository;
+import com.tp.proyecto1.repository.viajes.ContinenteRepository;
+import com.tp.proyecto1.repository.viajes.PaisRepository;
+import com.tp.proyecto1.repository.viajes.ProvinciaRepository;
+import com.tp.proyecto1.repository.viajes.TagDestinoRepository;
+import com.tp.proyecto1.repository.viajes.TipoTransporteRepository;
+import com.tp.proyecto1.repository.viajes.ViajeRepository;
 
 @Service
 public class ViajeService {
@@ -60,13 +77,18 @@ public class ViajeService {
     }
 
     @Transactional
+	public Viaje findById(Long id) {
+		Optional <Viaje> viaje = viajeRepository.findById(id);
+		return viaje.orElse(null);
+	}
+
+    @Transactional
     public void delete(Viaje viaje) {
         viajeRepository.delete(viaje);
     }
 
     @Transactional
     public TipoTransporte createTipoTransporteIfNotExist(String tipo) {
-
         TipoTransporte tipoTransporte = tipoTransporteRepository.findByDescripcion(tipo);
         if (tipoTransporte == null) {
             tipoTransporte = new TipoTransporte(tipo);
@@ -77,9 +99,7 @@ public class ViajeService {
 
     @Transactional
     public List<TipoTransporte> findAllTipoTransportes() {
-
         return tipoTransporteRepository.findAll();
-
     }
 
     @Transactional
@@ -99,9 +119,7 @@ public class ViajeService {
 
     @Transactional
     public List<Ciudad> findAllCiudades() {
-
         return ciudadRepository.findAll();
-
     }
 
     @Transactional
@@ -142,6 +160,33 @@ public class ViajeService {
             return true;
         }
         return false;
+    }
+
+
+
+    @Transactional
+    public List <Viaje> findByCiudad(Ciudad ciudad){
+    	return viajeRepository.findByDestino(ciudad);
+    }
+
+    @Transactional
+    public List <Viaje> findByPais(Pais pais){
+    	Optional <Pais> optional = paisRepository.findById(pais.getId());
+    	if(optional.isPresent()) {
+        	List <Viaje> viajesPorPais = new ArrayList<>();
+    		Set <Ciudad> ciudades = new  HashSet<Ciudad>();
+    		for(Provincia provincia : optional.get().getProvincias()) {
+    			ciudades.addAll(provincia.getCiudades());
+    		}
+    		if(!ciudades.isEmpty()) {
+    			for(Ciudad ciudad : ciudades) {
+        			viajesPorPais.addAll(viajeRepository.findByDestino(ciudad));
+        		}
+    		}
+    		return viajesPorPais;
+    	}else {
+    		return null;
+    	}
     }
 
 }

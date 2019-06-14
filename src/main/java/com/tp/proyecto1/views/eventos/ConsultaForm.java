@@ -9,6 +9,7 @@ import com.tp.proyecto1.utils.PrioridadEvento;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Label;
@@ -18,6 +19,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.component.timepicker.TimePicker;
 
 public class ConsultaForm extends Dialog {
 
@@ -36,7 +38,9 @@ public class ConsultaForm extends Dialog {
     private TextArea textAreaDescripcion = new TextArea("Descripción");
     private ComboBox<User> comboUsuarios = new ComboBox<>();
     private ComboBox<String> comboTipo = new ComboBox<>();
-
+    private DatePicker fechaVencimiento = new DatePicker();
+    private TimePicker horaVencimiento = new TimePicker();
+    
     public ConsultaForm() {
 
         setComponents();
@@ -78,6 +82,8 @@ public class ConsultaForm extends Dialog {
         form.addFormItem(telefono, "Teléfono");
         form.addFormItem(comboPrioridad, "Prioridad");
         form.addFormItem(checkInteresado,"");
+        form.addFormItem(fechaVencimiento, "Vence el dia");
+        form.addFormItem(horaVencimiento, "A las");
     }
 
     private void setLayouts() {
@@ -214,4 +220,24 @@ public class ConsultaForm extends Dialog {
     public void setTextAreaDescripcion(TextArea textAreaDescripcion) {
         this.textAreaDescripcion = textAreaDescripcion;
     }
+
+	public DatePicker getFechaVencimiento()
+	{
+		return fechaVencimiento;
+	}
+
+	public void setFechaVencimiento(DatePicker fechaVencimiento)
+	{
+		this.fechaVencimiento = fechaVencimiento;
+	}
+
+	public TimePicker getHoraVencimiento()
+	{
+		return horaVencimiento;
+	}
+
+	public void setHoraVencimiento(TimePicker horaVencimiento)
+	{
+		this.horaVencimiento = horaVencimiento;
+	}
 }

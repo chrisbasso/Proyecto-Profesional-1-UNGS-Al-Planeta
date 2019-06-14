@@ -3,8 +3,6 @@ package com.tp.proyecto1.services;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -52,5 +50,20 @@ public class ReservaService {
 	@Transactional
 	public Optional<Reserva> findById(Long id) {		
 		return reservaRepository.findById(id);
+	}
+	
+	@Transactional
+	public List <Reserva> findByIdCliente(Long idCliente){
+		return reservaRepository.findAllByCliente_Id(idCliente);
+	}
+
+	@Transactional
+	public List <Reserva> findByIdViaje(Long idViaje) {
+		return reservaRepository.findAllByViaje_Id(idViaje);		
+	}
+
+	@Transactional
+	public List <Reserva> findByIdViajeIdCliente(Long idViaje, Long idCliente) {
+		return reservaRepository.findAllByViaje_IdAndCliente_Id(idViaje, idCliente);		
 	}	
 }

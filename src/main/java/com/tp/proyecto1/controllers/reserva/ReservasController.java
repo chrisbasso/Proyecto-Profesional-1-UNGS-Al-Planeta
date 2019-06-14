@@ -1,16 +1,20 @@
 package com.tp.proyecto1.controllers.reserva;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
-import com.tp.proyecto1.model.viajes.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.tp.proyecto1.controllers.venta.VentaFormController;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.Reserva;
+import com.tp.proyecto1.model.viajes.Ciudad;
+import com.tp.proyecto1.model.viajes.Transporte;
+import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.services.ReservaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
@@ -32,6 +36,8 @@ public class ReservasController {
     private ReservaService reservaService;
     @Autowired
     private ViajeService viajeService;
+    @Autowired
+    private ClienteService clienteService;
     private ReservaFormController reservaFormController;
     private ReservaView reservaView;
     private ChangeHandler changeHandler;
@@ -43,29 +49,31 @@ public class ReservasController {
         this.reservaView = new ReservaView();        
         agregarBotonesEdicion();
         setListeners();
-        listReservas();
-        setComponents();
+        cargarCiudades();
+        listarReservas();
     }
 
     private void agregarBotonesEdicion() {
-        reservaView.agregarColumnaEdicion(this::createEditButton);
-        reservaView.agregarColumnaBorrado(this::createDeleteButton);
+        reservaView.agregarColumnaEdicion(this::crearBotonEdicion);
+        reservaView.agregarColumnaBorrado(this::crearBotonBorrado);
     }
     
-    private Button createEditButton(Reserva reserva) {
-        return new Button(VaadinIcon.EDIT.create(), clickEvent -> {
-        	Viaje viaje = reserva.getViaje();
-            if(ReservaFormController.esReservablePorFecha(viaje)) {
-            	reservaFormController = new ReservaFormController(viaje);
-                reservaFormController.getFormModificacionReserva(reserva).open();    			
-    		}else {
-    			Notification.show("Por la política de fechas el viaje selecionado solo se puede comprar.");
-    		};
-            reservaFormController.setChangeHandler(this::listReservas);
-        });
+    private Button crearBotonEdicion(Reserva reserva) {
+        return new Button(VaadinIcon.EDIT.create(), clickEvent -> editarReserva(reserva));
     }
     
-    private Button createDeleteButton(Reserva reserva) {
+    private void editarReserva (Reserva reserva){
+    	Viaje viaje = reserva.getViaje();
+        if(ReservaREST.esReservablePorFecha(viaje)) {
+        	reservaFormController = new ReservaFormController(viaje);
+        	reservaFormController.setChangeHandler(this::listarReservas);
+            reservaFormController.getFormModificacionReserva(reserva).open();    			
+		}else {
+			Notification.show("Por la política de fechas el viaje selecionado solo se puede comprar.");
+		}            
+    }
+    
+    private Button crearBotonBorrado(Reserva reserva) {
         Button btnBorrar = new Button(VaadinIcon.TRASH.create(), clickEvent -> borrarReserva(reserva));
     		if(!reserva.isActivo()){
     			btnBorrar.setEnabled(false);
@@ -92,100 +100,97 @@ public class ReservasController {
 		confirmationDialog.open();
 	}
 
-    private void setComponents() {
-        reservaView.getProvinciaFilter().setItems(viajeService.findAllProvincias());
-    }
-
     private void setListeners() {
-        reservaView.getProvinciaFilter().addValueChangeListener(e->setComboCiudades());
-    	setChangeHandler(this::listReservas);
-    	reservaView.setBtnBuscarListener(e->listReservas());
+    	setChangeHandler(this::listarReservas);
+    	reservaView.setIdClienteListener(e->validarCliente());
+    	reservaView.setIdViajeListener(e->validarViaje());
+    	reservaView.setBtnBuscarListener(e->listarReservas());
     	reservaView.setBtnVenderListener(e-> venderReserva());
-    	reservaView.getBtnComprobante().addClickListener(e->imprimirComprobante());
+    	reservaView.setBtnComprobanteListener(e->imprimirComprobante());
+    }
+    
+    private void validarCliente(){
+    	Long id = reservaView.getValueNumeroCliente();  
+    	if( id != 0L) {
+    		Optional<Cliente> cliente = clienteService.findById(id);
+    		if(!cliente.isPresent()) {
+    			Notification.show("No existe un cliente con ese ID");    			
+    		}
+    	}
     }
 
+    private void validarViaje(){
+    	Long id = reservaView.getValueNumeroViaje();  
+    	if( id != 0L) {
+    		Viaje viaje = viajeService.findById(id);
+    		if(viaje.equals(null)){
+    			Notification.show("No existe un viaje con ese ID");    			
+    		}
+    	}
+    }    
+            
+    private void cargarCiudades() {
+    	reservaView.cargarCiudades(viajeService.findAllCiudades());
+    }
 
-    private void imprimirComprobante()
-	{
-    	Reserva reserva = reservaView.getGrid().asSingleSelect().getValue();
+    private void imprimirComprobante(){
+    	Reserva reserva = reservaView.getReservaSeleccionada(); 
 		ComprobanteReserva comprobante = new ComprobanteReserva(reserva);
 		comprobante.open();
 		UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
 				"  print(); self.close();}, 1000);");
 	}
 
-	private void setComboCiudades() {
-
-        Provincia provincia = reservaView.getProvinciaFilter().getValue();
-        reservaView.getCiudadFilter().setItems(provincia.getCiudades());
-
-    }
-
-
-    private void listReservas() {
-    	if(!reservaView.getValueNumeroCliente().equals(0L)){
-    		Optional reserva = reservaService.findById(reservaView.getValueNumeroCliente());
-    		if(reserva.isPresent()) {
-    			List<Reserva> reservas = new ArrayList<Reserva>();
-    			reservas.add((Reserva)reserva.get());
-        		reservaView.cargarReservas(reservas);	
-    		}    		
+    private void listarReservas() {
+    	if(existenValoresDeFiltro()) {
+    		listarReservasFiltradas();
     	}else {
-	        Reserva reservaBusqueda = new Reserva();
-	        if(checkFiltros()){
-	            setParametrosBusqueda(reservaBusqueda);
-	            reservaView.cargarReservas(reservaService.findReservas(reservaBusqueda));
-	        }else {
-	            reservaView.cargarReservas(reservaService.findAll());
-	        }
+    		listarTodasLasReservas();
     	}
     }
-
-    private void setParametrosBusqueda(Reserva reservaBusqueda) {
-    	Cliente cliente = new Cliente();
-    	cliente.setActivo(true);
-        reservaBusqueda.setCliente(cliente);
-        Transporte transporte = new Transporte();
-        Viaje viaje = new Viaje();
-        Ciudad ciudad = new Ciudad();
-        viaje.setDestino(ciudad);
-        viaje.setTransporte(transporte);
-        viaje.setActivo(true);
-        reservaBusqueda.setViaje(viaje);
-        if(!reservaView.getValueNumeroCliente().equals(0L)){
-            reservaBusqueda.getCliente().setId(reservaView.getValueNumeroCliente());
-        }
-        if(!reservaView.getCiudadFilter().isEmpty()){
-            reservaBusqueda.getViaje().setDestino(reservaView.getCiudadFilter().getValue());
-        }
-        if(!reservaView.getProvinciaFilter().isEmpty()){
-            reservaBusqueda.getViaje().getDestino().setProvincia(reservaView.getProvinciaFilter().getValue());
-        }
-        if(!reservaView.getValueCodTransporte().equals("")){
-            reservaBusqueda.getViaje().getTransporte().setCodTransporte(reservaView.getValueCodTransporte());
-        }
-        if(reservaView.getValueFecha() != null){
-            reservaBusqueda.getViaje().setFechaSalida(reservaView.getValueFecha());
-        }
+    
+    private boolean existenValoresDeFiltro() {
+    	return (reservaView.getValueNumeroViaje()!= null ||
+    			reservaView.getValueNumeroCliente()!= null ||
+    			reservaView.getValueCiudad() != null  ||
+                reservaView.getValueCodTransporte() != null ||                 
+                reservaView.getValueFecha() != null);
     }
-
-    private boolean checkFiltros() {
-        return !reservaView.getValuePais().equals("") || !reservaView.getValueCiudad().equals("")  ||
-                !reservaView.getValueCodTransporte().equals("") || !reservaView.getValueNumeroCliente().equals("")  ||
-                 reservaView.getValueFecha() != null;
+    
+    private void listarReservasFiltradas() {
+    	Set <Reserva> reservas = new HashSet<Reserva>(); 
+    	
+    	Long nroViaje = reservaView.getValueNumeroViaje();
+    	Long nroCliente = reservaView.getValueNumeroCliente();
+    	Ciudad ciudadFiltros = reservaView.getValueCiudad();
+    	Transporte transporteFiltros = new Transporte();
+        transporteFiltros.setCodTransporte(reservaView.getValueCodTransporte());                 
+        
+    	if( nroViaje != 0L &&  nroCliente != 0L) {
+    		reservas.addAll(reservaService.findByIdViajeIdCliente(nroViaje, nroCliente));
+    	}else if(nroViaje != 0L) {
+    		reservas.addAll(reservaService.findByIdViaje(nroViaje));
+    	}else if(nroCliente != 0L) {
+    		reservas.addAll(reservaService.findByIdCliente(nroCliente));
+    	}else if(ciudadFiltros != null) {
+    		
+    	}        
+    }
+    
+    private void listarTodasLasReservas() {
+    	reservaView.cargarReservas(reservaService.findAll());
     }
 
     private void venderReserva() {
     	Reserva reservaSeleccionada = reservaView.getReservaSeleccionada();
     	if (reservaSeleccionada != null) {
-	    	ventaFormController = new VentaFormController(reservaSeleccionada);
-			ventaFormController.getVentaReservaFormCompra().open();
-			ventaFormController.setChangeHandler(this::listReservas);
+    		ventaFormController = new VentaFormController(reservaSeleccionada);
+    		ventaFormController.getVentaReservaFormCompra().open();
+    		ventaFormController.setChangeHandler(this::listarReservas);
+    	}else {
+    		Notification.show("Seleccione un reserva");
     	}
-    	else {
-    			Notification.show("Seleccione un Venta");
-    	}
-	}
+    }
     
     private void setChangeHandler(ChangeHandler h) {
         changeHandler = h;

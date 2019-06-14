@@ -3,6 +3,7 @@ package com.tp.proyecto1.controllers.eventos;
 
 import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.clientes.Persona;
+import com.tp.proyecto1.model.eventos.Consulta;
 import com.tp.proyecto1.model.eventos.Evento;
 import com.tp.proyecto1.model.eventos.Reclamo;
 import com.tp.proyecto1.model.users.User;
@@ -31,7 +32,7 @@ public class EventosController {
 
 	@Autowired
 	EventoService eventoService;
-
+	
 	public EventosController() {
 		Inject.Inject(this);
 		this.eventosView = new EventosView();
@@ -99,11 +100,23 @@ public class EventosController {
 	}
 
 	private void listarEventos() {
-		Evento eventoConsulta = new Evento();
-		eventoConsulta.setAbierto(eventosView.getCheckAbierto().getValue());
+		Evento eventoConsulta = new Consulta();
+		Evento eventoReclamo = new Reclamo();
+		System.out.println(eventosView.getCheckAbierto().getValue());
+		if (eventosView.getCheckAbierto().getValue())
+		{
+			
+			eventoConsulta.setAbierto(eventosView.getCheckAbierto().getValue());
+			eventoReclamo.setAbierto(eventosView.getCheckAbierto().getValue());
+		}
         if(checkFiltros()){
             setParametrosBusqueda(eventoConsulta);
+            setParametrosBusqueda(eventoReclamo);
+            
 			List<Evento> eventos = eventoService.findEventos(eventoConsulta);
+			for(Evento evento : eventoService.findEventos(eventoReclamo))
+				eventos.add(evento);
+				
 			eventos.stream().forEach(e-> verificarUsuarioCierre(e));
             eventosView.getGrid().setItems(eventos);
         }else{
@@ -140,6 +153,8 @@ public class EventosController {
 		if(!eventosView.getFechaFilter().isEmpty()){
 			eventoBusqueda.setFecha(eventosView.getFechaFilter().getValue());
 		}
+		
+		
 
 	}
 

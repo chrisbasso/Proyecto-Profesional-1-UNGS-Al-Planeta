@@ -7,7 +7,6 @@ import com.tp.proyecto1.model.eventos.Consulta;
 import com.tp.proyecto1.model.eventos.Evento;
 import com.tp.proyecto1.model.eventos.Reclamo;
 import com.tp.proyecto1.model.users.User;
-import com.tp.proyecto1.model.viajes.TipoTransporte;
 import com.tp.proyecto1.services.EventoService;
 import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.utils.ChangeHandler;
@@ -68,34 +67,45 @@ public class ConsultaFormController {
 
     private void saveConsulta() {
 
-        if(evento==null){
-            if(consultaForm.getComboTipo().getValue().equals("Consulta")){
+        if(evento==null)
+        {
+            if(consultaForm.getComboTipo().getValue().equals("Consulta"))
+            {
                 evento = new Consulta();
-            }else{
+            }
+            else
+            {
                 evento = new Reclamo();
             }
-            if(consultaForm.getCheckInteresado().getValue()){
+            evento.setAbierto(true);
+            if(consultaForm.getCheckInteresado().getValue())
+            {
                 Interesado interesado = new Interesado();
                 interesado.setApellido(consultaForm.getApellido().getValue());
                 interesado.setNombre(consultaForm.getNombre().getValue());
                 interesado.setEmail(consultaForm.getEmail().getValue());
                 interesado.setTelefono(consultaForm.getTelefono().getValue());
-                evento.setPersona(interesado);
-
-            }else{
+                evento.setPersona(interesado);  
+            }
+            else
+            {
                 Cliente cliente = consultaForm.getBuscadorClientes().getCliente();
                 evento.setPersona(cliente);
             }
             evento.setFecha(LocalDate.now());
             evento.setHora(LocalTime.now());
+            evento.setFechaVencimiento(consultaForm.getFechaVencimiento().getValue());
+            evento.setHoraVencimiento(consultaForm.getHoraVencimiento().getValue());
             evento.setCreadorEvento(Proyecto1Application.logUser);
             evento.setUsuarioAsignado(Proyecto1Application.logUser);
-        }else{
+        }
+        else
+        {
             evento.setUsuarioAsignado(consultaForm.getComboUsuarios().getValue());
         }
         evento.setMensaje(consultaForm.getTextAreaDescripcion().getValue());
         evento.setPrioridad(consultaForm.getComboPrioridad().getValue());
-
+       
         eventoService.save(this.evento);
         changeHandler.onChange();
         consultaForm.close();
@@ -153,5 +163,7 @@ public class ConsultaFormController {
         consultaForm.getBuscadorClientes().setEnabled(false);
         consultaForm.getComboTipo().setEnabled(false);
         consultaForm.getComboUsuarios().setEnabled(true);
+        consultaForm.getFechaVencimiento().setValue(evento.getFechaVencimiento());
+        consultaForm.getHoraVencimiento().setValue(evento.getHoraVencimiento());
     }
 }

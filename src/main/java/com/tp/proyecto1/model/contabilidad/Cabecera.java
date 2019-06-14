@@ -29,15 +29,17 @@ public class Cabecera {
 	@OneToOne
 	private Sucursal sucursal;
 	private boolean anulado;
+	private Modulo modulo;
 	
 	public Cabecera() {		
 	}
-	public Cabecera(LocalDate fechaRegistro, LocalDate fechaContabilizacion, User usuario, String textoCabecera, Sucursal sucursal) {
+	public Cabecera(LocalDate fechaRegistro, LocalDate fechaContabilizacion, User usuario, String textoCabecera, Sucursal sucursal, Modulo modulo) {
 		this.fechaRegistro = fechaRegistro;
 		this.fechaContabilizacion = fechaContabilizacion;
 		this.usuario = usuario;
 		this.textoCabecera = textoCabecera;
 		this.sucursal = sucursal;
+		this.modulo = modulo;
 	}
 	public void anular(LocalDate fechaAnulacion, User usuarioAnulacion) {
 		if(!anulado) {
@@ -96,5 +98,11 @@ public class Cabecera {
 	}
 	public void setSucursal(Sucursal sucursal) {
 		this.sucursal = sucursal;
+	}
+	public Modulo getModulo() {
+		return modulo;
+	}
+	public void setModulo(Modulo modulo) {
+		this.modulo = modulo;
 	}	
 }
