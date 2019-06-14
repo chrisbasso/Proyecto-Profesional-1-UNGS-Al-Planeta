@@ -68,8 +68,7 @@ public class MovimientosCajaController {
 	}
 	
 	private Map <Sucursal, Double> totalizarValores(){
-		Map <Sucursal, Double> ret = new HashMap<Sucursal, Double>();
-		
+		Map <Sucursal, Double> ret = new HashMap<Sucursal, Double>();		
 		for (MovimientoCaja movimientoCaja : movimientos) {
 			Sucursal suc = movimientoCaja.getCabecera().getSucursal();
 			Double valorIteracion = movimientoCaja.getImporte();
