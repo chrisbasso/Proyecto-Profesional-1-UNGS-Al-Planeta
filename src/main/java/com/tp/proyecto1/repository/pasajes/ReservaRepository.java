@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.tp.proyecto1.model.pasajes.Reserva;
+import com.tp.proyecto1.model.viajes.Ciudad;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,4 +16,6 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 	List<Reserva> findAllByCliente_Id(Long idCliente);
 	List<Reserva> findAllByViaje_Id(Long idViaje);
 	List<Reserva> findAllByViaje_IdAndCliente_Id(Long idViaje, Long idCliente);
+	List<Reserva> findAllByViaje_Origen(Ciudad ciudad);
+	List<Reserva> findAllByFecha(LocalDate fecha);
 }

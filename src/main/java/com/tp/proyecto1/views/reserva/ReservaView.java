@@ -85,7 +85,7 @@ public class ReservaView extends FilterGridLayout<Reserva> {
     }
     
     public Long getValueNumeroCliente() {
-    	Long idCliente = 0L;
+    	Long idCliente = null;
     	if(numeroClienteFilter.getValue() != null) {
     		idCliente = numeroClienteFilter.getValue().longValue();
     	}
@@ -93,7 +93,7 @@ public class ReservaView extends FilterGridLayout<Reserva> {
     }
 
     public Long getValueNumeroViaje() {
-    	Long idViaje = 0L;
+    	Long idViaje = null;
     	if(numeroViajeFilter.getValue() != null) {
     		idViaje = numeroViajeFilter.getValue().longValue();
     	}
@@ -109,7 +109,7 @@ public class ReservaView extends FilterGridLayout<Reserva> {
     }
     
     public String getValueCodTransporte() {
-    	String codTransporte = "";
+    	String codTransporte = null;
     	if(codTransporteFilter.getValue() != null) {
     		codTransporte = codTransporteFilter.getValue();
     	}

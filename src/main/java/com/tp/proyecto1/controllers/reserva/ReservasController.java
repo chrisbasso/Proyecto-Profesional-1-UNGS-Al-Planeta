@@ -1,7 +1,9 @@
 package com.tp.proyecto1.controllers.reserva;
 
-import java.util.HashMap;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -12,7 +14,6 @@ import com.tp.proyecto1.controllers.venta.VentaFormController;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.model.viajes.Ciudad;
-import com.tp.proyecto1.model.viajes.Transporte;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.services.ReservaService;
@@ -111,7 +112,7 @@ public class ReservasController {
     
     private void validarCliente(){
     	Long id = reservaView.getValueNumeroCliente();  
-    	if( id != 0L) {
+    	if( id != null) {
     		Optional<Cliente> cliente = clienteService.findById(id);
     		if(!cliente.isPresent()) {
     			Notification.show("No existe un cliente con ese ID");    			
@@ -121,9 +122,9 @@ public class ReservasController {
 
     private void validarViaje(){
     	Long id = reservaView.getValueNumeroViaje();  
-    	if( id != 0L) {
-    		Viaje viaje = viajeService.findById(id);
-    		if(viaje.equals(null)){
+    	if( id != null) {
+    		Optional <Viaje> viaje = viajeService.findById(id);
+    		if(!viaje.isPresent()){
     			Notification.show("No existe un viaje con ese ID");    			
     		}
     	}
@@ -151,9 +152,7 @@ public class ReservasController {
     
     private boolean existenValoresDeFiltro() {
     	return (reservaView.getValueNumeroViaje()!= null ||
-    			reservaView.getValueNumeroCliente()!= null ||
-    			reservaView.getValueCiudad() != null  ||
-                reservaView.getValueCodTransporte() != null ||                 
+    			reservaView.getValueNumeroCliente()!= null ||    			                 
                 reservaView.getValueFecha() != null);
     }
     
@@ -163,18 +162,39 @@ public class ReservasController {
     	Long nroViaje = reservaView.getValueNumeroViaje();
     	Long nroCliente = reservaView.getValueNumeroCliente();
     	Ciudad ciudadFiltros = reservaView.getValueCiudad();
-    	Transporte transporteFiltros = new Transporte();
-        transporteFiltros.setCodTransporte(reservaView.getValueCodTransporte());                 
+        String codTransporte = reservaView.getValueCodTransporte();                 
+        LocalDate fechaFiltro = reservaView.getValueFecha();
         
-    	if( nroViaje != 0L &&  nroCliente != 0L) {
+    	if(nroViaje != null &&  nroCliente != null) {
     		reservas.addAll(reservaService.findByIdViajeIdCliente(nroViaje, nroCliente));
-    	}else if(nroViaje != 0L) {
+    	}else if(nroViaje != null) {
     		reservas.addAll(reservaService.findByIdViaje(nroViaje));
-    	}else if(nroCliente != 0L) {
+    	}else if(nroCliente != null) {
     		reservas.addAll(reservaService.findByIdCliente(nroCliente));
-    	}else if(ciudadFiltros != null) {
-    		
+    	}else if(fechaFiltro != null){
+    		reservas.addAll(reservaService.findByFecha(fechaFiltro));
+    	}else {
+    		Notification.show("Debe ingresar cliente, viaje y/o fecha para realizar una búsqueda");
+    		listarTodasLasReservas(); 
+    		return;
+    	}
+    	
+    	if(ciudadFiltros != null) {
+    		if(codTransporte != null) {
+    			for(Reserva reserva : reservas) {
+    	    		if(!reserva.getViaje().getDestino().equals(ciudadFiltros)) {
+    	    			reservas.remove(reserva);
+    	    		}
+    	    		if(!reserva.getViaje().getTransporte().getCodTransporte().equals(codTransporte)) {
+    	    			reservas.remove(reserva);
+    	    		}
+    	    	}	
+    		}	    	
     	}        
+    	
+    	reservas.addAll(reservaService.findByCiudad(ciudadFiltros));
+    	List <Reserva> reservasList = new ArrayList <Reserva> (reservas);
+    	reservaView.cargarReservas(reservasList);
     }
     
     private void listarTodasLasReservas() {
