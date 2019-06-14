@@ -27,7 +27,7 @@ public class Evento {
 	@ManyToOne
 	private User creadorEvento;
 
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.ALL)
 	private User cerradorEvento;
 
 	@ManyToOne
