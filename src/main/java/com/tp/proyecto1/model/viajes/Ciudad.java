@@ -50,8 +50,10 @@ public class Ciudad {
 	@Override
     public String toString()
     {
-    	return getNombre() + ", " + provincia;
+    	return getNombre() + ", " + provincia.getNombre() + " - " + provincia.getPais().getNombre();
     }
+
+
 
 
 }

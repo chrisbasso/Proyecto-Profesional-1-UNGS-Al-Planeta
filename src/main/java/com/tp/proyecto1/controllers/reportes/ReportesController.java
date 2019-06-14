@@ -258,14 +258,14 @@ public class ReportesController {
 	private void setGridPago(Grid<Pago> pagoGrid) {
 
 		pagoGrid.setHeight("200px");
-		pagoGrid.setColumns("id","fechaDePago", "formaDePago", "transaccion.sucursal.descripcion", "transaccion.vendedor.user","transaccion.cliente.id", "transaccion.cliente", "transaccion.viaje.ciudad.nombre", "importe");
+		pagoGrid.setColumns("id","fechaDePago", "formaDePago", "transaccion.sucursal.descripcion", "transaccion.vendedor.user","transaccion.cliente.id", "transaccion.cliente", "transaccion.viaje.destino.nombre", "importe");
 		pagoGrid.getColumnByKey("id").setWidth("70px").setFlexGrow(0);
 		pagoGrid.getColumnByKey("transaccion.cliente.id").setWidth("90px").setFlexGrow(0);
 		pagoGrid.getColumnByKey("transaccion.sucursal.descripcion").setHeader("Sucursal");
 		pagoGrid.getColumnByKey("transaccion.vendedor.user").setHeader("Vendedor");
 		pagoGrid.getColumnByKey("transaccion.cliente.id").setHeader("ID Cliente");
 		pagoGrid.getColumnByKey("transaccion.cliente").setHeader("Cliente");
-		pagoGrid.getColumnByKey("transaccion.viaje.ciudad.nombre").setHeader("Destino");
+		pagoGrid.getColumnByKey("transaccion.viaje.destino.nombre").setHeader("Destino");
 
 	}
 
