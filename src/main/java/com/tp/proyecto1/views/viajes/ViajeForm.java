@@ -1,6 +1,7 @@
 package com.tp.proyecto1.views.viajes;
 
 import com.tp.proyecto1.model.viajes.*;
+import com.tp.proyecto1.utils.ConfigDatePicker;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -92,6 +93,8 @@ public class ViajeForm extends Dialog {
         paisOrigen.setItemLabelGenerator(Pais::getNombre);
 
         fechaSalida = new DatePicker();
+		ConfigDatePicker configDatePicker = new ConfigDatePicker();
+		configDatePicker.setearLenguajeEspañol(fechaSalida);
         horaSalida = new TimePicker();
         cantidadDias = new NumberField();
         cantidadDias.setMin(0);

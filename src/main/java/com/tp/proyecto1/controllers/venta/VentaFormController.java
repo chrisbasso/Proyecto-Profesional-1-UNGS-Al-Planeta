@@ -387,7 +387,7 @@ public class VentaFormController {
 	private void habilitarFinalizarCompra() {
 		Boolean isActivo = Boolean.FALSE;
 		if(ventaForm.getPuntosaUsar().getValue() != null) {
-			Integer cantPuntosLimite = ventaForm.getSubtotal().getValue().intValue()/10;
+			Integer cantPuntosLimite = ventaForm.getSubtotal().getValue().intValue()/Integer.parseInt(this.getPesosPorPunto());
 			if (ventaForm.getPuntosaUsar().getValue() >= 0 && ventaForm.getPuntosaUsar().getValue() <= cantPuntosLimite) {
 				this.ventaForm.getBtnFinalizarCompra().setEnabled(true);
 			}
@@ -456,9 +456,9 @@ public class VentaFormController {
 							if (promoDescuento.getTipoPromocion().equals("Descuento")) this.generarDescuentos();
 						}
 	
-						Integer pesosPorPunto = Integer.parseInt(this.getPesosPorPunto());
+						Integer puntoPorPesos = Integer.parseInt(this.getPuntoPorPesos());
 						Double saldoaPagar = this.ventaForm.getSaldoPagar().getValue();
-						saldoaPagar = saldoaPagar - (puntosaUsar * pesosPorPunto);
+						saldoaPagar = saldoaPagar - (puntosaUsar * puntoPorPesos);
 						if (saldoaPagar >= 0) this.ventaForm.getSaldoPagar().setValue(saldoaPagar);					
 						
 						this.generarPuntos();
@@ -655,5 +655,9 @@ public class VentaFormController {
 	
 	private String getCantAniosVencimientoPuntos() {
 		return configuracionService.findValueByKey("cant_anios_venc_puntos");
+	}
+	
+	private String getPuntoPorPesos() {
+		return configuracionService.findValueByKey("punto_por_pesos");
 	}
 }

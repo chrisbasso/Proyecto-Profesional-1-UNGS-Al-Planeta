@@ -7,6 +7,7 @@ import org.vaadin.gatanaso.MultiselectComboBox;
 
 import com.tp.proyecto1.model.viajes.Ciudad;
 import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.utils.ConfigDatePicker;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -68,6 +69,8 @@ public class PromocionForm extends Dialog
         
         nombre = new TextField();
         fechaVencimiento = new DatePicker();
+		ConfigDatePicker configDatePicker = new ConfigDatePicker();
+		configDatePicker.setearLenguajeEspañol(fechaVencimiento);
         nroFloat = new TextField();
         nroFloat.setWidth("192px");
         nroFloat.setPreventInvalidInput(true);

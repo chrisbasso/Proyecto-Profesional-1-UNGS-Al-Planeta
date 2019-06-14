@@ -1,6 +1,7 @@
 package com.tp.proyecto1.views.eventos;
 
 import com.tp.proyecto1.model.eventos.Evento;
+import com.tp.proyecto1.utils.ConfigDatePicker;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.tp.proyecto1.utils.View;
 import com.vaadin.flow.component.button.Button;
@@ -36,6 +37,9 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 		newConsultaButton.setMinWidth("150px");
 		checkAbierto.setMinWidth("150px");
 		idClienteFilter.setMinWidth("150px");	
+		ConfigDatePicker configDatePicker = new ConfigDatePicker();
+		configDatePicker.setearLenguajeEspañol(fechaFilter);
+
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.model.viajes.Ciudad;
 import com.tp.proyecto1.model.viajes.Pais;
 import com.tp.proyecto1.model.viajes.Provincia;
+import com.tp.proyecto1.utils.ConfigDatePicker;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.ClickEvent;
@@ -51,6 +52,8 @@ public class ReservaView extends FilterGridLayout<Reserva> {
         this.btnBuscar.setMinWidth("110px");
         this.btnComprobante = new Button("Exportar Comprobante");
         this.fechaFilter = new DatePicker("Fecha Salida");
+		ConfigDatePicker configDatePicker = new ConfigDatePicker();
+		configDatePicker.setearLenguajeEspañol(fechaFilter);
         this.btnVender = new Button("Vender");
     }
 

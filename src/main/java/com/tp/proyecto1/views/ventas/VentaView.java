@@ -4,6 +4,7 @@ import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.model.viajes.Ciudad;
 import com.tp.proyecto1.model.viajes.Pais;
 import com.tp.proyecto1.model.viajes.Provincia;
+import com.tp.proyecto1.utils.ConfigDatePicker;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.tp.proyecto1.utils.View;
 import com.vaadin.flow.component.button.Button;
@@ -48,10 +49,13 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
         this.searchButton.setMinWidth("110px");
         this.btnComprobante = new Button("Exportar Comprobante");
         this.fechaFilter = new DatePicker("Fecha");
+		ConfigDatePicker configDatePicker = new ConfigDatePicker();
+		configDatePicker.setearLenguajeEspañol(fechaFilter);
         this.activosCheck = new Checkbox("Solo Activos");
 		this.activosCheck.setMinWidth("140px");
 		activosCheck.setValue(true);
 		this.btnEnvioMail = new Button("Enviar Mail", VaadinIcon.MAILBOX.create());
+		this.btnEnvioMail.setVisible(false);
     }
 
     @Override

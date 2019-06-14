@@ -232,6 +232,7 @@ public class Proyecto1Application {
 		configService.createConfiguracionIfNotExist("pesos_por_punto", "10");
 		configService.createConfiguracionIfNotExist("cant_anios_venc_puntos", "1");
 		configService.createConfiguracionIfNotExist("movimiento_caja-numero_cuenta","100");
+		configService.createConfiguracionIfNotExist("punto_por_pesos", "10");
 	}
 
 	private void crearFormasDePago(VentaService ventaService) {

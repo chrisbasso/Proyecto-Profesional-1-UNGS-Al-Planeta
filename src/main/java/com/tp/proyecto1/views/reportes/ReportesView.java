@@ -1,5 +1,6 @@
 package com.tp.proyecto1.views.reportes;
 
+import com.tp.proyecto1.utils.ConfigDatePicker;
 import com.tp.proyecto1.utils.TipoReporte;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
@@ -69,7 +70,11 @@ public class ReportesView extends VerticalLayout {
 		comboBoxMeses.setItems(meses);
 
 		((Grid)gridDinamico).setSizeFull();
-
+		
+		ConfigDatePicker configDatePickerFechaDesde = new ConfigDatePicker();
+		ConfigDatePicker configDatePickerFechaHasta = new ConfigDatePicker();
+		configDatePickerFechaHasta.setearLenguajeEspañol(fechaDesde);
+		configDatePickerFechaHasta.setearLenguajeEspañol(fechaHasta);
 	}
 
 	public ComboBox<String> getComboTipoReporte() {

@@ -6,6 +6,7 @@ import java.util.Collection;
 import com.tp.proyecto1.model.viajes.Promocion;
 import com.tp.proyecto1.model.viajes.TipoTransporte;
 import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.utils.ConfigDatePicker;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.tp.proyecto1.utils.View;
 import com.vaadin.flow.component.button.Button;
@@ -57,6 +58,8 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
         tipoPromoFilter.setItems(items);
 		this.vencimientoMenorAFilter = new DatePicker("Vencimiento menor a");
 		this.vencimientoMenorAFilter.setWidth("170px");
+		ConfigDatePicker configDatePicker = new ConfigDatePicker();
+		configDatePicker.setearLenguajeEspañol(vencimientoMenorAFilter);
 		this.activosCheck = new Checkbox("Solo Activas");
 		this.activosCheck.setValue(true);
 		this.activosCheck.setMinWidth("135px");

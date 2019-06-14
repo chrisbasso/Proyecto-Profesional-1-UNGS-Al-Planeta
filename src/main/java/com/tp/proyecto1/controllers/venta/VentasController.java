@@ -67,11 +67,15 @@ public class VentasController {
 
 	private void imprimirComprobante() {
 		Venta venta = ventaView.getGrid().asSingleSelect().getValue();
-		ComprobanteVenta comprobante = new ComprobanteVenta(venta);
-		comprobante.open();
-		UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
-				"  print(); self.close();}, 1000);");
-
+		if (venta != null) {
+			ComprobanteVenta comprobante = new ComprobanteVenta(venta);
+			comprobante.open();
+			UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
+					"  print(); self.close();}, 1000);");
+		}
+		else {
+    		Notification.show("Seleccione una venta.");
+    	} 
 	}
 
 	private void setComboCiudades() {

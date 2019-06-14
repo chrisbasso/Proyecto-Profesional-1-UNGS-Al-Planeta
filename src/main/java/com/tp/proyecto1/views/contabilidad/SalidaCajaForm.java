@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.tp.proyecto1.model.contabilidad.Cuenta;
 import com.tp.proyecto1.model.sucursales.Sucursal;
+import com.tp.proyecto1.utils.ConfigDatePicker;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -36,6 +37,8 @@ public class SalidaCajaForm extends Dialog{
     
 	private void inicializarComponentes() {
     	fechaContabilizacion = new DatePicker();
+		ConfigDatePicker configDatePicker = new ConfigDatePicker();
+		configDatePicker.setearLenguajeEspañol(fechaContabilizacion);
     	fechaContabilizacion.setRequired(true);
     	fechaContabilizacion.setLabel("Fecha");
     	fechaContabilizacion.setValue(LocalDate.now());

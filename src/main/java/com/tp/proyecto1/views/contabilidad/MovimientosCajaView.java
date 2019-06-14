@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.tp.proyecto1.model.contabilidad.MovimientoCaja;
 import com.tp.proyecto1.model.sucursales.Sucursal;
+import com.tp.proyecto1.utils.ConfigDatePicker;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.ClickEvent;
@@ -40,6 +41,8 @@ public class MovimientosCajaView extends FilterGridLayout<MovimientoCaja> {
 
     private void setComponents() {
         fechaFilter = new DatePicker("Fecha Contab.");
+		ConfigDatePicker configDatePicker = new ConfigDatePicker();
+		configDatePicker.setearLenguajeEspañol(fechaFilter);
         idUsuarioFilter = new NumberField("ID Usuario");        
         sucursalFilter = new ComboBox<Sucursal>();
         sucursalFilter.setLabel("Sucursal");

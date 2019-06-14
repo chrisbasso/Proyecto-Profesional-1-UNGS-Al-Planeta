@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.tp.proyecto1.model.contabilidad.Asiento;
+import com.tp.proyecto1.utils.ConfigDatePicker;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -37,7 +38,9 @@ public class AsientoView extends FilterGridLayout<Asiento> {
     private void setComponents() {
         numeroAsientoFilter = new NumberField("Nº Asiento");
         idUsuarioFilter = new NumberField("ID Usuario");
-        fechaFilter = new DatePicker("Fecha Contab.");        
+        fechaFilter = new DatePicker("Fecha Contab.");  
+		ConfigDatePicker configDatePicker = new ConfigDatePicker();
+		configDatePicker.setearLenguajeEspañol(fechaFilter);
         btnAgregar = new Button("Asiento", VaadinIcon.PLUS.create());
         btnAgregar.setMinWidth("110px");
         btnABMCuentas = new Button("Cuenta", VaadinIcon.TOOLS.create());

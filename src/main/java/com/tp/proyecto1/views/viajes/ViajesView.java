@@ -1,6 +1,7 @@
 package com.tp.proyecto1.views.viajes;
 
 import com.tp.proyecto1.model.viajes.*;
+import com.tp.proyecto1.utils.ConfigDatePicker;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.tp.proyecto1.utils.View;
 import com.vaadin.flow.component.button.Button;
@@ -62,6 +63,10 @@ public class ViajesView extends FilterGridLayout<Viaje> implements View {
 		this.fechaDesdeFilter.setWidth("137px");
 		this.fechaHastaFilter = new DatePicker("Fecha Hasta");
 		this.fechaHastaFilter.setWidth("137px");
+		ConfigDatePicker configDatePickerFechaDesdeFilter = new ConfigDatePicker();
+		ConfigDatePicker configDatePickerFechaHastaFilter = new ConfigDatePicker();
+		configDatePickerFechaDesdeFilter.setearLenguajeEspañol(fechaDesdeFilter);
+		configDatePickerFechaHastaFilter.setearLenguajeEspañol(fechaHastaFilter);
 		this.btnComprar = new Button("Vender");
 		this.btnReservar = new Button("Reservar");
 		this.activosCheck.setValue(true);

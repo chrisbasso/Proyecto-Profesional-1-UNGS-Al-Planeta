@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.utils.BuscadorClientesComponent;
+import com.tp.proyecto1.utils.ConfigDatePicker;
 import com.tp.proyecto1.utils.PrioridadEvento;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -68,6 +69,8 @@ public class ConsultaForm extends Dialog {
         apellido.setRequired(true);
         telefono.setRequired(true);
         comboPrioridad.setRequired(true);
+		ConfigDatePicker configDatePicker = new ConfigDatePicker();
+		configDatePicker.setearLenguajeEspañol(fechaVencimiento);
 
     }
 

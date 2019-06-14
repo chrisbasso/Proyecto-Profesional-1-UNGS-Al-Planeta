@@ -9,6 +9,7 @@ import com.tp.proyecto1.model.contabilidad.Cuenta;
 import com.tp.proyecto1.model.contabilidad.Posicion;
 import com.tp.proyecto1.model.contabilidad.TipoPosicion;
 import com.tp.proyecto1.model.sucursales.Sucursal;
+import com.tp.proyecto1.utils.ConfigDatePicker;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -66,6 +67,8 @@ public class AsientoForm extends Dialog{
 		inicializarCabecera();
     	fechaContabilizacion.setValue(asiento.getFechaContabilizacion());
     	fechaContabilizacion.setEnabled(false);
+		ConfigDatePicker configDatePicker = new ConfigDatePicker();
+		configDatePicker.setearLenguajeEspañol(fechaContabilizacion);
     	List <Sucursal> sucursales = new ArrayList<Sucursal>();
     	sucursales.add(asiento.getSucursal());
     	sucursal.setItems(sucursales);

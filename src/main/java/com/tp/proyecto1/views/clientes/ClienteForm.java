@@ -1,6 +1,7 @@
 package com.tp.proyecto1.views.clientes;
 
 
+import com.tp.proyecto1.utils.ConfigDatePicker;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -63,6 +64,8 @@ public class ClienteForm extends Dialog {
 		dni.setPattern("[0-9]*");
 		dni.setPreventInvalidInput(true);
 		fechaNacimiento = new DatePicker();
+		ConfigDatePicker configDatePicker = new ConfigDatePicker();
+		configDatePicker.setearLenguajeEspañol(fechaNacimiento);
 		checkActivo = new Checkbox("Activo");
 		checkActivo.setVisible(false);
 		checkActivo.setValue(true);
