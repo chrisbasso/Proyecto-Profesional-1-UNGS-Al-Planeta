@@ -7,11 +7,18 @@ import com.tp.proyecto1.model.eventos.Consulta;
 import com.tp.proyecto1.model.eventos.Evento;
 import com.tp.proyecto1.model.eventos.Reclamo;
 import com.tp.proyecto1.model.users.User;
+import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.EventoService;
 import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.eventos.ConsultaForm;
+import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.timepicker.TimePicker;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.Setter;
+import com.vaadin.flow.function.SerializablePredicate;
+import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,12 +43,15 @@ public class ConsultaFormController {
     private UserService userService;
 
     private Evento evento;
+    
+    private Binder<Evento> binderEvento = new Binder<>();
 
     public ConsultaFormController() {
         Inject.Inject(this);
         this.consultaForm = new ConsultaForm();
         setListeners();
         setComponents();
+        setBinders();
     }
 
     private void setComponents() {
@@ -166,4 +176,42 @@ public class ConsultaFormController {
         consultaForm.getFechaVencimiento().setValue(evento.getFechaVencimiento());
         consultaForm.getHoraVencimiento().setValue(evento.getHoraVencimiento());
     }
+    
+    private void setBinders()
+    {
+    	
+    	
+    	
+    	binderEvento.setBean(evento);
+    }
+    
+    
+    private void setBinderFechaVencimiento(DatePicker datePicker, ValueProvider<Evento, LocalDate> valueProvider, Setter<Evento, LocalDate> setter, boolean isRequiered){
+
+        SerializablePredicate<LocalDate> predicate = value -> datePicker.getValue() != null;
+        Binder.Binding<Evento, LocalDate> binding;
+        if(isRequiered){
+            binding = binderEvento.forField(datePicker)
+                    .withValidator(predicate, "El campo es obligatorio")
+                    .bind(valueProvider, setter);
+        }else{
+            binding = binderEvento.forField(datePicker).bind(valueProvider, setter);
+        }
+        consultaForm.getSave().addClickListener(event -> binding.validate());
+    }
+    
+    private void setBinderHoraVencimiento(TimePicker timePicker, ValueProvider<Evento, LocalTime> valueProvider, Setter<Evento, LocalTime> setter, boolean isRequiered){
+
+        SerializablePredicate<LocalTime> predicate = value -> timePicker.getValue() != null;
+        Binder.Binding<Evento, LocalTime> binding;
+        if(isRequiered){
+            binding = binderEvento.forField(timePicker)
+                    .withValidator(predicate, "El campo es obligatorio")
+                    .bind(valueProvider, setter);
+        }else{
+            binding = binderEvento.forField(timePicker).bind(valueProvider, setter);
+        }
+        consultaForm.getSave().addClickListener(event -> binding.validate());
+    }
+    
 }
