@@ -600,7 +600,7 @@ public class VentaFormController {
 			venta.setPromocion(promocion);
 			promocionService.save(promocion);			
 		}
-		
+		venta.setSubtotal(ventaForm.getSubtotal().getValue());
 		venta.setImporteTotal(this.precioFinal);//si es el caso que viene de reserva le paso igual el importe total, sino faltaria un campo en que diga importeVenta/parcial
 		
 		return venta;

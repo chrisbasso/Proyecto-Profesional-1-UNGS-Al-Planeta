@@ -16,6 +16,8 @@ public class Venta extends Transaccion{
 	@OneToOne
 	private Promocion promocion;
 	
+	private Double Subtotal;
+	
 	public Venta() {
 		
 	}
@@ -30,6 +32,14 @@ public class Venta extends Transaccion{
 
 	public void setPromocion(Promocion promocion) {
 		this.promocion = promocion;
+	}
+
+	public Double getSubtotal() {
+		return Subtotal;
+	}
+
+	public void setSubtotal(Double subtotal) {
+		Subtotal = subtotal;
 	}
 
 }
