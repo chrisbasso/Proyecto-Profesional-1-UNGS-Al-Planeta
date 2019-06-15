@@ -252,13 +252,21 @@ public class Proyecto1Application {
 	private void crearUsuarios(UserService userService) {
 		userService.createPrivilegeIfNotFound("READ_PRIVILEGE");
 		userService.createPrivilegeIfNotFound("WRITE_PRIVILEGE");
-		userService.createRoleIfNotFound("ADMIN", userService.getPrivileges());
-		User userAdmin = new User("root", "root", userService.getRoles());
+		userService.createRoleIfNotFound("ADMINISTRADOR", userService.getPrivileges());
+		userService.createRoleIfNotFound("VENDEDOR", userService.getPrivileges());
+		userService.createRoleIfNotFound("SUPERVISOR", userService.getPrivileges());
+		userService.createRoleIfNotFound("CONTADOR", userService.getPrivileges());
+		userService.createRoleIfNotFound("CLIENTE", userService.getPrivileges());
+		User userAdmin = new User("admin", "admin", userService.getRolByName("ADMINISTRADOR"));
 		userService.createUserIfNotExist(userAdmin);
-		User userEmployee = new User("pepe", "pepe", userService.getRoles());
-		userService.createUserIfNotExist(userEmployee);
-		User userBatch = new User("batch", "batch", userService.getRoles());
-		userService.createUserIfNotExist(userBatch);
+		User userVendedor = new User("vendedor", "vendedor", userService.getRolByName("VENDEDOR"));
+		userService.createUserIfNotExist(userVendedor);
+		User userSupervisor = new User("supervisor", "supervisor", userService.getRolByName("SUPERVISOR"));
+		userService.createUserIfNotExist(userSupervisor);
+		User userContador = new User("contador", "contador", userService.getRolByName("CONTADOR"));
+		userService.createUserIfNotExist(userContador);
+		User userCliente = new User("cliente", "cliente", userService.getRolByName("CLIENTE"));
+		userService.createUserIfNotExist(userCliente);
 	}
 	
 	private void crearCuentas(AsientoService asientoService) {

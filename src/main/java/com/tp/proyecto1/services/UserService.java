@@ -63,6 +63,12 @@ public class UserService {
 	}
 
 	@Transactional
+	public Role getRolByName(String name) {
+		Role role = roleRepository.findByName(name);
+		return role;
+	}
+
+	@Transactional
 	public void save(User user){
 
 		userRepository.save(user);

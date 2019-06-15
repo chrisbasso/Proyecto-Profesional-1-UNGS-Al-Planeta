@@ -13,7 +13,7 @@ public class Role {
 
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
+    @OneToMany
     private Collection<User> users;
 
     @ManyToMany

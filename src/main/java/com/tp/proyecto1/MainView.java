@@ -1,5 +1,6 @@
 package com.tp.proyecto1;
 
+import com.vaadin.flow.component.contextmenu.MenuItem;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tp.proyecto1.controllers.clientes.ClientesController;
@@ -99,9 +100,14 @@ public class MainView extends VerticalLayout {
 		appLayout = new AppLayout();
 		appLayout.setBranding(getLogo());
 		mainLayout.add(appLayout);
+		setMenu();
+		openViajesView();
+	}
+
+	private void setMenu() {
 		menu = appLayout.createMenu();
-		
-		viajes = new AppLayoutMenuItem(VaadinIcon.AIRPLANE.create(),"Viajes",e->openViajesView());
+
+		viajes = new AppLayoutMenuItem(VaadinIcon.AIRPLANE.create(),"Viajes", e->openViajesView());
 		promociones = new AppLayoutMenuItem(VaadinIcon.CALENDAR.create(),"Promociones",e->openPromocionesView());
 		ventas = new AppLayoutMenuItem(VaadinIcon.TICKET.create(),"Ventas", e->openVentasView());
 		reservas = new AppLayoutMenuItem(VaadinIcon.CALENDAR_CLOCK.create(),"Reservas", e->openReservasView());
@@ -125,9 +131,76 @@ public class MainView extends VerticalLayout {
 		configuraciones.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		logout.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 
-		menu.addMenuItems(viajes, promociones, ventas, reservas, clientes, eventos, caja, reportes, configuraciones, logout);
-		//Cargamos la lista de viajes en la página inicial
-		openViajesView();
+		menu.addMenuItems(
+				viajes,
+				promociones,
+				ventas,
+				reservas,
+				clientes,
+				eventos,
+				caja,
+				reportes,
+				configuraciones,
+				logout);
+
+		setPerfiles();
+
+
+
+		}
+
+	private void setPerfiles() {
+
+		String role = Proyecto1Application.logUser.getRol().getName();
+
+		viajes.setVisible(false);
+		promociones.setVisible(false);
+		ventas.setVisible(false);
+		reservas.setVisible(false);
+		clientes.setVisible(false);
+		eventos.setVisible(false);
+		caja.setVisible(false);
+		reportes.setVisible(false);
+		configuraciones.setVisible(false);
+
+		if(role.equals("ADMINISTRADOR")){
+			viajes.setVisible(true);
+			promociones.setVisible(true);
+			ventas.setVisible(true);
+			reservas.setVisible(true);
+			clientes.setVisible(true);
+			eventos.setVisible(true);
+			caja.setVisible(true);
+			reportes.setVisible(true);
+			configuraciones.setVisible(true);
+		}
+		if(role.equals("VENDEDOR")){
+			viajes.setVisible(true);
+			promociones.setVisible(true);
+			ventas.setVisible(true);
+			reservas.setVisible(true);
+			clientes.setVisible(true);
+			eventos.setVisible(true);
+		}
+		if(role.equals("VENDEDOR")){
+			viajes.setVisible(true);
+			promociones.setVisible(true);
+			ventas.setVisible(true);
+			reservas.setVisible(true);
+			clientes.setVisible(true);
+			eventos.setVisible(true);
+			reportes.setVisible(true);
+		}
+		if(role.equals("CONTADOR")){
+			caja.setVisible(true);
+			reportes.setVisible(true);
+		}
+		if(role.equals("CLIENTE")){
+			viajes.setVisible(true);
+			clientes.setVisible(true);
+			ventas.setVisible(true);
+		}
+
 	}
 
 	private HorizontalLayout getLogo() {

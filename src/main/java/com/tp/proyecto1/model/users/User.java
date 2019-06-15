@@ -23,14 +23,8 @@ public class User {
 	private String password;
 	private boolean enabled;
 
-    @ManyToMany
-    @JoinTable(
-            name = "users_roles",
-            joinColumns = @JoinColumn(
-                    name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(
-                    name = "role_id", referencedColumnName = "id"))
-    private Collection<Role> roles;
+    @ManyToOne
+    private Role rol;
 
     @OneToMany(fetch = FetchType.EAGER)
 	@Fetch(value = FetchMode.SUBSELECT)
@@ -49,11 +43,11 @@ public class User {
         this.enabled = true;
     }
 
-    public User(String user, String password, Collection<Role> roles) {
+    public User(String user, String password, Role rol) {
         this.user = user;
         this.password = password;
         this.enabled = true;
-        this.roles = roles;
+        this.rol = rol;
     }
 
 	public List<Transaccion> getTransacciones() {
@@ -96,15 +90,15 @@ public class User {
         this.enabled = enabled;
     }
 
-    public Collection<Role> getRoles() {
-        return roles;
-    }
+	public Role getRol() {
+		return rol;
+	}
 
-    public void setRoles(Collection<Role> roles) {
-        this.roles = roles;
-    }
+	public void setRol(Role rol) {
+		this.rol = rol;
+	}
 
-    @Override
+	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -112,12 +106,11 @@ public class User {
         return enabled == user1.enabled &&
                 Objects.equals(id, user1.id) &&
                 Objects.equals(user, user1.user) &&
-                Objects.equals(password, user1.password) &&
-                Objects.equals(roles, user1.roles);
+                Objects.equals(password, user1.password) ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, password, enabled, roles);
+        return Objects.hash(id, user, password, enabled, rol);
     }
 }
