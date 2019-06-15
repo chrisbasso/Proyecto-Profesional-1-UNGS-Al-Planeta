@@ -3,6 +3,7 @@ package com.tp.proyecto1.views.eventos;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.utils.BuscadorClientesComponent;
 import com.tp.proyecto1.utils.ConfigDatePicker;
@@ -72,6 +73,8 @@ public class ConsultaForm extends Dialog {
 		ConfigDatePicker configDatePicker = new ConfigDatePicker();
 		configDatePicker.setearLenguajeEspañol(fechaVencimiento);
 
+		setPerfiles();
+
     }
 
     private void setForm() {
@@ -101,6 +104,13 @@ public class ConsultaForm extends Dialog {
         this.setWidth("800px");
         this.setHeight("100%");
         this.setCloseOnOutsideClick(false);
+    }
+
+    private void setPerfiles() {
+
+        if(Proyecto1Application.logUser.getRol().getName().equals("VENDEDOR")){
+            comboUsuarios.setVisible(false);
+        }
 
     }
 

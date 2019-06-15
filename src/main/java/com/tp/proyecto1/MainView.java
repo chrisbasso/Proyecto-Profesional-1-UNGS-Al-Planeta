@@ -131,23 +131,11 @@ public class MainView extends VerticalLayout {
 		configuraciones.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		logout.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 
-		menu.addMenuItems(
-				viajes,
-				promociones,
-				ventas,
-				reservas,
-				clientes,
-				eventos,
-				caja,
-				reportes,
-				configuraciones,
-				logout);
+		menu.addMenuItems(viajes, promociones, ventas, reservas, clientes, eventos, caja, reportes, configuraciones, logout);
 
 		setPerfiles();
 
-
-
-		}
+	}
 
 	private void setPerfiles() {
 
@@ -182,7 +170,7 @@ public class MainView extends VerticalLayout {
 			clientes.setVisible(true);
 			eventos.setVisible(true);
 		}
-		if(role.equals("VENDEDOR")){
+		if(role.equals("SUPERVISOR")){
 			viajes.setVisible(true);
 			promociones.setVisible(true);
 			ventas.setVisible(true);
@@ -197,10 +185,8 @@ public class MainView extends VerticalLayout {
 		}
 		if(role.equals("CLIENTE")){
 			viajes.setVisible(true);
-			clientes.setVisible(true);
 			ventas.setVisible(true);
 		}
-
 	}
 
 	private HorizontalLayout getLogo() {
@@ -240,7 +226,7 @@ public class MainView extends VerticalLayout {
 	private void openEventosView() {
 		actualizarMenuSeleccionado(eventos);
 		appLayout.setContent(eventosController.getEventosView());
-//		eventosController.getChangeHandler().onChange();
+		eventosController.getChangeHandler().onChange();
 	}
 
 	private void openCajaView(){

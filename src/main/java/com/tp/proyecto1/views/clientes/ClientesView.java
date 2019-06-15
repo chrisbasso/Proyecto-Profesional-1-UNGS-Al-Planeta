@@ -1,5 +1,6 @@
 package com.tp.proyecto1.views.clientes;
 
+import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.vaadin.flow.component.button.Button;
@@ -52,6 +53,7 @@ public class ClientesView extends FilterGridLayout<Cliente> {
 		dniFilter.setLabel("DNI");
 	}
 
+
 	private void setLayout() {
 		HorizontalLayout hlSpace = new HorizontalLayout();
 		hlSpace.setWidthFull();
@@ -69,8 +71,8 @@ public class ClientesView extends FilterGridLayout<Cliente> {
 		grid.getColumnByKey("fechaAlta").setHeader("Fecha Alta");
 		grid.getColumnByKey("fechaBaja").setHeader("Fecha Baja");
 		grid.addThemeVariants(GridVariant.MATERIAL_COLUMN_DIVIDERS);
-
 	}
+
 
 	public Grid<Cliente> getGrid() {
 		return grid;

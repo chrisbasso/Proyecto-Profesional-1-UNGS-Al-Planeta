@@ -1,5 +1,6 @@
 package com.tp.proyecto1.services;
 
+import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.clientes.Interesado;
 import com.tp.proyecto1.model.clientes.Persona;
 import com.tp.proyecto1.model.eventos.Evento;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EventoService {
@@ -37,9 +39,18 @@ public class EventoService {
 	}
 
 	@Transactional
-	public List<Evento> findAll()
-	{
-		return this.eventoRepository.findAll();
+	public List<Evento> findAll() {
+
+		List<Evento> eventos = eventoRepository.findAll();
+
+		if(Proyecto1Application.logUser != null){
+			String role = Proyecto1Application.logUser.getRol().getName();
+			if(role.equals("VENDEDOR")){
+				eventos = eventos.stream().filter(e->e.getUsuarioAsignado().equals(Proyecto1Application.logUser)).collect(Collectors.toList());
+			}
+		}
+
+		return eventos;
 	}
 
 	@Transactional
@@ -47,8 +58,15 @@ public class EventoService {
 		return eventoRepository.findAllByPersona(persona);
 	}
 
-	public List<Evento> findEventos(Evento eventoConsulta)
-	{
+	@Transactional
+	public List<Evento> findEventos(Evento eventoConsulta) {
+
+		if(Proyecto1Application.logUser != null){
+			String role = Proyecto1Application.logUser.getRol().getName();
+			if(role.equals("VENDEDOR")){
+				eventoConsulta.setUsuarioAsignado(Proyecto1Application.logUser);
+			}
+		}
 		return eventoRepository.findAll(Example.of(eventoConsulta));
 	}
 }
