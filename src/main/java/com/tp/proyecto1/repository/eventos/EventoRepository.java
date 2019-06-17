@@ -16,4 +16,6 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
 	
 	List<Evento> findAllByCreadorEvento(User creador);
 	
+	List<Evento> findAllByIsAbierto(Boolean estado);
+	
 }
