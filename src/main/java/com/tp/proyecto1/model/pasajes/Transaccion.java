@@ -51,8 +51,6 @@ public class Transaccion {
 	@ManyToOne
 	private User vendedor;
 	
-	private Double Subtotal;
-	
 	public Transaccion() {
 	}
 
@@ -176,14 +174,6 @@ public class Transaccion {
 
 	public void setEstadoTransaccion(EstadoTransaccion estadoTransaccion) {
 		this.estadoTransaccion = estadoTransaccion;
-	}
-
-	public Double getSubtotal() {
-		return Subtotal;
-	}
-
-	public void setSubtotal(Double subtotal) {
-		Subtotal = subtotal;
 	}
 
 	@Override

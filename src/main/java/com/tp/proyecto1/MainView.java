@@ -1,9 +1,20 @@
 package com.tp.proyecto1;
 
+import com.tp.proyecto1.utils.GenericDialog;
+import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.ErrorParameter;
+import com.vaadin.flow.router.HasErrorParameter;
+import com.vaadin.flow.server.DefaultErrorHandler;
+import com.vaadin.flow.server.ErrorEvent;
+import com.vaadin.flow.server.ErrorHandler;
+import org.hibernate.resource.transaction.backend.jta.internal.synchronization.ExceptionMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tp.proyecto1.controllers.clientes.ClientesController;
-import com.tp.proyecto1.controllers.configuracion.MenuConfiguracionController;
+import com.tp.proyecto1.controllers.configuracion.ConfiguracionController;
 import com.tp.proyecto1.controllers.contabilidad.MovimientosCajaController;
 import com.tp.proyecto1.controllers.eventos.EventosController;
 import com.tp.proyecto1.controllers.login.LoginController;
@@ -47,7 +58,8 @@ public class MainView extends VerticalLayout{
 	@Autowired
 	private ReportesController reportesController;
 	@Autowired
-	private MenuConfiguracionController menuConfiguracionController;
+	private ConfiguracionController configuracionController;
+//	private MenuContabilidadController menuContabilidadController;
 	@Autowired
 	MovimientosCajaController movimientosCajaController;
 	
@@ -68,7 +80,7 @@ public class MainView extends VerticalLayout{
 
 	
 	public MainView() {
-		menuConfiguracionController = new MenuConfiguracionController (this);
+//		menuContabilidadController = new MenuContabilidadController (this);
 		setLayouts();		
 		setMainPage();
 	}
@@ -241,7 +253,7 @@ public class MainView extends VerticalLayout{
 
 	private void openConfiguracionView(){
 		actualizarMenuSeleccionado(configuraciones);
-		appLayout.setContent(menuConfiguracionController.getMenuConfiguracionView());
+		appLayout.setContent(configuracionController.getConfiguracionView());
 	}
 	
 	private void openLoginView(){
