@@ -7,6 +7,7 @@ import java.io.FilenameFilter;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import com.tp.proyecto1.utils.Inject;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Controller;
 
@@ -28,6 +29,7 @@ public class DBController {
 	}
 
 	public void getCrearBackUpView() {
+		Inject.Inject(this);
 		bckUpCrearView = new BackUpCrearForm();
 		agregarListenersCrear();
 		bckUpCrearView.open();

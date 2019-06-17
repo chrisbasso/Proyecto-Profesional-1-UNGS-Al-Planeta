@@ -13,12 +13,9 @@ import com.vaadin.flow.spring.annotation.UIScope;
 @UIScope
 public class MenuConfiguracionController {
 
-	@Autowired
-	private UsuarioController usuarioController;
-	@Autowired
-	private ConfiguracionController confController;
-	@Autowired
-	private DBController DBController;
+	private ConfiguracionController confController = new ConfiguracionController();
+
+	private DBController DBController = new DBController();
 	
 	private MainView observer;
 	private MenuConfiguracion menuView;
@@ -35,22 +32,13 @@ public class MenuConfiguracionController {
 	}
 	
 	private void agregarListeners() {
-		menuView.agregarUsuariosListener(e-> agregarUsuario());
-		menuView.visualizarUsuariosListener(e-> visualizarUsuario());
+
 		menuView.hacerBckupListener(e-> hacerBckup());
 		menuView.tomarBckupListener(e-> tomarBckup());
 		menuView.visualizarConfiguracionListener(e-> visualizarConfiguracion());
 	}
 	
-	private void agregarUsuario() {
-		//TODO		
-		observer.actualizarView(usuarioController.getUsuariosView());
-	}
-	
-	private void visualizarUsuario() {
-		//TODO
-		observer.actualizarView(usuarioController.getUsuariosView());
-	}
+
 	
 	private void hacerBckup() {
 		//TODO

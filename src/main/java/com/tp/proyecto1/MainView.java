@@ -47,12 +47,12 @@ public class MainView extends VerticalLayout{
 	private PromocionesController promocionesController;
 	@Autowired
 	private ReportesController reportesController;
-	@Autowired
+
 	private MenuConfiguracionController menuConfiguracionController;
 	@Autowired
-	MovimientosCajaController movimientosCajaController;
+	private MovimientosCajaController movimientosCajaController;
 	@Autowired
-	UsuariosController usuariosController;
+	private UsuariosController usuariosController;
 
 	private VerticalLayout mainLayout;
 	private AppLayout appLayout;
