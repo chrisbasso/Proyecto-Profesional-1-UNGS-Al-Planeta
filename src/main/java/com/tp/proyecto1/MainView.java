@@ -1,10 +1,10 @@
 package com.tp.proyecto1;
 
-import com.vaadin.flow.component.contextmenu.MenuItem;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tp.proyecto1.controllers.clientes.ClientesController;
 import com.tp.proyecto1.controllers.configuracion.ConfiguracionController;
+import com.tp.proyecto1.controllers.configuracion.MenuConfiguracionController;
 import com.tp.proyecto1.controllers.contabilidad.MovimientosCajaController;
 import com.tp.proyecto1.controllers.eventos.EventosController;
 import com.tp.proyecto1.controllers.login.LoginController;
@@ -48,8 +48,7 @@ public class MainView extends VerticalLayout {
 	@Autowired
 	private ReportesController reportesController;
 	@Autowired
-	private ConfiguracionController configuracionController;
-//	private MenuContabilidadController menuContabilidadController;
+	private MenuConfiguracionController menuConfiguracionController;
 	@Autowired
 	MovimientosCajaController movimientosCajaController;
 	
@@ -68,7 +67,7 @@ public class MainView extends VerticalLayout {
 	private AppLayoutMenuItem logout;
 	
 	public MainView() {
-//		menuContabilidadController = new MenuContabilidadController (this);
+		menuConfiguracionController = new MenuConfiguracionController (this);
 		setLayouts();		
 		setMainPage();
 	}
@@ -241,7 +240,7 @@ public class MainView extends VerticalLayout {
 
 	private void openConfiguracionView(){
 		actualizarMenuSeleccionado(configuraciones);
-		appLayout.setContent(configuracionController.getConfiguracionView());
+		appLayout.setContent(menuConfiguracionController.getMenuConfiguracionView());
 	}
 	
 	private void openLoginView(){
