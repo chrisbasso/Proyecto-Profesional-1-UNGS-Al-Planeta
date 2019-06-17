@@ -2,10 +2,12 @@ package com.tp.proyecto1.views.usuarios;
 
 import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.model.users.Role;
+import com.tp.proyecto1.utils.BuscadorClientesComponent;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -19,6 +21,8 @@ public class UsuarioForm extends Dialog {
 	private TextField txtPassword = new TextField();
 	private ComboBox<Sucursal> comboSucursal = new ComboBox<>();
 	private ComboBox<Role> comboRoles = new ComboBox<>();
+	private Label descripcionCliente = new Label();
+	private BuscadorClientesComponent buscadorClientes = new BuscadorClientesComponent(descripcionCliente);
 	private Button btnGuardar = new Button("Guardar");
 	private Button btnCancelar = new Button("Cancelar");
 
@@ -42,6 +46,8 @@ public class UsuarioForm extends Dialog {
 		form.addFormItem(txtPassword, "Password");
 		form.addFormItem(comboSucursal, "Sucursal");
 		form.addFormItem(comboRoles, "Rol");
+		form.addFormItem(buscadorClientes, "Cliente");
+		form.addFormItem(descripcionCliente, "Descripción");
 	}
 
 	private void setLayouts() {
@@ -78,6 +84,22 @@ public class UsuarioForm extends Dialog {
 
 	public TextField getTxtUsuario() {
 		return txtUsuario;
+	}
+
+	public Label getDescripcionCliente() {
+		return descripcionCliente;
+	}
+
+	public void setDescripcionCliente(Label descripcionCliente) {
+		this.descripcionCliente = descripcionCliente;
+	}
+
+	public BuscadorClientesComponent getBuscadorClientes() {
+		return buscadorClientes;
+	}
+
+	public void setBuscadorClientes(BuscadorClientesComponent buscadorClientes) {
+		this.buscadorClientes = buscadorClientes;
 	}
 
 	public void setTxtUsuario(TextField txtUsuario) {

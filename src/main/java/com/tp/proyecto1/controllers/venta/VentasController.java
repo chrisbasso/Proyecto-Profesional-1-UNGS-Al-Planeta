@@ -1,5 +1,6 @@
 package com.tp.proyecto1.controllers.venta;
 
+import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.EstadoTransaccion;
 import com.tp.proyecto1.model.pasajes.Venta;
@@ -23,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @UIScope
@@ -48,13 +51,20 @@ public class VentasController {
 		setListeners();
 		setComponents();
 		listVentas();
-
 	}
 
 	private void setComponents() {
-		ventaView.getCiudadFilter().setItems(viajeService.findAllCiudades());
-		this.ventaView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
-		this.ventaView.getGrid().addComponentColumn(this::createRemoveButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
+		if(Proyecto1Application.logUser!=null){
+			ventaView.getCiudadFilter().setItems(viajeService.findAllCiudades());
+			if(!Proyecto1Application.logUser.getRol().getName().equals("CLIENTE")){
+				this.ventaView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
+				this.ventaView.getGrid().addComponentColumn(this::createRemoveButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
+			}
+		}else{
+			this.ventaView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
+			this.ventaView.getGrid().addComponentColumn(this::createRemoveButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
+		}
+
 	}
 
 	private void setListeners() {
@@ -149,9 +159,21 @@ public class VentasController {
 		Venta ventaBusqueda = new Venta();
 		if(checkFiltros()){
 			setParametrosBusqueda(ventaBusqueda);
-			ventaView.getGrid().setItems(ventaService.findVentas(ventaBusqueda));
+			List<Venta> ventas = ventaService.findVentas(ventaBusqueda);
+			if(Proyecto1Application.logUser!=null){
+				if(Proyecto1Application.logUser.getRol().getName().equals("CLIENTE")){
+					ventas = ventas.stream().filter(e->e.getCliente().equals(Proyecto1Application.logUser.getPersona())).collect(Collectors.toList());
+				}
+			}
+			ventaView.getGrid().setItems(ventas);
 		}else {
-			ventaView.getGrid().setItems(ventaService.findAllVentas());
+			List<Venta> ventas = ventaService.findAllVentas();
+			if(Proyecto1Application.logUser!=null){
+				if(Proyecto1Application.logUser.getRol().getName().equals("CLIENTE")){
+					ventas = ventas.stream().filter(e->e.getCliente().equals(Proyecto1Application.logUser.getPersona())).collect(Collectors.toList());
+				}
+			}
+			ventaView.getGrid().setItems(ventas);
 		}
 	}
 

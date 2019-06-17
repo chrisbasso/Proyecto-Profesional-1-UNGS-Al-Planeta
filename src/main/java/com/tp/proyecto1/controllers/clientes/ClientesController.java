@@ -1,5 +1,6 @@
 package com.tp.proyecto1.controllers.clientes;
 
+import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.services.TransaccionService;
@@ -44,8 +45,15 @@ public class ClientesController {
 	}
 
 	private void setComponents() {
-		this.clientesView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
-		this.clientesView.getGrid().addComponentColumn(this::createRemoveButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
+		if(Proyecto1Application.logUser!=null){
+			if(!Proyecto1Application.logUser.getRol().getName().equals("CLIENTE")){
+				this.clientesView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
+				this.clientesView.getGrid().addComponentColumn(this::createRemoveButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
+			}else{
+				clientesView.getSearchButton().setVisible(false);
+				clientesView.getNewClientButton().setVisible(false);
+			}
+		}
 	}
 
 	private void setListeners() {

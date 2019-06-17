@@ -1,5 +1,6 @@
 package com.tp.proyecto1.model.users;
 
+import com.tp.proyecto1.model.clientes.Persona;
 import com.tp.proyecto1.model.pasajes.Transaccion;
 import com.tp.proyecto1.model.sucursales.Sucursal;
 import org.hibernate.annotations.Fetch;
@@ -34,6 +35,9 @@ public class User {
     @OneToOne
 	private Sucursal sucursal;
 
+    @OneToOne
+	private Persona persona;
+
 	public User() {
 	}
 
@@ -50,9 +54,24 @@ public class User {
     public User(String user, String password, Role rol) {
         this.user = user;
         this.password = password;
-        this.enabled = true;
         this.rol = rol;
     }
+
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public Persona getPersona() {
+		return persona;
+	}
+
+	public void setPersona(Persona persona) {
+		this.persona = persona;
+	}
 
 	public Sucursal getSucursal() {
 		return sucursal;

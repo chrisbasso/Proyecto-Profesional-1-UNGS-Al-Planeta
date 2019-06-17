@@ -1,10 +1,12 @@
 package com.tp.proyecto1.controllers.usuarios;
 
+import com.tp.proyecto1.model.clientes.Persona;
 import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.model.users.Role;
 import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.services.SucursalService;
 import com.tp.proyecto1.services.UserService;
+import com.tp.proyecto1.utils.BuscadorClientesComponent;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.GenericDialog;
 import com.tp.proyecto1.utils.Inject;
@@ -52,11 +54,30 @@ public class UsuarioFormController {
 		usuarioForm.getComboRoles().setItems(userService.getRoles());
 		usuarioForm.getComboSucursal().setItems(sucursalService.findAll());
 
+		if(user!=null){
+			if(user.getPersona()!=null){
+				usuarioForm.getBuscadorClientes().getFiltro().setValue(user.getPersona().getId().toString());
+			}
+		}
+
 	}
 
 	private void setListeners() {
 		usuarioForm.getBtnGuardar().addClickListener(e-> saveUser());
 		usuarioForm.getBtnCancelar().addClickListener(e-> usuarioForm.close());
+		usuarioForm.getComboRoles().addValueChangeListener(e-> verificarRol());
+	}
+
+	private void verificarRol() {
+
+		if(usuarioForm.getComboRoles().getValue().getName().equals("CLIENTE")){
+			usuarioForm.getBuscadorClientes().setEnabled(true);
+		}else{
+			usuarioForm.getBuscadorClientes().setEnabled(false);
+			usuarioForm.getBuscadorClientes().getFiltro().setValue("");
+			usuarioForm.getDescripcionCliente().setText("");
+		}
+
 	}
 
 	private void saveUser() {
@@ -76,6 +97,7 @@ public class UsuarioFormController {
 			}
 		}
 		if (binderUser.writeBeanIfValid(user)) {
+				user.setPersona(usuarioForm.getBuscadorClientes().getCliente());
 				userService.save(user);
 				usuarioForm.close();
 				changeHandler.onChange();

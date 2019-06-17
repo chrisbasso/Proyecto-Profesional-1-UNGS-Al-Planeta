@@ -6,7 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import com.tp.proyecto1.Proyecto1Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -193,12 +195,23 @@ public class ReservasController {
     	}        
     	
     	reservas.addAll(reservaService.findByCiudad(ciudadFiltros));
-    	List <Reserva> reservasList = new ArrayList <Reserva> (reservas);
+    	List <Reserva> reservasList = new ArrayList(reservas);
+		if(Proyecto1Application.logUser!=null){
+			if(Proyecto1Application.logUser.getRol().getName().equals("CLIENTE")){
+				reservasList = reservasList.stream().filter(e->e.getCliente().equals(Proyecto1Application.logUser.getPersona())).collect(Collectors.toList());
+			}
+		}
     	reservaView.cargarReservas(reservasList);
     }
     
     private void listarTodasLasReservas() {
-    	reservaView.cargarReservas(reservaService.findAll());
+		List <Reserva> reservasList = reservaService.findAll();
+		if(Proyecto1Application.logUser!=null){
+			if(Proyecto1Application.logUser.getRol().getName().equals("CLIENTE")){
+				reservasList = reservasList.stream().filter(e->e.getCliente().equals(Proyecto1Application.logUser.getPersona())).collect(Collectors.toList());
+			}
+		}
+    	reservaView.cargarReservas(reservasList);
     }
 
     private void venderReserva() {
