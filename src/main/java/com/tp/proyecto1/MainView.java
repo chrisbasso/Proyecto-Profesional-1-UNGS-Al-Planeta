@@ -5,6 +5,9 @@ import com.tp.proyecto1.controllers.usuarios.UsuariosController;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tp.proyecto1.controllers.clientes.ClientesController;
+import com.tp.proyecto1.controllers.clientes.EventosClienteWindowController;
+import com.tp.proyecto1.controllers.clientes.HistorialPuntosClienteWindowController;
+import com.tp.proyecto1.controllers.clientes.PuntosClienteController;
 import com.tp.proyecto1.controllers.configuracion.MenuConfiguracionController;
 import com.tp.proyecto1.controllers.contabilidad.MovimientosCajaController;
 import com.tp.proyecto1.controllers.eventos.EventosController;
@@ -53,6 +56,12 @@ public class MainView extends VerticalLayout{
 	private MovimientosCajaController movimientosCajaController;
 	@Autowired
 	private UsuariosController usuariosController;
+	
+	@Autowired
+	private PuntosClienteController puntosClienteController;
+	
+	/*@Autowired
+	private EventosClienteWindowController eventosClienteController;*/
 
 	private VerticalLayout mainLayout;
 	private AppLayout appLayout;
@@ -68,6 +77,10 @@ public class MainView extends VerticalLayout{
 	private AppLayoutMenuItem configuraciones;
 	private AppLayoutMenuItem usuarios;
 	private AppLayoutMenuItem logout;
+	
+	//AppLayoutMenuItems de Cliente
+	//private AppLayoutMenuItem eventosCliente;
+	private AppLayoutMenuItem puntosCliente;
 
 
 	
@@ -121,6 +134,10 @@ public class MainView extends VerticalLayout{
 		reportes = new AppLayoutMenuItem(VaadinIcon.CHART_3D.create(), "Reportes", e-> openReportesView());
 		configuraciones = new AppLayoutMenuItem(VaadinIcon.COGS.create(),"Configuración", e-> openConfiguracionView());
 		usuarios = new AppLayoutMenuItem(VaadinIcon.USERS.create(),"Usuarios", e-> openUsuariosView());
+		
+		//eventosCliente = new AppLayoutMenuItem(VaadinIcon.PHONE.create(),"Eventos", e -> openEventosClienteView());
+		puntosCliente = new AppLayoutMenuItem(VaadinIcon.CALENDAR.create(),"Mis puntos",e->openPuntosClienteView());
+		
 		logout = new AppLayoutMenuItem(VaadinIcon.USER.create(),
 				"Logout " + Proyecto1Application.logUser.getUser(),
 				e->loginController.logout());
@@ -135,9 +152,13 @@ public class MainView extends VerticalLayout{
 		reportes.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		configuraciones.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		usuarios.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		puntosCliente.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		
+		
 		logout.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		
 
-		menu.addMenuItems(viajes, promociones, ventas, reservas, clientes, eventos, caja, reportes, configuraciones,usuarios, logout);
+		menu.addMenuItems(viajes, promociones, ventas, reservas, clientes, eventos, puntosCliente, caja, reportes, configuraciones,usuarios, logout);
 
 		setPerfiles();
 
@@ -157,6 +178,8 @@ public class MainView extends VerticalLayout{
 		reportes.setVisible(false);
 		configuraciones.setVisible(false);
 		usuarios.setVisible(false);
+	//	eventosCliente.setVisible(false);
+		puntosCliente.setVisible(false);
 
 		if(role.equals("ADMINISTRADOR")){
 			viajes.setVisible(true);
@@ -194,6 +217,8 @@ public class MainView extends VerticalLayout{
 		if(role.equals("CLIENTE")){
 			viajes.setVisible(true);
 			ventas.setVisible(true);
+		//	eventosCliente.setVisible(true);
+			puntosCliente.setVisible(true);
 		}
 	}
 
@@ -255,6 +280,20 @@ public class MainView extends VerticalLayout{
 	private void openConfiguracionView(){
 		actualizarMenuSeleccionado(configuraciones);
 		appLayout.setContent(menuConfiguracionController.getMenuConfiguracionView());
+	}
+	
+	/*private void openEventosClienteView()
+	{
+		actualizarMenuSeleccionado(eventosCliente);
+		appLayout.setContent(eventosClienteController.getView());
+		
+	}*/
+	
+	private void openPuntosClienteView()
+	{
+		actualizarMenuSeleccionado(puntosCliente);
+		appLayout.setContent(puntosClienteController.getView());
+		
 	}
 	
 	private void openLoginView(){
@@ -327,6 +366,24 @@ public class MainView extends VerticalLayout{
 			usuarios.setClassName("selected-menu");
 		}else {
 			usuarios.setClassName("normal-menu");
+		}
+		
+	/*	if(eventosCliente.equals(menu))
+		{
+			eventosCliente.setClassName("selected-menu");
+		}
+		else
+		{
+			eventosCliente.setClassName("normal-menu");
+		}*/
+		
+		if(puntosCliente.equals(menu))
+		{
+			puntosCliente.setClassName("selected-menu");
+		}
+		else
+		{
+			puntosCliente.setClassName("normal-menu");
 		}
 
 		if(logout.equals(menu)) {

@@ -102,7 +102,8 @@ public class EventosController {
 	private void listarEventos() {
 		Evento eventoConsulta = new Consulta();
 		Evento eventoReclamo = new Reclamo();
-		System.out.println(eventosView.getCheckAbierto().getValue());
+
+		
 		if (eventosView.getCheckAbierto().getValue())
 		{
 			
@@ -112,6 +113,7 @@ public class EventosController {
         if(checkFiltros()){
             setParametrosBusqueda(eventoConsulta);
             setParametrosBusqueda(eventoReclamo);
+           
             
 			List<Evento> eventos = eventoService.findEventos(eventoConsulta);
 			for(Evento evento : eventoService.findEventos(eventoReclamo))

@@ -86,6 +86,7 @@ public class VentaFormController {
 	private Double pagoParcial;
 
 	private Integer puntosaUsarVenta; 
+	private Integer puntosAUsar; 
 	
 	public VentaFormController(Viaje viaje) {
 		Inject.Inject(this);
@@ -380,7 +381,7 @@ public class VentaFormController {
 				ventaForm.getPasajerosGridComponent().getNewPasajero().setEnabled(true);//este no sirve
 			}
 		}
-		//validar que se pueda habilitar el boton de finalizar compra
+		//validar que se pueda habilitar el boton de finalizar compra.
 		this.validarCompra();
 	}
 	
@@ -514,7 +515,7 @@ public class VentaFormController {
             this.reservaService.save(reserva);
         }
         changeHandler.onChange();
-        Notification.show("PasajeVenta comprado. Lote de Puntos Conseguidos");
+        //Notification.show("PasajeVenta comprado. Lote de Puntos Conseguidos");
 
 	}
 
@@ -557,6 +558,9 @@ public class VentaFormController {
 			formaPago.setDescripcion(formaPagoPuntos);
 		}
 		
+		if (ventaForm.getPuntosaUsar().getValue() != null) this.puntosAUsar = ventaForm.getPuntosaUsar().getValue().intValue();
+		else this.puntosAUsar = 0;
+		
 		Pago pagoVenta = new Pago();
 		//PAGOS: Si viene de una reserva
 		if (this.reserva !=null) {
@@ -565,6 +569,7 @@ public class VentaFormController {
 			venta.agregarPago(pagoReserva);
 						
 			pagoVenta = new Pago(venta, formaPago, ventaForm.getSaldoPagar().getValue(),  LocalDate.now());
+			pagoVenta.setPuntosUsados(puntosAUsar);
 			venta.agregarPago(pagoVenta);
 			
 			this.viaje = reserva.getViaje();
@@ -577,6 +582,7 @@ public class VentaFormController {
 			this.precioFinal = ventaForm.getSaldoPagar().getValue();
 			
 			pagoVenta = new Pago(venta, formaPago, this.precioFinal,  LocalDate.now());
+			pagoVenta.setPuntosUsados(puntosAUsar);
 			venta.agregarPago(pagoVenta);
 			
 			venta.setEstadoTransaccion(EstadoTransaccion.CREADA);
