@@ -52,12 +52,13 @@ public class VentasController {
     }
 
     private void setComponents() {
-        ventaView.getCiudadFilter().setItems(viajeService.findAllCiudades());
+        ventaView.getProvinciaFilter().setItems(viajeService.findAllProvincias());
         this.ventaView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
         this.ventaView.getGrid().addComponentColumn(this::createRemoveButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
     }
 
     private void setListeners() {
+        ventaView.getProvinciaFilter().addValueChangeListener(e->setComboCiudades());
         setChangeHandler(this::listVentas);
     	ventaView.getSearchButton().addClickListener(e->listVentas());
     	ventaView.getBtnComprobante().addClickListener(e->imprimirComprobante());
@@ -77,6 +78,12 @@ public class VentasController {
     	} 
 	}
 
+	private void setComboCiudades() {
+
+        Provincia provincia = ventaView.getProvinciaFilter().getValue();
+        ventaView.getCiudadFilter().setItems(provincia.getCiudades());
+
+    }
 
 	private Button createRemoveButton(Venta venta) {
         Button botonEliminar = new Button(VaadinIcon.TRASH.create(), clickEvent -> borrarVenta(venta));
@@ -172,6 +179,9 @@ public class VentasController {
         if(!ventaView.getCiudadFilter().isEmpty()){
             venta.getViaje().setDestino(ventaView.getCiudadFilter().getValue());
         }
+        if(!ventaView.getProvinciaFilter().isEmpty()){
+            venta.getViaje().getDestino().setProvincia(ventaView.getProvinciaFilter().getValue());
+        }
         if(!ventaView.getCodTransporteFilter().isEmpty()){
             venta.getViaje().getTransporte().setCodTransporte(ventaView.getCodTransporteFilter().getValue());
         }
@@ -188,7 +198,7 @@ public class VentasController {
     }
 
     private boolean checkFiltros() {
-        return !ventaView.getCiudadFilter().isEmpty() ||
+        return !ventaView.getProvinciaFilter().isEmpty() || !ventaView.getCiudadFilter().isEmpty() ||
                 !ventaView.getCodTransporteFilter().isEmpty() || !ventaView.getNumeroClienteFilter().isEmpty() ||
                  !ventaView.getFechaFilter().isEmpty() ||
                  ventaView.getActivosCheck().getValue();

@@ -45,14 +45,12 @@ public class ViajesController {
     }
 
     private void setComponents() {
-        viajesView.getContinenteFilter().setItems(viajeService.findAllContinente());
+        viajesView.getProvinciaFilter().setItems(viajeService.findAllProvincias());
         viajesView.getTransporteFilter().setItems(viajeService.findAllTipoTransportes());
         this.viajesView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
     }
 
     private void setListeners() {
-        viajesView.getContinenteFilter().addValueChangeListener(e->setComboPaises());
-        viajesView.getPaisFilter().addValueChangeListener(e->setComboProvincias());
         viajesView.getProvinciaFilter().addValueChangeListener(e->setComboCiudades());
         setChangeHandler(this::listViajes);
         viajesView.getNewViajeButton().addClickListener(e-> openNewViajeForm());
@@ -60,35 +58,21 @@ public class ViajesController {
         viajesView.getBtnReservar().addClickListener(e-> openNewReservaForm());
         viajesView.getBtnComprar().addClickListener(e-> openNewVentaForm());
         viajesView.getNuevoDestino().addClickListener(e->openNewDestinoForm());
-    }
 
-    private void setComboProvincias() {
-        Pais pais = viajesView.getPaisFilter().getValue();
-        if (pais != null) {
-            viajesView.getProvinciaFilter().setItems(pais.getProvincias());
-        }
-        viajesView.getCiudadFilter().clear();
-    }
-
-    private void setComboPaises() {
-        Continente continente = viajesView.getContinenteFilter().getValue();
-        if (continente != null) {
-            viajesView.getPaisFilter().setItems(continente.getPaises());
-        }
-        viajesView.getCiudadFilter().clear();
-        viajesView.getProvinciaFilter().clear();
-    }
-
-    private void setComboCiudades() {
-        Provincia provincia = viajesView.getProvinciaFilter().getValue();
-        if (provincia != null) {
-            viajesView.getCiudadFilter().setItems(provincia.getCiudades());
-        }
     }
 
     private void openNewDestinoForm() {
+
         destinosController = new DestinosFormController();
         destinosController.getDestinosForm().open();
+
+    }
+
+    private void setComboCiudades() {
+
+        Provincia provincia = viajesView.getProvinciaFilter().getValue();
+        viajesView.getCiudadFilter().setItems(provincia.getCiudades());
+
     }
 
     private void openNewViajeForm() {
@@ -144,9 +128,6 @@ public class ViajesController {
 
     private void setParametrosBusqueda(Viaje viajeBusqueda) {
         Ciudad ciudad = new Ciudad();
-        Provincia provincia = new Provincia();
-        provincia.setPais(new Pais());
-        ciudad.setProvincia(provincia);
         viajeBusqueda.setDestino(ciudad);
         viajeBusqueda.setTransporte(new Transporte());
         if(!viajesView.getIdFilter().isEmpty()){
@@ -157,12 +138,6 @@ public class ViajesController {
         }
         if(!viajesView.getProvinciaFilter().isEmpty()){
             viajeBusqueda.getDestino().setProvincia(viajesView.getProvinciaFilter().getValue());
-        }
-        if(!viajesView.getPaisFilter().isEmpty()){
-            viajeBusqueda.getDestino().getProvincia().setPais(viajesView.getPaisFilter().getValue());
-        }
-        if(!viajesView.getContinenteFilter().isEmpty()){
-            viajeBusqueda.getDestino().getProvincia().getPais().setContinente(viajesView.getContinenteFilter().getValue());
         }
         if(!viajesView.getCodTransporteFilter().isEmpty()){
             viajeBusqueda.getTransporte().setCodTransporte(viajesView.getCodTransporteFilter().getValue());
@@ -175,7 +150,6 @@ public class ViajesController {
 
     private boolean checkFiltros() {
         return !viajesView.getIdFilter().isEmpty() || !viajesView.getCodTransporteFilter().isEmpty() ||
-                !viajesView.getContinenteFilter().isEmpty() || !viajesView.getPaisFilter().isEmpty() ||
                 !viajesView.getProvinciaFilter().isEmpty() || !viajesView.getCiudadFilter().isEmpty() ||
                 viajesView.getActivosCheck().getValue() || viajesView.getFechaDesdeFilter()!=null ||
                 viajesView.getFechaHastaFilter() != null;

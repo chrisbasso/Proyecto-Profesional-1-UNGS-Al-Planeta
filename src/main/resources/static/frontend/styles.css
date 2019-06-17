@@ -24,3 +24,10 @@ h3 {
   	font-style: normal;
   	text-decoration: none;
 }
+
+.logo-background{
+	background-image: url("../img/logo-transparente.png");
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+  	background-position: center; 
+}
