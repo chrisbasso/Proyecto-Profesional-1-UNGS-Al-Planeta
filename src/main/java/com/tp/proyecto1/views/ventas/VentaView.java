@@ -20,7 +20,6 @@ import com.vaadin.flow.component.textfield.TextField;
 public class VentaView extends FilterGridLayout<Venta> implements View {
 
     private NumberField numeroClienteFilter;
-    private ComboBox<Provincia> provinciaFilter;
     private ComboBox<Ciudad> ciudadFilter;
     private TextField codTransporteFilter;
     private DatePicker fechaFilter;
@@ -40,8 +39,6 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
     @Override
     public void setComponents() {
         this.numeroClienteFilter = new NumberField("Nº Cliente");
-        this.provinciaFilter = new ComboBox<>("Provincia");
-        this.provinciaFilter.setItemLabelGenerator(Provincia::getNombre);
         this.ciudadFilter = new ComboBox<>("Ciudad");
         this.ciudadFilter.setItemLabelGenerator(Ciudad::getNombre);
         this.codTransporteFilter = new TextField("Cod. Transporte");
@@ -64,7 +61,7 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
         HorizontalLayout hlSpace = new HorizontalLayout();
         this.hlFooter.add(btnComprobante,btnEnvioMail);
         hlSpace.setWidthFull();
-        this.hlActions.add(numeroClienteFilter, provinciaFilter, ciudadFilter, codTransporteFilter,fechaFilter,activosCheck, hlSpace, searchButton);
+        this.hlActions.add(numeroClienteFilter, ciudadFilter, codTransporteFilter,fechaFilter,activosCheck, hlSpace, searchButton);
 
     }
 
@@ -91,14 +88,6 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
 
     public Grid<Venta> getGrid(){
         return grid;
-    }
-
-    public ComboBox<Provincia> getProvinciaFilter() {
-        return provinciaFilter;
-    }
-
-    public void setProvinciaFilter(ComboBox<Provincia> provinciaFilter) {
-        this.provinciaFilter = provinciaFilter;
     }
 
     public ComboBox<Ciudad> getCiudadFilter() {
