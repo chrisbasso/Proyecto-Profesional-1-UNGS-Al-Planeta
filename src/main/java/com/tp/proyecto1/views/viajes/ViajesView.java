@@ -17,6 +17,8 @@ import com.vaadin.flow.component.textfield.TextField;
 public class ViajesView extends FilterGridLayout<Viaje> implements View {
 
 	private NumberField idFilter;
+	private ComboBox<Continente> continenteFilter;
+	private ComboBox<Pais> paisFilter;
 	private ComboBox<Provincia> provinciaFilter;
 	private ComboBox<Ciudad> ciudadFilter;
 	private TextField codTransporteFilter;
@@ -41,12 +43,20 @@ public class ViajesView extends FilterGridLayout<Viaje> implements View {
 
 		this.idFilter = new NumberField("Nº Viaje");
 		this.idFilter.setWidth("70px");
+
+		this.continenteFilter = new ComboBox<>("Continente");
+		this.continenteFilter.setItemLabelGenerator(Continente::getNombre);
+		this.continenteFilter.setWidth("120px");
+		this.paisFilter = new ComboBox<>("Pais");
+		this.paisFilter.setItemLabelGenerator(Pais::getNombre);
+		this.paisFilter.setWidth("120px");
+
 		this.provinciaFilter = new ComboBox<>("Provincia");
 		this.provinciaFilter.setItemLabelGenerator(Provincia::getNombre);
-		provinciaFilter.setWidth("150px");
+		provinciaFilter.setWidth("120px");
 		this.ciudadFilter = new ComboBox<>("Ciudad");
 		this.ciudadFilter.setItemLabelGenerator(Ciudad::getNombre);
-		ciudadFilter.setWidth("200px");
+		ciudadFilter.setWidth("120px");
 		this.codTransporteFilter = new TextField("Cod. Transporte");
 		codTransporteFilter.setWidth("105px");
 		this.searchButton = new Button("Buscar", VaadinIcon.SEARCH.create());
@@ -77,7 +87,7 @@ public class ViajesView extends FilterGridLayout<Viaje> implements View {
 		HorizontalLayout hlSpace = new HorizontalLayout();
 		this.hlFooter.add(btnReservar, btnComprar);
 		hlSpace.setWidthFull();
-		this.hlActions.add(idFilter, provinciaFilter, ciudadFilter, codTransporteFilter, transporteFilter,fechaDesdeFilter,fechaHastaFilter,activosCheck,hlSpace, searchButton,nuevoDestino, newViajeButton);
+		this.hlActions.add(idFilter,continenteFilter, paisFilter, provinciaFilter, ciudadFilter, codTransporteFilter, transporteFilter,fechaDesdeFilter,fechaHastaFilter,activosCheck,hlSpace, searchButton,nuevoDestino, newViajeButton);
 	}
 
 	public void setGrid() {
@@ -200,6 +210,22 @@ public class ViajesView extends FilterGridLayout<Viaje> implements View {
 
 	public Button getBtnComprar() {
 		return btnComprar;
+	}
+
+	public ComboBox<Continente> getContinenteFilter() {
+		return continenteFilter;
+	}
+
+	public void setContinenteFilter(ComboBox<Continente> continenteFilter) {
+		this.continenteFilter = continenteFilter;
+	}
+
+	public ComboBox<Pais> getPaisFilter() {
+		return paisFilter;
+	}
+
+	public void setPaisFilter(ComboBox<Pais> paisFilter) {
+		this.paisFilter = paisFilter;
 	}
 
 	public void setBtnComprar(Button btnComprar) {

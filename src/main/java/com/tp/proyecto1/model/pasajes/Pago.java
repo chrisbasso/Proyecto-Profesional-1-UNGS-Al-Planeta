@@ -24,7 +24,8 @@ public class Pago {
 	private FormaDePago formaDePago;
 	private Double importe;
 	private LocalDate fechaDePago;
-
+	private Integer puntosUsados; 
+	
 	public Pago() {		
 	}
 	
@@ -73,5 +74,13 @@ public class Pago {
 
 	public void setFechaDePago(LocalDate fechaDePago) {
 		this.fechaDePago = fechaDePago;
+	}
+
+	public Integer getPuntosUsados() {
+		return puntosUsados;
+	}
+
+	public void setPuntosUsados(Integer puntosUsados) {
+		this.puntosUsados = puntosUsados;
 	}	
 }
