@@ -2,15 +2,16 @@ package com.tp.proyecto1.controllers.configuracion;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FilenameFilter;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import com.tp.proyecto1.utils.Inject;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.tp.proyecto1.services.ConfiguracionService;
+import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.configuracion.BackUpCrearForm;
 import com.tp.proyecto1.views.configuracion.BackUpTomarForm;
 import com.vaadin.flow.component.notification.Notification;
@@ -21,15 +22,16 @@ import com.vaadin.flow.spring.annotation.UIScope;
 public class DBController {
 	
 	private static String fullPathExample = "/home/ricardo/eclipse-workspace/db/alplaneta_grupo4.sql";
-	
+	@Autowired
+	private ConfiguracionService configService;
 	private BackUpCrearForm bckUpCrearView;
 	private BackUpTomarForm bckUpTomarView;
 	
 	public DBController() {
+		Inject.Inject(this);
 	}
 
 	public void getCrearBackUpView() {
-		Inject.Inject(this);
 		bckUpCrearView = new BackUpCrearForm();
 		agregarListenersCrear();
 		bckUpCrearView.open();
@@ -49,11 +51,12 @@ public class DBController {
 	}
 	
 	private void validarGuardadoBackup() {
+		String path = configService.findValueByKey("backup_path");
 		String nombreArchivo = bckUpCrearView.getNombreArchivo();		
 		if(nombreArchivo != null) {
 			boolean confirmacion = false;
 			bckUpCrearView.cargarProgressBar();
-			confirmacion = backup(nombreArchivo + ".sql");
+			confirmacion = backup(path + nombreArchivo + ".sql");
 			if(confirmacion) {
 				Notification.show("Se ha guardado con éxito");
 			}else {
@@ -70,7 +73,7 @@ public class DBController {
      *            Example = "/home/ricardo/eclipse-workspace/db/alplaneta_grupo4.sql"
      */
 	private boolean backup(String fullPathAndName) {	 
-		String sqlCmd = "mysqldump -uroot -ppassword --add-drop-database -B alplaneta_grupo4 -r " + fullPathAndName;		
+		String sqlCmd = "mysqldump -uroot -ppass --add-drop-database -B alplaneta_grupo4 -r " + fullPathAndName;		
 		System.out.println("Running backup");
 		boolean result = execute(sqlCmd);
 		if(!result) {
@@ -117,7 +120,8 @@ public class DBController {
 	}
 	
 	private void cargarArchivos() {
-		File folder = new File("/home/ricardo/eclipse-workspace/proyectoP1/");
+		String path = configService.findValueByKey("backup_path");
+		File folder = new File(path);
 	    FileFilter ff = new FileFilter() {			
 			@Override
 			public boolean accept(File pathname) {
@@ -142,7 +146,7 @@ public class DBController {
      *            Example = "/home/ricardo/eclipse-workspace/db/alplaneta_grupo4.sql"
      */	
 	private boolean restore(String fullPathAndName) {
-		String[] sqlCmd = new String[]{"mysql", "--user=root", "--password=password", "-e", "source " + fullPathAndName};	
+		String[] sqlCmd = new String[]{"mysql", "--user=root", "--password=pass", "-e", "source " + fullPathAndName};	
 		System.out.println("Running restore");
 		boolean result = execute(sqlCmd);
 		if(!result) {

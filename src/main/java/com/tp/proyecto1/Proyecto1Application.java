@@ -233,6 +233,8 @@ public class Proyecto1Application {
 		configService.createConfiguracionIfNotExist("cant_anios_venc_puntos", "1");
 		configService.createConfiguracionIfNotExist("movimiento_caja-numero_cuenta","100");
 		configService.createConfiguracionIfNotExist("punto_por_pesos", "10");
+		//TODO reemplazar con nombre fichero
+		configService.createConfiguracionIfNotExist("backup_path", "/home/ricardo/eclipse-workspace/proyectoP1/");
 	}
 
 	private void crearFormasDePago(VentaService ventaService) {
@@ -297,16 +299,6 @@ public class Proyecto1Application {
 			asientoService.saveCuenta(new Cuenta(502,"Impuestos", TipoCuenta.EGRESO));
 			asientoService.saveCuenta(new Cuenta(503,"Sueldos", TipoCuenta.EGRESO));
 			asientoService.saveCuenta(new Cuenta(504,"Mantenimiento", TipoCuenta.EGRESO));			
-		}
-	}
-	
-	private void crearViajes(ViajeService viajeService) {
-		if(viajeService.findAll().size()==0) {
-			for (int i = 0; i<5; i++) {
-		        Transporte transporte = new Transporte("codigo " + i,viajeService.findAllTipoTransportes().get(0), i*5, "clase " + i);
-				Viaje viaje = new Viaje(viajeService.findAllCiudades().get(0), viajeService.findAllCiudades().get(1), transporte, LocalDate.now().plusDays(10), LocalTime.now(), i*2000.0, "Viaje " + i, true);
-				viajeService.save(viaje);
-			}	
 		}
 	}
 }
