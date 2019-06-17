@@ -1,23 +1,13 @@
 package com.tp.proyecto1;
 
-import com.tp.proyecto1.utils.GenericDialog;
-import com.vaadin.flow.component.Tag;
-import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.ErrorParameter;
-import com.vaadin.flow.router.HasErrorParameter;
-import com.vaadin.flow.server.DefaultErrorHandler;
-import com.vaadin.flow.server.ErrorEvent;
-import com.vaadin.flow.server.ErrorHandler;
-import org.hibernate.resource.transaction.backend.jta.internal.synchronization.ExceptionMapper;
+import com.tp.proyecto1.controllers.usuarios.LoginController;
+import com.tp.proyecto1.controllers.usuarios.UsuariosController;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tp.proyecto1.controllers.clientes.ClientesController;
 import com.tp.proyecto1.controllers.configuracion.ConfiguracionController;
 import com.tp.proyecto1.controllers.contabilidad.MovimientosCajaController;
 import com.tp.proyecto1.controllers.eventos.EventosController;
-import com.tp.proyecto1.controllers.login.LoginController;
 import com.tp.proyecto1.controllers.promociones.PromocionesController;
 import com.tp.proyecto1.controllers.reportes.ReportesController;
 import com.tp.proyecto1.controllers.reserva.ReservasController;
@@ -59,9 +49,10 @@ public class MainView extends VerticalLayout{
 	private ReportesController reportesController;
 	@Autowired
 	private ConfiguracionController configuracionController;
-//	private MenuContabilidadController menuContabilidadController;
 	@Autowired
 	MovimientosCajaController movimientosCajaController;
+	@Autowired
+	UsuariosController usuariosController;
 	
 	private VerticalLayout mainLayout;
 	private AppLayout appLayout;
@@ -75,6 +66,7 @@ public class MainView extends VerticalLayout{
 	private AppLayoutMenuItem caja;
 	private AppLayoutMenuItem reportes;
 	private AppLayoutMenuItem configuraciones;
+	private AppLayoutMenuItem usuarios;
 	private AppLayoutMenuItem logout;
 
 
@@ -128,6 +120,7 @@ public class MainView extends VerticalLayout{
 		caja = new AppLayoutMenuItem(VaadinIcon.BOOK_DOLLAR.create(), "Caja", e -> openCajaView());
 		reportes = new AppLayoutMenuItem(VaadinIcon.CHART_3D.create(), "Reportes", e-> openReportesView());
 		configuraciones = new AppLayoutMenuItem(VaadinIcon.COGS.create(),"Configuración", e-> openConfiguracionView());
+		usuarios = new AppLayoutMenuItem(VaadinIcon.USERS.create(),"Usuarios", e-> openUsuariosView());
 		logout = new AppLayoutMenuItem(VaadinIcon.USER.create(),
 				"Logout " + Proyecto1Application.logUser.getUser(),
 				e->loginController.logout());
@@ -141,9 +134,10 @@ public class MainView extends VerticalLayout{
 		caja.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		reportes.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		configuraciones.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		usuarios.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		logout.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 
-		menu.addMenuItems(viajes, promociones, ventas, reservas, clientes, eventos, caja, reportes, configuraciones, logout);
+		menu.addMenuItems(viajes, promociones, ventas, reservas, clientes, eventos, caja, reportes, configuraciones,usuarios, logout);
 
 		setPerfiles();
 
@@ -162,6 +156,7 @@ public class MainView extends VerticalLayout{
 		caja.setVisible(false);
 		reportes.setVisible(false);
 		configuraciones.setVisible(false);
+		usuarios.setVisible(false);
 
 		if(role.equals("ADMINISTRADOR")){
 			viajes.setVisible(true);
@@ -173,6 +168,7 @@ public class MainView extends VerticalLayout{
 			caja.setVisible(true);
 			reportes.setVisible(true);
 			configuraciones.setVisible(true);
+			usuarios.setVisible(true);
 		}
 		if(role.equals("VENDEDOR")){
 			viajes.setVisible(true);
@@ -216,6 +212,11 @@ public class MainView extends VerticalLayout{
 	private void openPromocionesView() {
 		actualizarMenuSeleccionado(promociones);
 		appLayout.setContent(promocionesController.getView());
+	}
+
+	private void openUsuariosView() {
+		actualizarMenuSeleccionado(usuarios);
+		appLayout.setContent(usuariosController.getUsuariosView());
 	}
 
 	private void openVentasView() {
@@ -320,6 +321,12 @@ public class MainView extends VerticalLayout{
 			configuraciones.setClassName("selected-menu");	
 		}else {
 			configuraciones.setClassName("normal-menu");
+		}
+
+		if(usuarios.equals(menu)) {
+			usuarios.setClassName("selected-menu");
+		}else {
+			usuarios.setClassName("normal-menu");
 		}
 
 		if(logout.equals(menu)) {

@@ -24,6 +24,7 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 	private Button searchButton = new Button("Buscar", VaadinIcon.SEARCH.create());
 	private Button newConsultaButton = new Button("Nueva Evento");
 	private Checkbox checkAbierto = new Checkbox("Solo Abiertos");
+
 	public EventosView() {
 		super(Evento.class);
 		setComponents();
@@ -39,7 +40,6 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 		idClienteFilter.setMinWidth("150px");	
 		ConfigDatePicker configDatePicker = new ConfigDatePicker();
 		configDatePicker.setearLenguajeEspañol(fechaFilter);
-
 	}
 
 	@Override

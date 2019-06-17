@@ -4,7 +4,7 @@ import com.tp.proyecto1.controllers.clientes.ClientesController;
 import com.tp.proyecto1.controllers.configuracion.ConfiguracionController;
 import com.tp.proyecto1.controllers.contabilidad.AsientosController;
 import com.tp.proyecto1.controllers.eventos.EventosController;
-import com.tp.proyecto1.controllers.login.LoginController;
+import com.tp.proyecto1.controllers.usuarios.LoginController;
 import com.tp.proyecto1.controllers.promociones.PromocionesController;
 import com.tp.proyecto1.controllers.reportes.ReportesController;
 import com.tp.proyecto1.controllers.reserva.ReservasController;

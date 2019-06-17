@@ -1,10 +1,10 @@
-package com.tp.proyecto1.controllers.login;
+package com.tp.proyecto1.controllers.usuarios;
 
 import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.utils.ChangeHandler;
-import com.tp.proyecto1.views.LoginView;
+import com.tp.proyecto1.views.usuarios.LoginView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.login.AbstractLogin;
 import com.vaadin.flow.component.login.LoginI18n;
@@ -39,6 +39,7 @@ public class LoginController{
 				loginUser = userService.getUserByName(e.getUsername());
 				UI.getCurrent().getSession().setAttribute("usuarioLogueado", loginUser);
 				Proyecto1Application.logUser=loginUser;
+				Proyecto1Application.sucursal=loginUser.getSucursal();
 				changeHandler.onChange();
 			} else {
 				loginView.getLoginComponent().setError(true);

@@ -1,6 +1,7 @@
 package com.tp.proyecto1.model.users;
 
 import com.tp.proyecto1.model.pasajes.Transaccion;
+import com.tp.proyecto1.model.sucursales.Sucursal;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NaturalId;
@@ -21,7 +22,7 @@ public class User {
     @NaturalId
 	private String user;
 	private String password;
-	private boolean enabled;
+	private Boolean enabled;
 
     @ManyToOne
     private Role rol;
@@ -29,6 +30,9 @@ public class User {
     @OneToMany(fetch = FetchType.EAGER)
 	@Fetch(value = FetchMode.SUBSELECT)
     private List<Transaccion> transacciones = new ArrayList<>();
+
+    @OneToOne
+	private Sucursal sucursal;
 
 	public User() {
 	}
@@ -49,6 +53,14 @@ public class User {
         this.enabled = true;
         this.rol = rol;
     }
+
+	public Sucursal getSucursal() {
+		return sucursal;
+	}
+
+	public void setSucursal(Sucursal sucursal) {
+		this.sucursal = sucursal;
+	}
 
 	public List<Transaccion> getTransacciones() {
 		return transacciones;

@@ -75,6 +75,7 @@ public class Proyecto1Application {
 									  LotePuntoRepository lotePuntoRepository,
 									  ContinenteRepository continenteRepository) {
 		return args -> {
+			setSurcursales(sucursalRepository);
 			crearUsuarios(userService);
 			crearTiposTransportes(viajeService);
 			crearFormasDePago(ventaService);
@@ -82,7 +83,6 @@ public class Proyecto1Application {
 			crearTagsDestino(tagDestinoService);
 			crearPaisesCiudades(continenteRepository);
 			//crearViajes(viajeService);
-			setSurcursales(sucursalRepository);
 			crearCuentas(asientoService);
 			procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository, lotePuntoRepository);
 
@@ -250,6 +250,7 @@ public class Proyecto1Application {
 	}
 
 	private void crearUsuarios(UserService userService) {
+
 		userService.createPrivilegeIfNotFound("READ_PRIVILEGE");
 		userService.createPrivilegeIfNotFound("WRITE_PRIVILEGE");
 		userService.createRoleIfNotFound("ADMINISTRADOR", userService.getPrivileges());
@@ -258,14 +259,24 @@ public class Proyecto1Application {
 		userService.createRoleIfNotFound("CONTADOR", userService.getPrivileges());
 		userService.createRoleIfNotFound("CLIENTE", userService.getPrivileges());
 		User userAdmin = new User("admin", "admin", userService.getRolByName("ADMINISTRADOR"));
+		userAdmin.setEnabled(true);
+		userAdmin.setSucursal(sucursal);
 		userService.createUserIfNotExist(userAdmin);
 		User userVendedor = new User("vendedor", "vendedor", userService.getRolByName("VENDEDOR"));
+		userVendedor.setEnabled(true);
+		userVendedor.setSucursal(sucursal);
 		userService.createUserIfNotExist(userVendedor);
 		User userSupervisor = new User("supervisor", "supervisor", userService.getRolByName("SUPERVISOR"));
+		userSupervisor.setEnabled(true);
+		userSupervisor.setSucursal(sucursal);
 		userService.createUserIfNotExist(userSupervisor);
 		User userContador = new User("contador", "contador", userService.getRolByName("CONTADOR"));
+		userContador.setEnabled(true);
+		userContador.setSucursal(sucursal);
 		userService.createUserIfNotExist(userContador);
 		User userCliente = new User("cliente", "cliente", userService.getRolByName("CLIENTE"));
+		userCliente.setEnabled(true);
+		userCliente.setSucursal(sucursal);
 		userService.createUserIfNotExist(userCliente);
 	}
 	

@@ -100,6 +100,7 @@ public class UserService {
 
 	@Transactional
 	public boolean valideUser(User user){
+		user.setEnabled(true);
 		return userRepository.exists(Example.of(user));
 	}
 
@@ -117,5 +118,8 @@ public class UserService {
 			return null;
 		}
 	}
-	
+
+	public List<User> findUsers(User userBusqueda) {
+		return userRepository.findAll(Example.of(userBusqueda));
+	}
 }

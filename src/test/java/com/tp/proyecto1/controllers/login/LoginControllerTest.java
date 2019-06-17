@@ -1,5 +1,6 @@
 package com.tp.proyecto1.controllers.login;
 
+import com.tp.proyecto1.controllers.usuarios.LoginController;
 import com.tp.proyecto1.services.UserService;
 import org.junit.Before;
 import org.junit.Test;

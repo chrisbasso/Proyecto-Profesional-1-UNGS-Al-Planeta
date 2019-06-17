@@ -1,4 +1,4 @@
-package com.tp.proyecto1.views;
+package com.tp.proyecto1.views.usuarios;
 
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
