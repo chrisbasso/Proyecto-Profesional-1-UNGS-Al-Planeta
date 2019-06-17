@@ -64,20 +64,26 @@ public class ViajesController {
 
     private void setComboProvincias() {
         Pais pais = viajesView.getPaisFilter().getValue();
-        viajesView.getProvinciaFilter().setItems(pais.getProvincias());
+        if (pais != null) {
+            viajesView.getProvinciaFilter().setItems(pais.getProvincias());
+        }
         viajesView.getCiudadFilter().clear();
     }
 
     private void setComboPaises() {
         Continente continente = viajesView.getContinenteFilter().getValue();
-        viajesView.getPaisFilter().setItems(continente.getPaises());
+        if (continente != null) {
+            viajesView.getPaisFilter().setItems(continente.getPaises());
+        }
         viajesView.getCiudadFilter().clear();
         viajesView.getProvinciaFilter().clear();
     }
 
     private void setComboCiudades() {
         Provincia provincia = viajesView.getProvinciaFilter().getValue();
-        viajesView.getCiudadFilter().setItems(provincia.getCiudades());
+        if (provincia != null) {
+            viajesView.getCiudadFilter().setItems(provincia.getCiudades());
+        }
     }
 
     private void openNewDestinoForm() {
@@ -138,6 +144,9 @@ public class ViajesController {
 
     private void setParametrosBusqueda(Viaje viajeBusqueda) {
         Ciudad ciudad = new Ciudad();
+        Provincia provincia = new Provincia();
+        provincia.setPais(new Pais());
+        ciudad.setProvincia(provincia);
         viajeBusqueda.setDestino(ciudad);
         viajeBusqueda.setTransporte(new Transporte());
         if(!viajesView.getIdFilter().isEmpty()){

@@ -47,7 +47,7 @@ public class ViajesView extends FilterGridLayout<Viaje> implements View {
 		this.continenteFilter = new ComboBox<>("Continente");
 		this.continenteFilter.setItemLabelGenerator(Continente::getNombre);
 		this.continenteFilter.setWidth("120px");
-		this.paisFilter = new ComboBox<>("Ciudad");
+		this.paisFilter = new ComboBox<>("Pais");
 		this.paisFilter.setItemLabelGenerator(Pais::getNombre);
 		this.paisFilter.setWidth("120px");
 
