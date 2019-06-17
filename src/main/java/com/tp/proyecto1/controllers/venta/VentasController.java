@@ -28,41 +28,41 @@ import java.time.LocalDate;
 @UIScope
 public class VentasController {
 
-    private VentaView ventaView;
+	private VentaView ventaView;
 
-    private VentaFormController ventaFormController;
+	private VentaFormController ventaFormController;
 
-    @Autowired
-    private VentaService ventaService;
-    
-    @Autowired
-    private ViajeService viajeService;
+	@Autowired
+	private VentaService ventaService;
 
-    private ChangeHandler changeHandler;
-    
-    private Venta ventaBorrar;
-    
+	@Autowired
+	private ViajeService viajeService;
+
+	private ChangeHandler changeHandler;
+
+	private Venta ventaBorrar;
+
 	public VentasController() {
-        Inject.Inject(this);
-        this.ventaView = new VentaView();
-        setListeners();
-        setComponents();
-        listVentas();
+		Inject.Inject(this);
+		this.ventaView = new VentaView();
+		setListeners();
+		setComponents();
+		listVentas();
 
-    }
+	}
 
-    private void setComponents() {
-        ventaView.getCiudadFilter().setItems(viajeService.findAllCiudades());
-        this.ventaView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
-        this.ventaView.getGrid().addComponentColumn(this::createRemoveButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
-    }
+	private void setComponents() {
+		ventaView.getCiudadFilter().setItems(viajeService.findAllCiudades());
+		this.ventaView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
+		this.ventaView.getGrid().addComponentColumn(this::createRemoveButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
+	}
 
-    private void setListeners() {
-        setChangeHandler(this::listVentas);
-    	ventaView.getSearchButton().addClickListener(e->listVentas());
-    	ventaView.getBtnComprobante().addClickListener(e->imprimirComprobante());
-    	ventaView.getBtnEnvioMail().addClickListener(e-> EnviadorDeMail.enviarConGmail("gmonteblack.gm@gmail.com", "mail de Prueba", "emo sido engañado"));
-    }
+	private void setListeners() {
+		setChangeHandler(this::listVentas);
+		ventaView.getSearchButton().addClickListener(e->listVentas());
+		ventaView.getBtnComprobante().addClickListener(e->imprimirComprobante());
+		ventaView.getBtnEnvioMail().addClickListener(e-> EnviadorDeMail.enviarConGmail("gmonteblack.gm@gmail.com", "mail de Prueba", "emo sido engañado"));
+	}
 
 	private void imprimirComprobante() {
 		Venta venta = ventaView.getGrid().asSingleSelect().getValue();
@@ -73,136 +73,136 @@ public class VentasController {
 					"  print(); self.close();}, 1000);");
 		}
 		else {
-    		Notification.show("Seleccione una venta.");
-    	} 
+			Notification.show("Seleccione una venta.");
+		}
 	}
 
 
 	private Button createRemoveButton(Venta venta) {
-        Button botonEliminar = new Button(VaadinIcon.TRASH.create(), clickEvent -> borrarVenta(venta));
-        if(!venta.isActivo()){
-            botonEliminar.setEnabled(false);
-        }
-        return botonEliminar;
-    }
-	
-	  private void borrarVenta(Venta venta) {
-		  	ventaBorrar = venta;
-	        ConfirmationDialog confirmationDialog = new ConfirmationDialog("¿Realmente desea cancelar la Venta?");
-	        confirmationDialog.getConfirmButton().addClickListener(event -> {ventaBorrar.inactivar();
-		        if ( !ventaBorrar.getViaje().isActivo() ) {
-		        	Notification.show("No se puede cancelar la venta porque se encuentra vencida");
-		        }
-		        else {
-		        	Viaje viaje = ventaBorrar.getViaje();
-					viaje.agregarPasajes(ventaBorrar.getCantidadPasajes());
-					
-					LocalDate fechaSalida = viaje.getFechaSalida();
-					 
-					Double importeTotalOriginal = ventaBorrar.getImporteTotal();
-					Double importeCancelacion = calcularImporteCancelacion(fechaSalida, importeTotalOriginal );
-					
-					ventaBorrar.setImporteTotal(importeCancelacion);
-					
-					viajeService.save(viaje);
-		            ventaService.save(ventaBorrar);
-		            
-		            if (importeCancelacion == 0.0) {
-		            	ventaBorrar.setEstadoTransaccion(EstadoTransaccion.CANCELADA);
-		            	
-		            	Notification.show("La Venta fue cancelada, se le reintegra el total al cliente " +ventaBorrar.getCliente().getNombreyApellido());
-		            }
-		            else {           
-		            	Double reintegro = importeTotalOriginal - importeCancelacion;
-		            	ventaBorrar.setEstadoTransaccion(EstadoTransaccion.PENALIZADA);
-		            	ventaService.save(ventaBorrar);
-		            	Notification.show("La Venta fue penalizada, se le reintegra " + reintegro + " al cliente " +ventaBorrar.getCliente().getNombreyApellido());
-		            }
-		        }
-	            changeHandler.onChange();
-	        });
-	        confirmationDialog.open();
-	    }
-	
+		Button botonEliminar = new Button(VaadinIcon.TRASH.create(), clickEvent -> borrarVenta(venta));
+		if(!venta.isActivo()){
+			botonEliminar.setEnabled(false);
+		}
+		return botonEliminar;
+	}
+
+	private void borrarVenta(Venta venta) {
+		ventaBorrar = venta;
+		ConfirmationDialog confirmationDialog = new ConfirmationDialog("¿Realmente desea cancelar la Venta?");
+		confirmationDialog.getConfirmButton().addClickListener(event -> {ventaBorrar.inactivar();
+			if ( !ventaBorrar.getViaje().isActivo() ) {
+				Notification.show("No se puede cancelar la venta porque se encuentra vencida");
+			}
+			else {
+				Viaje viaje = ventaBorrar.getViaje();
+				viaje.agregarPasajes(ventaBorrar.getCantidadPasajes());
+
+				LocalDate fechaSalida = viaje.getFechaSalida();
+
+				Double importeTotalOriginal = ventaBorrar.getImporteTotal();
+				Double importeCancelacion = calcularImporteCancelacion(fechaSalida, importeTotalOriginal );
+
+				ventaBorrar.setImporteTotal(importeCancelacion);
+
+				viajeService.save(viaje);
+				ventaService.save(ventaBorrar);
+
+				if (importeCancelacion == 0.0) {
+					ventaBorrar.setEstadoTransaccion(EstadoTransaccion.CANCELADA);
+
+					Notification.show("La Venta fue cancelada, se le reintegra el total al cliente " +ventaBorrar.getCliente().getNombreyApellido());
+				}
+				else {
+					Double reintegro = importeTotalOriginal - importeCancelacion;
+					ventaBorrar.setEstadoTransaccion(EstadoTransaccion.PENALIZADA);
+					ventaService.save(ventaBorrar);
+					Notification.show("La Venta fue penalizada, se le reintegra " + reintegro + " al cliente " +ventaBorrar.getCliente().getNombreyApellido());
+				}
+			}
+			changeHandler.onChange();
+		});
+		confirmationDialog.open();
+	}
+
 	private Double calcularImporteCancelacion(LocalDate fechaSalida, Double importeTotal) {
 		Double importeCancelacion = 0.0;
 		LocalDate fechaActual = LocalDate.now();
 		int cantDiasRestantes = fechaSalida.compareTo(fechaActual);
-			if (cantDiasRestantes < 5 && cantDiasRestantes > 0 ) {
-				importeCancelacion = importeTotal * (0.2 * (5-cantDiasRestantes));
-			}
-		
+		if (cantDiasRestantes < 5 && cantDiasRestantes > 0 ) {
+			importeCancelacion = importeTotal * (0.2 * (5-cantDiasRestantes));
+		}
+
 		return importeCancelacion;
 	}
-	
-    private Button createEditButton(Venta venta) {
-        return new Button(VaadinIcon.EDIT.create(), clickEvent -> {
-            ventaFormController = new VentaFormController(venta.getViaje());
-            ventaFormController.setComponentsValues(venta);
-            ventaFormController.getVentaFormEdit().open();
-            ventaFormController.setChangeHandler(this::listVentas);
-        });
-    }
+
+	private Button createEditButton(Venta venta) {
+		return new Button(VaadinIcon.EDIT.create(), clickEvent -> {
+			ventaFormController = new VentaFormController(venta.getViaje());
+			ventaFormController.setComponentsValues(venta);
+			ventaFormController.getVentaFormEdit().open();
+			ventaFormController.setChangeHandler(this::listVentas);
+		});
+	}
 
 
-    private void listVentas() {
-        Venta ventaBusqueda = new Venta();
-        if(checkFiltros()){
-            setParametrosBusqueda(ventaBusqueda);
-            ventaView.getGrid().setItems(ventaService.findVentas(ventaBusqueda));
-        }else {
-            ventaView.getGrid().setItems(ventaService.findAllVentas());
-        }
-    }
+	private void listVentas() {
+		Venta ventaBusqueda = new Venta();
+		if(checkFiltros()){
+			setParametrosBusqueda(ventaBusqueda);
+			ventaView.getGrid().setItems(ventaService.findVentas(ventaBusqueda));
+		}else {
+			ventaView.getGrid().setItems(ventaService.findAllVentas());
+		}
+	}
 
-    private void setParametrosBusqueda(Venta venta) {
-    	Cliente cliente = new Cliente();
-    	cliente.setActivo(true);
-        venta.setCliente(cliente);
-        Transporte transporte = new Transporte();
-        Viaje viaje = new Viaje();
-        Ciudad ciudad = new Ciudad();
-        viaje.setDestino(ciudad);
-        viaje.setTransporte(transporte);
-        viaje.setActivo(true);
-        venta.setViaje(viaje);
-        if(!ventaView.getNumeroClienteFilter().isEmpty()){
-            venta.getCliente().setId(ventaView.getNumeroClienteFilter().getValue().longValue());
-        }
-        if(!ventaView.getCiudadFilter().isEmpty()){
-            venta.getViaje().setDestino(ventaView.getCiudadFilter().getValue());
-        }
-        if(!ventaView.getCodTransporteFilter().isEmpty()){
-            venta.getViaje().getTransporte().setCodTransporte(ventaView.getCodTransporteFilter().getValue());
-        }
-        if(!ventaView.getFechaFilter().isEmpty()){
-            venta.getViaje().setFechaSalida(ventaView.getFechaFilter().getValue());
-        }
-        if (ventaView.getActivosCheck().getValue()) {
-        	venta.activar();
-        }
-        else {
-        	venta.inactivar();
-        }
-        
-    }
+	private void setParametrosBusqueda(Venta venta) {
+		Cliente cliente = new Cliente();
+		cliente.setActivo(true);
+		venta.setCliente(cliente);
+		Transporte transporte = new Transporte();
+		Viaje viaje = new Viaje();
+		Ciudad ciudad = new Ciudad();
+		viaje.setDestino(ciudad);
+		viaje.setTransporte(transporte);
+		viaje.setActivo(true);
+		venta.setViaje(viaje);
+		if(!ventaView.getNumeroClienteFilter().isEmpty()){
+			venta.getCliente().setId(ventaView.getNumeroClienteFilter().getValue().longValue());
+		}
+		if(!ventaView.getCiudadFilter().isEmpty()){
+			venta.getViaje().setDestino(ventaView.getCiudadFilter().getValue());
+		}
+		if(!ventaView.getCodTransporteFilter().isEmpty()){
+			venta.getViaje().getTransporte().setCodTransporte(ventaView.getCodTransporteFilter().getValue());
+		}
+		if(!ventaView.getFechaFilter().isEmpty()){
+			venta.getViaje().setFechaSalida(ventaView.getFechaFilter().getValue());
+		}
+		if (ventaView.getActivosCheck().getValue()) {
+			venta.activar();
+		}
+		else {
+			venta.inactivar();
+		}
 
-    private boolean checkFiltros() {
-        return  !ventaView.getCiudadFilter().isEmpty() ||
-                !ventaView.getCodTransporteFilter().isEmpty() || !ventaView.getNumeroClienteFilter().isEmpty() ||
-                 !ventaView.getFechaFilter().isEmpty() ||
-                 ventaView.getActivosCheck().getValue();
-    }
+	}
 
-    private void setChangeHandler(ChangeHandler h) {
-        changeHandler = h;
-    }
+	private boolean checkFiltros() {
+		return !ventaView.getCiudadFilter().isEmpty() ||
+				!ventaView.getCodTransporteFilter().isEmpty() || !ventaView.getNumeroClienteFilter().isEmpty() ||
+				!ventaView.getFechaFilter().isEmpty() ||
+				ventaView.getActivosCheck().getValue();
+	}
+
+	private void setChangeHandler(ChangeHandler h) {
+		changeHandler = h;
+	}
 
 	public ChangeHandler getChangeHandler() {
 		return changeHandler;
 	}
 
 	public VentaView getView(){
-        return ventaView;
-    }
+		return ventaView;
+	}
 }

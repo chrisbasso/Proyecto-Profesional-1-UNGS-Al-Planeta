@@ -22,10 +22,8 @@ public class PasajerosGridComponent extends VerticalLayout {
 	private List<Pasajero> pasajerosList = new ArrayList<>();
 	private Editor<Pasajero> editor;
 	private Collection<Button> editButtons;
-	private Boolean editarInvisible;
-	
 	public PasajerosGridComponent() {
-		this.editarInvisible = Boolean.TRUE;
+
 		setLayout();
 		setGrid();
 		setListener();
@@ -113,7 +111,6 @@ public class PasajerosGridComponent extends VerticalLayout {
 				fieldNombre.focus();
 			});
 			edit.setEnabled(!editor.isOpen());
-			edit.setVisible(editarInvisible);
 			editButtons.add(edit);
 			return edit;
 		});
@@ -176,13 +173,5 @@ public class PasajerosGridComponent extends VerticalLayout {
 	public void setPasajerosList(List<Pasajero> pasajerosList) {
 		this.pasajerosList = pasajerosList;
 		grid.getDataProvider().refreshAll();
-	}
-
-	public Boolean getEditarInvisible() {
-		return editarInvisible;
-	}
-
-	public void setEditarInvisible(Boolean editarInvisible) {
-		this.editarInvisible = editarInvisible;
 	}
 }

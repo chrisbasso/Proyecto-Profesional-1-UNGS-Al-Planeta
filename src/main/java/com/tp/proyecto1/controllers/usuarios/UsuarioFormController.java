@@ -78,6 +78,7 @@ public class UsuarioFormController {
 		if (binderUser.writeBeanIfValid(user)) {
 				userService.save(user);
 				usuarioForm.close();
+				changeHandler.onChange();
 				Notification.show("Usuario Guardado");
 		}
 	}
