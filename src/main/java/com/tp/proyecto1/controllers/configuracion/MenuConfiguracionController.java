@@ -1,10 +1,8 @@
 package com.tp.proyecto1.controllers.configuracion;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import com.tp.proyecto1.MainView;
-import com.tp.proyecto1.controllers.usuario.UsuarioController;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.configuracion.MenuConfiguracion;
 import com.vaadin.flow.spring.annotation.UIScope;

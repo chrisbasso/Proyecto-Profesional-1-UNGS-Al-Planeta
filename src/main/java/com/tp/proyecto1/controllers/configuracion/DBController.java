@@ -70,7 +70,7 @@ public class DBController {
      *            Example = "/home/ricardo/eclipse-workspace/db/alplaneta_grupo4.sql"
      */
 	private boolean backup(String fullPathAndName) {	 
-		String sqlCmd = "mysqldump -uroot -ppassword --add-drop-database -B alplaneta_grupo4 -r " + fullPathAndName;		
+		String sqlCmd = "mysqldump -uroot -ppass --add-drop-database -B alplaneta_grupo4 -r " + fullPathAndName;
 		System.out.println("Running backup");
 		boolean result = execute(sqlCmd);
 		if(!result) {
@@ -117,7 +117,7 @@ public class DBController {
 	}
 	
 	private void cargarArchivos() {
-		File folder = new File("/home/ricardo/eclipse-workspace/proyectoP1/");
+		File folder = new File("./");
 	    FileFilter ff = new FileFilter() {			
 			@Override
 			public boolean accept(File pathname) {
@@ -142,7 +142,7 @@ public class DBController {
      *            Example = "/home/ricardo/eclipse-workspace/db/alplaneta_grupo4.sql"
      */	
 	private boolean restore(String fullPathAndName) {
-		String[] sqlCmd = new String[]{"mysql", "--user=root", "--password=password", "-e", "source " + fullPathAndName};	
+		String[] sqlCmd = new String[]{"mysql", "--user=root", "--password=pass", "-e", "source " + fullPathAndName};
 		System.out.println("Running restore");
 		boolean result = execute(sqlCmd);
 		if(!result) {

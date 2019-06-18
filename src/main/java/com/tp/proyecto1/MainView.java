@@ -8,6 +8,8 @@ import java.time.LocalTime;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.vaadin.flow.theme.Theme;
+import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 
@@ -44,6 +46,7 @@ import com.vaadin.flow.server.VaadinSession;
 
 @Route
 @StyleSheet("styles.css")
+@Theme(value = Lumo.class, variant = Lumo.LIGHT)
 public class MainView extends VerticalLayout{
 
 	@Autowired
@@ -64,6 +67,7 @@ public class MainView extends VerticalLayout{
 	private ReportesController reportesController;
 
 	private MenuConfiguracionController menuConfiguracionController;
+
 	@Autowired
 	private MovimientosCajaController movimientosCajaController;
 	@Autowired
@@ -111,6 +115,7 @@ public class MainView extends VerticalLayout{
 	private void setLayouts() {
 		mainLayout = new VerticalLayout();
 		mainLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+		mainLayout.getElement().setAttribute("theme", "green");
 		this.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 		this.add(mainLayout);
 	}
@@ -258,7 +263,6 @@ public class MainView extends VerticalLayout{
 			reservas.setVisible(true);
 			clientes.setVisible(true);
 			eventos.setVisible(true);
-			reportes.setVisible(true);
 		}
 		if(role.equals("CONTADOR")){
 			caja.setVisible(true);
