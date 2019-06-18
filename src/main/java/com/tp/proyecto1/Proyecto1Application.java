@@ -26,6 +26,7 @@ import com.tp.proyecto1.model.eventos.Evento;
 import com.tp.proyecto1.model.lotePunto.LotePunto;
 import com.tp.proyecto1.model.pasajes.EstadoTransaccion;
 import com.tp.proyecto1.model.pasajes.Reserva;
+import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.repository.clientes.ClienteRepository;
@@ -35,6 +36,7 @@ import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
 import com.tp.proyecto1.repository.pasajes.PasajeVentaRepository;
 import com.tp.proyecto1.repository.pasajes.ReservaRepository;
 import com.tp.proyecto1.repository.pasajes.TransaccionRepository;
+import com.tp.proyecto1.repository.pasajes.VentaRepository;
 import com.tp.proyecto1.repository.sucursales.SucursalRepository;
 import com.tp.proyecto1.repository.viajes.PaisRepository;
 import com.tp.proyecto1.repository.viajes.PromocionRepository;
@@ -44,6 +46,7 @@ import com.tp.proyecto1.services.TagDestinoService;
 import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
+import com.tp.proyecto1.utils.EnviadorDeMail;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.server.VaadinSession;
@@ -78,7 +81,8 @@ public class Proyecto1Application {
 									  SucursalRepository sucursalRepository,
 									  AsientoService asientoService,
 									  LotePuntoRepository lotePuntoRepository,
-									  ContinenteRepository continenteRepository) {
+									  ContinenteRepository continenteRepository,
+									  VentaRepository ventaRepository) {
 		return args -> {
 			setSurcursales(sucursalRepository);
 			crearUsuarios(userService);
@@ -89,12 +93,12 @@ public class Proyecto1Application {
 			crearPaisesCiudades(continenteRepository);
 			//crearViajes(viajeService);
 			crearCuentas(asientoService);
-			procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository, lotePuntoRepository);
+			procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository, lotePuntoRepository,ventaRepository);
 
 		};
 	}
 
-	private void procesoVertificarVencimientos(ViajeService viajeService, ReservaRepository reservaRepository, PromocionRepository promocionRepository, LotePuntoRepository lotePuntoRepository) {
+	private void procesoVertificarVencimientos(ViajeService viajeService, ReservaRepository reservaRepository, PromocionRepository promocionRepository, LotePuntoRepository lotePuntoRepository, VentaRepository ventaRepository) {
 		Timer timer = new Timer();
 
 		TimerTask task = new TimerTask() {
@@ -156,7 +160,17 @@ public class Proyecto1Application {
 					lotePunto.setActivo(Boolean.FALSE);
 					lotePuntoRepository.save(lotePunto);
 				}
-				
+				/*
+				LocalDate fechaActual = LocalDate.now();
+				List<Venta> ventas = ventaRepository.findAll();	
+				for (Venta venta : ventas) {
+					int cantDiasRestantes = venta.getViaje().getFechaSalida().compareTo(fechaActual);
+					if (venta.isActivo() && cantDiasRestantes == 2){
+						EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+			    		enviadorDeMail.enviarMailConInfoVenta("Voucher con detalle de Compra - Al Planeta", venta);
+					}
+				}
+				*/
 			}
 		};
 
@@ -237,6 +251,9 @@ public class Proyecto1Application {
 		configService.createConfiguracionIfNotExist("cant_anios_venc_puntos", "1");
 		configService.createConfiguracionIfNotExist("movimiento_caja-numero_cuenta","100");
 		configService.createConfiguracionIfNotExist("punto_por_pesos", "10");
+		configService.createConfiguracionIfNotExist("mail_remitente_gmail", "proy.despegue");
+		configService.createConfiguracionIfNotExist("mail_remitente_pass_gmail", "Laboratorio1");
+		configService.createConfiguracionIfNotExist("puerto_seguro_google", "587");
 	}
 
 	private void crearFormasDePago(VentaService ventaService) {
