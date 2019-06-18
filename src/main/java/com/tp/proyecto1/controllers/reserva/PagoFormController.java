@@ -55,7 +55,13 @@ public class PagoFormController {
 	 * se ingreso un importe. Los listeners de esos componentes invocan este método. 
 	 */
 	private void validacionBotones() {
-		if(form.getFormaPagoSeleccionada() != null && form.getPagoIngresado() > 0) {
+		Double pagoIngresado = 0.0;
+		if(form.getPagoIngresado() != null) {
+			pagoIngresado = form.getPagoIngresado();	
+		}
+		boolean controlPagoIngresado = (pagoIngresado <= importeMaximo &&
+				pagoIngresado > 0);		
+		if(form.getFormaPagoSeleccionada() != null && controlPagoIngresado) {
 			form.activarBtnAgregar();
 		}else{
 			form.desactivarBtnAgregar();			 

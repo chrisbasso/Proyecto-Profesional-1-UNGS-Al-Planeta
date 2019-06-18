@@ -79,8 +79,13 @@ public class ReservaFormController {
      */
 	private void actualizarImportes(){
 		reservaForm.actualizarPrecioTotal(getPrecioTotal());
-		reservaForm.actualizarSaldo(getSaldo());
+		Double saldo = getSaldo();
+		reservaForm.actualizarSaldo(saldo);
 		reservaForm.actualizarPagos(getSumatoriaPagos());
+		
+		if(saldo <= 0) {
+			reservaForm.deshabilitarBtnAgregarPago();	
+		}
 	}
 	/*
 	 * Calcular el precio total según los datos del form
