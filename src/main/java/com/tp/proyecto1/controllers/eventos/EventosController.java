@@ -78,12 +78,15 @@ public class EventosController {
 	}
 
 	private Button createEditButton(Evento evento) {
-		return new Button(VaadinIcon.EDIT.create(), clickEvent -> {
+		Button editBtn = new Button(VaadinIcon.EDIT.create(), clickEvent -> {
 			ConsultaFormController consultaFormController = new ConsultaFormController();
 			consultaFormController.setComponentsValues(evento);
 			consultaFormController.getView().open();
 			consultaFormController.setChangeHandler(this::listarEventos);
 		});
+		if (!evento.isAbierto())
+			editBtn.setEnabled(false);
+		return editBtn;
 	}
 
 

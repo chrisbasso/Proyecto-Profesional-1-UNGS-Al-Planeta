@@ -287,6 +287,10 @@ public class Proyecto1Application {
 		userVendedor.setEnabled(true);
 		userVendedor.setSucursal(sucursal);
 		userService.createUserIfNotExist(userVendedor);
+		User userVendedor2 = new User("vendedor2", "vendedor2", userService.getRolByName("VENDEDOR"));
+		userVendedor2.setEnabled(true);
+		userVendedor2.setSucursal(sucursal);
+		userService.createUserIfNotExist(userVendedor2);
 		User userSupervisor = new User("supervisor", "supervisor", userService.getRolByName("SUPERVISOR"));
 		userSupervisor.setEnabled(true);
 		userSupervisor.setSucursal(sucursal);

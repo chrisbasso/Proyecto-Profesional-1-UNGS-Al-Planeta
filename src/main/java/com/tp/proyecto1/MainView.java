@@ -156,15 +156,18 @@ public class MainView extends VerticalLayout{
 					eventoExample.setAbierto(true);
 					for(Evento evento : eventoRepository.findAll(Example.of(eventoExample)))
 					{
-						if((evento.getFechaVencimiento().isEqual(LocalDate.now())
+						if (evento.getFechaVencimiento()!= null && evento.getHoraVencimiento()!= null)
+						{							
+							if((evento.getFechaVencimiento().isEqual(LocalDate.now())
 									&& evento.getHoraVencimiento().isBefore(LocalTime.now().minusMinutes(60))) // si es el mismo dia antes te avisa 60 min antes.
 									|| (evento.getFechaVencimiento().isBefore(LocalDate.now())))
-						{//Notificar
-						
+							{//Notificar
+								
 								if (evento.getUsuarioAsignado().equals(Proyecto1Application.logUser))
 								{
 									Notification.show("El evento numero "+evento.getId() + " de prioridad "+evento.getPrioridad()+" esta por vencer. Mensaje: "+evento.getMensaje());
 								}			
+							}
 						}
 					}
 				});
