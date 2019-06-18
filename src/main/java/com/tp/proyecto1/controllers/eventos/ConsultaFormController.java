@@ -140,7 +140,7 @@ public class ConsultaFormController {
        
         if (binderEvento.writeBeanIfValid(evento)) {
 
-        	userService.save(Proyecto1Application.logUser);
+        	this.evento.setCerradorEvento(null); // necesario porque le agregamos un cerrador para que no diga null
         	eventoService.save(this.evento);
         	this.evento = null;
             changeHandler.onChange();
