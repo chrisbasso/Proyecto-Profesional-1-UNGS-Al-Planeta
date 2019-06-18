@@ -110,6 +110,7 @@ public class ConsultaForm extends Dialog {
 
         if(Proyecto1Application.logUser.getRol().getName().equals("VENDEDOR")){
             comboUsuarios.setVisible(false);
+            comboUsuarios.setEnabled(false);
         }
 
     }

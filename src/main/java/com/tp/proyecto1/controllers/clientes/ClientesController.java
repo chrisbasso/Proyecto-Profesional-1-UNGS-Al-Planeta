@@ -53,6 +53,9 @@ public class ClientesController {
 				clientesView.getSearchButton().setVisible(false);
 				clientesView.getNewClientButton().setVisible(false);
 			}
+		}else{
+			this.clientesView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
+			this.clientesView.getGrid().addComponentColumn(this::createRemoveButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
 		}
 	}
 

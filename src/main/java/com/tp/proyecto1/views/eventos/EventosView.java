@@ -22,7 +22,7 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 	private TextField apellidoFilter = new TextField("Apellido");
 	private DatePicker fechaFilter = new DatePicker("Fecha");
 	private Button searchButton = new Button("Buscar", VaadinIcon.SEARCH.create());
-	private Button newConsultaButton = new Button("Nueva Evento");
+	private Button newConsultaButton = new Button("Nuevo Evento");
 	private Checkbox checkAbierto = new Checkbox("Solo Abiertos");
 
 	public EventosView() {
@@ -51,13 +51,14 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 
 	@Override
 	public void setGrid() {
-		grid.setColumns("id", "persona.id", "persona.nombre", "persona.apellido", "fecha", "hora","creadorEvento.user","usuarioAsignado.user", "cerradorEvento.user", "prioridad");
+		grid.setColumns("id", "persona.nombre", "persona.apellido", "fecha","fechaVencimiento","horaVencimiento","creadorEvento.user","usuarioAsignado.user", "cerradorEvento.user", "prioridad");
 		grid.getColumnByKey("id").setHeader("Nº Evento");
-		grid.getColumnByKey("persona.id").setHeader("Nº Cliente/Interesado");
 		grid.getColumnByKey("creadorEvento.user").setHeader("Creador");
 		grid.getColumnByKey("usuarioAsignado.user").setHeader("Asignado a");
 		grid.getColumnByKey("cerradorEvento.user").setHeader("Cerrado por:");
-		grid.getColumnByKey("id").setWidth("100px").setFlexGrow(0);
+		grid.getColumnByKey("fecha").setWidth("120px").setFlexGrow(0);
+		grid.getColumnByKey("fechaVencimiento").setHeader("Vence el").setWidth("120px").setFlexGrow(0);
+		grid.getColumnByKey("horaVencimiento").setHeader("A las").setWidth("120px").setFlexGrow(0);
 	}
 
 	public Grid<Evento> getGrid(){

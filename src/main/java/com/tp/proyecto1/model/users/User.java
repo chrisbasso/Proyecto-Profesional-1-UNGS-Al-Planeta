@@ -23,7 +23,7 @@ public class User {
     @NaturalId
 	private String user;
 	private String password;
-	private Boolean enabled;
+	private Boolean enabled = true;
 
     @ManyToOne
     private Role rol;

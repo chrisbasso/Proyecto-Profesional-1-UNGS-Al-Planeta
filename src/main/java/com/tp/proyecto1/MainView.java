@@ -2,7 +2,16 @@ package com.tp.proyecto1;
 
 import com.tp.proyecto1.controllers.usuarios.LoginController;
 import com.tp.proyecto1.controllers.usuarios.UsuariosController;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import com.vaadin.flow.theme.Theme;
+import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 
 import com.tp.proyecto1.controllers.clientes.ClientesController;
 import com.tp.proyecto1.controllers.clientes.EventosClienteWindowController;
@@ -16,7 +25,10 @@ import com.tp.proyecto1.controllers.reportes.ReportesController;
 import com.tp.proyecto1.controllers.reserva.ReservasController;
 import com.tp.proyecto1.controllers.venta.VentasController;
 import com.tp.proyecto1.controllers.viajes.ViajesController;
+import com.tp.proyecto1.model.eventos.Evento;
+import com.tp.proyecto1.repository.eventos.EventoRepository;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
@@ -25,13 +37,16 @@ import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 
 @Route
 @StyleSheet("styles.css")
+@Theme(value = Lumo.class, variant = Lumo.LIGHT)
 public class MainView extends VerticalLayout{
 
 	@Autowired
@@ -52,6 +67,7 @@ public class MainView extends VerticalLayout{
 	private ReportesController reportesController;
 
 	private MenuConfiguracionController menuConfiguracionController;
+
 	@Autowired
 	private MovimientosCajaController movimientosCajaController;
 	@Autowired
@@ -59,6 +75,12 @@ public class MainView extends VerticalLayout{
 	
 	@Autowired
 	private PuntosClienteController puntosClienteController;
+	
+	@Autowired
+	private EventoRepository eventoRepository;
+	
+	private TimerTask eventoTask;
+	private Timer timer;
 	
 	/*@Autowired
 	private EventosClienteWindowController eventosClienteController;*/
@@ -93,6 +115,7 @@ public class MainView extends VerticalLayout{
 	private void setLayouts() {
 		mainLayout = new VerticalLayout();
 		mainLayout.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+		mainLayout.getElement().setAttribute("theme", "green");
 		this.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 		this.add(mainLayout);
 	}
@@ -119,6 +142,36 @@ public class MainView extends VerticalLayout{
 		mainLayout.add(appLayout);
 		setMenu();
 		openViajesView();
+		final UI currentUI = UI.getCurrent();
+
+		timer = new Timer();
+		
+		eventoTask = new TimerTask() {
+
+			@Override
+			public void run()
+			{
+				currentUI.access(() -> {
+					Evento eventoExample = new Evento();
+					eventoExample.setAbierto(true);
+					for(Evento evento : eventoRepository.findAll(Example.of(eventoExample)))
+					{
+						if((evento.getFechaVencimiento().isEqual(LocalDate.now())
+									&& evento.getHoraVencimiento().isBefore(LocalTime.now().minusMinutes(60))) // si es el mismo dia antes te avisa 60 min antes.
+									|| (evento.getFechaVencimiento().isBefore(LocalDate.now())))
+						{//Notificar
+						
+								if (evento.getUsuarioAsignado().equals(Proyecto1Application.logUser))
+								{
+									Notification.show("El evento numero "+evento.getId() + " de prioridad "+evento.getPrioridad()+" esta por vencer. Mensaje: "+evento.getMensaje());
+								}			
+						}
+					}
+				});
+			}
+		};
+		
+		timer.schedule(eventoTask, 1000, 600000); //cada 10 minutos
 	}
 
 	private void setMenu() {
@@ -140,7 +193,9 @@ public class MainView extends VerticalLayout{
 		
 		logout = new AppLayoutMenuItem(VaadinIcon.USER.create(),
 				"Logout " + Proyecto1Application.logUser.getUser(),
-				e->loginController.logout());
+				e-> {eventoTask.cancel();
+						timer.cancel();
+					loginController.logout();});
 
 		viajes.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		promociones.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
@@ -208,7 +263,6 @@ public class MainView extends VerticalLayout{
 			reservas.setVisible(true);
 			clientes.setVisible(true);
 			eventos.setVisible(true);
-			reportes.setVisible(true);
 		}
 		if(role.equals("CONTADOR")){
 			caja.setVisible(true);

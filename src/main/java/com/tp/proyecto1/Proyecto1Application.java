@@ -22,12 +22,14 @@ import org.springframework.data.domain.Example;
 import com.tp.proyecto1.controllers.reserva.ReservaREST;
 import com.tp.proyecto1.model.contabilidad.Cuenta;
 import com.tp.proyecto1.model.contabilidad.TipoCuenta;
+import com.tp.proyecto1.model.eventos.Evento;
 import com.tp.proyecto1.model.lotePunto.LotePunto;
 import com.tp.proyecto1.model.pasajes.EstadoTransaccion;
 import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.repository.clientes.ClienteRepository;
+import com.tp.proyecto1.repository.eventos.EventoRepository;
 import com.tp.proyecto1.repository.lotePuntos.LotePuntoRepository;
 import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
 import com.tp.proyecto1.repository.pasajes.PasajeVentaRepository;
@@ -42,6 +44,9 @@ import com.tp.proyecto1.services.TagDestinoService;
 import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.server.VaadinSession;
 
 
 @SpringBootApplication
@@ -98,7 +103,6 @@ public class Proyecto1Application {
 			public void run()
 			{
 				log.info("Verificando Vencimientos...");
-
 				List<Reserva> reservas = reservaRepository.findAll();				
 				for (Reserva reserva : reservas) {
 					boolean seDebeAnular = false;
@@ -152,7 +156,7 @@ public class Proyecto1Application {
 					lotePunto.setActivo(Boolean.FALSE);
 					lotePuntoRepository.save(lotePunto);
 				}
-
+				
 			}
 		};
 

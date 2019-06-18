@@ -116,14 +116,14 @@ public class ConsultaFormController {
         }
         else
         {
-            evento.setUsuarioAsignado(consultaForm.getComboUsuarios().getValue());
+          //  evento.setUsuarioAsignado(consultaForm.getComboUsuarios().getValue());
         }
         if (consultaForm.getFechaVencimiento().getValue() != null &&
         			consultaForm.getHoraVencimiento().getValue() != null)
         {
-        	if ((evento.getFecha().isEqual(consultaForm.getFechaVencimiento().getValue())
-        				&& evento.getHora().isBefore(consultaForm.getHoraVencimiento().getValue()))
-        				|| evento.getFecha().isBefore(consultaForm.getFechaVencimiento().getValue()))
+        	if ((LocalDate.now().isEqual(consultaForm.getFechaVencimiento().getValue())
+        				&& LocalTime.now().isBefore(consultaForm.getHoraVencimiento().getValue()))
+        				|| LocalDate.now().isBefore(consultaForm.getFechaVencimiento().getValue()))
         	{
         		evento.setFechaVencimiento(consultaForm.getFechaVencimiento().getValue());
                 evento.setHoraVencimiento(consultaForm.getHoraVencimiento().getValue());
@@ -140,6 +140,7 @@ public class ConsultaFormController {
        
         if (binderEvento.writeBeanIfValid(evento)) {
 
+        	this.evento.setCerradorEvento(null); // necesario porque le agregamos un cerrador para que no diga null
         	eventoService.save(this.evento);
         	this.evento = null;
             changeHandler.onChange();
@@ -148,7 +149,6 @@ public class ConsultaFormController {
         }
         else
         {
-        	evento = null;
         	 Notification.show("No se pudo guardar el evento. Revise los campos.");
         }
        
