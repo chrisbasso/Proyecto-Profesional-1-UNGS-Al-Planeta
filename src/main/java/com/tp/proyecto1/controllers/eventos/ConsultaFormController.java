@@ -116,7 +116,7 @@ public class ConsultaFormController {
         }
         else
         {
-          //  evento.setUsuarioAsignado(consultaForm.getComboUsuarios().getValue());
+        	evento.setUsuarioAsignado(consultaForm.getComboUsuarios().getValue());
         }
         if (consultaForm.getFechaVencimiento().getValue() != null &&
         			consultaForm.getHoraVencimiento().getValue() != null)
