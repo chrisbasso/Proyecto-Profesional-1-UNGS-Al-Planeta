@@ -132,8 +132,6 @@ public class Evento {
 				Objects.equals(mensaje, evento.mensaje) &&
 				Objects.equals(fecha, evento.fecha) &&
 				Objects.equals(hora, evento.hora) &&
-				Objects.equals(fechaVencimiento, evento.fechaVencimiento) &&
-				Objects.equals(horaVencimiento, evento.horaVencimiento) &&
 				Objects.equals(persona, evento.persona) &&
 				Objects.equals(prioridad, evento.prioridad);
 	}
