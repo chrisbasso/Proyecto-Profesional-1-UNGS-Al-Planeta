@@ -22,6 +22,7 @@ import com.tp.proyecto1.services.ReservaService;
 import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
+import com.tp.proyecto1.utils.EnviadorDeMail;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.reserva.ComprobanteReserva;
 import com.tp.proyecto1.views.reserva.ReservaForm;
@@ -151,8 +152,11 @@ public class ReservaFormController {
 			Long id = reservaService.save(reserva);
 			AsientoREST.contabilizarNuevaReserva(reserva);
 			viajeService.save(viaje);
-		//	imprimirComprobante(reserva);
-			mensajeGuardadoCierreForm(id);
+			EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+			enviadorDeMail.enviarMailConInfoReserva("Confirmacion y detalle de Reserva - Al Planeta", reserva);
+			imprimirComprobante(reserva);
+			//mensajeGuardadoCierreForm(id);
+			reservaForm.close();
 		}else {
 			Notification.show("Lo sentimos, no quedan pasajes disponibles en el viaje seleccionado.");
 			reservaForm.close();
@@ -190,7 +194,10 @@ public class ReservaFormController {
 			reserva.setPagos(listaDePagos);
 			Long id = reservaService.save(reserva);
 			viajeService.save(viaje);
-			mensajeGuardadoCierreForm(id);
+			EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+			enviadorDeMail.enviarMailConInfoReserva("Actualización de datos de la Reserva - Al Planeta", reserva);
+			//mensajeGuardadoCierreForm(id);
+			reservaForm.close();	
 		}else {
 			Notification.show("Lo sentimos, no pudimos actualizar los pasajes disponibles en el viaje seleccionado.");
 			reservaForm.close();

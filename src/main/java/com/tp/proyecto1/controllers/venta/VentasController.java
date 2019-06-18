@@ -71,9 +71,20 @@ public class VentasController {
 		setChangeHandler(this::listVentas);
 		ventaView.getSearchButton().addClickListener(e->listVentas());
 		ventaView.getBtnComprobante().addClickListener(e->imprimirComprobante());
-		ventaView.getBtnEnvioMail().addClickListener(e-> EnviadorDeMail.enviarConGmail("gmonteblack.gm@gmail.com", "mail de Prueba", "emo sido engañado"));
+		//ventaView.getBtnEnvioMail().addClickListener(e-> EnviadorDeMail.enviarConGmail("gmonteblack.gm@gmail.com", "Confirmacion de Compra - Al Planeta", "emo sido engañado"));
+		//ventaView.getBtnEnvioMail().addClickListener(e-> enviarMail());
 	}
-
+/*
+	private void enviarMail() {
+		EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+		Venta venta = ventaView.getGrid().asSingleSelect().getValue();
+		if (venta != null) {
+			enviadorDeMail.enviarMailConInfoVenta( "Confirmacion de Compra - Al Planeta", venta);
+		}
+		else {
+			Notification.show("Seleccione una venta.");
+		}
+	}*/
 	private void imprimirComprobante() {
 		Venta venta = ventaView.getGrid().asSingleSelect().getValue();
 		if (venta != null) {
@@ -83,7 +94,7 @@ public class VentasController {
 					"  print(); self.close();}, 1000);");
 		}
 		else {
-			Notification.show("Seleccione una venta.");
+			Notification.show("Seleccione una Venta.");
 		}
 	}
 

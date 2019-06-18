@@ -122,10 +122,12 @@ public class ComprobanteVenta extends Dialog {
 
 		dni.setReadOnly(true);
 		dni.setValue(venta.getCliente().getDni());
+		dni.setWidth("102px");
 		
 		mail.setReadOnly(true);
 		mail.setValue(venta.getCliente().getEmail());	
-	
+		mail.setWidth("282px");
+		
 		precioUnitario.setReadOnly(true);
 		precioUnitario.setValue(venta.getViaje().getPrecio().toString());
 		

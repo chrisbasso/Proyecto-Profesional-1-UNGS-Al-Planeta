@@ -45,6 +45,7 @@ public class ComprobanteReserva extends Dialog {
 	private TextField nombreOperador = new TextField("Operador:");
 	private TextField origen = new TextField("Origen");
 	private TextField precioUnitario = new TextField("Precio Unitario:");	
+	private TextField precioRestante = new TextField("Precio Restante a Pagar:");	
 	private TextField pagos = new TextField("Pago Realizado:");
 	private TextField cantPasajes = new TextField("Cant. de Pasajes Reservados:");
 
@@ -83,7 +84,7 @@ public class ComprobanteReserva extends Dialog {
 
 		precio.setValue(reserva.getImporteTotal().toString());
 		precio.setReadOnly(true);
-
+		
 
 		LocalDate fechaVencReserva = reserva.getViaje().getFechaSalida().minusDays(Long.parseLong(this.getConfiguracionDiasVencimientoPagoParcial()));
 		reglasCancelacion.setReadOnly(true);
@@ -94,9 +95,11 @@ public class ComprobanteReserva extends Dialog {
 
 		dni.setReadOnly(true);
 		dni.setValue(reserva.getCliente().getDni());
-
+		dni.setWidth("102px");
+		
 		mail.setReadOnly(true);
 		mail.setValue(reserva.getCliente().getEmail());
+		mail.setWidth("282px");
 
 		fechaDeEmision.setValue(LocalDate.now().toString());
 		fechaDeEmision.setReadOnly(true);
@@ -116,6 +119,10 @@ public class ComprobanteReserva extends Dialog {
 		cantPasajes.setReadOnly(true);
 		Integer cantidadPasajes = reserva.getCantidadPasajes();
 		cantPasajes.setValue(cantidadPasajes.toString());
+		
+		precioRestante.setReadOnly(true);
+		Double sumaDePagos = reserva.getImporteTotal() - this.getSumaDePagos();
+		precioRestante.setValue(sumaDePagos.toString());
 
 	}
 
@@ -123,7 +130,7 @@ public class ComprobanteReserva extends Dialog {
 	private void setLayouts() {
 		this.add(mainLayout);
 		mainLayout.setSpacing(false);
-		mainLayout.add(getLogoMasFechaEmision(),new HorizontalLayout(cliente,dni,mail),new HorizontalLayout(origen,diaHora,destino),new HorizontalLayout(transporte,codTransporte,clase),recomendacion,cantPasajes,new HorizontalLayout(precio,precioUnitario, pagos), reglasCancelacion);
+		mainLayout.add(getLogoMasFechaEmision(),new HorizontalLayout(cliente,dni,mail),new HorizontalLayout(origen,diaHora,destino),new HorizontalLayout(transporte,codTransporte,clase),recomendacion,cantPasajes,new HorizontalLayout(precio,precioUnitario, pagos),precioRestante, reglasCancelacion);
 		this.setWidth("800px");
 		this.setHeight("100%");
 	}

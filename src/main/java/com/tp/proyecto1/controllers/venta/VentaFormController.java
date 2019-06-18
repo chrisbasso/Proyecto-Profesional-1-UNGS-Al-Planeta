@@ -25,6 +25,7 @@ import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.lotePunto.LotePunto;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.utils.ChangeHandler;
+import com.tp.proyecto1.utils.EnviadorDeMail;
 import com.tp.proyecto1.views.ventas.VentaForm;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
@@ -506,6 +507,8 @@ public class VentaFormController {
 		ventaService.save(venta);
 		AsientoREST.contabilizarNuevaVenta(venta);
 		imprimirComprobante(venta);
+		EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+		enviadorDeMail.enviarMailConInfoVenta("Confirmacion y detalle de Compra - Al Planeta", venta);
 		//ventaService.save(setNewVenta());
         ventaForm.close();
       //Si viene de una reserva
@@ -522,8 +525,10 @@ public class VentaFormController {
 	private void saveVenta(Venta venta) {
 
             ventaService.save(venta);
+            EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+    		enviadorDeMail.enviarMailConInfoVenta("Actualización de datos de Pasajeros con detalle de Compra - Al Planeta", venta);
             ventaForm.close();
-            Notification.show("PasajeVenta Guardado");
+            Notification.show("PasajeVenta Modificado");
             changeHandler.onChange();
 	}
 

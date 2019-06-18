@@ -138,10 +138,15 @@ public class ReservasController {
 
     private void imprimirComprobante(){
     	Reserva reserva = reservaView.getReservaSeleccionada(); 
-		ComprobanteReserva comprobante = new ComprobanteReserva(reserva);
-		comprobante.open();
-		UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
-				"  print(); self.close();}, 1000);");
+    	if(reserva != null) {
+			ComprobanteReserva comprobante = new ComprobanteReserva(reserva);
+			comprobante.open();
+			UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
+					"  print(); self.close();}, 1000);");
+    	}
+    	else{
+			Notification.show("Seleccione una Reserva.");
+		}
 	}
 
     private void listarReservas() {
