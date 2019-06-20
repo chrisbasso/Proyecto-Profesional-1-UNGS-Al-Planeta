@@ -45,9 +45,9 @@ public class EventoService {
 	}
 
 	@Transactional
-	public List<Evento> findAll() {
+	public List<Evento> findAll(Evento evento) {
 
-		List<Evento> eventos = eventoRepository.findAll();
+		List<Evento> eventos = eventoRepository.findAll(Example.of(evento));
 
 		if(Proyecto1Application.logUser != null){
 			String role = Proyecto1Application.logUser.getRol().getName();

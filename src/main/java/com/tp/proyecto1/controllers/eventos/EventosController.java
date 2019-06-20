@@ -125,7 +125,7 @@ public class EventosController {
 			eventos.stream().forEach(e-> verificarUsuarioCierre(e));
             eventosView.getGrid().setItems(eventos);
         }else{
-			List<Evento> eventos = eventoService.findAll();
+			List<Evento> eventos = eventoService.findAll(new Evento());
 			eventos.stream().forEach(e-> verificarUsuarioCierre(e));
             eventosView.getGrid().setItems(eventos);
         }

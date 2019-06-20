@@ -27,6 +27,7 @@ import com.tp.proyecto1.controllers.venta.VentasController;
 import com.tp.proyecto1.controllers.viajes.ViajesController;
 import com.tp.proyecto1.model.eventos.Evento;
 import com.tp.proyecto1.repository.eventos.EventoRepository;
+import com.tp.proyecto1.services.EventoService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -77,7 +78,7 @@ public class MainView extends VerticalLayout{
 	private PuntosClienteController puntosClienteController;
 	
 	@Autowired
-	private EventoRepository eventoRepository;
+	private EventoService eventoService;
 	
 	private TimerTask eventoTask;
 	private Timer timer;
@@ -154,19 +155,18 @@ public class MainView extends VerticalLayout{
 				currentUI.access(() -> {
 					Evento eventoExample = new Evento();
 					eventoExample.setAbierto(true);
-					for(Evento evento : eventoRepository.findAll(Example.of(eventoExample)))
+					for(Evento evento : eventoService.findAll(eventoExample))
 					{
 						if (evento.getFechaVencimiento()!= null && evento.getHoraVencimiento()!= null)
 						{							
-							if((evento.getFechaVencimiento().isEqual(LocalDate.now())
-									&& evento.getHoraVencimiento().isBefore(LocalTime.now().minusMinutes(60))) // si es el mismo dia antes te avisa 60 min antes.
-									|| (evento.getFechaVencimiento().isBefore(LocalDate.now())))
-							{//Notificar
-								
+							if(evento.getFechaVencimiento().isBefore(LocalDate.now()) ||
+										(evento.getFechaVencimiento().isEqual(LocalDate.now()) &&
+									LocalTime.now().plusMinutes(15).isAfter(evento.getHoraVencimiento())))
+							{
 								if (evento.getUsuarioAsignado().equals(Proyecto1Application.logUser))
 								{
 									Notification.show("El evento numero "+evento.getId() + " de prioridad "+evento.getPrioridad()+" esta por vencer. Mensaje: "+evento.getMensaje());
-								}			
+								}	
 							}
 						}
 					}
