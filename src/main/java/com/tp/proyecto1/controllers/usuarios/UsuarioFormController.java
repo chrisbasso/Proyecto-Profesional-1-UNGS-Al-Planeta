@@ -22,6 +22,9 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Controller
 @UIScope
@@ -51,34 +54,38 @@ public class UsuarioFormController {
 
 	private void setComponents() {
 
-		usuarioForm.getComboRoles().setItems(userService.getRoles());
+
+		List<Role> roles = userService.getRoles();
+		roles = roles.stream().filter(e-> !e.getName().equals("CLIENTE")).collect(Collectors.toList());
+		usuarioForm.getComboRoles().setItems(roles);
+
 		usuarioForm.getComboSucursal().setItems(sucursalService.findAll());
 
-		if(user!=null){
-			if(user.getPersona()!=null){
-				usuarioForm.getBuscadorClientes().getFiltro().setValue(user.getPersona().getId().toString());
-			}
-		}
+//		if(user!=null){
+//			if(user.getPersona()!=null){
+//				usuarioForm.getBuscadorClientes().getFiltro().setValue(user.getPersona().getId().toString());
+//			}
+//		}
 
 	}
 
 	private void setListeners() {
 		usuarioForm.getBtnGuardar().addClickListener(e-> saveUser());
 		usuarioForm.getBtnCancelar().addClickListener(e-> usuarioForm.close());
-		usuarioForm.getComboRoles().addValueChangeListener(e-> verificarRol());
+//		usuarioForm.getComboRoles().addValueChangeListener(e-> verificarRol());
 	}
 
-	private void verificarRol() {
-
-		if(usuarioForm.getComboRoles().getValue().getName().equals("CLIENTE")){
-			usuarioForm.getBuscadorClientes().setEnabled(true);
-		}else{
-			usuarioForm.getBuscadorClientes().setEnabled(false);
-			usuarioForm.getBuscadorClientes().getFiltro().setValue("");
-			usuarioForm.getDescripcionCliente().setText("");
-		}
-
-	}
+//	private void verificarRol() {
+//
+//		if(usuarioForm.getComboRoles().getValue().getName().equals("CLIENTE")){
+//			usuarioForm.getBuscadorClientes().setEnabled(true);
+//		}else{
+//			usuarioForm.getBuscadorClientes().setEnabled(false);
+//			usuarioForm.getBuscadorClientes().getFiltro().setValue("");
+//			usuarioForm.getDescripcionCliente().setText("");
+//		}
+//
+//	}
 
 	private void saveUser() {
 
@@ -97,7 +104,7 @@ public class UsuarioFormController {
 			}
 		}
 		if (binderUser.writeBeanIfValid(user)) {
-				user.setPersona(usuarioForm.getBuscadorClientes().getCliente());
+//				user.setPersona(usuarioForm.getBuscadorClientes().getCliente());
 				userService.save(user);
 				usuarioForm.close();
 				changeHandler.onChange();

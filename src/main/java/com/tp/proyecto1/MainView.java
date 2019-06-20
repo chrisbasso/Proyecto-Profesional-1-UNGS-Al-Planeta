@@ -211,8 +211,6 @@ public class MainView extends VerticalLayout{
 		configuraciones.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		usuarios.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		puntosCliente.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
-		
-		
 		logout.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		
 
@@ -266,16 +264,17 @@ public class MainView extends VerticalLayout{
 			reservas.setVisible(true);
 			clientes.setVisible(true);
 			eventos.setVisible(true);
+			reportes.setVisible(true);
 		}
 		if(role.equals("CONTADOR")){
 			caja.setVisible(true);
 			reportes.setVisible(true);
 		}
 		if(role.equals("CLIENTE")){
-			viajes.setVisible(true);
-			ventas.setVisible(true);
+//			viajes.setVisible(true);
+//			ventas.setVisible(true);
 		//	eventosCliente.setVisible(true);
-			puntosCliente.setVisible(true);
+//			puntosCliente.setVisible(true);
 		}
 	}
 
@@ -332,6 +331,7 @@ public class MainView extends VerticalLayout{
 	private void openReportesView() {
 		actualizarMenuSeleccionado(reportes);
 		appLayout.setContent(reportesController.getReportesView());
+		reportesController.setComponents();
 	}
 
 	private void openConfiguracionView(){
