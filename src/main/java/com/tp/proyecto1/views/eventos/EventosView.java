@@ -20,7 +20,7 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 	private NumberField idClienteFilter = new NumberField("Nº Cliente/Interesado");
 	private TextField nombreFilter = new TextField("Nombre");
 	private TextField apellidoFilter = new TextField("Apellido");
-	private DatePicker fechaFilter = new DatePicker("Fecha");
+	private DatePicker fechaFilter = new DatePicker("Vence antes del");
 	private Button searchButton = new Button("Buscar", VaadinIcon.SEARCH.create());
 	private Button newConsultaButton = new Button("Nuevo");
 	private Button helpButton = new Button(VaadinIcon.QUESTION_CIRCLE.create());
@@ -60,8 +60,8 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 		grid.getColumnByKey("creadorEvento.user").setHeader("Creador");
 		grid.getColumnByKey("usuarioAsignado.user").setHeader("Asignado a");
 		grid.getColumnByKey("cerradorEvento.user").setHeader("Cerrado por:");
-		grid.getColumnByKey("fecha").setWidth("120px").setFlexGrow(0);
-		grid.getColumnByKey("fechaVencimiento").setHeader("Vence el").setWidth("120px").setFlexGrow(0);
+		grid.getColumnByKey("fecha").setWidth("125px").setFlexGrow(0);
+		grid.getColumnByKey("fechaVencimiento").setHeader("Vence el").setWidth("125px").setFlexGrow(0);
 		grid.getColumnByKey("horaVencimiento").setHeader("A las").setWidth("120px").setFlexGrow(0);
 	}
 

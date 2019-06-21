@@ -112,8 +112,14 @@ public class ConsultaFormController {
             }
             evento.setFecha(LocalDate.now());
             evento.setHora(LocalTime.now());
-            evento.setCreadorEvento(Proyecto1Application.logUser);
-            evento.setUsuarioAsignado(Proyecto1Application.logUser);
+            User user = Proyecto1Application.logUser;
+            evento.setCreadorEvento(user);
+            evento.setUsuarioAsignado(user);
+            if (user == null || evento.getCreadorEvento() == null || evento.getUsuarioAsignado() == null)
+            {
+            	Notification.show("Se produjo un erroe al detectar el user, vuelva a intentarlo");
+            	return;
+            }
         }
         else
         {
@@ -150,6 +156,8 @@ public class ConsultaFormController {
         else
         {
         	 Notification.show("No se pudo guardar el evento. Revise los campos.");
+        	 if (this.evento.getId() == null)
+        		 this.evento = null;
         }
        
     }

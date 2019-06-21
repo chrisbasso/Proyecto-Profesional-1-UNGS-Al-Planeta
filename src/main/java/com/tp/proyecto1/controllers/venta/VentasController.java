@@ -99,7 +99,7 @@ public class VentasController {
 			Notification.show("Seleccione una venta.");
 		}
 	}*/
-	
+		
 	private void reenviarVoucher() {
 		Venta venta = ventaView.getGrid().asSingleSelect().getValue();
 		EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
@@ -123,10 +123,12 @@ public class VentasController {
 		}
 		
 	}
+	
 	private void imprimirComprobante() {
 		Venta venta = ventaView.getGrid().asSingleSelect().getValue();
 		EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
 		if (venta != null) {
+			ComprobanteVenta comprobante = new ComprobanteVenta(venta);
 			/*ComprobanteVenta comprobante = new ComprobanteVenta(venta);
 			comprobante.open();
 			UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
