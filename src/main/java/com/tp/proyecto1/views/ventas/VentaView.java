@@ -5,6 +5,7 @@ import com.tp.proyecto1.model.viajes.Ciudad;
 import com.tp.proyecto1.utils.ConfigDatePicker;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.tp.proyecto1.utils.View;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -26,7 +27,7 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
     private Button btnComprobante;
     private Button btnEnvioMail;
     private Checkbox activosCheck;
-
+	
     public VentaView() {
         super(Venta.class);
         setComponents();

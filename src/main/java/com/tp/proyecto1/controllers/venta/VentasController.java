@@ -11,6 +11,7 @@ import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.ConfirmationDialog;
 import com.tp.proyecto1.utils.EnviadorDeMail;
 import com.tp.proyecto1.utils.Inject;
+import com.tp.proyecto1.views.reportes.ComprobanteVentaJR;
 import com.tp.proyecto1.views.ventas.ComprobanteVenta;
 import com.tp.proyecto1.views.ventas.VentaView;
 
@@ -19,11 +20,15 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.FileBuffer;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,9 +77,20 @@ public class VentasController {
 		ventaView.getSearchButton().addClickListener(e->listVentas());
 		ventaView.getBtnComprobante().addClickListener(e->imprimirComprobante());
 		//ventaView.getBtnEnvioMail().addClickListener(e-> EnviadorDeMail.enviarConGmail("gmonteblack.gm@gmail.com", "Confirmacion de Compra - Al Planeta", "emo sido engañado"));
-		//ventaView.getBtnEnvioMail().addClickListener(e-> enviarMail());
+		//ventaView.getBtnEnvioMail().addClickListener(e-> pdfprint());
 	}
+
+	
 /*
+	private void pdfprint() {
+		Venta venta = ventaView.getGrid().asSingleSelect().getValue();
+		List<Venta> ventas = new ArrayList<Venta>();
+		ventas.add(venta);
+		ComprobanteVentaJR comproVenta = new ComprobanteVentaJR(ventas);
+		comproVenta.exportarAPdf();
+	}*/
+
+	/*
 	private void enviarMail() {
 		EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
 		Venta venta = ventaView.getGrid().asSingleSelect().getValue();
@@ -96,6 +112,7 @@ public class VentasController {
 		else {
 			Notification.show("Seleccione una Venta.");
 		}
+		
 	}
 
 
