@@ -93,6 +93,7 @@ public class EventosController {
 	private void setListeners() {
 		setChangeHandler(this::listarEventos);
 		eventosView.getNewConsultaButton().addClickListener(e->openConsultaForm());
+		eventosView.getHelpButton().addClickListener(e->abrirManual());
 		eventosView.getSearchButton().addClickListener(e->listarEventos());
 	}
 
@@ -100,6 +101,12 @@ public class EventosController {
 		ConsultaFormController consultaFormController = new ConsultaFormController();
 		consultaFormController.setChangeHandler(this::listarEventos);
 		consultaFormController.getView().open();
+	}
+	
+	private void abrirManual()
+	{
+		EventosHelpController eventosHelpController = new EventosHelpController();
+		eventosHelpController.getView().open();
 	}
 
 	private void listarEventos() {
