@@ -56,7 +56,7 @@ public class PromocionView extends FilterGridLayout<Promocion> implements View {
         items.add("Descuento");
         items.add("Puntos");
         tipoPromoFilter.setItems(items);
-		this.vencimientoMenorAFilter = new DatePicker("Vencimiento menor a");
+		this.vencimientoMenorAFilter = new DatePicker("Vence antes del");
 		this.vencimientoMenorAFilter.setWidth("170px");
 		ConfigDatePicker configDatePicker = new ConfigDatePicker();
 		configDatePicker.setearLenguajeEspañol(vencimientoMenorAFilter);

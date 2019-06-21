@@ -163,10 +163,13 @@ public class MainView extends VerticalLayout{
 										(evento.getFechaVencimiento().isEqual(LocalDate.now()) &&
 									LocalTime.now().plusMinutes(15).isAfter(evento.getHoraVencimiento())))
 							{
-								if (evento.getUsuarioAsignado().equals(Proyecto1Application.logUser))
+								if (evento.getUsuarioAsignado()!= null)
 								{
-									Notification.show("El evento numero "+evento.getId() + " de prioridad "+evento.getPrioridad()+" esta por vencer. Mensaje: "+evento.getMensaje());
-								}	
+									if (evento.getUsuarioAsignado().equals(Proyecto1Application.logUser))
+									{
+										Notification.show("El evento numero "+evento.getId() + " de prioridad "+evento.getPrioridad()+" esta por vencer. Mensaje: "+evento.getMensaje());
+									}
+								}
 							}
 						}
 					}

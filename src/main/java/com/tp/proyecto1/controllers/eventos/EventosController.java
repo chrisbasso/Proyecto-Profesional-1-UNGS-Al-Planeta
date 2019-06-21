@@ -125,8 +125,8 @@ public class EventosController {
             setParametrosBusqueda(eventoReclamo);
            
             
-			List<Evento> eventos = eventoService.findEventos(eventoConsulta);
-			for(Evento evento : eventoService.findEventos(eventoReclamo))
+			List<Evento> eventos = eventoService.findEventos(eventoConsulta, eventosView.getFechaFilter().getValue());
+			for(Evento evento : eventoService.findEventos(eventoReclamo, eventosView.getFechaFilter().getValue()))
 				eventos.add(evento);
 				
 			eventos.stream().forEach(e-> verificarUsuarioCierre(e));
@@ -139,6 +139,12 @@ public class EventosController {
 	}
 
 	private void verificarUsuarioCierre(Evento e) {
+		if (e.getUsuarioAsignado() == null)
+		{
+				User usuarioVacio = new User();
+				usuarioVacio.setUser("");
+				e.setUsuarioAsignado(usuarioVacio);
+		}
 		if(e.getCerradorEvento()==null){
 			User usuarioVacio = new User();
 			usuarioVacio.setUser("");
@@ -162,12 +168,6 @@ public class EventosController {
 		if(!eventosView.getApellidoFilter().isEmpty()){
 			eventoBusqueda.getPersona().setApellido(eventosView.getApellidoFilter().getValue());
 		}
-		if(!eventosView.getFechaFilter().isEmpty()){
-			eventoBusqueda.setFecha(eventosView.getFechaFilter().getValue());
-		}
-		
-		
-
 	}
 
 	private boolean checkFiltros() {

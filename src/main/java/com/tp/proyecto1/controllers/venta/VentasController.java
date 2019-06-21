@@ -9,9 +9,7 @@ import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.ConfirmationDialog;
-import com.tp.proyecto1.utils.EnviadorDeMail;
 import com.tp.proyecto1.utils.Inject;
-import com.tp.proyecto1.views.reportes.ComprobanteVentaJR;
 import com.tp.proyecto1.views.ventas.ComprobanteVenta;
 import com.tp.proyecto1.views.ventas.VentaView;
 
@@ -20,15 +18,11 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.upload.Upload;
-import com.vaadin.flow.component.upload.receivers.FileBuffer;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import java.io.InputStream;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -16,8 +16,12 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,17 +55,27 @@ public class EventoService {
 
 		if(Proyecto1Application.logUser != null){
 			String role = Proyecto1Application.logUser.getRol().getName();
-			if(role.equals("VENDEDOR")){
-				eventos = eventos.stream().filter(e->e.getUsuarioAsignado().equals(Proyecto1Application.logUser)).collect(Collectors.toList());
+			if(role.equals("VENDEDOR"))
+			{
+				eventos = eventos.stream().filter(e->{
+					if(e.getUsuarioAsignado()==null)
+						return false;
+					return e.getUsuarioAsignado().equals(Proyecto1Application.logUser);}).collect(Collectors.toList());
 			}
 			else if (role.equals("SUPERVISOR"))
 			{
-				List<Evento>auxiliar = new ArrayList<>();
+				Set<Evento>auxiliar = new HashSet<>();
 				for (User empleado : userRepository.findBySucursal(Proyecto1Application.logUser.getSucursal()))
 				{
-					auxiliar.addAll( eventos.stream().filter(e->e.getUsuarioAsignado().equals(empleado)).collect(Collectors.toList()));
+					auxiliar.addAll( eventos.stream().filter(e->{
+						if (e.getUsuarioAsignado()== null)
+							return e.getCreadorEvento().getSucursal().equals(Proyecto1Application.logUser.getSucursal());
+						return e.getUsuarioAsignado().equals(empleado);}).collect(Collectors.toList()));
 				}
-				eventos = auxiliar;
+				List<Evento> auxiliar2 = new ArrayList<>();
+				for (Evento evento2 : auxiliar)
+					auxiliar2.add(evento2);
+				eventos = auxiliar2;
 			}
 		}
 
@@ -74,7 +88,8 @@ public class EventoService {
 	}
 
 	@Transactional
-	public List<Evento> findEventos(Evento eventoConsulta) {
+	public List<Evento> findEventos(Evento eventoConsulta, LocalDate localDate)
+	{
 		List<Evento> eventos = new ArrayList<>();
 		if(Proyecto1Application.logUser != null){
 			String role = Proyecto1Application.logUser.getRol().getName();
@@ -90,6 +105,12 @@ public class EventoService {
 					eventos.addAll(eventoRepository.findAll(Example.of(eventoConsulta)));
 				}
 			}
+			if (localDate!=null)
+				eventos = eventos.stream().filter(e->
+				{	
+					if(e.getFechaVencimiento() == null)
+						return true;
+					return e.getFechaVencimiento().isBefore(localDate);}).collect(Collectors.toList());
 		}
 		return eventos;
 	}

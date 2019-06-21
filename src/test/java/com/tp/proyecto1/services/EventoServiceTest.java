@@ -75,7 +75,7 @@ public class EventoServiceTest {
 		when(eventoServiceUnderTest.eventoRepository.findAll()).thenReturn(Arrays.asList());
 
 		// Run the test
-		final List<Evento> result = eventoServiceUnderTest.findEventos(eventoConsulta);
+		final List<Evento> result = eventoServiceUnderTest.findEventos(eventoConsulta,null);
 
 		// Verify the results
 		assertEquals(expectedResult, result);
