@@ -107,6 +107,20 @@ public class AsientoREST {
 		return 0L;
 	}
 	
+	public static Long contabilizarReservaDevuelta(Reserva reserva, User usuario) {
+		AsientoREST nuevoAsiento = getInstancia();
+		nuevoAsiento.setCabeceraAsiento(LocalDate.now(), usuario, reserva.getSucursal(), "Reserva devuelta", Modulo.RESERVAS);
+		Double sumaDePagos = 0.0;
+		if(reserva.getPagos().size()>0) {
+			sumaDePagos = nuevoAsiento.tratarGananciaPagos(reserva.getPagos());
+		}
+		if(sumaDePagos > 0.0) {
+			nuevoAsiento.cerrarAsientoReservaDevuelta(sumaDePagos);
+			return nuevoAsiento.contabilizarAsiento();
+		}
+		return 0L;
+	}
+	
 	public static Long contabilizarNuevaVenta(Venta venta) {
 		AsientoREST nuevoAsiento = getInstancia();
 		nuevoAsiento.setCabeceraAsiento(venta.getFecha(), venta.getVendedor(), venta.getSucursal(), "Contabilización de venta", Modulo.VENTAS);
@@ -119,6 +133,15 @@ public class AsientoREST {
 			return nuevoAsiento.contabilizarAsiento();
 		}
 		return 0L;
+	}
+	
+	public static Long contabilizarVentaAnulada(Venta venta, User usuario) {
+		AsientoREST nuevoAsiento = getInstancia();
+		nuevoAsiento.setCabeceraAsiento(LocalDate.now(), usuario, venta.getSucursal(), "Venta anulada", Modulo.VENTAS);
+		Double sumaDePagos = nuevoAsiento.tratarNuevosPagos(venta.getPagos());
+		nuevoAsiento.cerrarAsientoVenta(sumaDePagos);
+		nuevoAsiento.revertirPosiciones();
+		return  nuevoAsiento.contabilizarAsiento();
 	}
 	
 	public static Long contabilizarSalidaCaja(LocalDate fecha, String txtCab, Sucursal suc,
@@ -229,6 +252,15 @@ public class AsientoREST {
 		posiciones.add(posicion);
 	}
 	
+	private void revertirPosiciones() {
+		List <Posicion> temp = new ArrayList<Posicion>();
+		for(Posicion posicion : posiciones){
+			Posicion posicionRevertida = Posicion.revertirPosicion(posicion);
+			temp.add(posicionRevertida);
+		}
+		this.posiciones = temp;
+	}
+	
 	private void cerrarAsientoReserva(Double sumaDePagos) {
 		agregarPosicion(TipoPosicion.HABER, cuentaReserva, sumaDePagos);
 	}
@@ -240,6 +272,11 @@ public class AsientoREST {
 	private void cerrarAsientoReservaVencida(Double sumaDePagos) {
 		agregarPosicion(TipoPosicion.DEBE, cuentaReserva, sumaDePagos);
 		agregarPosicion(TipoPosicion.HABER, cuentaReservaVencida, sumaDePagos);
+	}
+	
+	private void cerrarAsientoReservaDevuelta(Double sumaDePagos) {
+		agregarPosicion(TipoPosicion.DEBE, cuentaReserva, sumaDePagos);
+		agregarPosicion(TipoPosicion.HABER, cuentaSalidaCaja, sumaDePagos);
 	}
 	
 	private void cerrarAsientoVenta(Double sumaDePagos) {

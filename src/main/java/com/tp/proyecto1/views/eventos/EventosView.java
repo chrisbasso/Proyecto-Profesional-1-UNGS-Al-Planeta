@@ -22,7 +22,8 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 	private TextField apellidoFilter = new TextField("Apellido");
 	private DatePicker fechaFilter = new DatePicker("Fecha");
 	private Button searchButton = new Button("Buscar", VaadinIcon.SEARCH.create());
-	private Button newConsultaButton = new Button("Nuevo Evento");
+	private Button newConsultaButton = new Button("Nuevo");
+	private Button helpButton = new Button(VaadinIcon.QUESTION_CIRCLE.create());
 	private Checkbox checkAbierto = new Checkbox("Solo Abiertos");
 
 	public EventosView() {
@@ -37,16 +38,19 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 		searchButton.setMinWidth("150px");
 		newConsultaButton.setMinWidth("150px");
 		checkAbierto.setMinWidth("150px");
+		idFilter.setWidth("100px");
 		idClienteFilter.setMinWidth("150px");	
+		fechaFilter.setWidth("150px");
+		nombreFilter.setWidth("140px");
+		apellidoFilter.setWidth("140px");
+		checkAbierto.setWidth("160px");
 		ConfigDatePicker configDatePicker = new ConfigDatePicker();
 		configDatePicker.setearLenguajeEspañol(fechaFilter);
 	}
 
 	@Override
 	public void setLayout() {
-		HorizontalLayout hlSpace = new HorizontalLayout();
-		hlSpace.setWidthFull();
-		this.hlActions.add(idFilter,idClienteFilter,nombreFilter,apellidoFilter,fechaFilter,checkAbierto,hlSpace,searchButton,newConsultaButton);
+		this.hlActions.add(idFilter,idClienteFilter,nombreFilter,apellidoFilter,fechaFilter,checkAbierto,searchButton,newConsultaButton,helpButton);
 	}
 
 	@Override
@@ -127,6 +131,16 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 
 	public void setNewConsultaButton(Button newConsultaButton) {
 		this.newConsultaButton = newConsultaButton;
+	}
+
+	public Button getHelpButton()
+	{
+		return helpButton;
+	}
+
+	public void setHelpButton(Button helpButton)
+	{
+		this.helpButton = helpButton;
 	}
 
 }

@@ -11,6 +11,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 
 public class UsuarioForm extends Dialog {
@@ -18,11 +19,11 @@ public class UsuarioForm extends Dialog {
 	private VerticalLayout mainLayout = new VerticalLayout();
 	private FormLayout form = new FormLayout();
 	private TextField txtUsuario = new TextField();
-	private TextField txtPassword = new TextField();
+	private PasswordField txtPassword = new PasswordField();
 	private ComboBox<Sucursal> comboSucursal = new ComboBox<>();
 	private ComboBox<Role> comboRoles = new ComboBox<>();
-	private Label descripcionCliente = new Label();
-	private BuscadorClientesComponent buscadorClientes = new BuscadorClientesComponent(descripcionCliente);
+//	private Label descripcionCliente = new Label();
+//	private BuscadorClientesComponent buscadorClientes = new BuscadorClientesComponent(descripcionCliente);
 	private Button btnGuardar = new Button("Guardar");
 	private Button btnCancelar = new Button("Cancelar");
 
@@ -46,8 +47,8 @@ public class UsuarioForm extends Dialog {
 		form.addFormItem(txtPassword, "Password");
 		form.addFormItem(comboSucursal, "Sucursal");
 		form.addFormItem(comboRoles, "Rol");
-		form.addFormItem(buscadorClientes, "Cliente");
-		form.addFormItem(descripcionCliente, "Descripción");
+//		form.addFormItem(buscadorClientes, "Cliente");
+//		form.addFormItem(descripcionCliente, "Descripción");
 	}
 
 	private void setLayouts() {
@@ -86,31 +87,31 @@ public class UsuarioForm extends Dialog {
 		return txtUsuario;
 	}
 
-	public Label getDescripcionCliente() {
-		return descripcionCliente;
-	}
-
-	public void setDescripcionCliente(Label descripcionCliente) {
-		this.descripcionCliente = descripcionCliente;
-	}
-
-	public BuscadorClientesComponent getBuscadorClientes() {
-		return buscadorClientes;
-	}
-
-	public void setBuscadorClientes(BuscadorClientesComponent buscadorClientes) {
-		this.buscadorClientes = buscadorClientes;
-	}
+//	public Label getDescripcionCliente() {
+//		return descripcionCliente;
+//	}
+//
+//	public void setDescripcionCliente(Label descripcionCliente) {
+//		this.descripcionCliente = descripcionCliente;
+//	}
+//
+//	public BuscadorClientesComponent getBuscadorClientes() {
+//		return buscadorClientes;
+//	}
+//
+//	public void setBuscadorClientes(BuscadorClientesComponent buscadorClientes) {
+//		this.buscadorClientes = buscadorClientes;
+//	}
 
 	public void setTxtUsuario(TextField txtUsuario) {
 		this.txtUsuario = txtUsuario;
 	}
 
-	public TextField getTxtPassword() {
+	public PasswordField getTxtPassword() {
 		return txtPassword;
 	}
 
-	public void setTxtPassword(TextField txtPassword) {
+	public void setTxtPassword(PasswordField txtPassword) {
 		this.txtPassword = txtPassword;
 	}
 
