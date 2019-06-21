@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import com.tp.proyecto1.controllers.venta.VentaFormController;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.Reserva;
+import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.model.viajes.Ciudad;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.ClienteService;
@@ -22,7 +23,10 @@ import com.tp.proyecto1.services.ReservaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.ConfirmationDialog;
+import com.tp.proyecto1.utils.EnviadorDeMail;
 import com.tp.proyecto1.utils.Inject;
+import com.tp.proyecto1.views.reportes.ComprobanteReservaJR;
+import com.tp.proyecto1.views.reportes.ComprobanteVentaJR;
 import com.tp.proyecto1.views.reserva.ComprobanteReserva;
 import com.tp.proyecto1.views.reserva.ReservaView;
 import com.vaadin.flow.component.UI;
@@ -98,6 +102,8 @@ public class ReservasController {
 			reservaService.save(reserva);
 			viajeService.save(viaje);
 			Notification.show("Reserva dada de baja");
+			EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+			enviadorDeMail.enviarMailConInfoVentaCancelacion("Cancelacion de Reserva", reserva);
 			changeHandler.onChange();
 		});
 		confirmationDialog.open();
@@ -138,11 +144,18 @@ public class ReservasController {
 
     private void imprimirComprobante(){
     	Reserva reserva = reservaView.getReservaSeleccionada(); 
+    	EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
     	if(reserva != null) {
-			ComprobanteReserva comprobante = new ComprobanteReserva(reserva);
+			/*ComprobanteReserva comprobante = new ComprobanteReserva(reserva);
 			comprobante.open();
 			UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
-					"  print(); self.close();}, 1000);");
+					"  print(); self.close();}, 1000);");*/
+    		List<Reserva> reservas = new ArrayList<Reserva>();
+			reservas.add(reserva);
+			ComprobanteReservaJR comproReserva = new ComprobanteReservaJR(reservas);
+			comproReserva.exportarAPdf(reserva.getCliente().getNombreyApellido()+ "-"+ reserva.getCliente().getDni());
+			enviadorDeMail.enviarConGmail(reserva.getCliente().getEmail(),
+					"Comprobante de reserva- " + reserva.getCliente().getNombreyApellido()+ "-"+ reserva.getCliente().getDni(), reserva);
     	}
     	else{
 			Notification.show("Seleccione una Reserva.");

@@ -17,6 +17,7 @@ import com.tp.proyecto1.model.viajes.Promocion;
 import com.tp.proyecto1.model.viajes.Provincia;
 import com.tp.proyecto1.services.*;
 import com.tp.proyecto1.utils.Inject;
+import com.tp.proyecto1.views.reportes.ComprobanteVentaJR;
 import com.tp.proyecto1.views.ventas.ComprobanteVenta;
 import com.vaadin.flow.component.UI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -507,8 +508,6 @@ public class VentaFormController {
 		ventaService.save(venta);
 		AsientoREST.contabilizarNuevaVenta(venta);
 		imprimirComprobante(venta);
-		EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
-		enviadorDeMail.enviarMailConInfoVenta("Confirmacion y detalle de Compra - Al Planeta", venta);
 		//ventaService.save(setNewVenta());
         ventaForm.close();
       //Si viene de una reserva
@@ -525,8 +524,7 @@ public class VentaFormController {
 	private void saveVenta(Venta venta) {
 
             ventaService.save(venta);
-            EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
-    		enviadorDeMail.enviarMailConInfoVenta("Actualización de datos de Pasajeros con detalle de Compra - Al Planeta", venta);
+            imprimirComprobante(venta);
             ventaForm.close();
             Notification.show("PasajeVenta Modificado");
             changeHandler.onChange();
@@ -618,10 +616,13 @@ public class VentaFormController {
 	}
 	
 	private void imprimirComprobante(Venta venta) {
-		ComprobanteVenta comprobante = new ComprobanteVenta(venta);
-		comprobante.open();
-		UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
-				"  print(); self.close();}, 1000);");
+		EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+		List<Venta> ventas = new ArrayList<Venta>();
+		ventas.add(venta);
+		ComprobanteVentaJR comproVenta = new ComprobanteVentaJR(ventas);
+		comproVenta.exportarAPdf(venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni());
+		enviadorDeMail.enviarConGmail(venta.getCliente().getEmail(),
+				"Comprobante de compra- " + venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni(), venta);
 	}
 	
     //NO USO ESTA PODEROSA TECNICA

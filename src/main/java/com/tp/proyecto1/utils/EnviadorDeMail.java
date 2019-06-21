@@ -65,17 +65,25 @@ public class EnviadorDeMail {
 		Inject.Inject(this);
 	}
 	
-	public static void enviarConGmail(String destinatario, String asunto, String cuerpo) {
+	public void enviarConGmail(String destinatario, String asunto, Venta venta) {
 	    // Esto es lo que va delante de @gmail.com en tu cuenta de correo. Es el remitente también.
-	    String remitente = "proy.despegue";  //Para la dirección nomcuenta@gmail.com
+		String remitente = this.getConfiguracionMailRemitenteGmail();  //Para la dirección nomcuenta@gmail.com
+	    String pass = this.getConfiguracionMailRemitentePassGmail();
 	    Properties props = System.getProperties();
+		List<Pasajero> pasajeros = venta.getPasajes().stream().map(e-> e.getPasajero()).collect(Collectors.toList());
+		String pasajerosVenta = retornarPasajeros(pasajeros);
+	    String cuerpo = "Estimado Cliente "+ venta.getCliente().getNombreyApellido() + ",\nSe le informa que su compra del viaje con salida desde la ciudad de " + venta.getViaje().getOrigen()
+				+ " el día " + venta.getViaje().getFechaSalida().toString() + " a las " + venta.getViaje().getHoraSalida().toString() + " con destino a "
+				+ venta.getViaje().getDestino().toString()+ " se encuentra aprobada.\n\nPasajeros y DNI: " + pasajerosVenta 
+				+ "\n\n\nGracias por confiar en nosotros. \n\nBuen Viaje le desea Al Planeta.";//info del comproventa
+	    
 	    props.put("mail.smtp.host", "smtp.gmail.com");  //El servidor SMTP de Google
 	    props.put("mail.smtp.user", remitente);
 	    //props.put("mail.smtp.clave", "Laboratorio1");    //La clave de la cuenta
 	    props.put("mail.smtp.password", "Laboratorio1");    //La clave de la cuenta
 	    props.put("mail.smtp.auth", "true");    //Usar autenticación mediante usuario y clave
 	    props.put("mail.smtp.starttls.enable", "true"); //Para conectar de manera segura al servidor SMTP
-	    props.put("mail.smtp.port", "587"); //El puerto SMTP seguro de Google
+	    props.put("mail.smtp.port", this.getConfiguracionPuertoSeguroGoolge()); //El puerto SMTP seguro de Google
 	    props.put("mail.smtp.ssl.trust", "smtp.gmail.com"); 
 	    
 	    Session session = Session.getDefaultInstance(props);
@@ -85,7 +93,69 @@ public class EnviadorDeMail {
 	    BodyPart parteAdjunto = new MimeBodyPart(); 
 	    BodyPart texto = new MimeBodyPart();
 	    
-	   	File path = new File("C:/Users/User/Desktop/comprobantes/comprobante-venta.pdf"); 
+	   	File path = new File("./"+venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni()+".pdf"); 
+	   	if (path.exists()) System.out.println("existe la ruta del archivo");
+	    
+	    DataSource arch = new FileDataSource(path);   
+	   
+	    try {
+	    	texto.setText(cuerpo);
+
+	    	parteAdjunto.setDataHandler(new DataHandler(arch));
+	    	parteAdjunto.setFileName(path.getName());
+
+	    	//agregando texto y archivo adjunto
+	        multipart.addBodyPart(texto	);
+	        multipart.addBodyPart(parteAdjunto); 
+	        
+	        message.setFrom(new InternetAddress(remitente));
+	        message.addRecipients(Message.RecipientType.TO, destinatario);   //Se podrían añadir varios de la misma manera
+	        message.setSubject(asunto);
+	        message.setContent(multipart); 
+	        //message.setText(cuerpo); //para enviar sin correo adjunto
+	        Transport transport = session.getTransport("smtp");
+	        transport.connect("smtp.gmail.com", remitente, pass);
+	        transport.sendMessage(message, message.getAllRecipients());
+	        transport.close();
+	    }
+	    catch (AddressException ae) {
+            ae.printStackTrace();
+        }
+	    catch (MessagingException me) {
+	        me.printStackTrace();   //Si se produce un error
+	    }
+	    
+	}
+	
+	
+	public void enviarConGmail(String destinatario, String asunto, Reserva reserva) {
+	    // Esto es lo que va delante de @gmail.com en tu cuenta de correo. Es el remitente también.
+	    String remitente = this.getConfiguracionMailRemitenteGmail();  //Para la dirección nomcuenta@gmail.com
+	    String pass = this.getConfiguracionMailRemitentePassGmail();
+	    Properties props = System.getProperties();
+	
+	    String cuerpo = "Estimado Cliente "+ reserva.getCliente().getNombreyApellido() + ",\nSe le informa que su reserva del viaje con salida desde la ciudad de " + reserva.getViaje().getOrigen()
+				+ " el día " + reserva.getViaje().getFechaSalida().toString() + " a las " + reserva.getViaje().getHoraSalida().toString() + " con destino a "
+				+ reserva.getViaje().getDestino().toString()+ " se encuentra aprobada.\n\n"
+				+ "\n\n\nGracias por confiar en nosotros. \n\nBuen Viaje le desea Al Planeta.";//info del comproventa
+	    
+	    props.put("mail.smtp.host", "smtp.gmail.com");  //El servidor SMTP de Google
+	    props.put("mail.smtp.user", remitente);
+	    //props.put("mail.smtp.clave", "Laboratorio1");    //La clave de la cuenta
+	    props.put("mail.smtp.password", pass);    //La clave de la cuenta
+	    props.put("mail.smtp.auth", "true");    //Usar autenticación mediante usuario y clave
+	    props.put("mail.smtp.starttls.enable", "true"); //Para conectar de manera segura al servidor SMTP
+	    props.put("mail.smtp.port", this.getConfiguracionPuertoSeguroGoolge()); //El puerto SMTP seguro de Google
+	    props.put("mail.smtp.ssl.trust", "smtp.gmail.com"); 
+	    
+	    Session session = Session.getDefaultInstance(props);
+	    MimeMessage message = new MimeMessage(session);
+	    Multipart multipart = new MimeMultipart(); 
+	    
+	    BodyPart parteAdjunto = new MimeBodyPart(); 
+	    BodyPart texto = new MimeBodyPart();
+	    
+	   	File path = new File("./"+reserva.getCliente().getNombreyApellido()+ "-"+ reserva.getCliente().getDni()+".pdf"); 
 	   	if (path.exists()) System.out.println("existe la ruta del archivo");
 	    
 	    DataSource arch = new FileDataSource(path);   
@@ -119,6 +189,68 @@ public class EnviadorDeMail {
 	    
 	}
 	
+	public void enviarConGmailVoucher(String destinatario, String asunto, Venta venta) {
+	    // Esto es lo que va delante de @gmail.com en tu cuenta de correo. Es el remitente también.
+		String remitente = this.getConfiguracionMailRemitenteGmail();  //Para la dirección nomcuenta@gmail.com
+	    String pass = this.getConfiguracionMailRemitentePassGmail();
+	    Properties props = System.getProperties();
+		List<Pasajero> pasajeros = venta.getPasajes().stream().map(e-> e.getPasajero()).collect(Collectors.toList());
+		String pasajerosVenta = retornarPasajeros(pasajeros);
+	    String cuerpo = "Estimado Cliente "+ venta.getCliente().getNombreyApellido() + ",\nSe le informa que su viaje con salida desde la ciudad de " + venta.getViaje().getOrigen()
+				+ " el día " + venta.getViaje().getFechaSalida().toString() + " a las " + venta.getViaje().getHoraSalida().toString() + " con destino a "
+				+ venta.getViaje().getDestino().toString()+ " se encuentra muy pronto a salirt.\n\nPasajeros y DNI: " + pasajerosVenta 
+				+ "\n\n\nGracias por confiar en nosotros. \n\nBuen Viaje le desea Al Planeta.";//info del comproventa
+	    
+	    props.put("mail.smtp.host", "smtp.gmail.com");  //El servidor SMTP de Google
+	    props.put("mail.smtp.user", remitente);
+	    //props.put("mail.smtp.clave", "Laboratorio1");    //La clave de la cuenta
+	    props.put("mail.smtp.password", "Laboratorio1");    //La clave de la cuenta
+	    props.put("mail.smtp.auth", "true");    //Usar autenticación mediante usuario y clave
+	    props.put("mail.smtp.starttls.enable", "true"); //Para conectar de manera segura al servidor SMTP
+	    props.put("mail.smtp.port", this.getConfiguracionPuertoSeguroGoolge()); //El puerto SMTP seguro de Google
+	    props.put("mail.smtp.ssl.trust", "smtp.gmail.com"); 
+	    
+	    Session session = Session.getDefaultInstance(props);
+	    MimeMessage message = new MimeMessage(session);
+	    Multipart multipart = new MimeMultipart(); 
+	    
+	    BodyPart parteAdjunto = new MimeBodyPart(); 
+	    BodyPart texto = new MimeBodyPart();
+	    
+	   	File path = new File("./"+venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni()+".pdf"); 
+	   	if (path.exists()) System.out.println("existe la ruta del archivo");
+	    
+	    DataSource arch = new FileDataSource(path);   
+	   
+	    try {
+	    	texto.setText(cuerpo);
+
+	    	parteAdjunto.setDataHandler(new DataHandler(arch));
+	    	parteAdjunto.setFileName(path.getName());
+
+	    	//agregando texto y archivo adjunto
+	        multipart.addBodyPart(texto	);
+	        multipart.addBodyPart(parteAdjunto); 
+	        
+	        message.setFrom(new InternetAddress(remitente));
+	        message.addRecipients(Message.RecipientType.TO, destinatario);   //Se podrían añadir varios de la misma manera
+	        message.setSubject(asunto);
+	        message.setContent(multipart); 
+	        //message.setText(cuerpo); //para enviar sin correo adjunto
+	        Transport transport = session.getTransport("smtp");
+	        transport.connect("smtp.gmail.com", remitente, pass);
+	        transport.sendMessage(message, message.getAllRecipients());
+	        transport.close();
+	    }
+	    catch (AddressException ae) {
+            ae.printStackTrace();
+        }
+	    catch (MessagingException me) {
+	        me.printStackTrace();   //Si se produce un error
+	    }
+	    
+	}
+	
 	public void enviarMailConInfoVenta(String asunto, Venta venta) {
 		String destinatario = venta.getCliente().getEmail();
 		List<Pasajero> pasajeros = venta.getPasajes().stream().map(e-> e.getPasajero()).collect(Collectors.toList());
@@ -139,6 +271,19 @@ public class EnviadorDeMail {
 				+ "\n\nOperador: " + venta.getVendedor().getUser()
 				+ "\n\n\nPolíticas de Cancelación: \n\t\"Hasta cinco días antes de la salida del viaje se podrá cancelar y obtener el 100% de reintegro. Luego se retendrá un 20% del valor del pasaje por día, hasta llegar al día de salida, que ya no se podrá cancelar.\""
 				+ "\n\nGracias por confiar en nosotros. \n\nBuen Viaje le desea Al Planeta.";//info del comproventa
+		
+		this.enviarMail(destinatario, asunto, cuerpo);
+	}
+	
+	public void enviarMailConInfoVentaCancelacion(String asunto, Venta venta) {
+		String destinatario = venta.getCliente().getEmail();
+		
+		String cuerpo = "Estimado Cliente "+ venta.getCliente().getNombreyApellido() + ",\nSe le informa que su compra del viaje con salida desde la ciudad de " + venta.getViaje().getOrigen()
+				+ " el día " + venta.getViaje().getFechaSalida().toString() + " a las " + venta.getViaje().getHoraSalida().toString() + " con destino a "
+				+ venta.getViaje().getDestino().toString()+ " se encuentra cancelada.\n"
+				+ "\n\nOperador: " + venta.getVendedor().getUser()
+				+ "\n\n\nPolíticas de Cancelación: \n\t\"Hasta cinco días antes de la salida del viaje se podrá cancelar y obtener el 100% de reintegro. Luego se retendrá un 20% del valor del pasaje por día, hasta llegar al día de salida, que ya no se podrá cancelar.\""
+				+ "\n\nGracias por confiar en nosotros. \n\nSaludos, Al Planeta.";//info del comproventa
 		
 		this.enviarMail(destinatario, asunto, cuerpo);
 	}
@@ -319,4 +464,18 @@ public class EnviadorDeMail {
 	private String getConfiguracionPuertoSeguroGoolge(){
 		return configuracionService.findValueByKey(configuracionPuertoSeguroGoolge);   
 	}
+
+	public void enviarMailConInfoVentaCancelacion(String asunto, Reserva reserva) {
+		String destinatario = reserva.getCliente().getEmail();
+				
+				String cuerpo = "Estimado Cliente "+ reserva.getCliente().getNombreyApellido() + ",\nSe le informa que su reserva del viaje con salida desde la ciudad de " + reserva.getViaje().getOrigen()
+						+ " el día " + reserva.getViaje().getFechaSalida().toString() + " a las " + reserva.getViaje().getHoraSalida().toString() + " con destino a "
+						+ reserva.getViaje().getDestino().toString()+ " se encuentra cancelada.\n"
+						+ "\n\nOperador: " + reserva.getVendedor().getUser()
+						+ "\n\n\nPolíticas de Cancelación: \n\t\"Hasta cinco días antes de la salida del viaje se podrá cancelar y obtener el 100% de reintegro. Luego se retendrá un 20% del valor del pasaje por día, hasta llegar al día de salida, que ya no se podrá cancelar.\""
+						+ "\n\nGracias por confiar en nosotros. \n\nSaludos, Al Planeta.";//info del comproventa
+				
+				this.enviarMail(destinatario, asunto, cuerpo);
+				
+			}
 }

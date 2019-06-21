@@ -1,6 +1,7 @@
 package com.tp.proyecto1.controllers.venta;
 
 import com.tp.proyecto1.Proyecto1Application;
+import com.tp.proyecto1.controllers.contabilidad.AsientoREST;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.EstadoTransaccion;
 import com.tp.proyecto1.model.pasajes.Venta;
@@ -12,6 +13,7 @@ import com.tp.proyecto1.utils.ConfirmationDialog;
 import com.tp.proyecto1.utils.EnviadorDeMail;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.reportes.ComprobanteVentaJR;
+import com.tp.proyecto1.views.reportes.VoucherVentaJR;
 import com.tp.proyecto1.views.ventas.ComprobanteVenta;
 import com.tp.proyecto1.views.ventas.VentaView;
 
@@ -20,13 +22,10 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.upload.Upload;
-import com.vaadin.flow.component.upload.receivers.FileBuffer;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -76,8 +75,7 @@ public class VentasController {
 		setChangeHandler(this::listVentas);
 		ventaView.getSearchButton().addClickListener(e->listVentas());
 		ventaView.getBtnComprobante().addClickListener(e->imprimirComprobante());
-		//ventaView.getBtnEnvioMail().addClickListener(e-> EnviadorDeMail.enviarConGmail("gmonteblack.gm@gmail.com", "Confirmacion de Compra - Al Planeta", "emo sido engañado"));
-		//ventaView.getBtnEnvioMail().addClickListener(e-> pdfprint());
+		ventaView.getBtnEnvioMail().addClickListener(e-> reenviarVoucher());
 	}
 
 	
@@ -101,13 +99,44 @@ public class VentasController {
 			Notification.show("Seleccione una venta.");
 		}
 	}*/
+	
+	private void reenviarVoucher() {
+		Venta venta = ventaView.getGrid().asSingleSelect().getValue();
+		EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+		if (venta != null) {
+			LocalDate fechaActual = LocalDate.now();
+			LocalDate fechaVoucher =  venta.getViaje().getFechaSalida().minusDays(1);
+			if (venta.isActivo() && fechaVoucher.compareTo(fechaActual) != -1) {
+				List<Venta> ventas = new ArrayList<Venta>();
+				ventas.add(venta);
+				VoucherVentaJR voucherVenta = new VoucherVentaJR(ventas);
+				voucherVenta.exportarAPdf(venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni());
+				enviadorDeMail.enviarConGmailVoucher(venta.getCliente().getEmail(),
+						"Voucher del Viaje- " + venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni(), venta);
+			}
+			else {
+				Notification.show("Viaje vencido o Cancelado.");
+			}
+		}
+		else {
+			Notification.show("Seleccione una Venta.");
+		}
+		
+	}
 	private void imprimirComprobante() {
 		Venta venta = ventaView.getGrid().asSingleSelect().getValue();
+		EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
 		if (venta != null) {
-			ComprobanteVenta comprobante = new ComprobanteVenta(venta);
+			/*ComprobanteVenta comprobante = new ComprobanteVenta(venta);
 			comprobante.open();
 			UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
-					"  print(); self.close();}, 1000);");
+					"  print(); self.close();}, 1000);");*/
+			List<Venta> ventas = new ArrayList<Venta>();
+			ventas.add(venta);
+			ComprobanteVentaJR comproVenta = new ComprobanteVentaJR(ventas);
+			comproVenta.exportarAPdf(venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni());
+			enviadorDeMail.enviarConGmail(venta.getCliente().getEmail(),
+					"Comprobante de compra- " + venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni(), venta);
 		}
 		else {
 			Notification.show("Seleccione una Venta.");
@@ -156,6 +185,9 @@ public class VentasController {
 					ventaService.save(ventaBorrar);
 					Notification.show("La Venta fue penalizada, se le reintegra " + reintegro + " al cliente " +ventaBorrar.getCliente().getNombreyApellido());
 				}
+				AsientoREST.contabilizarVentaAnulada(ventaBorrar, Proyecto1Application.logUser );
+				EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+				enviadorDeMail.enviarMailConInfoVentaCancelacion("Cancelacion de Compra", ventaBorrar);
 			}
 			changeHandler.onChange();
 		});

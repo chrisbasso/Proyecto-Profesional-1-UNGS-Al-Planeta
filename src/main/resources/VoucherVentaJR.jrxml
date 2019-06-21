@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Invoice_Table_Based" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4eedbb89-b4f6-4469-9ab6-f642a1688cf7">
+	<property name="template.engine" value="tabular_template"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w1" value="391"/>
+	<property name="com.jaspersoft.studio.property.dataset.dialog.DatasetDialog.sash.w2" value="595"/>
+	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
+	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
+	<style name="Row" mode="Transparent" fontName="Times New Roman" pdfFontName="Times-Roman">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$V{REPORT_COUNT}%2 == 0]]></conditionExpression>
+			<style mode="Opaque" backcolor="#EEEFF0"/>
+		</conditionalStyle>
+	</style>
+	<style name="Table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+			<topPen lineWidth="1.0" lineColor="#000000"/>
+			<leftPen lineWidth="1.0" lineColor="#000000"/>
+			<bottomPen lineWidth="1.0" lineColor="#000000"/>
+			<rightPen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="tableDataset" uuid="4bc2dde8-541f-41ab-b0f6-4bf232658194">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+	</subDataset>
+	<subDataset name="Dataset1" uuid="860f9c70-4de8-4e2f-8dfc-64d17d9edf4c">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="Field_1" class="java.lang.String"/>
+	</subDataset>
+	<subDataset name="PasajerosDataset" uuid="fae86daf-7f49-48b5-9c4a-c44db2703a61">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="nombreCompleto" class="java.lang.String"/>
+		<field name="dni" class="java.lang.String"/>
+		<field name="id" class="java.lang.Long"/>
+	</subDataset>
+	<parameter name="Fecha" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="promocion" class="com.tp.proyecto1.model.viajes.Promocion">
+		<fieldDescription><![CDATA[promocion]]></fieldDescription>
+	</field>
+	<field name="vendedor" class="com.tp.proyecto1.model.users.User">
+		<fieldDescription><![CDATA[vendedor]]></fieldDescription>
+	</field>
+	<field name="fechaInactivacion" class="java.time.LocalDate">
+		<fieldDescription><![CDATA[fechaInactivacion]]></fieldDescription>
+	</field>
+	<field name="pagos" class="java.util.List">
+		<fieldDescription><![CDATA[pagos]]></fieldDescription>
+	</field>
+	<field name="cliente" class="com.tp.proyecto1.model.clientes.Cliente">
+		<fieldDescription><![CDATA[cliente]]></fieldDescription>
+	</field>
+	<field name="estadoTransaccion" class="com.tp.proyecto1.model.pasajes.EstadoTransaccion">
+		<fieldDescription><![CDATA[estadoTransaccion]]></fieldDescription>
+	</field>
+	<field name="fecha" class="java.time.LocalDate">
+		<fieldDescription><![CDATA[fecha]]></fieldDescription>
+	</field>
+	<field name="importeTotal" class="java.lang.Double">
+		<fieldDescription><![CDATA[importeTotal]]></fieldDescription>
+	</field>
+	<field name="subtotal" class="java.lang.Double">
+		<fieldDescription><![CDATA[subtotal]]></fieldDescription>
+	</field>
+	<field name="sucursal" class="com.tp.proyecto1.model.sucursales.Sucursal">
+		<fieldDescription><![CDATA[sucursal]]></fieldDescription>
+	</field>
+	<field name="viaje" class="com.tp.proyecto1.model.viajes.Viaje">
+		<fieldDescription><![CDATA[viaje]]></fieldDescription>
+	</field>
+	<field name="id" class="java.lang.Long">
+		<fieldDescription><![CDATA[id]]></fieldDescription>
+	</field>
+	<field name="pasajes" class="java.util.List">
+		<fieldDescription><![CDATA[pasajes]]></fieldDescription>
+	</field>
+	<field name="cantidadPasajes" class="java.lang.Integer">
+		<fieldDescription><![CDATA[cantidadPasajes]]></fieldDescription>
+	</field>
+	<field name="class" class="java.lang.Class">
+		<fieldDescription><![CDATA[class]]></fieldDescription>
+	</field>
+	<field name="activo" class="java.lang.Boolean">
+		<fieldDescription><![CDATA[activo]]></fieldDescription>
+	</field>
+	<title>
+		<band height="160" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="90" width="40" height="15" uuid="33274f5d-5b7e-4be2-a2ff-65d452a618ed"/>
+				<text><![CDATA[Cliente:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="80" width="556" height="1" uuid="806ce5df-1219-4876-ae0c-ca7405b1f246">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="210" y="90" width="30" height="15" uuid="235bf8b6-1e1e-49c7-b59f-7a46c30b8209"/>
+				<text><![CDATA[DNI:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="112" width="39" height="15" uuid="665f25c2-8663-4951-b699-1ab863bdeb76"/>
+				<text><![CDATA[E-mail:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="408" y="5" width="50" height="20" uuid="0f86baff-6386-4f3f-b3fe-2388707babe8"/>
+				<box rightPadding="4"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="459" y="5" width="84" height="20" uuid="bb10dbe1-0a4f-4722-9953-c163b63cf979"/>
+				<textFieldExpression><![CDATA[$P{Fecha}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="332" y="27" width="124" height="20" uuid="0b3f9342-da78-4cfa-9fc5-2301c4749678"/>
+				<box rightPadding="4"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[#Codigo de Viaje:
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="61" y="5" width="130" height="25" forecolor="#1F50CC" uuid="e622555d-198b-4ccd-a4a1-c59c53304058">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="19" isBold="true"/>
+				</textElement>
+				<text><![CDATA[AL PLANETA
+]]></text>
+			</staticText>
+			<image>
+				<reportElement x="6" y="0" width="50" height="50" uuid="4b4b70f3-f92f-466b-95aa-ae270438e60c"/>
+				<imageExpression><![CDATA["src/main/resources/static/img/logo-viaje.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="42" y="90" width="150" height="16" uuid="44cb97b7-5cb4-45c4-bceb-d88b11f67d61"/>
+				<textFieldExpression><![CDATA[$F{cliente}.getNombreyApellido()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="384" y="47" width="72" height="19" uuid="fcbd60ad-e99b-4e2e-9a08-fe3ed497b89a"/>
+				<text><![CDATA[        Operador:
+]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="459" y="47" width="84" height="18" uuid="c11e3e2c-c104-44eb-bca7-34f82ebf4bac"/>
+				<textFieldExpression><![CDATA[$F{vendedor}.getUser()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="67" y="35" width="119" height="14" uuid="ec84c04d-70ec-4423-844c-8a51fa45d4ac"/>
+				<text><![CDATA[Telefono: 011-0820-4545
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="66" y="50" width="120" height="13" uuid="6d889fb2-8190-4222-8130-04568e25d087"/>
+				<text><![CDATA[CUIT: 24-56756118-9]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="243" y="90" width="100" height="14" uuid="154e84a5-af69-4b2e-948d-667a06ef9062"/>
+				<textFieldExpression><![CDATA[$F{cliente}.getDni()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="40" y="111" width="200" height="17" uuid="69db981e-79a5-41f7-911d-7bbf3267f440"/>
+				<textFieldExpression><![CDATA[$F{cliente}.getEmail()]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="476" y="83" width="50" height="50" uuid="618c6582-e6b9-460b-ae92-2c105c5f4f63"/>
+				<imageExpression><![CDATA["src/main/resources/code-qr.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="460" y="27" width="82" height="15" uuid="5fba9abb-0512-4ce9-80cc-30f66026d9cd"/>
+				<text><![CDATA[F7893]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="420" y="140" width="124" height="20" uuid="67e47d2d-06c9-4cb0-b7ee-8c478a6e6b40"/>
+				<box rightPadding="4"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[#Codigo QR viaje
+
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1" y="138" width="79" height="17" uuid="235738e0-ce0e-4e24-8052-3861d65abd1f"/>
+				<text><![CDATA[Cant. Pasajeros:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="86" y="140" width="100" height="15" uuid="375fe091-b71d-4e23-b030-41824b44eba7"/>
+				<textFieldExpression><![CDATA[$F{cantidadPasajes}.toString()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<summary>
+		<band height="124" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.layout"/>
+			<staticText>
+				<reportElement x="1" y="11" width="79" height="17" uuid="f84f73df-8dbd-4003-ae80-cc3ac23c6a0c"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[ITINERARIO]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="4" width="556" height="1" uuid="4beea048-8b0e-4d41-8999-3444a64cda3e">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="4" y="34" width="35" height="17" uuid="4862f8b7-0f8b-46ce-99ba-8cdd59614d57"/>
+				<text><![CDATA[Origen:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="192" y="34" width="35" height="17" uuid="64e5a5ad-593b-49d6-a776-816704da899a"/>
+				<text><![CDATA[Salida:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="321" y="33" width="42" height="17" uuid="73a6c28f-709d-4ed1-a23c-4c6abd11d05b"/>
+				<text><![CDATA[Destino:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="41" y="34" width="150" height="18" uuid="12293ea4-e8e2-4e4b-a804-00bd12f5bde3"/>
+				<textFieldExpression><![CDATA[$F{viaje}.getOrigen()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="228" y="35" width="90" height="14" uuid="330190cb-f882-4d8b-8704-6708dca63770"/>
+				<textFieldExpression><![CDATA[$F{viaje}.getFechaSalida().toString() + " " + $F{viaje}.getHoraSalida().toString()
+]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="363" y="33" width="194" height="18" uuid="772a65d4-5275-4d20-91d5-00ac621b354d"/>
+				<textFieldExpression><![CDATA[$F{viaje}.getDestino().toString()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="3" y="57" width="54" height="17" uuid="7325fb35-758f-4d42-8c55-2e9204ae044e"/>
+				<text><![CDATA[Transporte:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="157" y="58" width="105" height="17" uuid="6c1da9bd-b52a-4ade-bc3c-56692e690ee7"/>
+				<text><![CDATA[Codigo de transporte:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="376" y="57" width="35" height="17" uuid="8aacf972-4695-4fba-8e32-9152cef9274d"/>
+				<text><![CDATA[Clase:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="65" y="57" width="82" height="18" uuid="2be1540c-785f-4737-b193-8780dab52ef8"/>
+				<textFieldExpression><![CDATA[$F{viaje}.getTransporte().getTipo().getDescripcion()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="268" y="59" width="94" height="14" uuid="9ecc0e6a-5821-4229-9d62-5a1ae0714f9a"/>
+				<textFieldExpression><![CDATA[$F{viaje}.getTransporte().getCodTransporte()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="414" y="57" width="142" height="18" uuid="77756b37-4f50-4646-a05e-da548c5ee8f4"/>
+				<textFieldExpression><![CDATA[$F{viaje}.getTransporte().getClase()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement mode="Opaque" x="3" y="88" width="548" height="30" backcolor="#35E6A5" uuid="98390b2e-8448-43f6-80e0-12145d68e469"/>
+				<textFieldExpression><![CDATA["Recomendaciones:" + $F{viaje}.getRecomendacion()]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
