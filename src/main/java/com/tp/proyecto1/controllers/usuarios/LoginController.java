@@ -4,13 +4,19 @@ import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.utils.ChangeHandler;
+import com.tp.proyecto1.utils.ConfirmationDialog;
+import com.tp.proyecto1.utils.EnviadorDeMail;
+import com.tp.proyecto1.utils.GenericDialog;
 import com.tp.proyecto1.views.usuarios.LoginView;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.login.AbstractLogin;
 import com.vaadin.flow.component.login.LoginI18n;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
 
 @Controller
 @UIScope
@@ -46,6 +52,24 @@ public class LoginController{
 			}
 		});
 		loginView.getLoginComponent().setI18n(createSpanishI18n());
+		loginView.getLoginComponent().addForgotPasswordListener(e->openRecoverDialog());
+
+	}
+
+	private void openRecoverDialog() {
+		TextField userNametxt = new TextField("Nombre de Usuario");
+		userNametxt.setWidth("300px");
+		ConfirmationDialog confirmationDialog = new ConfirmationDialog("Se enviará la contraseña al mail registrado. ¿Desea Continuar?", userNametxt);
+		confirmationDialog.open();
+		confirmationDialog.getConfirmButton().addClickListener(e2-> {
+			User user = userService.getUserByName(userNametxt.getValue());
+			if(user==null){
+				GenericDialog genericDialog = new GenericDialog("Usuario no registrado");
+			}else{
+				EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+				enviadorDeMail.enviarMail(user.getEmail(),"Al Planeta - Recupero de Contraseña", "Su contraseña es: " + user.getPassword());
+			}
+		});
 
 	}
 

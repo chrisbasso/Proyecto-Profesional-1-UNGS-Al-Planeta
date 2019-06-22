@@ -6,6 +6,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 
 public class ConfirmationDialog extends Dialog {
 
@@ -27,6 +28,21 @@ public class ConfirmationDialog extends Dialog {
 		confirmButton = new Button("Aceptar", event -> this.close());
 		cancelButton = new Button("Cancelar", event -> this.close());
 		content.add(labelMensaje, new HorizontalLayout(confirmButton,cancelButton));
+		this.setWidth("400px");
+		this.add(content);
+
+	}
+	public ConfirmationDialog(String mensaje, TextField textField) {
+		this.mensaje = mensaje;
+		labelMensaje.setText(mensaje);
+		this.setCloseOnEsc(false);
+		this.setCloseOnOutsideClick(false);
+		this.add(content);
+		content.setSizeFull();
+		content.setAlignItems(FlexComponent.Alignment.CENTER);
+		confirmButton = new Button("Aceptar", event -> this.close());
+		cancelButton = new Button("Cancelar", event -> this.close());
+		content.add(labelMensaje,textField, new HorizontalLayout(confirmButton,cancelButton));
 		this.setWidth("400px");
 		this.add(content);
 
@@ -54,5 +70,13 @@ public class ConfirmationDialog extends Dialog {
 
 	public void setMensaje(String mensaje) {
 		this.mensaje = mensaje;
+	}
+
+	public VerticalLayout getContent() {
+		return content;
+	}
+
+	public void setContent(VerticalLayout content) {
+		this.content = content;
 	}
 }

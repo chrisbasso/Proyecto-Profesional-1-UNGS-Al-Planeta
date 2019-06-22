@@ -83,7 +83,6 @@ public class UsuarioFormController {
 			usuarioForm.getBuscadorClientes().getFiltro().setValue("");
 			usuarioForm.getDescripcionCliente().setText("");
 		}
-
 	}
 
 	private void saveUser() {
