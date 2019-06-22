@@ -38,6 +38,8 @@ public class User {
     @OneToOne
 	private Persona persona;
 
+    private String email;
+
 	public User() {
 	}
 
@@ -56,6 +58,14 @@ public class User {
         this.password = password;
         this.rol = rol;
     }
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
 	public Boolean getEnabled() {
 		return enabled;
