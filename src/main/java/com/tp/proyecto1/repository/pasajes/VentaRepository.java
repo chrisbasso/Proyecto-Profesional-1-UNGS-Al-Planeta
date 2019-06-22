@@ -11,4 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VentaRepository extends JpaRepository<Venta, Long> {
 	List<Venta> findAllByViaje_FechaSalida(LocalDate fechaSalida);
+
+	List<Venta> findAllByCliente_Id(Long idCliente);
 }

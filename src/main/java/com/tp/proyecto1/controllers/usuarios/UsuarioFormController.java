@@ -61,8 +61,8 @@ public class UsuarioFormController {
 		usuarioForm.getComboSucursal().setItems(sucursalService.findAll());
 
 		if(user!=null){
-			if(user.getPersona()!=null){
-				usuarioForm.getBuscadorClientes().getFiltro().setValue(user.getPersona().getId().toString());
+			if(user.getCliente()!=null){
+				usuarioForm.getBuscadorClientes().getFiltro().setValue(user.getCliente().getId().toString());
 			}
 		}
 
@@ -102,7 +102,7 @@ public class UsuarioFormController {
 			}
 		}
 		if (binderUser.writeBeanIfValid(user)) {
-				user.setPersona(usuarioForm.getBuscadorClientes().getCliente());
+				user.setCliente(usuarioForm.getBuscadorClientes().getCliente());
 				userService.save(user);
 				usuarioForm.close();
 				changeHandler.onChange();
