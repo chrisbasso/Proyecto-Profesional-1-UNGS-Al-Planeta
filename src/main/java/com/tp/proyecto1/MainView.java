@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,8 @@ import com.vaadin.flow.server.VaadinSession;
 
 @Route
 @StyleSheet("styles.css")
-@Theme(value = Lumo.class, variant = Lumo.LIGHT)
+//@Theme(value = Lumo.class, variant = Lumo.DARK)
+@HtmlImport("frontend://styles/shared-styles.html")
 public class MainView extends VerticalLayout{
 
 	@Autowired
@@ -119,6 +121,7 @@ public class MainView extends VerticalLayout{
 		mainLayout.getElement().setAttribute("theme", "green");
 		this.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 		this.add(mainLayout);
+		//mainLayout.getElement().setAttribute("theme", "dark");
 	}
 
 	private void setMainPage() {

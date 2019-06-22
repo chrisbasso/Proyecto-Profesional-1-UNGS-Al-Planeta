@@ -10,11 +10,22 @@ h3 {
     color: midnightblue;
 }
 
+/*div{*/
+    /*background-color: aquamarine;*/
+/*}*/
+
 /*vaadin-grid-cell-content{*/
     /*font-size: var(--lumo-font-size-xs);*/
     /*padding: var(--lumo-space-s) var(--lumo-space-s);*/
 /*}*/
 
+/*[part="input-field"] {*/
+    /*background-color: aquamarine;*/
+/*}*/
+
+body {
+    background-color: lightgrey;
+}
 .selected-menu {
 	font-style: italic;
 	text-decoration: underline;
