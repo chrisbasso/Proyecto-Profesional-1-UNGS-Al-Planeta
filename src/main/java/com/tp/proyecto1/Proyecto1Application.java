@@ -3,6 +3,7 @@ package com.tp.proyecto1;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,6 +48,7 @@ import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.EnviadorDeMail;
+import com.tp.proyecto1.views.reportes.VoucherVentaJR;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.server.VaadinSession;
@@ -177,6 +179,7 @@ public class Proyecto1Application {
 			{
 				log.info("Verificando envio de vouchers...");
 				
+				EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
 				LocalDate fechaActual = LocalDate.now();
 				List<Venta> ventas = ventaRepository.findAll();	
 				for (Venta venta : ventas) {
@@ -185,8 +188,12 @@ public class Proyecto1Application {
 							&& venta.getEstadoTransaccion() != EstadoTransaccion.CANCELADA  && venta.getEstadoTransaccion() != EstadoTransaccion.PENALIZADA){
 						venta.setEstadoTransaccion(EstadoTransaccion.VOUCHERENVIADO);
 						ventaRepository.save(venta);
-						EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
-			    		enviadorDeMail.enviarMailConInfoVenta("Voucher con detalle de Compra - Al Planeta", venta);
+						List<Venta> ventasList = new ArrayList<Venta>();
+						ventasList.add(venta);
+						VoucherVentaJR voucherVenta = new VoucherVentaJR(ventas);
+						voucherVenta.exportarAPdf(venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni());
+						enviadorDeMail.enviarConGmailVoucher(venta.getCliente().getEmail(),
+								"Voucher del Viaje- " + venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni(), venta);
 					}
 				}
 				

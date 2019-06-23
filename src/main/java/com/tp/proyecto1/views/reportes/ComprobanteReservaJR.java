@@ -56,6 +56,7 @@ public class ComprobanteReservaJR {
 	
     private static final Logger log = LoggerFactory.getLogger(ComprobanteReservaJR.class);
     
+    
     //Recibe la lista de personas para armar el reporte
     public ComprobanteReservaJR(List<Reserva> reservas)
     {
@@ -69,7 +70,9 @@ public class ComprobanteReservaJR {
        pagos = pagosNum.toString();
        LocalDate fechaVencReserva =  reservas.get(reservas.size()-1).getViaje().getFechaSalida().minusDays(Long.parseLong(this.getConfiguracionDiasVencimientoPagoParcial()));
        politicasCancelacion = "Debe pagar al menos el " + this.getConfiguracionPorcentajeReserva() + "% del valor total antes que finalice la fecha de la reserva (" + fechaVencReserva.toString() + ")."
-				+  " El resto se debe pagar a lo sumo " + this.getConfiguracionDiasVencimientoReserva() + " días antes del viaje. De no cumplirse cualquier de los dos casos se cancelará la reserva automáticamente.";       
+				+  " El resto se debe pagar a lo sumo " + this.getConfiguracionDiasVencimientoReserva() + " días antes del viaje. De no cumplirse cualquier de los dos casos se cancelará la reserva automáticamente.";
+       
+       String nroComprobante = reservas.get(reservas.size()-1).getId().toString(); 
 
 
 	   Map<String, Object> parametersMap = new HashMap<String, Object>();
@@ -78,6 +81,7 @@ public class ComprobanteReservaJR {
 	   parametersMap.put("PrecioRestante", precioRestante);   
 	   parametersMap.put("Pasajeros", pasajeros);
 	   parametersMap.put("Pagos", pagos);
+	   parametersMap.put("NroComprobante", nroComprobante);
 	   
        try {
            this.reporte = (JasperReport) JRLoader.loadObjectFromFile( "src" + File.separator + "main" + File.separator + "resources" + File.separator + "ComprobanteReservaJR.jasper" );

@@ -163,7 +163,7 @@ public class ReservaFormController {
 		/*	EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
 			enviadorDeMail.enviarMailConInfoReserva("Confirmacion y detalle de Reserva - Al Planeta", reserva);*/
 			imprimirComprobante(reserva);
-			//mensajeGuardadoCierreForm(id);
+			mensajeGuardadoCierreForm(id);
 			reservaForm.close();
 		}else {
 			Notification.show("Lo sentimos, no quedan pasajes disponibles en el viaje seleccionado.");
@@ -211,7 +211,7 @@ public class ReservaFormController {
 			Long id = reservaService.save(reserva);
 			viajeService.save(viaje);
 			imprimirComprobante(reserva);
-			//mensajeGuardadoCierreForm(id);
+			mensajeGuardadoCierreForm(id);
 			reservaForm.close();	
 		}else {
 			Notification.show("Lo sentimos, no pudimos actualizar los pasajes disponibles en el viaje seleccionado.");

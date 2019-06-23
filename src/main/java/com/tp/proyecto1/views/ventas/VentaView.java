@@ -50,7 +50,7 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
         this.activosCheck = new Checkbox("Solo Activos");
         this.activosCheck.setMinWidth("140px");
         activosCheck.setValue(true);
-        this.btnEnvioMail = new Button("Renviar Voucher", VaadinIcon.MAILBOX.create());
+        this.btnEnvioMail = new Button("Reenviar Voucher", VaadinIcon.MAILBOX.create());
         
     }
 

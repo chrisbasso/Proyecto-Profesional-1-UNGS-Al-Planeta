@@ -517,7 +517,7 @@ public class VentaFormController {
             this.reservaService.save(reserva);
         }
         changeHandler.onChange();
-        //Notification.show("PasajeVenta comprado. Lote de Puntos Conseguidos");
+        Notification.show("PasajeVenta comprado");
 
 	}
 

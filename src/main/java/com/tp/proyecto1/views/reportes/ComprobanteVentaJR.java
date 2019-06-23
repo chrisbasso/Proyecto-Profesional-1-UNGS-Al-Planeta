@@ -61,6 +61,7 @@ public class ComprobanteVentaJR {
        this.setPuntosDisponibles(ventas.get(ventas.size()-1));
        this.setDatosPromocion(ventas.get(ventas.size()-1));
        List<Pasajero> pasajeros = ventas.get(ventas.size()-1).getPasajes().stream().map(e-> e.getPasajero()).collect(Collectors.toList());
+       String nroComprobante = ventas.get(ventas.size()-1).getId().toString(); 
        
        /* Convert List to JRBeanCollectionDataSource */
        //JRBeanCollectionDataSource pasajerosJRBean = new JRBeanCollectionDataSource(pasajeros);
@@ -73,6 +74,7 @@ public class ComprobanteVentaJR {
 	   parametersMap.put("ValorPromo", valorPromocion);   
 	   parametersMap.put("DenoPromo", denoPromocion);   
 	   parametersMap.put("Pasajeros", pasajeros);
+	   parametersMap.put("NroComprobante", nroComprobante);
 	   
        try {
            this.reporte = (JasperReport) JRLoader.loadObjectFromFile( "src" + File.separator + "main" + File.separator + "resources" + File.separator + "ComprobanteVentaJR.jasper" );

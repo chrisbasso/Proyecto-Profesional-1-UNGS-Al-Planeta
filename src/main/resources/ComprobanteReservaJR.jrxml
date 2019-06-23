@@ -47,6 +47,7 @@
 	<parameter name="PrecioRestante" class="java.lang.String"/>
 	<parameter name="Pasajeros" class="java.lang.String"/>
 	<parameter name="Fecha" class="java.lang.String"/>
+	<parameter name="NroComprobante" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -191,28 +192,19 @@
 				<textFieldExpression><![CDATA[$F{cliente}.getEmail()]]></textFieldExpression>
 			</textField>
 			<image>
-				<reportElement x="485" y="83" width="50" height="50" uuid="618c6582-e6b9-460b-ae92-2c105c5f4f63"/>
+				<reportElement x="484" y="83" width="50" height="50" uuid="618c6582-e6b9-460b-ae92-2c105c5f4f63"/>
 				<imageExpression><![CDATA["src/main/resources/code-qr.png"]]></imageExpression>
 			</image>
-			<staticText>
-				<reportElement x="460" y="27" width="82" height="15" uuid="5fba9abb-0512-4ce9-80cc-30f66026d9cd"/>
-				<text><![CDATA[90
-
-80]]></text>
-			</staticText>
+			<textField>
+				<reportElement x="459" y="27" width="86" height="17" uuid="4591c216-777b-4893-9e9f-e98a00f6f0f6"/>
+				<textFieldExpression><![CDATA[$P{NroComprobante}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<summary>
 		<band height="126" splitType="Stretch">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.layout"/>
-			<staticText>
-				<reportElement positionType="Float" mode="Opaque" x="0" y="83" width="99" height="43" backcolor="#E6E8E9" uuid="36aa233d-4305-48e6-974a-1bbf89bb3c8f"/>
-				<textElement textAlignment="Left" verticalAlignment="Top">
-					<font fontName="Serif" size="9" isItalic="true"/>
-				</textElement>
-				<text><![CDATA[Políticas de Cancelación:]]></text>
-			</staticText>
 			<staticText>
 				<reportElement x="12" y="43" width="58" height="16" uuid="d4d508a3-985d-4199-a2ac-a4b4b21c200e"/>
 				<text><![CDATA[Precio Total:]]></text>
@@ -226,7 +218,7 @@
 				<text><![CDATA[Precio Restante:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="12" y="23" width="120" height="16" uuid="386b2cb2-9997-4e10-b065-e43ec3935652"/>
+				<reportElement mode="Opaque" x="1" y="23" width="554" height="16" backcolor="#E6E8E9" uuid="386b2cb2-9997-4e10-b065-e43ec3935652"/>
 				<textElement>
 					<font size="12"/>
 				</textElement>
@@ -234,15 +226,15 @@
 			</staticText>
 			<textField>
 				<reportElement x="74" y="43" width="80" height="14" uuid="1bbd46ad-f12e-43ee-ba76-dd62a75a2113"/>
-				<textFieldExpression><![CDATA[$F{importeTotal}.toString( )]]></textFieldExpression>
+				<textFieldExpression><![CDATA["$"+$F{importeTotal}.toString( )]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="245" y="43" width="62" height="14" uuid="b4166353-7287-4d37-86b6-d3990365e4db"/>
-				<textFieldExpression><![CDATA[$F{viaje}.getPrecio().toString()]]></textFieldExpression>
+				<textFieldExpression><![CDATA["$"+$F{viaje}.getPrecio().toString()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="412" y="44" width="62" height="14" uuid="05e7c09c-4567-4d4f-a967-ac519526ca5c"/>
-				<textFieldExpression><![CDATA[$P{PrecioRestante}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["$"+$P{PrecioRestante}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="12" y="62" width="58" height="16" uuid="081397ce-9d65-426b-b329-6fe37b7586d3"/>
@@ -250,7 +242,7 @@
 			</staticText>
 			<textField>
 				<reportElement x="80" y="62" width="80" height="16" uuid="812ed486-6b27-48da-b9cb-b47f4f9fdf24"/>
-				<textFieldExpression><![CDATA[$P{Pagos}]]></textFieldExpression>
+				<textFieldExpression><![CDATA["$"+$P{Pagos}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="13" y="3" width="79" height="17" uuid="f038372e-e16f-4a4e-889b-32d82a2cfe18"/>
@@ -261,8 +253,11 @@
 				<textFieldExpression><![CDATA[$P{Pasajeros}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Opaque" x="100" y="83" width="456" height="43" backcolor="#E6E8E9" uuid="63416bf4-d0e5-4a94-aa8e-32d8d8a85d42"/>
-				<textFieldExpression><![CDATA[$P{Politica}]]></textFieldExpression>
+				<reportElement mode="Opaque" x="1" y="83" width="555" height="43" backcolor="#E6E8E9" uuid="63416bf4-d0e5-4a94-aa8e-32d8d8a85d42"/>
+				<textElement>
+					<font fontName="Serif" size="9" isItalic="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Políticas de Cancelación:  "+ $P{Politica}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="0" y="1" width="556" height="1" uuid="2ba97acc-1ccf-4fb0-a417-7d6a0ea62f9b">
@@ -271,7 +266,7 @@
 				</reportElement>
 			</line>
 			<line>
-				<reportElement x="2" y="81" width="556" height="1" uuid="c96ec988-6a96-4891-91b9-c3b211adb742">
+				<reportElement x="0" y="81" width="556" height="1" uuid="c96ec988-6a96-4891-91b9-c3b211adb742">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
