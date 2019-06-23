@@ -146,7 +146,11 @@ public class MainView extends VerticalLayout{
 		appLayout.setBranding(getLogo());
 		mainLayout.add(appLayout);
 		setMenu();
-		openViajesView();
+		String role = Proyecto1Application.logUser.getRol().getName();
+		if (role.equals("CLIENTE"))
+			openComprasClienteView();
+		else	
+			openViajesView();
 		final UI currentUI = UI.getCurrent();
 
 		timer = new Timer();
@@ -200,7 +204,7 @@ public class MainView extends VerticalLayout{
 		
 		
 		reservasCliente = new AppLayoutMenuItem(VaadinIcon.CALENDAR_CLOCK.create(),"Mis Reservas",e->openReservasClienteView());
-		comprasCliente = new AppLayoutMenuItem(VaadinIcon.TICKET.create(),"Mis rompras",e->openComprasClienteView());
+		comprasCliente = new AppLayoutMenuItem(VaadinIcon.TICKET.create(),"Mis Compras",e->openComprasClienteView());
 		
 		puntosCliente = new AppLayoutMenuItem(VaadinIcon.CALENDAR.create(),"Mis Puntos",e->openPuntosClienteView());
 		
