@@ -200,7 +200,7 @@ public class MainView extends VerticalLayout{
 		
 		
 		reservasCliente = new AppLayoutMenuItem(VaadinIcon.CALENDAR_CLOCK.create(),"Mis Reservas",e->openReservasClienteView());
-		comprasCliente = new AppLayoutMenuItem(VaadinIcon.TICKET.create(),"Mis Compras",e->openComprasClienteView());
+		comprasCliente = new AppLayoutMenuItem(VaadinIcon.TICKET.create(),"Mis rompras",e->openComprasClienteView());
 		
 		puntosCliente = new AppLayoutMenuItem(VaadinIcon.CALENDAR.create(),"Mis Puntos",e->openPuntosClienteView());
 		
@@ -221,6 +221,8 @@ public class MainView extends VerticalLayout{
 		configuraciones.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		usuarios.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		puntosCliente.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		reservasCliente.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		comprasCliente.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		logout.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		
 
