@@ -51,8 +51,8 @@ public class ComprasClienteFormController
 		ventaForm.getPaisOrigen().setValue(viaje.getOrigen().getProvincia().getPais().toString());
 		ventaForm.getProvinciaDestino().setValue(viaje.getDestino().getProvincia().toString());
 		ventaForm.getProvinciaOrigen().setValue(viaje.getOrigen().getProvincia().toString());
-		ventaForm.getCiudadDEstino().setValue(viaje.getDestino().toString());
-		ventaForm.getCiudadOrigen().setValue(viaje.getOrigen().toString());
+		ventaForm.getCiudadDEstino().setValue(viaje.getDestino().getNombre());
+		ventaForm.getCiudadOrigen().setValue(viaje.getOrigen().getNombre());
 		ventaForm.getCodTransporte().setValue(viaje.getTransporte().getCodTransporte());
 		ventaForm.getTransporte().setValue(viaje.getTransporte().getTipo().getDescripcion());
 		ventaForm.getFechaSalida().setValue(viaje.getFechaSalida().toString());
