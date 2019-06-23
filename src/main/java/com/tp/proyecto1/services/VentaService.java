@@ -2,6 +2,7 @@ package com.tp.proyecto1.services;
 
 import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.tp.proyecto1.model.pasajes.PasajeVenta;
+import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.repository.pasajes.PasajeVentaRepository;
 import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
@@ -85,4 +86,9 @@ public class VentaService {
         return formaDePagoRepository.findAll();
 
     }
+    
+	@Transactional
+	public List <Venta> findByIdCliente(Long idCliente){
+		return ventaRepository.findAllByCliente_Id(idCliente);
+	}
 }

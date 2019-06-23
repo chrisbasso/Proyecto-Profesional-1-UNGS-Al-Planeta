@@ -224,7 +224,7 @@ public class VentasController {
 			List<Venta> ventas = ventaService.findVentas(ventaBusqueda);
 			if(Proyecto1Application.logUser!=null){
 				if(Proyecto1Application.logUser.getRol().getName().equals("CLIENTE")){
-					ventas = ventas.stream().filter(e->e.getCliente().equals(Proyecto1Application.logUser.getPersona())).collect(Collectors.toList());
+					ventas = ventas.stream().filter(e->e.getCliente().equals(Proyecto1Application.logUser.getCliente())).collect(Collectors.toList());
 				}
 			}
 			ventaView.getGrid().setItems(ventas);
@@ -232,7 +232,7 @@ public class VentasController {
 			List<Venta> ventas = ventaService.findAllVentas();
 			if(Proyecto1Application.logUser!=null){
 				if(Proyecto1Application.logUser.getRol().getName().equals("CLIENTE")){
-					ventas = ventas.stream().filter(e->e.getCliente().equals(Proyecto1Application.logUser.getPersona())).collect(Collectors.toList());
+					ventas = ventas.stream().filter(e->e.getCliente().equals(Proyecto1Application.logUser.getCliente())).collect(Collectors.toList());
 				}
 			}
 			ventaView.getGrid().setItems(ventas);

@@ -1,5 +1,6 @@
 package com.tp.proyecto1.model.users;
 
+import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.clientes.Persona;
 import com.tp.proyecto1.model.pasajes.Transaccion;
 import com.tp.proyecto1.model.sucursales.Sucursal;
@@ -36,7 +37,9 @@ public class User {
 	private Sucursal sucursal;
 
     @OneToOne
-	private Persona persona;
+	private Cliente cliente;
+
+    private String email;
 
 	public User() {
 	}
@@ -57,6 +60,14 @@ public class User {
         this.rol = rol;
     }
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public Boolean getEnabled() {
 		return enabled;
 	}
@@ -65,12 +76,12 @@ public class User {
 		this.enabled = enabled;
 	}
 
-	public Persona getPersona() {
-		return persona;
+	public Cliente getCliente() {
+		return cliente;
 	}
 
-	public void setPersona(Persona persona) {
-		this.persona = persona;
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
 	}
 
 	public Sucursal getSucursal() {
@@ -144,4 +155,6 @@ public class User {
     public int hashCode() {
         return Objects.hash(id, user, password, enabled, rol);
     }
+    
+    
 }

@@ -8,15 +8,16 @@ import java.time.LocalTime;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 
 import com.tp.proyecto1.controllers.clientes.ClientesController;
-import com.tp.proyecto1.controllers.clientes.EventosClienteWindowController;
-import com.tp.proyecto1.controllers.clientes.HistorialPuntosClienteWindowController;
+import com.tp.proyecto1.controllers.clientes.ComprasClienteController;
 import com.tp.proyecto1.controllers.clientes.PuntosClienteController;
+import com.tp.proyecto1.controllers.clientes.ReservasClienteController;
 import com.tp.proyecto1.controllers.configuracion.MenuConfiguracionController;
 import com.tp.proyecto1.controllers.contabilidad.MovimientosCajaController;
 import com.tp.proyecto1.controllers.eventos.EventosController;
@@ -47,7 +48,8 @@ import com.vaadin.flow.server.VaadinSession;
 
 @Route
 @StyleSheet("styles.css")
-@Theme(value = Lumo.class, variant = Lumo.LIGHT)
+//@Theme(value = Lumo.class, variant = Lumo.DARK)
+@HtmlImport("frontend://styles/shared-styles.html")
 public class MainView extends VerticalLayout{
 
 	@Autowired
@@ -74,8 +76,11 @@ public class MainView extends VerticalLayout{
 	@Autowired
 	private UsuariosController usuariosController;
 	
-	@Autowired
 	private PuntosClienteController puntosClienteController;
+	
+	private ReservasClienteController reservasClienteController;
+	
+	private ComprasClienteController comprasClienteController;
 	
 	@Autowired
 	private EventoService eventoService;
@@ -83,8 +88,6 @@ public class MainView extends VerticalLayout{
 	private TimerTask eventoTask;
 	private Timer timer;
 	
-	/*@Autowired
-	private EventosClienteWindowController eventosClienteController;*/
 
 	private VerticalLayout mainLayout;
 	private AppLayout appLayout;
@@ -102,9 +105,9 @@ public class MainView extends VerticalLayout{
 	private AppLayoutMenuItem logout;
 	
 	//AppLayoutMenuItems de Cliente
-	//private AppLayoutMenuItem eventosCliente;
 	private AppLayoutMenuItem puntosCliente;
-
+	private AppLayoutMenuItem reservasCliente;
+	private AppLayoutMenuItem comprasCliente;
 
 	
 	public MainView() {
@@ -119,6 +122,7 @@ public class MainView extends VerticalLayout{
 		mainLayout.getElement().setAttribute("theme", "green");
 		this.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 		this.add(mainLayout);
+		//mainLayout.getElement().setAttribute("theme", "dark");
 	}
 
 	private void setMainPage() {
@@ -142,7 +146,11 @@ public class MainView extends VerticalLayout{
 		appLayout.setBranding(getLogo());
 		mainLayout.add(appLayout);
 		setMenu();
-		openViajesView();
+		String role = Proyecto1Application.logUser.getRol().getName();
+		if (role.equals("CLIENTE"))
+			openComprasClienteView();
+		else	
+			openViajesView();
 		final UI currentUI = UI.getCurrent();
 
 		timer = new Timer();
@@ -194,8 +202,11 @@ public class MainView extends VerticalLayout{
 		configuraciones = new AppLayoutMenuItem(VaadinIcon.COGS.create(),"Configuración", e-> openConfiguracionView());
 		usuarios = new AppLayoutMenuItem(VaadinIcon.USERS.create(),"Usuarios", e-> openUsuariosView());
 		
-		//eventosCliente = new AppLayoutMenuItem(VaadinIcon.PHONE.create(),"Eventos", e -> openEventosClienteView());
-		puntosCliente = new AppLayoutMenuItem(VaadinIcon.CALENDAR.create(),"Mis puntos",e->openPuntosClienteView());
+		
+		reservasCliente = new AppLayoutMenuItem(VaadinIcon.CALENDAR_CLOCK.create(),"Mis Reservas",e->openReservasClienteView());
+		comprasCliente = new AppLayoutMenuItem(VaadinIcon.TICKET.create(),"Mis Compras",e->openComprasClienteView());
+		
+		puntosCliente = new AppLayoutMenuItem(VaadinIcon.CALENDAR.create(),"Mis Puntos",e->openPuntosClienteView());
 		
 		logout = new AppLayoutMenuItem(VaadinIcon.USER.create(),
 				"Logout " + Proyecto1Application.logUser.getUser(),
@@ -214,10 +225,12 @@ public class MainView extends VerticalLayout{
 		configuraciones.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		usuarios.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		puntosCliente.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		reservasCliente.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
+		comprasCliente.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		logout.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		
 
-		menu.addMenuItems(viajes, promociones, ventas, reservas, clientes, eventos, puntosCliente, caja, reportes, configuraciones,usuarios, logout);
+		menu.addMenuItems(viajes, promociones, ventas, reservas, clientes, eventos, caja, reportes, configuraciones,usuarios,comprasCliente,reservasCliente, puntosCliente,logout);
 
 		setPerfiles();
 
@@ -237,9 +250,10 @@ public class MainView extends VerticalLayout{
 		reportes.setVisible(false);
 		configuraciones.setVisible(false);
 		usuarios.setVisible(false);
-	//	eventosCliente.setVisible(false);
 		puntosCliente.setVisible(false);
-
+		reservasCliente.setVisible(false);
+		comprasCliente.setVisible(false);
+		
 		if(role.equals("ADMINISTRADOR")){
 			viajes.setVisible(true);
 			promociones.setVisible(true);
@@ -274,10 +288,9 @@ public class MainView extends VerticalLayout{
 			reportes.setVisible(true);
 		}
 		if(role.equals("CLIENTE")){
-//			viajes.setVisible(true);
-//			ventas.setVisible(true);
-		//	eventosCliente.setVisible(true);
-//			puntosCliente.setVisible(true);
+			reservasCliente.setVisible(true);
+			puntosCliente.setVisible(true);
+			comprasCliente.setVisible(true);
 		}
 	}
 
@@ -342,17 +355,30 @@ public class MainView extends VerticalLayout{
 		appLayout.setContent(menuConfiguracionController.getMenuConfiguracionView());
 	}
 	
-	/*private void openEventosClienteView()
-	{
-		actualizarMenuSeleccionado(eventosCliente);
-		appLayout.setContent(eventosClienteController.getView());
-		
-	}*/
-	
 	private void openPuntosClienteView()
 	{
 		actualizarMenuSeleccionado(puntosCliente);
+		System.out.println(Proyecto1Application.logUser.getUser());
+		puntosClienteController = new PuntosClienteController(Proyecto1Application.logUser.getCliente());
 		appLayout.setContent(puntosClienteController.getView());
+		
+	}
+	
+	private void openReservasClienteView()
+	{
+		actualizarMenuSeleccionado(reservasCliente);
+		System.out.println(Proyecto1Application.logUser.getUser());
+		reservasClienteController = new ReservasClienteController(Proyecto1Application.logUser.getCliente());
+		appLayout.setContent(reservasClienteController.getView());
+		
+	}
+	
+	private void openComprasClienteView()
+	{
+		actualizarMenuSeleccionado(comprasCliente);
+		System.out.println(Proyecto1Application.logUser.getUser());
+		comprasClienteController = new ComprasClienteController(Proyecto1Application.logUser.getCliente());
+		appLayout.setContent(comprasClienteController.getView());
 		
 	}
 	
@@ -428,15 +454,6 @@ public class MainView extends VerticalLayout{
 			usuarios.setClassName("normal-menu");
 		}
 		
-	/*	if(eventosCliente.equals(menu))
-		{
-			eventosCliente.setClassName("selected-menu");
-		}
-		else
-		{
-			eventosCliente.setClassName("normal-menu");
-		}*/
-		
 		if(puntosCliente.equals(menu))
 		{
 			puntosCliente.setClassName("selected-menu");
@@ -444,6 +461,24 @@ public class MainView extends VerticalLayout{
 		else
 		{
 			puntosCliente.setClassName("normal-menu");
+		}
+		
+		if(reservasCliente.equals(menu))
+		{
+			reservasCliente.setClassName("selected-menu");
+		}
+		else
+		{
+			reservasCliente.setClassName("normal-menu");
+		}
+		
+		if(comprasCliente.equals(menu))
+		{
+			comprasCliente.setClassName("selected-menu");
+		}
+		else
+		{
+			comprasCliente.setClassName("normal-menu");
 		}
 
 		if(logout.equals(menu)) {

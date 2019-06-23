@@ -3,6 +3,8 @@ package com.tp.proyecto1.controllers.clientes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.tp.proyecto1.Proyecto1Application;
+import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.services.LotePuntoService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
@@ -20,8 +22,11 @@ public class PuntosClienteController
 
 	    private ChangeHandler changeHandler;
 
-	    public PuntosClienteController() {
+		private Cliente cliente;
+	    
+	    public PuntosClienteController(Cliente cliente) {
 	        Inject.Inject(this);
+	        this.cliente = cliente;
 	        this.puntosClienteView = new PuntosClienteView();
 	        setListeners();
 	        listPuntos();
@@ -33,8 +38,8 @@ public class PuntosClienteController
 
 	    private void listPuntos()
 	    {
-
-	         puntosClienteView.getGrid().setItems(lotePuntoService.findAllByCliente(null));
+	    	System.out.println(cliente);
+	         puntosClienteView.getGrid().setItems(lotePuntoService.findAllByCliente(cliente));
 	    }
 
 	    private void setChangeHandler(ChangeHandler h) {

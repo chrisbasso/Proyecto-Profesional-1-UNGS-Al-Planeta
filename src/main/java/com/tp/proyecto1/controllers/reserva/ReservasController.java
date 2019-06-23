@@ -216,7 +216,7 @@ public class ReservasController {
     	List <Reserva> reservasList = new ArrayList(reservas);
 		if(Proyecto1Application.logUser!=null){
 			if(Proyecto1Application.logUser.getRol().getName().equals("CLIENTE")){
-				reservasList = reservasList.stream().filter(e->e.getCliente().equals(Proyecto1Application.logUser.getPersona())).collect(Collectors.toList());
+				reservasList = reservasList.stream().filter(e->e.getCliente().equals(Proyecto1Application.logUser.getCliente())).collect(Collectors.toList());
 			}
 		}
     	reservaView.cargarReservas(reservasList);
@@ -226,7 +226,7 @@ public class ReservasController {
 		List <Reserva> reservasList = reservaService.findAll();
 		if(Proyecto1Application.logUser!=null){
 			if(Proyecto1Application.logUser.getRol().getName().equals("CLIENTE")){
-				reservasList = reservasList.stream().filter(e->e.getCliente().equals(Proyecto1Application.logUser.getPersona())).collect(Collectors.toList());
+				reservasList = reservasList.stream().filter(e->e.getCliente().equals(Proyecto1Application.logUser.getCliente())).collect(Collectors.toList());
 			}
 		}
     	reservaView.cargarReservas(reservasList);

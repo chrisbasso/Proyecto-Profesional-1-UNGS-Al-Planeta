@@ -310,7 +310,7 @@ public class EnviadorDeMail {
 		
 	}
 	
-	private void enviarMail(String destinatario, String asunto, String cuerpo) {
+	public void enviarMail(String destinatario, String asunto, String cuerpo) {
 		  // Esto es lo que va delante de @gmail.com en tu cuenta de correo. Es el remitente también.
 	    String remitente = this.getConfiguracionMailRemitenteGmail();  //Para la dirección nomcuenta@gmail.com
 	    String pass = this.getConfiguracionMailRemitentePassGmail();

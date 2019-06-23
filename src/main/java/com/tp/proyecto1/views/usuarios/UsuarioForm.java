@@ -11,6 +11,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 
@@ -22,8 +23,9 @@ public class UsuarioForm extends Dialog {
 	private PasswordField txtPassword = new PasswordField();
 	private ComboBox<Sucursal> comboSucursal = new ComboBox<>();
 	private ComboBox<Role> comboRoles = new ComboBox<>();
-//	private Label descripcionCliente = new Label();
-//	private BuscadorClientesComponent buscadorClientes = new BuscadorClientesComponent(descripcionCliente);
+	private Label descripcionCliente = new Label();
+	private EmailField emailfield = new EmailField();
+	private BuscadorClientesComponent buscadorClientes = new BuscadorClientesComponent(descripcionCliente);
 	private Button btnGuardar = new Button("Guardar");
 	private Button btnCancelar = new Button("Cancelar");
 
@@ -47,8 +49,10 @@ public class UsuarioForm extends Dialog {
 		form.addFormItem(txtPassword, "Password");
 		form.addFormItem(comboSucursal, "Sucursal");
 		form.addFormItem(comboRoles, "Rol");
-//		form.addFormItem(buscadorClientes, "Cliente");
-//		form.addFormItem(descripcionCliente, "Descripción");
+		form.addFormItem(emailfield,"Email");
+		form.addFormItem(buscadorClientes, "Cliente");
+		form.addFormItem(descripcionCliente, "Descripción");
+
 	}
 
 	private void setLayouts() {
@@ -87,21 +91,21 @@ public class UsuarioForm extends Dialog {
 		return txtUsuario;
 	}
 
-//	public Label getDescripcionCliente() {
-//		return descripcionCliente;
-//	}
-//
-//	public void setDescripcionCliente(Label descripcionCliente) {
-//		this.descripcionCliente = descripcionCliente;
-//	}
-//
-//	public BuscadorClientesComponent getBuscadorClientes() {
-//		return buscadorClientes;
-//	}
-//
-//	public void setBuscadorClientes(BuscadorClientesComponent buscadorClientes) {
-//		this.buscadorClientes = buscadorClientes;
-//	}
+	public Label getDescripcionCliente() {
+		return descripcionCliente;
+	}
+
+	public void setDescripcionCliente(Label descripcionCliente) {
+		this.descripcionCliente = descripcionCliente;
+	}
+
+	public BuscadorClientesComponent getBuscadorClientes() {
+		return buscadorClientes;
+	}
+
+	public void setBuscadorClientes(BuscadorClientesComponent buscadorClientes) {
+		this.buscadorClientes = buscadorClientes;
+	}
 
 	public void setTxtUsuario(TextField txtUsuario) {
 		this.txtUsuario = txtUsuario;
@@ -117,6 +121,14 @@ public class UsuarioForm extends Dialog {
 
 	public ComboBox<Sucursal> getComboSucursal() {
 		return comboSucursal;
+	}
+
+	public EmailField getEmailfield() {
+		return emailfield;
+	}
+
+	public void setEmailfield(EmailField emailfield) {
+		this.emailfield = emailfield;
 	}
 
 	public void setComboSucursal(ComboBox<Sucursal> comboSucursal) {
