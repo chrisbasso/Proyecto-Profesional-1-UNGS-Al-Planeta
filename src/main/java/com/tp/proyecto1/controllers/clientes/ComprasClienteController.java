@@ -19,6 +19,8 @@ import com.vaadin.flow.spring.annotation.UIScope;
 public class ComprasClienteController 
 {
 	private VentaClienteView reservaClientesView;
+	
+	private ComprasClienteFormController comprasClienteFormController;
 
     @Autowired
     private VentaService reservaService;
@@ -62,12 +64,12 @@ public class ComprasClienteController
     private Button createDetailsButton(Venta venta)
     {
     	return new Button(VaadinIcon.EDIT.create(), clickEvent -> {
-    		System.out.println("asd");
-           /* promocionFormController = new PromocionFormController();
-            promocionFormController.setComponentsValues(promocion);
-            promocionFormController.getPromocionForm().open();
-            promocionFormController.setChangeHandler(this::listPromociones);*/
+    		comprasClienteFormController = new ComprasClienteFormController(venta.getViaje());
+    		comprasClienteFormController.setComponentsValues(venta);
+    		comprasClienteFormController.getView().open();
         });
     }
+    
+    
 
 }
