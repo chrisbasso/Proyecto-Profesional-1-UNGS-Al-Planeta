@@ -3,6 +3,7 @@ package com.tp.proyecto1.utils;
 import com.tp.proyecto1.model.pasajes.Pasajero;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
@@ -75,6 +76,8 @@ public class PasajerosGridComponent extends VerticalLayout {
 				.setHeader("Nombre y Apellido");
 		Grid.Column<Pasajero> columnDNI = grid.addColumn(Pasajero::getDni)
 				.setHeader("DNI");
+		Grid.Column<Pasajero> fechaNacimiento = grid.addColumn(Pasajero::getFechaNacimiento)
+				.setHeader("Fecha Nacimiento");
 
 		Binder<Pasajero> binder = new Binder<>(Pasajero.class);
 		editor = grid.getEditor();
@@ -96,6 +99,11 @@ public class PasajerosGridComponent extends VerticalLayout {
 				.withValidator(dni -> !dni.isEmpty(),
 						"DNI no puede estar vacío").bind("dni");
 		columnDNI.setEditorComponent(fieldDni);
+
+		DatePicker fieldFecha = new DatePicker();
+		fieldFecha.setHeight("30px");
+		binder.forField(fieldFecha).bind("fechaNacimiento");
+		fechaNacimiento.setEditorComponent(fieldFecha);
 
 		editButtons = Collections
 				.newSetFromMap(new WeakHashMap<>());

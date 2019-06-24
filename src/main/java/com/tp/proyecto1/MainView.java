@@ -48,7 +48,6 @@ import com.vaadin.flow.server.VaadinSession;
 
 @Route
 @StyleSheet("styles.css")
-//@Theme(value = Lumo.class, variant = Lumo.DARK)
 @HtmlImport("frontend://styles/shared-styles.html")
 public class MainView extends VerticalLayout{
 
@@ -122,7 +121,6 @@ public class MainView extends VerticalLayout{
 		mainLayout.getElement().setAttribute("theme", "green");
 		this.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
 		this.add(mainLayout);
-		//mainLayout.getElement().setAttribute("theme", "dark");
 	}
 
 	private void setMainPage() {
@@ -145,16 +143,23 @@ public class MainView extends VerticalLayout{
 		appLayout = new AppLayout();
 		appLayout.setBranding(getLogo());
 		mainLayout.add(appLayout);
+		procesarEventos();
 		setMenu();
 		String role = Proyecto1Application.logUser.getRol().getName();
-		if (role.equals("CLIENTE"))
+		if (role.equals("CLIENTE")){
 			openComprasClienteView();
-		else	
+		}
+		else{
 			openViajesView();
+		}
+
+	}
+
+	private void procesarEventos() {
 		final UI currentUI = UI.getCurrent();
 
 		timer = new Timer();
-		
+
 		eventoTask = new TimerTask() {
 
 			@Override
@@ -166,7 +171,7 @@ public class MainView extends VerticalLayout{
 					for(Evento evento : eventoService.findAll(eventoExample))
 					{
 						if (evento.getFechaVencimiento()!= null && evento.getHoraVencimiento()!= null)
-						{							
+						{
 							if(evento.getFechaVencimiento().isBefore(LocalDate.now()) ||
 										(evento.getFechaVencimiento().isEqual(LocalDate.now()) &&
 									LocalTime.now().plusMinutes(15).isAfter(evento.getHoraVencimiento())))
@@ -184,7 +189,7 @@ public class MainView extends VerticalLayout{
 				});
 			}
 		};
-		
+
 		timer.schedule(eventoTask, 1000, 600000); //cada 10 minutos
 	}
 
@@ -210,9 +215,15 @@ public class MainView extends VerticalLayout{
 		
 		logout = new AppLayoutMenuItem(VaadinIcon.USER.create(),
 				"Logout " + Proyecto1Application.logUser.getUser(),
-				e-> {eventoTask.cancel();
-						timer.cancel();
-					loginController.logout();});
+				e-> {
+			if(eventoTask!=null){
+				eventoTask.cancel();
+			}
+			if(timer!=null){
+				timer.cancel();
+			}
+			loginController.logout();
+		});
 
 		viajes.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);
 		promociones.addThemeVariants(TabVariant.LUMO_ICON_ON_TOP);

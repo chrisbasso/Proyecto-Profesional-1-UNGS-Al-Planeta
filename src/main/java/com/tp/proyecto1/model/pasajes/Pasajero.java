@@ -3,6 +3,7 @@ package com.tp.proyecto1.model.pasajes;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -15,12 +16,22 @@ public class Pasajero {
 	private String nombreCompleto;
 	private String dni;
 
+	private LocalDate fechaNacimiento;
+
 	public Pasajero() {
 	}
 
 	public Pasajero(String nombreCompleto, String dni) {
 		this.nombreCompleto = nombreCompleto;
 		this.dni = dni;
+	}
+
+	public LocalDate getFechaNacimiento() {
+		return fechaNacimiento;
+	}
+
+	public void setFechaNacimiento(LocalDate fechaNacimiento) {
+		this.fechaNacimiento = fechaNacimiento;
 	}
 
 	public Long getId() {
