@@ -9,6 +9,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import com.tp.proyecto1.utils.Inject;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 
 import com.tp.proyecto1.views.configuracion.BackUpCrearForm;
@@ -24,6 +26,9 @@ public class DBController {
 	
 	private BackUpCrearForm bckUpCrearView;
 	private BackUpTomarForm bckUpTomarView;
+
+	@Autowired
+	private Environment env;
 	
 	public DBController() {
 	}
@@ -69,8 +74,12 @@ public class DBController {
      *            Full path and name are required to save the backup.            
      *            Example = "/home/ricardo/eclipse-workspace/db/alplaneta_grupo4.sql"
      */
-	private boolean backup(String fullPathAndName) {	 
-		String sqlCmd = "mysqldump -uroot -ppass --add-drop-database -B alplaneta_grupo4 -r " + fullPathAndName;
+	private boolean backup(String fullPathAndName) {
+
+		String username = env.getProperty("spring.datasource.username");
+		String pass = env.getProperty("spring.datasource.password");
+
+		String sqlCmd = "mysqldump -u"+username + " -p" + pass + " --add-drop-database -B alplaneta_grupo4 -r " + fullPathAndName;
 		System.out.println("Running backup");
 		boolean result = execute(sqlCmd);
 		if(!result) {
