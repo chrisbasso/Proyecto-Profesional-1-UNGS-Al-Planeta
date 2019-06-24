@@ -290,8 +290,14 @@ public class VentaFormController {
 			ventaForm.getDenoPromocion().setValue(venta.getPromocion().getDoubleValue().toString());
 		}
 		ventaForm.getPuntosObtenidos().setReadOnly(true);
+	    Double puntosObtenidos = venta.getImporteTotal()/Integer.parseInt(getPesosPorPunto());
+		ventaForm.getPuntosObtenidos().setValue(puntosObtenidos.toString());
 		ventaForm.getUsoPuntosCheck().setReadOnly(true);
+		//Integer cantPagos = venta.getPagos().size()-1;
+		this.generarPuntos();
 		ventaForm.getPuntosaUsar().setReadOnly(true);
+		
+		
 	}	
 	
 	private void setPuntosDisponibles() {

@@ -163,21 +163,8 @@ public class Proyecto1Application {
 					lotePunto.setActivo(Boolean.FALSE);
 					lotePuntoRepository.save(lotePunto);
 				}
-			}
-		};
-
-		timer.schedule(task, 10, 60000); //una vez por minuto
-	}
-	
-	private void procesoEnvioDeVoucher(VentaRepository ventaRepository) {
-		Timer timer = new Timer();
-
-		TimerTask task = new TimerTask() {
-
-			@Override
-			public void run()
-			{
-				log.info("Verificando envio de vouchers...");
+				
+				/*log.info("Verificando envio de vouchers...");
 				
 				EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
 				LocalDate fechaActual = LocalDate.now();
@@ -195,13 +182,50 @@ public class Proyecto1Application {
 						enviadorDeMail.enviarConGmailVoucher(venta.getCliente().getEmail(),
 								"Voucher del Viaje- " + venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni(), venta);
 					}
-				}
-				
+				}*/
 			}
 		};
 
 		timer.schedule(task, 10, 60000); //una vez por minuto
 	}
+	
+	private void procesoEnvioDeVoucher(VentaRepository ventaRepository) {
+		Timer timer = new Timer();
+
+		TimerTask task = new TimerTask() {
+
+			@Override
+			public void run()
+			{
+				log.info("Verificando envio de vouchers...");
+
+				LocalDate fechaActual = LocalDate.now();
+				List<Venta> ventas = ventaRepository.findAll();	
+				for (Venta venta : ventas) {
+					int cantDiasRestantes = venta.getViaje().getFechaSalida().compareTo(fechaActual);
+					if (venta.isActivo() && cantDiasRestantes == 2){
+						LocalDate fechaVoucher =  venta.getViaje().getFechaSalida().minusDays(1);
+						if (venta.isActivo() && fechaVoucher.compareTo(fechaActual) == 0 && (venta.getEstadoTransaccion() != EstadoTransaccion.VOUCHERENVIADO 
+								|| venta.getEstadoTransaccion() != EstadoTransaccion.CANCELADA  || venta.getEstadoTransaccion() != EstadoTransaccion.PENALIZADA)){
+							venta.setEstadoTransaccion(EstadoTransaccion.VOUCHERENVIADO);
+							ventaRepository.save(venta);
+							EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+							List<Venta> ventasList = new ArrayList<Venta>();
+							ventasList.add(venta);
+							VoucherVentaJR voucherVenta = new VoucherVentaJR(ventas);
+							voucherVenta.exportarAPdf(venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni());
+							enviadorDeMail.enviarConGmailVoucher(venta.getCliente().getEmail(),
+									"Voucher del Viaje- " + venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni(), venta);
+						}
+					}
+				
+				}
+			}
+		};
+
+		timer.schedule(task, 10, 60000); //una vez por minuto
+	}
+		
 
 	private void setSurcursales(SucursalRepository sucursalRepository) {
 		if(sucursalRepository.findAll().isEmpty()){

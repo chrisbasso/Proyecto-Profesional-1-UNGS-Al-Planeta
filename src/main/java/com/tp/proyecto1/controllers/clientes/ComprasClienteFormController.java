@@ -9,7 +9,9 @@ import org.springframework.stereotype.Controller;
 
 import com.tp.proyecto1.model.pasajes.Pasajero;
 import com.tp.proyecto1.model.pasajes.Venta;
+import com.tp.proyecto1.model.viajes.Promocion;
 import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.services.ConfiguracionService;
 import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.ventas.VentaClienteForm;
@@ -28,6 +30,9 @@ public class ComprasClienteFormController
 	private Venta venta;
 
 	private Viaje viaje;
+
+	@Autowired
+	private ConfiguracionService configuracionService;
 	
 	
 	public ComprasClienteFormController(Viaje viaje) {
@@ -115,10 +120,28 @@ public class ComprasClienteFormController
 		}
 		ventaForm.getPuntosObtenidos().setReadOnly(true);
 		ventaForm.getPasajerosGridComponent().setEditarInvisible(false);
+		this.generarPuntos();
 	}
 
 	private void setListeners() {
 		ventaForm.getBtnCancel().addClickListener(e->ventaForm.close());
 	}
+	
 
+	private void generarPuntos() {
+		Integer cantPuntosPorVenta;
+		Integer pesosPorPunto = Integer.parseInt(getPesosPorPunto());
+		cantPuntosPorVenta =  this.ventaForm.getSaldoPagar().getValue().intValue()/pesosPorPunto;
+		
+		//Verificar si tiene bonificacion de puntos de promocion y aplicarlos
+		Promocion promoPuntos = new Promocion();
+		promoPuntos = venta.getPromocion();
+		if (promoPuntos != null) {
+			if (promoPuntos.getTipoPromocion().equals("Puntos")) cantPuntosPorVenta = promoPuntos.getDoubleValue() * cantPuntosPorVenta;
+		}
+		this.ventaForm.getPuntosObtenidos().setValue(cantPuntosPorVenta.toString());
+	}
+	private String getPesosPorPunto() {
+		return configuracionService.findValueByKey("pesos_por_punto");
+	}
 }

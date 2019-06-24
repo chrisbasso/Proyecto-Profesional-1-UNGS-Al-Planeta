@@ -3,9 +3,13 @@ package com.tp.proyecto1.controllers.venta;
 import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.controllers.contabilidad.AsientoREST;
 import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.model.lotePunto.LotePunto;
 import com.tp.proyecto1.model.pasajes.EstadoTransaccion;
 import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.model.viajes.*;
+import com.tp.proyecto1.services.ClienteService;
+import com.tp.proyecto1.services.ConfiguracionService;
+import com.tp.proyecto1.services.LotePuntoService;
 import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
@@ -27,8 +31,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -44,10 +51,21 @@ public class VentasController {
 
 	@Autowired
 	private ViajeService viajeService;
+	
+	@Autowired
+	private ClienteService clienteService;
+	
+	@Autowired
+	private LotePuntoService lotePuntoService;
+	
+	@Autowired
+	private ConfiguracionService configuracionService;
 
 	private ChangeHandler changeHandler;
 
 	private Venta ventaBorrar;
+	
+	private Integer puntoDisponibles;
 
 	public VentasController() {
 		Inject.Inject(this);
@@ -175,6 +193,9 @@ public class VentasController {
 
 				viajeService.save(viaje);
 				ventaService.save(ventaBorrar);
+				Integer puntoPorPesos = Integer.parseInt(getPuntoPorPesos());
+				Integer puntosARestar = importeCancelacion.intValue()/puntoPorPesos;
+				this.restarPuntosaLotesDePuntos(ventaBorrar, puntosARestar);
 
 				if (importeCancelacion == 0.0) {
 					ventaBorrar.setEstadoTransaccion(EstadoTransaccion.CANCELADA);
@@ -199,11 +220,15 @@ public class VentasController {
 	private Double calcularImporteCancelacion(LocalDate fechaSalida, Double importeTotal) {
 		Double importeCancelacion = 0.0;
 		LocalDate fechaActual = LocalDate.now();
-		int cantDiasRestantes = fechaSalida.compareTo(fechaActual);
-		if (cantDiasRestantes < 5 && cantDiasRestantes > 0 ) {
-			importeCancelacion = importeTotal * (0.2 * (5-cantDiasRestantes));
+		Date fechaActualDate = Date.from(fechaActual.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		Date fechaSalidaDate = Date.from(fechaSalida.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		int dias = (int) ((fechaSalidaDate.getTime()-fechaActualDate.getTime())/86400000);
+		int compareFecha = fechaSalida.compareTo(fechaActual);
+		if (compareFecha >= 0) {
+			if (dias < 5 && dias > 0 ) {
+				importeCancelacion = importeTotal * (0.2 * (5-dias));
+			}
 		}
-
 		return importeCancelacion;
 	}
 
@@ -288,5 +313,53 @@ public class VentasController {
 
 	public VentaView getView(){
 		return ventaView;
+	}
+	
+	private void restarPuntosaLotesDePuntos(Venta venta,Integer puntosARestar) {
+		Cliente clienteSeleccionado = new Cliente();
+		Optional<Cliente> cliente = clienteService.findById(venta.getCliente().getId());
+
+		if(cliente.isPresent()){
+            clienteSeleccionado = cliente.get();
+            List<LotePunto> lotesPuntos = lotePuntoService.findAllByCliente(clienteSeleccionado);
+ 
+            Integer puntoDisponibles = 0;
+            List<LotePunto> lotesPuntosActivos = new ArrayList<>();
+            lotesPuntosActivos = lotesPuntos.stream().filter(lote -> lote.getActivo()).collect(Collectors.toList());//deja solo los lotes  no vencidos
+        	for (LotePunto lote : lotesPuntosActivos) {
+        		puntoDisponibles += lote.getCantidadRestante();
+        	}
+        	
+        	List<LotePunto> lotesPuntosModificados = new ArrayList<>();
+        	lotesPuntosModificados = lotesPuntos.stream().map(lote-> restarLotePunto(lote, puntosARestar)).collect(Collectors.toList());//deja solo los lotes  no vencidos
+        	for(LotePunto lotePunto : lotesPuntosModificados) {
+        		lotePuntoService.save(lotePunto);
+        	}
+		}
+		
+			
+	}
+	
+	private LotePunto restarLotePunto(LotePunto lote, Integer puntosARestar) {
+		if (!(puntosARestar == 0)) {
+			if(lote.getCantidadRestante() > puntosARestar) {
+					lote.setCantidadRestante(lote.getCantidadRestante()-puntosARestar);
+					puntosARestar = 0 ;
+			}
+			else if(lote.getCantidadRestante() < puntosARestar) {
+				puntosARestar = puntosARestar - lote.getCantidadRestante();
+				lote.setCantidadRestante(0);
+			}
+			else {
+				lote.setCantidadRestante(0);
+				puntosARestar = 0 ;
+			}
+			//lotePuntoService.save(lote);
+		}
+		return lote;
+	}
+	
+	private String getPuntoPorPesos() {
+		return configuracionService.findValueByKey("punto_por_pesos");
 	}
 }

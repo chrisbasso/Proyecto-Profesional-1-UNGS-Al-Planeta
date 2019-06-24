@@ -65,7 +65,7 @@ public class PasajerosGridComponent extends VerticalLayout {
 	public void setGrid() {
 		grid.setWidthFull();
 
-		grid.setHeight("170px");
+		//grid.setHeight("170px");
 
 		grid.setItems(pasajerosList);
 
