@@ -197,18 +197,20 @@ public class VentasController {
 				Integer puntosARestar = importeCancelacion.intValue()/puntoPorPesos;
 				this.restarPuntosaLotesDePuntos(ventaBorrar, puntosARestar);
 
+				Double reintegro = null;
+
 				if (importeCancelacion == 0.0) {
 					ventaBorrar.setEstadoTransaccion(EstadoTransaccion.CANCELADA);
 
 					Notification.show("La Venta fue cancelada, se le reintegra el total al cliente " +ventaBorrar.getCliente().getNombreyApellido());
 				}
 				else {
-					Double reintegro = importeTotalOriginal - importeCancelacion;
+					reintegro = importeTotalOriginal - importeCancelacion;
 					ventaBorrar.setEstadoTransaccion(EstadoTransaccion.PENALIZADA);
 					ventaService.save(ventaBorrar);
 					Notification.show("La Venta fue penalizada, se le reintegra " + reintegro + " al cliente " +ventaBorrar.getCliente().getNombreyApellido());
 				}
-				AsientoREST.contabilizarVentaAnulada(ventaBorrar, Proyecto1Application.logUser );
+				AsientoREST.contabilizarVentaAnulada(ventaBorrar, Proyecto1Application.logUser, reintegro );
 				EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
 				enviadorDeMail.enviarMailConInfoVentaCancelacion("Cancelacion de Compra", ventaBorrar);
 			}

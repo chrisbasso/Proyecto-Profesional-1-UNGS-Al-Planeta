@@ -5,6 +5,7 @@ import com.tp.proyecto1.controllers.usuarios.UsuariosController;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -156,7 +157,8 @@ public class MainView extends VerticalLayout{
 	}
 
 	private void procesarEventos() {
-		final UI currentUI = UI.getCurrent();
+
+		UI currentUI = UI.getCurrent();
 
 		timer = new Timer();
 
@@ -165,7 +167,6 @@ public class MainView extends VerticalLayout{
 			@Override
 			public void run()
 			{
-				currentUI.access(() -> {
 					Evento eventoExample = new Evento();
 					eventoExample.setAbierto(true);
 					for(Evento evento : eventoService.findAll(eventoExample))
@@ -180,17 +181,18 @@ public class MainView extends VerticalLayout{
 								{
 									if (evento.getUsuarioAsignado().equals(Proyecto1Application.logUser))
 									{
-										Notification.show("El evento numero "+evento.getId() + " de prioridad "+evento.getPrioridad()+" esta por vencer. Mensaje: "+evento.getMensaje());
+										currentUI.access(() -> {
+											Notification.show("El evento numero "+evento.getId() + " de prioridad "+evento.getPrioridad()+" esta por vencer. Mensaje: "+evento.getMensaje());
+										});
 									}
 								}
 							}
 						}
 					}
-				});
 			}
 		};
 
-		timer.schedule(eventoTask, 1000, 600000); //cada 10 minutos
+		timer.schedule(eventoTask, 10, 600000); //cada 10 minutos
 	}
 
 	private void setMenu() {

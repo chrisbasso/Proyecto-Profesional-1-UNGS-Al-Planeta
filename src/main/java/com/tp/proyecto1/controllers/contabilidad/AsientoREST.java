@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.tp.proyecto1.model.contabilidad.Asiento;
 import com.tp.proyecto1.model.contabilidad.Cabecera;
@@ -70,7 +69,7 @@ public class AsientoREST {
 		nuevoAsiento.setCabeceraAsiento(reserva.getFecha(), reserva.getVendedor(), reserva.getSucursal(), "Contabilización de reserva", Modulo.RESERVAS);
 		Double sumaDePagos = 0.0;
 		if(reserva.getPagos().size()>0) {
-			sumaDePagos = nuevoAsiento.tratarNuevosPagos(reserva.getPagos());
+			sumaDePagos = nuevoAsiento.tratarNuevosPagos(reserva.getPagos(), null);
 		}
 		if(sumaDePagos > 0.0) {
 			nuevoAsiento.cerrarAsientoReserva(sumaDePagos);
@@ -126,7 +125,7 @@ public class AsientoREST {
 		nuevoAsiento.setCabeceraAsiento(venta.getFecha(), venta.getVendedor(), venta.getSucursal(), "Contabilización de venta", Modulo.VENTAS);
 		Double sumaDePagos = 0.0;
 		if(venta.getPagos().size()>0) {
-			sumaDePagos = nuevoAsiento.tratarNuevosPagos(venta.getPagos());
+			sumaDePagos = nuevoAsiento.tratarNuevosPagos(venta.getPagos(), null);
 		}
 		if(sumaDePagos > 0.0) {
 			nuevoAsiento.cerrarAsientoVenta(sumaDePagos);
@@ -135,11 +134,15 @@ public class AsientoREST {
 		return 0L;
 	}
 	
-	public static Long contabilizarVentaAnulada(Venta venta, User usuario) {
+	public static Long contabilizarVentaAnulada(Venta venta, User usuario, Double reintegro) {
 		AsientoREST nuevoAsiento = getInstancia();
 		nuevoAsiento.setCabeceraAsiento(LocalDate.now(), usuario, venta.getSucursal(), "Venta anulada", Modulo.VENTAS);
-		Double sumaDePagos = nuevoAsiento.tratarNuevosPagos(venta.getPagos());
-		nuevoAsiento.cerrarAsientoVenta(sumaDePagos);
+		Double sumaDePagos = nuevoAsiento.tratarNuevosPagos(venta.getPagos(), reintegro);
+		if(reintegro!=null){
+			nuevoAsiento.cerrarAsientoVenta(reintegro);
+		}else{
+			nuevoAsiento.cerrarAsientoVenta(sumaDePagos);
+		}
 		nuevoAsiento.revertirPosiciones();
 		return  nuevoAsiento.contabilizarAsiento();
 	}
@@ -182,11 +185,11 @@ public class AsientoREST {
 		cabecera.setModulo(modulo);
 	}
 	
-	private Double tratarNuevosPagos(List <Pago> pagos) {
+	private Double tratarNuevosPagos(List<Pago> pagos, Double reintegro) {
 		if(pagos.size() == 0) {
 			return 0.0;
 		}				
-		sumarizarPagos(pagos);		
+		sumarizarPagos(pagos, reintegro);
 		crearPosicionesPagos(TipoPosicion.DEBE);		
 		return importePagoEfectivo + importePagoDebito + importePagoTarjeta;
 	}
@@ -195,7 +198,7 @@ public class AsientoREST {
 		if(pagos.size() == 0) {
 			return 0.0;
 		}				
-		sumarizarPagos(pagos);		
+		sumarizarPagos(pagos, null);
 		crearPosicionesPagos(TipoPosicion.HABER);		
 		return importePagoEfectivo + importePagoDebito + importePagoTarjeta;
 	}
@@ -204,24 +207,24 @@ public class AsientoREST {
 		if(pagos.size() == 0) {
 			return 0.0;
 		}				
-		sumarizarPagos(pagos);				
+		sumarizarPagos(pagos, null);
 		return importePagoEfectivo + importePagoDebito + importePagoTarjeta;
 	}
 
-	private void sumarizarPagos(List<Pago> pagos) {
+	private void sumarizarPagos(List<Pago> pagos, Double reintegro) {
 		for(Pago pago : pagos) {
 			switch (pago.getFormaDePago().getDescripcion()) {
 			case "Efectivo":
-				importePagoEfectivo += pago.getImporte();
+				importePagoEfectivo += (reintegro!=null ? reintegro : pago.getImporte());
 				break;
 			case "Débito":
-				importePagoDebito += pago.getImporte();
+				importePagoDebito += (reintegro!=null ? reintegro : pago.getImporte());
 				break;
 			case "Crédito":
-				importePagoTarjeta += pago.getImporte();
+				importePagoTarjeta += (reintegro!=null ? reintegro : pago.getImporte());
 				break;
 			case "Cuenta Corriente":
-				importePagoCuentaCorriente += pago.getImporte();
+				importePagoCuentaCorriente += (reintegro!=null ? reintegro : pago.getImporte());
 				break;
 			default:
 				break;
