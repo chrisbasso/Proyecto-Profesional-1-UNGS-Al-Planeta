@@ -83,6 +83,8 @@ public class ComprobanteReservaJR {
 	   parametersMap.put("Pasajeros", pasajeros);
 	   parametersMap.put("Pagos", pagos);
 	   parametersMap.put("NroComprobante", nroComprobante);
+		parametersMap.put("logo", getClass().getResourceAsStream("/logo-viaje.png"));
+		parametersMap.put("qr", getClass().getResourceAsStream("/code-qr.png"));
 	   
        try {
 

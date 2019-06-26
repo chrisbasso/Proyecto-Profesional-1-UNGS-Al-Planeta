@@ -53,6 +53,8 @@ public class VoucherVentaJR {
 
 	   Map<String, Object> parametersMap = new HashMap<String, Object>();
 	   parametersMap.put("Fecha", new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
+		parametersMap.put("logo", getClass().getResourceAsStream("/logo-viaje.png"));
+		parametersMap.put("qr", getClass().getResourceAsStream("/code-qr.png"));
 	   
        try {
 		   InputStream is = getClass().getResourceAsStream("/VoucherVentaJR.jasper");
