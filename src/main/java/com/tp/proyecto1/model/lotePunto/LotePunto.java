@@ -23,7 +23,7 @@ public class LotePunto
 	private Integer cantidadPuntos;
 	private Integer cantidadRestante;
 	private Boolean isActivo;
-	
+
 	@ManyToOne
 	private Cliente cliente;
 	
