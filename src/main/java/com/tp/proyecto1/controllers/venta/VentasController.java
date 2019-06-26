@@ -65,7 +65,8 @@ public class VentasController {
 
 	private Venta ventaBorrar;
 	
-	private Integer puntoDisponibles;
+	private Integer puntosUsados;
+	private Integer puntosUsadosPenalizacion;
 
 	public VentasController() {
 		Inject.Inject(this);
@@ -187,27 +188,46 @@ public class VentasController {
 				LocalDate fechaSalida = viaje.getFechaSalida();
 
 				Double importeTotalOriginal = ventaBorrar.getImporteTotal();
-				Double importeCancelacion = calcularImporteCancelacion(fechaSalida, importeTotalOriginal );
-
+				Double importeCancelacion = calcularImporteCancelacion(fechaSalida, importeTotalOriginal);
+				
+				Integer cantPagos = venta.getPagos().size() - 1;
+				puntosUsados  = venta.getPagos().get(cantPagos).getPuntosUsados();
+				
 				ventaBorrar.setImporteTotal(importeCancelacion);
 
 				viajeService.save(viaje);
 				ventaService.save(ventaBorrar);
-				Integer puntoPorPesos = Integer.parseInt(getPuntoPorPesos());
-				Integer puntosARestar = importeCancelacion.intValue()/puntoPorPesos;
-				this.restarPuntosaLotesDePuntos(ventaBorrar, puntosARestar);
+
 
 				Double reintegro = null;
-
+				LocalDate fechaVencimiento = LocalDate.now().plusYears(Integer.parseInt(this.getCantAniosVencimientoPuntos()));
+				Cliente cliente = ventaBorrar.getCliente();
+				
 				if (importeCancelacion == 0.0) {
 					ventaBorrar.setEstadoTransaccion(EstadoTransaccion.CANCELADA);
-
+					//PASARLE LOS PUNTOS USADOS(TOTAL)
+					if (this.puntosUsados > 0) {//sis se uso puntos
+						LotePunto lotePunto = new LotePunto(LocalDate.now(), fechaVencimiento, this.puntosUsados, Boolean.TRUE, this.puntosUsados, cliente, ventaBorrar);
+						cliente.agregarPuntos(lotePunto);
+						ventaBorrar.setCliente(cliente);
+						clienteService.save(cliente);
+						
+						ventaService.save(ventaBorrar);
+					}
 					Notification.show("La Venta fue cancelada, se le reintegra el total al cliente " +ventaBorrar.getCliente().getNombreyApellido());
 				}
 				else {
 					reintegro = importeTotalOriginal - importeCancelacion;
 					ventaBorrar.setEstadoTransaccion(EstadoTransaccion.PENALIZADA);
+					
+					if (this.puntosUsados > 0) {//si se uso puntos
+						LotePunto lotePunto = new LotePunto(LocalDate.now(), fechaVencimiento, this.puntosUsadosPenalizacion, Boolean.TRUE, this.puntosUsadosPenalizacion, cliente, ventaBorrar);
+						cliente.agregarPuntos(lotePunto);
+						ventaBorrar.setCliente(cliente);
+						clienteService.save(cliente);
+					}
 					ventaService.save(ventaBorrar);
+					
 					Notification.show("La Venta fue penalizada, se le reintegra " + reintegro + " al cliente " +ventaBorrar.getCliente().getNombreyApellido());
 				}
 				AsientoREST.contabilizarVentaAnulada(ventaBorrar, Proyecto1Application.logUser, reintegro );
@@ -229,6 +249,10 @@ public class VentasController {
 		if (compareFecha >= 0) {
 			if (dias < 5 && dias > 0 ) {
 				importeCancelacion = importeTotal * (0.2 * (5-dias));
+				if (this.puntosUsados > 0) {
+					Double resu = this.puntosUsados.doubleValue() * (0.2 * (5-dias));
+					this.puntosUsadosPenalizacion = resu.intValue();
+				}	
 			}
 		}
 		return importeCancelacion;
@@ -317,51 +341,7 @@ public class VentasController {
 		return ventaView;
 	}
 	
-	private void restarPuntosaLotesDePuntos(Venta venta,Integer puntosARestar) {
-		Cliente clienteSeleccionado = new Cliente();
-		Optional<Cliente> cliente = clienteService.findById(venta.getCliente().getId());
-
-		if(cliente.isPresent()){
-            clienteSeleccionado = cliente.get();
-            List<LotePunto> lotesPuntos = lotePuntoService.findAllByCliente(clienteSeleccionado);
- 
-            Integer puntoDisponibles = 0;
-            List<LotePunto> lotesPuntosActivos = new ArrayList<>();
-            lotesPuntosActivos = lotesPuntos.stream().filter(lote -> lote.getActivo()).collect(Collectors.toList());//deja solo los lotes  no vencidos
-        	for (LotePunto lote : lotesPuntosActivos) {
-        		puntoDisponibles += lote.getCantidadRestante();
-        	}
-        	
-        	List<LotePunto> lotesPuntosModificados = new ArrayList<>();
-        	lotesPuntosModificados = lotesPuntos.stream().map(lote-> restarLotePunto(lote, puntosARestar)).collect(Collectors.toList());//deja solo los lotes  no vencidos
-        	for(LotePunto lotePunto : lotesPuntosModificados) {
-        		lotePuntoService.save(lotePunto);
-        	}
-		}
-		
-			
-	}
-	
-	private LotePunto restarLotePunto(LotePunto lote, Integer puntosARestar) {
-		if (!(puntosARestar == 0)) {
-			if(lote.getCantidadRestante() > puntosARestar) {
-					lote.setCantidadRestante(lote.getCantidadRestante()-puntosARestar);
-					puntosARestar = 0 ;
-			}
-			else if(lote.getCantidadRestante() < puntosARestar) {
-				puntosARestar = puntosARestar - lote.getCantidadRestante();
-				lote.setCantidadRestante(0);
-			}
-			else {
-				lote.setCantidadRestante(0);
-				puntosARestar = 0 ;
-			}
-			//lotePuntoService.save(lote);
-		}
-		return lote;
-	}
-	
-	private String getPuntoPorPesos() {
-		return configuracionService.findValueByKey("punto_por_pesos");
+	private String getCantAniosVencimientoPuntos() {
+		return configuracionService.findValueByKey("cant_anios_venc_puntos");
 	}
 }

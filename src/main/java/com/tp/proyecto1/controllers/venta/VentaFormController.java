@@ -311,8 +311,10 @@ public class VentaFormController {
                 clienteSeleccionado = cliente.get();
                 List<LotePunto> lotesPuntos = lotePuntoService.findAllByCliente(clienteSeleccionado);
                 List<LotePunto> lotesPuntosActivos = new ArrayList<>();
-                lotesPuntosActivos = lotesPuntos.stream().filter(lote -> lote.getActivo()).collect(Collectors.toList());//deja solo los lotes  no vencidos
-            	for (LotePunto lote : lotesPuntosActivos) {
+                List<LotePunto> lotesPuntosActivosYAcreditados = new ArrayList<>();
+                lotesPuntosActivos = lotesPuntos.stream().filter(lote -> lote.getActivo() ).collect(Collectors.toList());//deja solo los lotes  no vencidos
+                lotesPuntosActivosYAcreditados = lotesPuntosActivos.stream().filter(lote -> lote.getIsAcreditado()).collect(Collectors.toList());//deja solo los lotes no vencidos y acreditados
+            	for (LotePunto lote : lotesPuntosActivosYAcreditados) {
             		cantPuntosTotales += lote.getCantidadRestante();
             	}
             	
@@ -552,7 +554,7 @@ public class VentaFormController {
 		if(ventaForm.getSaldoPagar().getValue() > 0) {
 			LocalDate fechaVencimiento = LocalDate.now().plusYears(Integer.parseInt(this.getCantAniosVencimientoPuntos()));
 			
-			LotePunto lotePunto = new LotePunto(LocalDate.now(), fechaVencimiento, this.cantPuntosPorVenta , true, this.cantPuntosPorVenta, cliente);
+			LotePunto lotePunto = new LotePunto(LocalDate.now(), fechaVencimiento, this.cantPuntosPorVenta , true, this.cantPuntosPorVenta, cliente, venta);
 			cliente.agregarPuntos(lotePunto);
 			venta.setCliente(cliente);
 			clienteService.save(cliente);

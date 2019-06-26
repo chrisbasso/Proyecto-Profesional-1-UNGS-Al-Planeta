@@ -7,8 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.model.pasajes.Venta;
 
 @Entity
 public class LotePunto
@@ -23,16 +25,20 @@ public class LotePunto
 	private Integer cantidadPuntos;
 	private Integer cantidadRestante;
 	private Boolean isActivo;
+	private Boolean isAcreditado;
 	
 	@ManyToOne
 	private Cliente cliente;
+	
+	@OneToOne
+	private Venta venta;
 	
 	public LotePunto()
 	{
 		
 	}
 	
-	public LotePunto(LocalDate fechaAlta, LocalDate fechaVencimiento, Integer cantidadPuntos, Boolean isActivo, Integer cantidadPuntosRestantes, Cliente cliente)
+	public LotePunto(LocalDate fechaAlta, LocalDate fechaVencimiento, Integer cantidadPuntos, Boolean isActivo, Integer cantidadPuntosRestantes, Cliente cliente, Venta venta)
 	{
 		setFechaAlta(fechaAlta);
 		setFechaVencimiento(fechaVencimiento);
@@ -40,6 +46,8 @@ public class LotePunto
 		setCantidadRestante(cantidadPuntosRestantes);
 		setActivo(isActivo);
 		setCliente(cliente);
+		setVenta(venta);
+		setIsAcreditado(Boolean.FALSE);
 	}
 
 	public Long getId() {
@@ -106,7 +114,8 @@ public class LotePunto
         return Objects.equals(id, lotePunto.id) &&
                 Objects.equals(cantidadPuntos, lotePunto.cantidadPuntos) &&
                 Objects.equals(cantidadRestante, lotePunto.cantidadRestante) &&
-                Objects.equals(fechaAlta, lotePunto.fechaAlta);
+                Objects.equals(fechaAlta, lotePunto.fechaAlta) &&
+                Objects.equals(venta, lotePunto.venta);
     }
 
     @Override
@@ -122,6 +131,21 @@ public class LotePunto
 		this.cliente = cliente;
 	}
 
+	public Boolean getIsAcreditado() {
+		return isAcreditado;
+	}
+
+	public void setIsAcreditado(Boolean isAcreditado) {
+		this.isAcreditado = isAcreditado;
+	}
+
+	public Venta getVenta() {
+		return venta;
+	}
+
+	public void setVenta(Venta venta) {
+		this.venta = venta;
+	}
 
 
 }
