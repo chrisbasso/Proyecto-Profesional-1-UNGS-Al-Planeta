@@ -1,5 +1,6 @@
 package com.tp.proyecto1.views.reportes;
 import java.io.File;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,7 +55,8 @@ public class VoucherVentaJR {
 	   parametersMap.put("Fecha", new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
 	   
        try {
-           this.reporte = (JasperReport) JRLoader.loadObjectFromFile( "src" + File.separator + "main" + File.separator + "resources" + File.separator + "VoucherVentaJR.jasper" );
+		   InputStream is = getClass().getResourceAsStream("/VoucherVentaJR.jasper");
+		   this.reporte = (JasperReport)JRLoader.loadObject(is);
            this.reporteLleno = JasperFillManager.fillReport(this.reporte, parametersMap, new JRBeanCollectionDataSource(ventas));
            log.info("Se cargó correctamente el Voucher");
        }

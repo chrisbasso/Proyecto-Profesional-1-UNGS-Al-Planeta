@@ -48,6 +48,8 @@
 	<parameter name="Pasajeros" class="java.lang.String"/>
 	<parameter name="Fecha" class="java.lang.String"/>
 	<parameter name="NroComprobante" class="java.lang.String"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="qr" class="java.io.InputStream"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -152,7 +154,7 @@
 			</staticText>
 			<image>
 				<reportElement x="6" y="0" width="50" height="50" uuid="4b4b70f3-f92f-466b-95aa-ae270438e60c"/>
-				<imageExpression><![CDATA["src/main/resources/static/img/logo-viaje.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
 			</image>
 			<textField>
 				<reportElement x="42" y="90" width="150" height="16" uuid="44cb97b7-5cb4-45c4-bceb-d88b11f67d61"/>
@@ -193,7 +195,7 @@
 			</textField>
 			<image>
 				<reportElement x="484" y="83" width="50" height="50" uuid="618c6582-e6b9-460b-ae92-2c105c5f4f63"/>
-				<imageExpression><![CDATA["src/main/resources/code-qr.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{qr}]]></imageExpression>
 			</image>
 			<textField>
 				<reportElement x="459" y="27" width="86" height="17" uuid="4591c216-777b-4893-9e9f-e98a00f6f0f6"/>

@@ -2,7 +2,6 @@ package com.tp.proyecto1.controllers.configuracion;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FilenameFilter;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;

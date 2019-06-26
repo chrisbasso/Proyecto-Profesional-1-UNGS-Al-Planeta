@@ -1,5 +1,6 @@
 package com.tp.proyecto1.views.reportes;
 import java.io.File;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import net.sf.jasperreports.engine.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +25,6 @@ import com.tp.proyecto1.services.LotePuntoService;
 import com.tp.proyecto1.utils.Inject;
 import com.vaadin.flow.component.html.Span;
 
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 //import net.sf.jasperreports.view.JasperViewer;
@@ -75,9 +72,12 @@ public class ComprobanteVentaJR {
 	   parametersMap.put("DenoPromo", denoPromocion);   
 	   parametersMap.put("Pasajeros", pasajeros);
 	   parametersMap.put("NroComprobante", nroComprobante);
-	   
+	   parametersMap.put("logo", getClass().getResourceAsStream("/logo-viaje.png"));
+	   parametersMap.put("qr", getClass().getResourceAsStream("/code-qr.png"));
+
        try {
-           this.reporte = (JasperReport) JRLoader.loadObjectFromFile( "src" + File.separator + "main" + File.separator + "resources" + File.separator + "ComprobanteVentaJR.jasper" );
+		   InputStream is = getClass().getResourceAsStream("/ComprobanteVentaJR.jasper");
+           this.reporte = (JasperReport)JRLoader.loadObject(is);
            this.reporteLleno = JasperFillManager.fillReport(this.reporte, parametersMap, new JRBeanCollectionDataSource(ventas));
            log.info("Se cargó correctamente el comprobante");
        }

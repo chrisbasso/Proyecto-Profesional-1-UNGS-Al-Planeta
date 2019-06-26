@@ -1,5 +1,6 @@
 package com.tp.proyecto1.views.reportes;
 import java.io.File;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -84,7 +85,9 @@ public class ComprobanteReservaJR {
 	   parametersMap.put("NroComprobante", nroComprobante);
 	   
        try {
-           this.reporte = (JasperReport) JRLoader.loadObjectFromFile( "src" + File.separator + "main" + File.separator + "resources" + File.separator + "ComprobanteReservaJR.jasper" );
+
+		   InputStream is = getClass().getResourceAsStream("/ComprobanteReservaJR.jasper");
+		   this.reporte = (JasperReport)JRLoader.loadObject(is);
            this.reporteLleno = JasperFillManager.fillReport(this.reporte, parametersMap, new JRBeanCollectionDataSource(reservas));
            log.info("Se cargó correctamente el comprobante");
        }

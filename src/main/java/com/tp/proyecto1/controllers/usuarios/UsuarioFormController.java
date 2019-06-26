@@ -20,6 +20,7 @@ import com.vaadin.flow.function.SerializablePredicate;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
@@ -42,6 +43,7 @@ public class UsuarioFormController {
 	private User user;
 
 	private Binder<User> binderUser = new Binder<>();
+
 
 	public UsuarioFormController(User user) {
 		Inject.Inject(this);
