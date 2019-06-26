@@ -26,7 +26,6 @@ public class LotePunto
 	private Integer cantidadRestante;
 	private Boolean isActivo;
 	private Boolean isAcreditado;
-	
 	@ManyToOne
 	private Cliente cliente;
 	
