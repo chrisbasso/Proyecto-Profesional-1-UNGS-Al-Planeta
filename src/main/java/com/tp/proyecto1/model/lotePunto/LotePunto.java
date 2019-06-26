@@ -25,12 +25,16 @@ public class LotePunto
 	private Integer cantidadPuntos;
 	private Integer cantidadRestante;
 	private Boolean isActivo;
-	private Boolean isAcreditado;
+	
+	
+	
 	@ManyToOne
 	private Cliente cliente;
 	
 	@OneToOne
 	private Venta venta;
+	
+	private Boolean isAcreditado;
 	
 	public LotePunto()
 	{
@@ -105,6 +109,7 @@ public class LotePunto
 	{
 		this.cantidadRestante = cantidadRestante;
 	}
+	
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
