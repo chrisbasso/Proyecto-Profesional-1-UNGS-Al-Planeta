@@ -130,9 +130,23 @@ public class Proyecto1Application {
 				Viaje viajeExample = new Viaje();
 				viajeExample.setFechaSalida(LocalDate.now());
 				List<Viaje> viajes = viajeService.findViajes(viajeExample,null, null);
+				LotePunto lotePuntoExample2 = new LotePunto();
+				lotePuntoExample2.setIsAcreditado(Boolean.FALSE);
+				Venta venta = new Venta();
+				
 				for (Viaje viaje : viajes) {
 					if(viaje.getHoraSalida().isBefore(LocalTime.now()) && viaje.isActivo()){
 						log.info(viaje.getHoraSalida().toString());
+						venta.setViaje(viaje);
+						lotePuntoExample2.setVenta(venta);
+						List<LotePunto> lotePuntos2 = lotePuntoRepository.findAll(Example.of(lotePuntoExample2));
+						for(LotePunto lotePunto : lotePuntos2){
+							if(lotePunto.getVenta().getEstadoTransaccion() != EstadoTransaccion.CANCELADA || 
+									lotePunto.getVenta().getEstadoTransaccion() != EstadoTransaccion.PENALIZADA) {
+								lotePunto.setIsAcreditado(Boolean.TRUE);
+								lotePuntoRepository.save(lotePunto);
+							}
+						}
 						viaje.setActivo(Boolean.FALSE);
 						viajeService.save(viaje);
 					}
@@ -186,7 +200,7 @@ public class Proyecto1Application {
 			}
 		};
 
-		timer.schedule(task, 10, 60000); //una vez por minuto
+		timer.schedule(task, 100, 600000); //una vez por minuto
 	}
 	
 	private void procesoEnvioDeVoucher(VentaRepository ventaRepository) {

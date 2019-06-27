@@ -192,7 +192,7 @@ public class MainView extends VerticalLayout{
 			}
 		};
 
-		timer.schedule(eventoTask, 10, 600000); //cada 10 minutos
+		timer.schedule(eventoTask, 1000, 600000); //cada 10 minutos
 	}
 
 	private void setMenu() {

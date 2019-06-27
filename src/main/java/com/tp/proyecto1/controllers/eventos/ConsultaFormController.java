@@ -138,7 +138,7 @@ public class ConsultaFormController {
         	else
         	{
         		Notification.show("La fecha de vencimiento no es valida.");
-        		throw new IllegalArgumentException("La fecha de vencimiento no es valida.");
+        		return;
         	}
         }
         evento.setMensaje(consultaForm.getTextAreaDescripcion().getValue());

@@ -7,6 +7,8 @@ import com.tp.proyecto1.model.sucursales.Sucursal;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NaturalId;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -23,7 +25,9 @@ public class User {
 
     @NaturalId
 	private String user;
+
 	private String password;
+
 	private Boolean enabled = true;
 
     @ManyToOne
@@ -40,6 +44,7 @@ public class User {
 	private Cliente cliente;
 
     private String email;
+
 
 	public User() {
 	}

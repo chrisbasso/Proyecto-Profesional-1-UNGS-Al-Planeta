@@ -311,8 +311,10 @@ public class VentaFormController {
                 clienteSeleccionado = cliente.get();
                 List<LotePunto> lotesPuntos = lotePuntoService.findAllByCliente(clienteSeleccionado);
                 List<LotePunto> lotesPuntosActivos = new ArrayList<>();
-                lotesPuntosActivos = lotesPuntos.stream().filter(lote -> lote.getActivo()).collect(Collectors.toList());//deja solo los lotes  no vencidos
-            	for (LotePunto lote : lotesPuntosActivos) {
+                List<LotePunto> lotesPuntosActivosYAcreditados = new ArrayList<>();
+                lotesPuntosActivos = lotesPuntos.stream().filter(lote -> lote.getActivo() ).collect(Collectors.toList());//deja solo los lotes  no vencidos
+                lotesPuntosActivosYAcreditados = lotesPuntosActivos.stream().filter(lote -> lote.getIsAcreditado()).collect(Collectors.toList());//deja solo los lotes no vencidos y acreditados
+            	for (LotePunto lote : lotesPuntosActivosYAcreditados) {
             		cantPuntosTotales += lote.getCantidadRestante();
             	}
             	
@@ -329,6 +331,7 @@ public class VentaFormController {
 		if(cliente.isPresent()){
             clienteSeleccionado = cliente.get();
             List<LotePunto> lotesPuntos = lotePuntoService.findAllByCliente(clienteSeleccionado);
+            lotesPuntos = lotesPuntos.stream().filter(lotePunto -> lotePunto.getIsAcreditado()).collect(Collectors.toList());
  
         	Integer puntoDisponibles = Integer.parseInt(this.ventaForm.getPuntosDisponibles().getValue());
         	this.puntosaUsarVenta = this.ventaForm.getPuntosaUsar().getValue().intValue();
@@ -343,7 +346,7 @@ public class VentaFormController {
 	}
 	
 	private LotePunto restarLotePunto(LotePunto lote) {
-		if (!(this.puntosaUsarVenta == 0)) {
+		if (this.puntosaUsarVenta != 0) {
 			if(lote.getCantidadRestante() > this.puntosaUsarVenta) {
 					lote.setCantidadRestante(lote.getCantidadRestante()-this.puntosaUsarVenta);
 					this.puntosaUsarVenta = 0 ;
@@ -512,6 +515,8 @@ public class VentaFormController {
 	private void newVenta() {
 		Venta venta =  setNewVenta();
 		ventaService.save(venta);
+		//puntos obtenidos de la compra
+
 		AsientoREST.contabilizarNuevaVenta(venta);
 		imprimirComprobante(venta);
 		//ventaService.save(setNewVenta());
@@ -544,26 +549,24 @@ public class VentaFormController {
 		venta.setFecha(LocalDate.now());
 
 		Cliente cliente = ventaForm.getCliente().getCliente();
+		venta.setCliente(cliente);
 		FormaDePago formaPago = ventaForm.getFormaPago().getValue();
 
-		venta.setCliente(cliente);		
-		
-		//puntos obtenidos de la compra
+
+		ventaService.save(venta);
 		if(ventaForm.getSaldoPagar().getValue() > 0) {
 			LocalDate fechaVencimiento = LocalDate.now().plusYears(Integer.parseInt(this.getCantAniosVencimientoPuntos()));
-			
-			LotePunto lotePunto = new LotePunto(LocalDate.now(), fechaVencimiento, this.cantPuntosPorVenta , true, this.cantPuntosPorVenta, cliente);
+			LotePunto lotePunto = new LotePunto(LocalDate.now(), fechaVencimiento, this.cantPuntosPorVenta , true, this.cantPuntosPorVenta, cliente, venta);
 			cliente.agregarPuntos(lotePunto);
 			venta.setCliente(cliente);
 			clienteService.save(cliente);
 		}
-		
 		String formaPagoPuntos;///mejora siguiente version, que setee la nueva forma de pago
 		if(this.ventaForm.getPuntosaUsar().getValue()!=null) {
 			if(this.ventaForm.getPuntosaUsar().getValue() > 0.0 ) this.restarPuntosaLotesDePuntos();
 			if(ventaForm.getSaldoPagar().getValue() == 0.0) formaPagoPuntos = "Puntos";
 			else formaPagoPuntos = formaPago.getDescripcion() + " + Puntos";
-			
+
 			formaPago.setDescripcion(formaPagoPuntos);
 		}
 		

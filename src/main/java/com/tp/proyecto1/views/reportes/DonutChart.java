@@ -38,6 +38,7 @@ public class DonutChart extends Div {
 		add(donutChart);
 		setWidth("35%");
 		setHeight("35%");
+//		donutChart.withColors("#800000","#808000","#008000","#008080","#800080","#00FFFF", "#FFFF00", "#00FF00", "#e6194B", "#bfef45", "#fabebe", "#469990");
 	}
 }
 
