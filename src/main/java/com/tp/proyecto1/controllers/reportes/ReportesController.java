@@ -182,6 +182,7 @@ public class ReportesController {
 		HorizontalLayout hlGraficos = new HorizontalLayout();
 		hlGraficos.setSizeFull();
 		hlGraficos.add(areaChart,donutChart,verticalChart);
+		reportesView.getHlGraficos().removeAll();
 		reportesView.getHlGraficos().add(hlGraficos);
 	}
 
@@ -192,6 +193,7 @@ public class ReportesController {
 		HorizontalLayout hlGraficos = new HorizontalLayout();
 		hlGraficos.setSizeFull();
 		hlGraficos.add(areaChart,donutChart,verticalChart);
+		reportesView.getHlGraficos().removeAll();
 		reportesView.getHlGraficos().add(hlGraficos);
 	}
 
