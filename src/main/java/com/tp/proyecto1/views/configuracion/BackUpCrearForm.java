@@ -22,6 +22,7 @@ public class BackUpCrearForm extends Dialog{
 		nombreArchivo = new TextField();
 		nombreArchivo.setPlaceholder("Ingrese un nombre para el backup, sin extensión");
 		nombreArchivo.setLabel("Ejemplo: backup lunes");
+		nombreArchivo.setWidthFull();
 		this.add(nombreArchivo);
 		btnAceptar = new Button("Crear",VaadinIcon.FILE_ADD.create());
 		btnAceptar.setEnabled(false);

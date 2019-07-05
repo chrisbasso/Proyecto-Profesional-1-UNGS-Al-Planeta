@@ -1,5 +1,17 @@
 package com.tp.proyecto1.controllers.configuracion;
 
+
+import java.io.File;
+import java.io.FileFilter;
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
+import com.tp.proyecto1.services.ConfiguracionService;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.configuracion.BackUpCrearForm;
 import com.tp.proyecto1.views.configuracion.BackUpTomarForm;
@@ -20,7 +32,8 @@ import java.io.FileFilter;
 public class DBController {
 	
 	private static String fullPathExample = "/home/ricardo/eclipse-workspace/db/alplaneta_grupo4.sql";
-	
+	@Autowired
+	private ConfiguracionService configService;
 	private BackUpCrearForm bckUpCrearView;
 	private BackUpTomarForm bckUpTomarView;
 
@@ -28,10 +41,10 @@ public class DBController {
 	private Environment env;
 	
 	public DBController() {
+		Inject.Inject(this);
 	}
 
 	public void getCrearBackUpView() {
-		Inject.Inject(this);
 		bckUpCrearView = new BackUpCrearForm();
 		agregarListenersCrear();
 		bckUpCrearView.open();
@@ -51,11 +64,12 @@ public class DBController {
 	}
 	
 	private void validarGuardadoBackup() {
+		String path = configService.findValueByKey("backup_path");
 		String nombreArchivo = bckUpCrearView.getNombreArchivo();		
 		if(nombreArchivo != null) {
 			boolean confirmacion = false;
 			bckUpCrearView.cargarProgressBar();
-			confirmacion = backup(nombreArchivo + ".sql");
+			confirmacion = backup(path + nombreArchivo + ".sql");
 			if(confirmacion) {
 				Notification.show("Se ha guardado con éxito");
 			}else {
@@ -71,12 +85,14 @@ public class DBController {
      *            Full path and name are required to save the backup.            
      *            Example = "/home/ricardo/eclipse-workspace/db/alplaneta_grupo4.sql"
      */
+
 	private boolean backup(String fullPathAndName) {
 
 		String username = env.getProperty("spring.datasource.username");
 		String pass = env.getProperty("spring.datasource.password");
 
 		String sqlCmd = "mysqldump -u"+username + " -p" + pass + " --add-drop-database -B alplaneta_grupo4 -r " + fullPathAndName;
+
 		System.out.println("Running backup");
 		boolean result = execute(sqlCmd);
 		if(!result) {
@@ -123,7 +139,9 @@ public class DBController {
 	}
 	
 	private void cargarArchivos() {
+
 		File folder = new File("./");
+
 	    FileFilter ff = new FileFilter() {			
 			@Override
 			public boolean accept(File pathname) {
@@ -153,6 +171,7 @@ public class DBController {
 		String pass = env.getProperty("spring.datasource.password");
 
 		String[] sqlCmd = new String[]{"mysql", "--user=" + username, "--password=" + pass, "-e", "source " + fullPathAndName};
+
 		System.out.println("Running restore");
 		boolean result = execute(sqlCmd);
 		if(!result) {

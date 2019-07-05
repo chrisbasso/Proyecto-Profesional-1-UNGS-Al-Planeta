@@ -7,6 +7,7 @@ import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.component.select.Select;
@@ -20,13 +21,16 @@ public class BackUpTomarForm extends Dialog{
 	public BackUpTomarForm() {
 		this.setWidth("400px");
 		this.setHeight("150px");
+		Icon atencion = VaadinIcon.WARNING.create();
+		this.add(atencion);
 		lblPath = new Label();
-		lblPath.setText("Este archivo reemplazará la base de datos acutal");
+		lblPath.setText("Este archivo reemplazará la base de datos actual");
 		this.add(lblPath);
 		seleccionArchivo = new Select<>();
+		seleccionArchivo.setWidthFull();
 		this.add(seleccionArchivo);
 		btnTomar = new Button("Tomar",VaadinIcon.FILE_PROCESS.create());
-		btnTomar.setEnabled(false);
+		btnTomar.setEnabled(false);		
 		this.add(btnTomar);
 	}
 	
