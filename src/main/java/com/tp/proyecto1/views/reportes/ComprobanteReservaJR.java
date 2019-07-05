@@ -1,40 +1,20 @@
 package com.tp.proyecto1.views.reportes;
-import java.io.File;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
+import com.tp.proyecto1.model.pasajes.Pago;
+import com.tp.proyecto1.model.pasajes.Reserva;
+import com.tp.proyecto1.services.ConfiguracionService;
+import com.tp.proyecto1.utils.Inject;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.util.JRLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.tp.proyecto1.model.clientes.Cliente;
-import com.tp.proyecto1.model.lotePunto.LotePunto;
-import com.tp.proyecto1.model.pasajes.Pago;
-import com.tp.proyecto1.model.pasajes.Pasajero;
-import com.tp.proyecto1.model.pasajes.Reserva;
-import com.tp.proyecto1.model.pasajes.Venta;
-import com.tp.proyecto1.services.ClienteService;
-import com.tp.proyecto1.services.ConfiguracionService;
-import com.tp.proyecto1.services.LotePuntoService;
-import com.tp.proyecto1.utils.Inject;
-import com.vaadin.flow.component.html.Span;
-
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import net.sf.jasperreports.engine.util.JRLoader;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.*;
 //import net.sf.jasperreports.view.JasperViewer;
 
 public class ComprobanteReservaJR {

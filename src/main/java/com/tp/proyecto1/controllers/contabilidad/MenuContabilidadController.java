@@ -1,12 +1,11 @@
 package com.tp.proyecto1.controllers.contabilidad;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-
 import com.tp.proyecto1.MainView;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.contabilidad.MenuContabilidad;
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 @Controller
 @UIScope

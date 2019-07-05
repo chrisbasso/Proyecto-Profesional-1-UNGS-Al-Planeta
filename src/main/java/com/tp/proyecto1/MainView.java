@@ -1,20 +1,5 @@
 package com.tp.proyecto1;
 
-import com.tp.proyecto1.controllers.usuarios.LoginController;
-import com.tp.proyecto1.controllers.usuarios.UsuariosController;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Optional;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import com.vaadin.flow.component.dependency.HtmlImport;
-import com.vaadin.flow.theme.Theme;
-import com.vaadin.flow.theme.lumo.Lumo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-
 import com.tp.proyecto1.controllers.clientes.ClientesController;
 import com.tp.proyecto1.controllers.clientes.ComprasClienteController;
 import com.tp.proyecto1.controllers.clientes.PuntosClienteController;
@@ -25,10 +10,11 @@ import com.tp.proyecto1.controllers.eventos.EventosController;
 import com.tp.proyecto1.controllers.promociones.PromocionesController;
 import com.tp.proyecto1.controllers.reportes.ReportesController;
 import com.tp.proyecto1.controllers.reserva.ReservasController;
+import com.tp.proyecto1.controllers.usuarios.LoginController;
+import com.tp.proyecto1.controllers.usuarios.UsuariosController;
 import com.tp.proyecto1.controllers.venta.VentasController;
 import com.tp.proyecto1.controllers.viajes.ViajesController;
 import com.tp.proyecto1.model.eventos.Evento;
-import com.tp.proyecto1.repository.eventos.EventoRepository;
 import com.tp.proyecto1.services.EventoService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
@@ -36,6 +22,7 @@ import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.AppLayoutMenu;
 import com.vaadin.flow.component.applayout.AppLayoutMenuItem;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dependency.StyleSheet;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Image;
@@ -45,7 +32,12 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.TabVariant;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinSession;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @Route
 @StyleSheet("styles.css")

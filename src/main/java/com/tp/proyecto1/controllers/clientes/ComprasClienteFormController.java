@@ -1,12 +1,6 @@
 package com.tp.proyecto1.controllers.clientes;
 
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-
 import com.tp.proyecto1.model.pasajes.Pasajero;
 import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.model.viajes.Promocion;
@@ -16,6 +10,11 @@ import com.tp.proyecto1.services.VentaService;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.ventas.VentaClienteForm;
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @UIScope

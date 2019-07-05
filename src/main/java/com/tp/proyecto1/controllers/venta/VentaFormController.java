@@ -1,37 +1,28 @@
 package com.tp.proyecto1.controllers.venta;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.controllers.contabilidad.AsientoREST;
-import com.tp.proyecto1.model.pasajes.*;
-import com.tp.proyecto1.model.viajes.Promocion;
-import com.tp.proyecto1.model.viajes.Provincia;
-import com.tp.proyecto1.services.*;
-import com.tp.proyecto1.utils.Inject;
-import com.tp.proyecto1.views.reportes.ComprobanteVentaJR;
-import com.tp.proyecto1.views.ventas.ComprobanteVenta;
-import com.vaadin.flow.component.UI;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.*;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.lotePunto.LotePunto;
+import com.tp.proyecto1.model.pasajes.*;
+import com.tp.proyecto1.model.viajes.Promocion;
 import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.services.*;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.EnviadorDeMail;
+import com.tp.proyecto1.utils.Inject;
+import com.tp.proyecto1.views.reportes.ComprobanteVentaJR;
 import com.tp.proyecto1.views.ventas.VentaForm;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.spring.annotation.*;
+import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -417,7 +408,7 @@ public class VentaFormController {
 		
 		this.ventaForm.getPuntosDisponibles().setEnabled(isValido);
 		this.ventaForm.getPuntosaUsar().setEnabled(isValido);
-		this.ventaForm.getPuntosaUsar().setMax(ventaForm.getSaldoPagar().getValue().intValue()/10);
+		this.ventaForm.getPuntosaUsar().setMax(ventaForm.getSaldoPagar().getValue().intValue()/10.0);
 		this.ventaForm.getPuntosaUsar().clear();
 		
 		this.ventaForm.getPasajerosGridComponent().getNewPasajero().setEnabled(!isValido);

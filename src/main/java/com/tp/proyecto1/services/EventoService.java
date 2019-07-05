@@ -4,13 +4,11 @@ import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.clientes.Interesado;
 import com.tp.proyecto1.model.clientes.Persona;
 import com.tp.proyecto1.model.eventos.Evento;
-import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.repository.clientes.ClienteRepository;
 import com.tp.proyecto1.repository.clientes.InteresadoRepository;
 import com.tp.proyecto1.repository.eventos.EventoRepository;
 import com.tp.proyecto1.repository.users.UserRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -18,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

@@ -1,45 +1,25 @@
 package com.tp.proyecto1.utils;
 
-import java.io.File;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.stream.Collectors;
-
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.activation.FileDataSource;
-import javax.mail.BodyPart;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.lotePunto.LotePunto;
 import com.tp.proyecto1.model.pasajes.Pago;
 import com.tp.proyecto1.model.pasajes.Pasajero;
 import com.tp.proyecto1.model.pasajes.Reserva;
-import com.tp.proyecto1.model.pasajes.Transaccion;
 import com.tp.proyecto1.model.pasajes.Venta;
 import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.services.ConfiguracionService;
 import com.tp.proyecto1.services.LotePuntoService;
-import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.Span;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import ch.qos.logback.classic.Logger;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.*;
+import javax.mail.internet.*;
+import java.io.File;
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class EnviadorDeMail {
 	@Autowired
@@ -371,7 +351,7 @@ public class EnviadorDeMail {
 		Iterator<Pasajero> pasajerosIterator = pasajeros.iterator();
 		while(pasajerosIterator.hasNext()){
 			Pasajero elemento = pasajerosIterator.next();
-			if(cadenaPasajeros == "") cadenaPasajeros = elemento.getNombreCompleto() + " - " + elemento.getDni();
+			if(cadenaPasajeros.equals("")) cadenaPasajeros = elemento.getNombreCompleto() + " - " + elemento.getDni();
 			else if (pasajerosIterator.hasNext() == false) cadenaPasajeros = cadenaPasajeros +" y "+elemento.getNombreCompleto() + " - " + elemento.getDni() + ".";
 			else cadenaPasajeros = cadenaPasajeros +", "+elemento.getNombreCompleto() + " - " + elemento.getDni();
 		}
@@ -397,7 +377,7 @@ public class EnviadorDeMail {
         	Integer pesosPorPunto = Integer.parseInt(getPesosPorPunto());
     		Integer puntosUsados = venta.getPagos().get(cantPagos).getPuntosUsados();
     		Integer puntosConseguidos = new Double(venta.getImporteTotal()/pesosPorPunto).intValue();
-        	
+
     		cantPuntosTotalesCadena = cantPuntosTotales.toString();
         	puntosUsadosCadena = puntosUsados.toString();
         	puntosConseguidosCadena =  puntosConseguidos.toString();

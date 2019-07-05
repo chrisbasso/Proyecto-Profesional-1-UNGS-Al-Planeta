@@ -1,17 +1,26 @@
 package com.tp.proyecto1;
 
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-
+import com.tp.proyecto1.controllers.reserva.ReservaREST;
+import com.tp.proyecto1.model.contabilidad.Cuenta;
+import com.tp.proyecto1.model.contabilidad.TipoCuenta;
+import com.tp.proyecto1.model.lotePunto.LotePunto;
+import com.tp.proyecto1.model.pasajes.EstadoTransaccion;
+import com.tp.proyecto1.model.pasajes.Reserva;
+import com.tp.proyecto1.model.pasajes.Venta;
+import com.tp.proyecto1.model.sucursales.Sucursal;
+import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.model.viajes.*;
+import com.tp.proyecto1.repository.clientes.ClienteRepository;
+import com.tp.proyecto1.repository.lotePuntos.LotePuntoRepository;
+import com.tp.proyecto1.repository.pasajes.*;
+import com.tp.proyecto1.repository.sucursales.SucursalRepository;
 import com.tp.proyecto1.repository.viajes.ContinenteRepository;
+import com.tp.proyecto1.repository.viajes.PaisRepository;
+import com.tp.proyecto1.repository.viajes.PromocionRepository;
+import com.tp.proyecto1.services.*;
+import com.tp.proyecto1.utils.EnviadorDeMail;
+import com.tp.proyecto1.views.reportes.VoucherVentaJR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -20,38 +29,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
 
-import com.tp.proyecto1.controllers.reserva.ReservaREST;
-import com.tp.proyecto1.model.contabilidad.Cuenta;
-import com.tp.proyecto1.model.contabilidad.TipoCuenta;
-import com.tp.proyecto1.model.eventos.Evento;
-import com.tp.proyecto1.model.lotePunto.LotePunto;
-import com.tp.proyecto1.model.pasajes.EstadoTransaccion;
-import com.tp.proyecto1.model.pasajes.Reserva;
-import com.tp.proyecto1.model.pasajes.Venta;
-import com.tp.proyecto1.model.sucursales.Sucursal;
-import com.tp.proyecto1.model.users.User;
-import com.tp.proyecto1.repository.clientes.ClienteRepository;
-import com.tp.proyecto1.repository.eventos.EventoRepository;
-import com.tp.proyecto1.repository.lotePuntos.LotePuntoRepository;
-import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
-import com.tp.proyecto1.repository.pasajes.PasajeVentaRepository;
-import com.tp.proyecto1.repository.pasajes.ReservaRepository;
-import com.tp.proyecto1.repository.pasajes.TransaccionRepository;
-import com.tp.proyecto1.repository.pasajes.VentaRepository;
-import com.tp.proyecto1.repository.sucursales.SucursalRepository;
-import com.tp.proyecto1.repository.viajes.PaisRepository;
-import com.tp.proyecto1.repository.viajes.PromocionRepository;
-import com.tp.proyecto1.services.AsientoService;
-import com.tp.proyecto1.services.ConfiguracionService;
-import com.tp.proyecto1.services.TagDestinoService;
-import com.tp.proyecto1.services.UserService;
-import com.tp.proyecto1.services.VentaService;
-import com.tp.proyecto1.services.ViajeService;
-import com.tp.proyecto1.utils.EnviadorDeMail;
-import com.tp.proyecto1.views.reportes.VoucherVentaJR;
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.server.VaadinSession;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 @SpringBootApplication
@@ -200,7 +183,7 @@ public class Proyecto1Application {
 			}
 		};
 
-		timer.schedule(task, 100, 600000); //una vez por minuto
+		timer.schedule(task, 100, 700000); //una vez por minuto
 	}
 	
 	private void procesoEnvioDeVoucher(VentaRepository ventaRepository) {
@@ -237,7 +220,7 @@ public class Proyecto1Application {
 			}
 		};
 
-		timer.schedule(task, 10, 60000); //una vez por minuto
+		timer.schedule(task, 10, 800000); //una vez por minuto
 	}
 		
 

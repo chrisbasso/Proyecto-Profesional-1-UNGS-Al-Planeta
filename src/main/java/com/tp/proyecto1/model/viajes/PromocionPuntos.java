@@ -1,8 +1,7 @@
 package com.tp.proyecto1.model.viajes;
 
-import java.time.LocalDate;
-
 import javax.persistence.Entity;
+import java.time.LocalDate;
 
 @Entity
 public class PromocionPuntos extends Promocion

@@ -1,11 +1,5 @@
 package com.tp.proyecto1.utils;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -13,6 +7,12 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
+
+import java.awt.*;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CreadorPDF {
 
@@ -63,7 +63,7 @@ public class CreadorPDF {
 			//Agregar el logo
 			logo = PDImageXObject.createFromFile("logo-viaje.png", nuevoDocumento);
 			float coordXLogo = 5;
-			float coordYLogo = mediaBoxPagina.getHeight()- (logo.getHeight()/2);
+			float coordYLogo = mediaBoxPagina.getHeight()- (logo.getHeight()/2f);
 			float scale = 0.3f; // alter this value to set the image size
 			contentStream.drawImage(logo, coordXLogo, coordYLogo, logo.getWidth()*scale, logo.getHeight()*scale);
 

@@ -1,12 +1,10 @@
 package com.tp.proyecto1.controllers.usuarios;
 
-import com.tp.proyecto1.model.clientes.Persona;
 import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.model.users.Role;
 import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.services.SucursalService;
 import com.tp.proyecto1.services.UserService;
-import com.tp.proyecto1.utils.BuscadorClientesComponent;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.GenericDialog;
 import com.tp.proyecto1.utils.Inject;
@@ -20,11 +18,9 @@ import com.vaadin.flow.function.SerializablePredicate;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Controller

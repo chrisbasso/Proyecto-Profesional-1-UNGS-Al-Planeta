@@ -1,18 +1,14 @@
 package com.tp.proyecto1.model.users;
 
 import com.tp.proyecto1.model.clientes.Cliente;
-import com.tp.proyecto1.model.clientes.Persona;
 import com.tp.proyecto1.model.pasajes.Transaccion;
 import com.tp.proyecto1.model.sucursales.Sucursal;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NaturalId;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 

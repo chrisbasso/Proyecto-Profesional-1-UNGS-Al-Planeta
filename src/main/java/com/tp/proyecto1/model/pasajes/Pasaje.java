@@ -1,11 +1,10 @@
 package com.tp.proyecto1.model.pasajes;
 
-import java.util.Objects;
-
-import javax.persistence.*;
-
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.viajes.Viaje;
+
+import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)

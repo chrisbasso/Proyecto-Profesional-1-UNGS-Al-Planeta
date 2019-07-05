@@ -1,8 +1,7 @@
 package com.tp.proyecto1.controllers.usuario;
 
-import org.springframework.stereotype.Controller;
-
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.stereotype.Controller;
 
 @Controller
 @UIScope

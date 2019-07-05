@@ -1,10 +1,10 @@
 package com.tp.proyecto1.model.configuraciones;
 
+import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-
-import org.hibernate.annotations.NaturalId;
 
 @Entity
 public class Configuracion {

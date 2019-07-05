@@ -1,20 +1,9 @@
 package com.tp.proyecto1.controllers.contabilidad;
 
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-
 import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.contabilidad.Asiento;
-import com.tp.proyecto1.model.contabilidad.Cabecera;
 import com.tp.proyecto1.model.contabilidad.Modulo;
 import com.tp.proyecto1.model.contabilidad.MovimientoCaja;
-import com.tp.proyecto1.model.contabilidad.Posicion;
 import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.services.AsientoService;
@@ -27,6 +16,14 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Controller
 @UIScope
@@ -110,9 +107,9 @@ public class MovimientosCajaController {
 	
 	private void validarUsuario() {
 		Long id = view.getValueUsuario();
-		if(!id.equals(null)) {
+		if(id != null) {
 			User usuario = usuarioService.getUserById(id);
-			if(usuario.equals(null)) {
+			if(usuario == null) {
 				Notification.show("No existe un usuario con ese ID");
 			}
 		}

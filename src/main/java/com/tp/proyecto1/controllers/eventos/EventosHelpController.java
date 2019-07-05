@@ -1,11 +1,10 @@
 package com.tp.proyecto1.controllers.eventos;
 
-import org.springframework.stereotype.Controller;
-
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.eventos.EventosHelpView;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.stereotype.Controller;
 
 @Controller
 @UIScope

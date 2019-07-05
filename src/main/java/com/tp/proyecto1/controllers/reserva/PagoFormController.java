@@ -1,15 +1,14 @@
 package com.tp.proyecto1.controllers.reserva;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import org.springframework.stereotype.Controller;
-
 import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.tp.proyecto1.model.pasajes.Pago;
 import com.tp.proyecto1.views.reserva.AgregarPagoForm;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.stereotype.Controller;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 @UIScope

@@ -1,11 +1,5 @@
 package com.tp.proyecto1.controllers.contabilidad;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-
 import com.tp.proyecto1.model.contabilidad.Cuenta;
 import com.tp.proyecto1.model.contabilidad.TipoCuenta;
 import com.tp.proyecto1.services.AsientoService;
@@ -13,6 +7,10 @@ import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.contabilidad.CuentaForm;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
+import java.util.List;
 
 @Controller
 @UIScope
@@ -52,7 +50,7 @@ public class CuentaFormController {
 	private void validacionDatos() {
 		if(cuentaForm.getTipoCuenta() != null && 
 				cuentaForm.getNumero() != 0 && 
-				cuentaForm.getDescripcion() != "" ) {
+				!"".equals(cuentaForm.getDescripcion())) {
 			
 			cuentaForm.habilitarBtnGuardar();
 		}

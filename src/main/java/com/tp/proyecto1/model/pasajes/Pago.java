@@ -1,16 +1,7 @@
 package com.tp.proyecto1.model.pasajes;
 
+import javax.persistence.*;
 import java.time.LocalDate;
-
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-
-import com.tp.proyecto1.model.clientes.Cliente;
 
 @Entity
 public class Pago {

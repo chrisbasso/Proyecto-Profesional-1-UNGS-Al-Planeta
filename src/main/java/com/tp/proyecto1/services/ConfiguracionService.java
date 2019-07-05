@@ -1,8 +1,7 @@
 package com.tp.proyecto1.services;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.tp.proyecto1.model.configuraciones.Configuracion;
+import com.tp.proyecto1.repository.configuraciones.ConfiguracionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +9,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tp.proyecto1.model.configuraciones.Configuracion;
-import com.tp.proyecto1.repository.configuraciones.ConfiguracionRepository;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ConfiguracionService {
@@ -50,7 +49,7 @@ public class ConfiguracionService {
 		@Transactional
 		public String findValueByKey(String key) {		
 			for(Configuracion config : findAll()) {
-				if(config.equals(null)) {
+				if(config == null) {
 					return null;
 				}else {
 					if(config.getClave().equals(key)) {

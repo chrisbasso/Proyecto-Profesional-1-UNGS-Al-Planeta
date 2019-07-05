@@ -1,16 +1,11 @@
 package com.tp.proyecto1.model.lotePunto;
 
-import java.time.LocalDate;
-import java.util.Objects;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.Venta;
+
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 public class LotePunto

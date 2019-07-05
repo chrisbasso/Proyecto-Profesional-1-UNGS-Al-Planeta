@@ -1,7 +1,5 @@
 package com.tp.proyecto1.views.contabilidad;
 
-import java.util.List;
-
 import com.tp.proyecto1.model.contabilidad.Cuenta;
 import com.tp.proyecto1.model.contabilidad.TipoCuenta;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
@@ -19,6 +17,8 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
+
+import java.util.List;
 
 public class CuentaForm extends Dialog{
 

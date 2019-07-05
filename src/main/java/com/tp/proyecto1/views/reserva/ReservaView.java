@@ -1,13 +1,7 @@
 package com.tp.proyecto1.views.reserva;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Set;
-
 import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.model.viajes.Ciudad;
-import com.tp.proyecto1.model.viajes.Pais;
-import com.tp.proyecto1.model.viajes.Provincia;
 import com.tp.proyecto1.utils.ConfigDatePicker;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
@@ -23,6 +17,9 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.function.ValueProvider;
+
+import java.time.LocalDate;
+import java.util.List;
 
 public class ReservaView extends FilterGridLayout<Reserva> {
 

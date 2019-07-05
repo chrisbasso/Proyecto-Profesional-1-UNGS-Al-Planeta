@@ -1,19 +1,4 @@
 package com.tp.proyecto1.views.reportes;
-import java.io.File;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import net.sf.jasperreports.engine.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.lotePunto.LotePunto;
@@ -23,10 +8,17 @@ import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.services.ConfiguracionService;
 import com.tp.proyecto1.services.LotePuntoService;
 import com.tp.proyecto1.utils.Inject;
-import com.vaadin.flow.component.html.Span;
-
+import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 //import net.sf.jasperreports.view.JasperViewer;
 
 public class ComprobanteVentaJR {

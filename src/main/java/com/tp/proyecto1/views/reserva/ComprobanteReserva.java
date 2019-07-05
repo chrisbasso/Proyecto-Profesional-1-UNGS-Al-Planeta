@@ -1,11 +1,5 @@
 package com.tp.proyecto1.views.reserva;
 
-import java.time.LocalDate;
-import java.util.Iterator;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.tp.proyecto1.controllers.reserva.ReservaREST;
 import com.tp.proyecto1.model.pasajes.Pago;
 import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.services.ConfiguracionService;
@@ -17,6 +11,10 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.time.LocalDate;
+import java.util.Iterator;
 
 
 

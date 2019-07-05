@@ -1,9 +1,5 @@
 package com.tp.proyecto1.views.configuracion;
 
-import java.util.List;
-
-//import org.omg.CORBA.portable.ValueFactory;
-
 import com.tp.proyecto1.model.configuraciones.Configuracion;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.vaadin.flow.component.ClickEvent;
@@ -14,6 +10,10 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.function.ValueProvider;
+
+import java.util.List;
+
+//import org.omg.CORBA.portable.ValueFactory;
 
 public class ConfiguracionView  extends FilterGridLayout<Configuracion> {
     

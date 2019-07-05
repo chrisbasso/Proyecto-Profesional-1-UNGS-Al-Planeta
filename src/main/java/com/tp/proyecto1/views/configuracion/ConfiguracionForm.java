@@ -12,7 +12,6 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.GeneratedVaadinTextField.ChangeEvent;
 import com.vaadin.flow.component.textfield.TextField;
 
 public class ConfiguracionForm extends Dialog{

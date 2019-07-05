@@ -1,16 +1,15 @@
 package com.tp.proyecto1.services;
 
-import java.util.List;
-
+import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.model.lotePunto.LotePunto;
+import com.tp.proyecto1.repository.lotePuntos.LotePuntoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tp.proyecto1.model.clientes.Cliente;
-import com.tp.proyecto1.model.lotePunto.LotePunto;
-import com.tp.proyecto1.repository.lotePuntos.LotePuntoRepository;
+import java.util.List;
 
 @Service
 public class LotePuntoService

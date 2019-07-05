@@ -9,7 +9,6 @@ import com.tp.proyecto1.utils.EnviadorDeMail;
 import com.tp.proyecto1.utils.GenericDialog;
 import com.tp.proyecto1.views.usuarios.LoginView;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.login.AbstractLogin;
 import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.textfield.TextField;

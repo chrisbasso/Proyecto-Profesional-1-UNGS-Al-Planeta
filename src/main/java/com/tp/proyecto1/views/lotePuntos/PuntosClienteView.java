@@ -1,22 +1,10 @@
 package com.tp.proyecto1.views.lotePuntos;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import com.tp.proyecto1.model.lotePunto.LotePunto;
-import com.tp.proyecto1.model.viajes.Promocion;
-import com.tp.proyecto1.utils.ConfigDatePicker;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.tp.proyecto1.utils.View;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.checkbox.Checkbox;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.NumberField;
-import com.vaadin.flow.component.textfield.TextField;
 
 public class PuntosClienteView extends FilterGridLayout<LotePunto> implements View
 {

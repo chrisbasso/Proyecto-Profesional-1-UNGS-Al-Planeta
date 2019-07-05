@@ -1,10 +1,5 @@
 package com.tp.proyecto1.views.promociones;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.vaadin.gatanaso.MultiselectComboBox;
-
 import com.tp.proyecto1.model.viajes.Ciudad;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.utils.ConfigDatePicker;
@@ -18,6 +13,10 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import org.vaadin.gatanaso.MultiselectComboBox;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class PromocionForm extends Dialog
 {

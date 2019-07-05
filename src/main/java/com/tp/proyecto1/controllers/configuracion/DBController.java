@@ -1,21 +1,19 @@
 package com.tp.proyecto1.controllers.configuracion;
 
-import java.io.File;
-import java.io.FileFilter;
-
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import com.tp.proyecto1.utils.Inject;
+import com.tp.proyecto1.views.configuracion.BackUpCrearForm;
+import com.tp.proyecto1.views.configuracion.BackUpTomarForm;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.spring.annotation.UIScope;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 
-import com.tp.proyecto1.views.configuracion.BackUpCrearForm;
-import com.tp.proyecto1.views.configuracion.BackUpTomarForm;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.spring.annotation.UIScope;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+import java.io.FileFilter;
 
 @Controller
 @UIScope
@@ -48,7 +46,7 @@ public class DBController {
 		if(bckUpCrearView.getNombreArchivo() != null) {
 			bckUpCrearView.habilitarGuardado(true);
 		}else {
-			bckUpCrearView.habilitarGuardado(true);
+			bckUpCrearView.habilitarGuardado(false);
 		}		
 	}
 	
@@ -150,7 +148,11 @@ public class DBController {
      *            Example = "/home/ricardo/eclipse-workspace/db/alplaneta_grupo4.sql"
      */	
 	private boolean restore(String fullPathAndName) {
-		String[] sqlCmd = new String[]{"mysql", "--user=root", "--password=pass", "-e", "source " + fullPathAndName};
+
+		String username = env.getProperty("spring.datasource.username");
+		String pass = env.getProperty("spring.datasource.password");
+
+		String[] sqlCmd = new String[]{"mysql", "--user=" + username, "--password=" + pass, "-e", "source " + fullPathAndName};
 		System.out.println("Running restore");
 		boolean result = execute(sqlCmd);
 		if(!result) {

@@ -1,9 +1,5 @@
 package com.tp.proyecto1.views.contabilidad;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-
 import com.tp.proyecto1.model.contabilidad.MovimientoCaja;
 import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.utils.ConfigDatePicker;
@@ -15,7 +11,6 @@ import com.vaadin.flow.component.HasValue.ValueChangeListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -23,6 +18,10 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.function.ValueProvider;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 public class MovimientosCajaView extends FilterGridLayout<MovimientoCaja> {
 	

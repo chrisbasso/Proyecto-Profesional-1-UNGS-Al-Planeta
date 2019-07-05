@@ -2,7 +2,6 @@ package com.tp.proyecto1.model.viajes;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity

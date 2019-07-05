@@ -1,18 +1,15 @@
 package com.tp.proyecto1.controllers.clientes;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.stereotype.Controller;
-
 import com.tp.proyecto1.model.pasajes.Pago;
 import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.reserva.ReservaClienteForm;
-import com.tp.proyecto1.views.reserva.ReservaClienteView;
-import com.tp.proyecto1.views.reserva.ReservaForm;
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.stereotype.Controller;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @UIScope
