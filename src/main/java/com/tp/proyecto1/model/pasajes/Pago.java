@@ -1,16 +1,7 @@
 package com.tp.proyecto1.model.pasajes;
 
+import javax.persistence.*;
 import java.time.LocalDate;
-
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-
-import com.tp.proyecto1.model.clientes.Cliente;
 
 @Entity
 public class Pago {
@@ -24,6 +15,7 @@ public class Pago {
 	private FormaDePago formaDePago;
 	private Double importe;
 	private LocalDate fechaDePago;
+	private Integer puntosUsados;
 
 	public Pago() {		
 	}
@@ -73,5 +65,14 @@ public class Pago {
 
 	public void setFechaDePago(LocalDate fechaDePago) {
 		this.fechaDePago = fechaDePago;
-	}	
+	}
+
+	public Integer getPuntosUsados() {
+		return puntosUsados;
+	}
+
+	public void setPuntosUsados(Integer puntosUsados) {
+		this.puntosUsados = puntosUsados;
+	}
+
 }

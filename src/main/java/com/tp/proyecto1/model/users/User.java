@@ -1,5 +1,6 @@
 package com.tp.proyecto1.model.users;
 
+import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.Transaccion;
 import com.tp.proyecto1.model.sucursales.Sucursal;
 import org.hibernate.annotations.Fetch;
@@ -8,7 +9,6 @@ import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,8 +21,10 @@ public class User {
 
     @NaturalId
 	private String user;
+
 	private String password;
-	private Boolean enabled;
+
+	private Boolean enabled = true;
 
     @ManyToOne
     private Role rol;
@@ -33,6 +35,12 @@ public class User {
 
     @OneToOne
 	private Sucursal sucursal;
+
+    @OneToOne
+	private Cliente cliente;
+
+    private String email;
+
 
 	public User() {
 	}
@@ -50,9 +58,32 @@ public class User {
     public User(String user, String password, Role rol) {
         this.user = user;
         this.password = password;
-        this.enabled = true;
         this.rol = rol;
     }
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Boolean getEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
 
 	public Sucursal getSucursal() {
 		return sucursal;
@@ -125,4 +156,6 @@ public class User {
     public int hashCode() {
         return Objects.hash(id, user, password, enabled, rol);
     }
+    
+    
 }

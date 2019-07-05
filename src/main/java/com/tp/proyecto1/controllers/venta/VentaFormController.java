@@ -1,35 +1,28 @@
 package com.tp.proyecto1.controllers.venta;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.controllers.contabilidad.AsientoREST;
-import com.tp.proyecto1.model.pasajes.*;
-import com.tp.proyecto1.model.viajes.Promocion;
-import com.tp.proyecto1.model.viajes.Provincia;
-import com.tp.proyecto1.services.*;
-import com.tp.proyecto1.utils.Inject;
-import com.tp.proyecto1.views.ventas.ComprobanteVenta;
-import com.vaadin.flow.component.UI;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.*;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.lotePunto.LotePunto;
+import com.tp.proyecto1.model.pasajes.*;
+import com.tp.proyecto1.model.viajes.Promocion;
 import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.services.*;
 import com.tp.proyecto1.utils.ChangeHandler;
+import com.tp.proyecto1.utils.EnviadorDeMail;
+import com.tp.proyecto1.utils.Inject;
+import com.tp.proyecto1.views.reportes.ComprobanteVentaJR;
 import com.tp.proyecto1.views.ventas.VentaForm;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.spring.annotation.*;
+import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -86,6 +79,7 @@ public class VentaFormController {
 	private Double pagoParcial;
 
 	private Integer puntosaUsarVenta; 
+	private Integer puntosAUsar; 
 	
 	public VentaFormController(Viaje viaje) {
 		Inject.Inject(this);
@@ -287,8 +281,14 @@ public class VentaFormController {
 			ventaForm.getDenoPromocion().setValue(venta.getPromocion().getDoubleValue().toString());
 		}
 		ventaForm.getPuntosObtenidos().setReadOnly(true);
+	    Double puntosObtenidos = venta.getImporteTotal()/Integer.parseInt(getPesosPorPunto());
+		ventaForm.getPuntosObtenidos().setValue(puntosObtenidos.toString());
 		ventaForm.getUsoPuntosCheck().setReadOnly(true);
+		//Integer cantPagos = venta.getPagos().size()-1;
+		this.generarPuntos();
 		ventaForm.getPuntosaUsar().setReadOnly(true);
+		
+		
 	}	
 	
 	private void setPuntosDisponibles() {
@@ -302,8 +302,10 @@ public class VentaFormController {
                 clienteSeleccionado = cliente.get();
                 List<LotePunto> lotesPuntos = lotePuntoService.findAllByCliente(clienteSeleccionado);
                 List<LotePunto> lotesPuntosActivos = new ArrayList<>();
-                lotesPuntosActivos = lotesPuntos.stream().filter(lote -> lote.getActivo()).collect(Collectors.toList());//deja solo los lotes  no vencidos
-            	for (LotePunto lote : lotesPuntosActivos) {
+                List<LotePunto> lotesPuntosActivosYAcreditados = new ArrayList<>();
+                lotesPuntosActivos = lotesPuntos.stream().filter(lote -> lote.getActivo() ).collect(Collectors.toList());//deja solo los lotes  no vencidos
+                lotesPuntosActivosYAcreditados = lotesPuntosActivos.stream().filter(lote -> lote.getIsAcreditado()).collect(Collectors.toList());//deja solo los lotes no vencidos y acreditados
+            	for (LotePunto lote : lotesPuntosActivosYAcreditados) {
             		cantPuntosTotales += lote.getCantidadRestante();
             	}
             	
@@ -320,6 +322,7 @@ public class VentaFormController {
 		if(cliente.isPresent()){
             clienteSeleccionado = cliente.get();
             List<LotePunto> lotesPuntos = lotePuntoService.findAllByCliente(clienteSeleccionado);
+            lotesPuntos = lotesPuntos.stream().filter(lotePunto -> lotePunto.getIsAcreditado()).collect(Collectors.toList());
  
         	Integer puntoDisponibles = Integer.parseInt(this.ventaForm.getPuntosDisponibles().getValue());
         	this.puntosaUsarVenta = this.ventaForm.getPuntosaUsar().getValue().intValue();
@@ -334,7 +337,7 @@ public class VentaFormController {
 	}
 	
 	private LotePunto restarLotePunto(LotePunto lote) {
-		if (!(this.puntosaUsarVenta == 0)) {
+		if (this.puntosaUsarVenta != 0) {
 			if(lote.getCantidadRestante() > this.puntosaUsarVenta) {
 					lote.setCantidadRestante(lote.getCantidadRestante()-this.puntosaUsarVenta);
 					this.puntosaUsarVenta = 0 ;
@@ -380,7 +383,7 @@ public class VentaFormController {
 				ventaForm.getPasajerosGridComponent().getNewPasajero().setEnabled(true);//este no sirve
 			}
 		}
-		//validar que se pueda habilitar el boton de finalizar compra
+		//validar que se pueda habilitar el boton de finalizar compra.
 		this.validarCompra();
 	}
 	
@@ -405,7 +408,7 @@ public class VentaFormController {
 		
 		this.ventaForm.getPuntosDisponibles().setEnabled(isValido);
 		this.ventaForm.getPuntosaUsar().setEnabled(isValido);
-		this.ventaForm.getPuntosaUsar().setMax(ventaForm.getSaldoPagar().getValue().intValue()/10);
+		this.ventaForm.getPuntosaUsar().setMax(ventaForm.getSaldoPagar().getValue().intValue()/10.0);
 		this.ventaForm.getPuntosaUsar().clear();
 		
 		this.ventaForm.getPasajerosGridComponent().getNewPasajero().setEnabled(!isValido);
@@ -503,6 +506,8 @@ public class VentaFormController {
 	private void newVenta() {
 		Venta venta =  setNewVenta();
 		ventaService.save(venta);
+		//puntos obtenidos de la compra
+
 		AsientoREST.contabilizarNuevaVenta(venta);
 		imprimirComprobante(venta);
 		//ventaService.save(setNewVenta());
@@ -514,15 +519,16 @@ public class VentaFormController {
             this.reservaService.save(reserva);
         }
         changeHandler.onChange();
-        Notification.show("PasajeVenta comprado. Lote de Puntos Conseguidos");
+        Notification.show("PasajeVenta comprado");
 
 	}
 
 	private void saveVenta(Venta venta) {
 
             ventaService.save(venta);
+            imprimirComprobante(venta);
             ventaForm.close();
-            Notification.show("PasajeVenta Guardado");
+            Notification.show("PasajeVenta Modificado");
             changeHandler.onChange();
 	}
 
@@ -534,28 +540,29 @@ public class VentaFormController {
 		venta.setFecha(LocalDate.now());
 
 		Cliente cliente = ventaForm.getCliente().getCliente();
+		venta.setCliente(cliente);
 		FormaDePago formaPago = ventaForm.getFormaPago().getValue();
 
-		venta.setCliente(cliente);		
-		
-		//puntos obtenidos de la compra
+
+		ventaService.save(venta);
 		if(ventaForm.getSaldoPagar().getValue() > 0) {
 			LocalDate fechaVencimiento = LocalDate.now().plusYears(Integer.parseInt(this.getCantAniosVencimientoPuntos()));
-			
-			LotePunto lotePunto = new LotePunto(LocalDate.now(), fechaVencimiento, this.cantPuntosPorVenta , true, this.cantPuntosPorVenta, cliente);
+			LotePunto lotePunto = new LotePunto(LocalDate.now(), fechaVencimiento, this.cantPuntosPorVenta , true, this.cantPuntosPorVenta, cliente, venta);
 			cliente.agregarPuntos(lotePunto);
 			venta.setCliente(cliente);
 			clienteService.save(cliente);
 		}
-		
 		String formaPagoPuntos;///mejora siguiente version, que setee la nueva forma de pago
 		if(this.ventaForm.getPuntosaUsar().getValue()!=null) {
 			if(this.ventaForm.getPuntosaUsar().getValue() > 0.0 ) this.restarPuntosaLotesDePuntos();
 			if(ventaForm.getSaldoPagar().getValue() == 0.0) formaPagoPuntos = "Puntos";
 			else formaPagoPuntos = formaPago.getDescripcion() + " + Puntos";
-			
+
 			formaPago.setDescripcion(formaPagoPuntos);
 		}
+		
+		if (ventaForm.getPuntosaUsar().getValue() != null) this.puntosAUsar = ventaForm.getPuntosaUsar().getValue().intValue();
+		else this.puntosAUsar = 0;
 		
 		Pago pagoVenta = new Pago();
 		//PAGOS: Si viene de una reserva
@@ -565,6 +572,7 @@ public class VentaFormController {
 			venta.agregarPago(pagoReserva);
 						
 			pagoVenta = new Pago(venta, formaPago, ventaForm.getSaldoPagar().getValue(),  LocalDate.now());
+			pagoVenta.setPuntosUsados(puntosAUsar);
 			venta.agregarPago(pagoVenta);
 			
 			this.viaje = reserva.getViaje();
@@ -577,6 +585,7 @@ public class VentaFormController {
 			this.precioFinal = ventaForm.getSaldoPagar().getValue();
 			
 			pagoVenta = new Pago(venta, formaPago, this.precioFinal,  LocalDate.now());
+			pagoVenta.setPuntosUsados(puntosAUsar);
 			venta.agregarPago(pagoVenta);
 			
 			venta.setEstadoTransaccion(EstadoTransaccion.CREADA);
@@ -607,10 +616,13 @@ public class VentaFormController {
 	}
 	
 	private void imprimirComprobante(Venta venta) {
-		ComprobanteVenta comprobante = new ComprobanteVenta(venta);
-		comprobante.open();
-		UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
-				"  print(); self.close();}, 1000);");
+		EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+		List<Venta> ventas = new ArrayList<Venta>();
+		ventas.add(venta);
+		ComprobanteVentaJR comproVenta = new ComprobanteVentaJR(ventas);
+		comproVenta.exportarAPdf(venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni());
+		enviadorDeMail.enviarConGmail(venta.getCliente().getEmail(),
+				"Comprobante de compra- " + venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni(), venta);
 	}
 	
     //NO USO ESTA PODEROSA TECNICA

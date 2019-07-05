@@ -1,19 +1,23 @@
 package com.tp.proyecto1.controllers.venta;
 
+import com.tp.proyecto1.Proyecto1Application;
+import com.tp.proyecto1.controllers.contabilidad.AsientoREST;
 import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.model.lotePunto.LotePunto;
 import com.tp.proyecto1.model.pasajes.EstadoTransaccion;
 import com.tp.proyecto1.model.pasajes.Venta;
-import com.tp.proyecto1.model.viajes.*;
-import com.tp.proyecto1.services.VentaService;
-import com.tp.proyecto1.services.ViajeService;
+import com.tp.proyecto1.model.viajes.Ciudad;
+import com.tp.proyecto1.model.viajes.Transporte;
+import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.services.*;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.ConfirmationDialog;
 import com.tp.proyecto1.utils.EnviadorDeMail;
 import com.tp.proyecto1.utils.Inject;
+import com.tp.proyecto1.views.reportes.ComprobanteVentaJR;
+import com.tp.proyecto1.views.reportes.VoucherVentaJR;
 import com.tp.proyecto1.views.ventas.ComprobanteVenta;
 import com.tp.proyecto1.views.ventas.VentaView;
-
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -23,6 +27,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @UIScope
@@ -37,10 +46,22 @@ public class VentasController {
 
 	@Autowired
 	private ViajeService viajeService;
+	
+	@Autowired
+	private ClienteService clienteService;
+	
+	@Autowired
+	private LotePuntoService lotePuntoService;
+	
+	@Autowired
+	private ConfiguracionService configuracionService;
 
 	private ChangeHandler changeHandler;
 
 	private Venta ventaBorrar;
+	
+	private Integer puntosUsados;
+	private Integer puntosUsadosPenalizacion;
 
 	public VentasController() {
 		Inject.Inject(this);
@@ -48,33 +69,95 @@ public class VentasController {
 		setListeners();
 		setComponents();
 		listVentas();
-
 	}
 
 	private void setComponents() {
-		ventaView.getCiudadFilter().setItems(viajeService.findAllCiudades());
-		this.ventaView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
-		this.ventaView.getGrid().addComponentColumn(this::createRemoveButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
+		if(Proyecto1Application.logUser!=null){
+			ventaView.getCiudadFilter().setItems(viajeService.findAllCiudades());
+			if(!Proyecto1Application.logUser.getRol().getName().equals("CLIENTE")){
+				this.ventaView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
+				this.ventaView.getGrid().addComponentColumn(this::createRemoveButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
+			}
+		}else{
+			this.ventaView.getGrid().addComponentColumn(this::createEditButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
+			this.ventaView.getGrid().addComponentColumn(this::createRemoveButton).setHeader("").setTextAlign(ColumnTextAlign.END).setWidth("75px").setFlexGrow(0);
+		}
+
 	}
 
 	private void setListeners() {
 		setChangeHandler(this::listVentas);
 		ventaView.getSearchButton().addClickListener(e->listVentas());
 		ventaView.getBtnComprobante().addClickListener(e->imprimirComprobante());
-		ventaView.getBtnEnvioMail().addClickListener(e-> EnviadorDeMail.enviarConGmail("gmonteblack.gm@gmail.com", "mail de Prueba", "emo sido engañado"));
+		ventaView.getBtnEnvioMail().addClickListener(e-> reenviarVoucher());
 	}
 
-	private void imprimirComprobante() {
+	
+/*
+	private void pdfprint() {
+		Venta venta = ventaView.getGrid().asSingleSelect().getValue();
+		List<Venta> ventas = new ArrayList<Venta>();
+		ventas.add(venta);
+		ComprobanteVentaJR comproVenta = new ComprobanteVentaJR(ventas);
+		comproVenta.exportarAPdf();
+	}*/
+
+	/*
+	private void enviarMail() {
+		EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
 		Venta venta = ventaView.getGrid().asSingleSelect().getValue();
 		if (venta != null) {
-			ComprobanteVenta comprobante = new ComprobanteVenta(venta);
-			comprobante.open();
-			UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
-					"  print(); self.close();}, 1000);");
+			enviadorDeMail.enviarMailConInfoVenta( "Confirmacion de Compra - Al Planeta", venta);
 		}
 		else {
 			Notification.show("Seleccione una venta.");
 		}
+	}*/
+		
+	private void reenviarVoucher() {
+		Venta venta = ventaView.getGrid().asSingleSelect().getValue();
+		EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+		if (venta != null) {
+			LocalDate fechaActual = LocalDate.now();
+			LocalDate fechaVoucher =  venta.getViaje().getFechaSalida().minusDays(1);
+			if (venta.isActivo() && fechaVoucher.compareTo(fechaActual) != -1) {
+				List<Venta> ventas = new ArrayList<Venta>();
+				ventas.add(venta);
+				VoucherVentaJR voucherVenta = new VoucherVentaJR(ventas);
+				voucherVenta.exportarAPdf(venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni());
+				enviadorDeMail.enviarConGmailVoucher(venta.getCliente().getEmail(),
+						"Voucher del Viaje- " + venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni(), venta);
+			}
+			else {
+				Notification.show("Viaje vencido o Cancelado.");
+			}
+		}
+		else {
+			Notification.show("Seleccione una Venta.");
+		}
+		
+	}
+	
+	private void imprimirComprobante() {
+		Venta venta = ventaView.getGrid().asSingleSelect().getValue();
+		EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+		if (venta != null) {
+			ComprobanteVenta comprobante = new ComprobanteVenta(venta);
+			/*ComprobanteVenta comprobante = new ComprobanteVenta(venta);
+			comprobante.open();
+			UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
+					"  print(); self.close();}, 1000);");*/
+			List<Venta> ventas = new ArrayList<Venta>();
+			ventas.add(venta);
+			ComprobanteVentaJR comproVenta = new ComprobanteVentaJR(ventas);
+			comproVenta.exportarAPdf(venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni());
+			enviadorDeMail.enviarConGmail(venta.getCliente().getEmail(),
+					"Comprobante de compra- " + venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni(), venta);
+		}
+		else {
+			Notification.show("Seleccione una Venta.");
+		}
+		
 	}
 
 
@@ -98,26 +181,52 @@ public class VentasController {
 				viaje.agregarPasajes(ventaBorrar.getCantidadPasajes());
 
 				LocalDate fechaSalida = viaje.getFechaSalida();
-
+				Integer cantPagos = venta.getPagos().size() - 1;
+				puntosUsados = venta.getPagos().get(cantPagos).getPuntosUsados();
 				Double importeTotalOriginal = ventaBorrar.getImporteTotal();
-				Double importeCancelacion = calcularImporteCancelacion(fechaSalida, importeTotalOriginal );
+				Double importeCancelacion = calcularImporteCancelacion(fechaSalida, importeTotalOriginal);
 
 				ventaBorrar.setImporteTotal(importeCancelacion);
 
 				viajeService.save(viaje);
 				ventaService.save(ventaBorrar);
 
+				Double reintegro = null;
+				LocalDate fechaVencimiento = LocalDate.now().plusYears(Integer.parseInt(this.getCantAniosVencimientoPuntos()));
+				Cliente cliente = ventaBorrar.getCliente();
+				
 				if (importeCancelacion == 0.0) {
 					ventaBorrar.setEstadoTransaccion(EstadoTransaccion.CANCELADA);
-
+					//PASARLE LOS PUNTOS USADOS(TOTAL)
+					if (this.puntosUsados > 0) {//sis se uso puntos
+						LotePunto lotePunto = new LotePunto(LocalDate.now(), fechaVencimiento, this.puntosUsados, Boolean.TRUE, this.puntosUsados, cliente, ventaBorrar);
+						lotePunto.setIsAcreditado(Boolean.TRUE);
+						cliente.agregarPuntos(lotePunto);
+						ventaBorrar.setCliente(cliente);
+						clienteService.save(cliente);
+						
+						ventaService.save(ventaBorrar);
+					}
 					Notification.show("La Venta fue cancelada, se le reintegra el total al cliente " +ventaBorrar.getCliente().getNombreyApellido());
 				}
 				else {
-					Double reintegro = importeTotalOriginal - importeCancelacion;
+					reintegro = importeTotalOriginal - importeCancelacion;
 					ventaBorrar.setEstadoTransaccion(EstadoTransaccion.PENALIZADA);
+					
+					if (this.puntosUsados > 0) {//si se uso puntos
+						LotePunto lotePunto = new LotePunto(LocalDate.now(), fechaVencimiento, this.puntosUsados, Boolean.TRUE, this.puntosUsados, cliente, ventaBorrar);
+						lotePunto.setIsAcreditado(Boolean.TRUE);
+						cliente.agregarPuntos(lotePunto);
+						ventaBorrar.setCliente(cliente);
+						clienteService.save(cliente);
+					}
 					ventaService.save(ventaBorrar);
+					
 					Notification.show("La Venta fue penalizada, se le reintegra " + reintegro + " al cliente " +ventaBorrar.getCliente().getNombreyApellido());
 				}
+				AsientoREST.contabilizarVentaAnulada(ventaBorrar, Proyecto1Application.logUser, reintegro );
+				EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+				enviadorDeMail.enviarMailConInfoVentaCancelacion("Cancelacion de Compra", ventaBorrar);
 			}
 			changeHandler.onChange();
 		});
@@ -127,11 +236,19 @@ public class VentasController {
 	private Double calcularImporteCancelacion(LocalDate fechaSalida, Double importeTotal) {
 		Double importeCancelacion = 0.0;
 		LocalDate fechaActual = LocalDate.now();
-		int cantDiasRestantes = fechaSalida.compareTo(fechaActual);
-		if (cantDiasRestantes < 5 && cantDiasRestantes > 0 ) {
-			importeCancelacion = importeTotal * (0.2 * (5-cantDiasRestantes));
+		Date fechaActualDate = Date.from(fechaActual.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		Date fechaSalidaDate = Date.from(fechaSalida.atStartOfDay(ZoneId.systemDefault()).toInstant());
+		int dias = (int) ((fechaSalidaDate.getTime()-fechaActualDate.getTime())/86400000);
+		int compareFecha = fechaSalida.compareTo(fechaActual);
+		if (compareFecha >= 0) {
+			if (dias < 5 && dias > 0 ) {
+				importeCancelacion = importeTotal * (0.2 * (5-dias));
+				if (this.puntosUsados > 0) {
+					Double resu = this.puntosUsados.doubleValue() * (0.2 * (5-dias));
+					this.puntosUsadosPenalizacion = resu.intValue();
+				}	
+			}
 		}
-
 		return importeCancelacion;
 	}
 
@@ -149,9 +266,21 @@ public class VentasController {
 		Venta ventaBusqueda = new Venta();
 		if(checkFiltros()){
 			setParametrosBusqueda(ventaBusqueda);
-			ventaView.getGrid().setItems(ventaService.findVentas(ventaBusqueda));
+			List<Venta> ventas = ventaService.findVentas(ventaBusqueda);
+			if(Proyecto1Application.logUser!=null){
+				if(Proyecto1Application.logUser.getRol().getName().equals("CLIENTE")){
+					ventas = ventas.stream().filter(e->e.getCliente().equals(Proyecto1Application.logUser.getCliente())).collect(Collectors.toList());
+				}
+			}
+			ventaView.getGrid().setItems(ventas);
 		}else {
-			ventaView.getGrid().setItems(ventaService.findAllVentas());
+			List<Venta> ventas = ventaService.findAllVentas();
+			if(Proyecto1Application.logUser!=null){
+				if(Proyecto1Application.logUser.getRol().getName().equals("CLIENTE")){
+					ventas = ventas.stream().filter(e->e.getCliente().equals(Proyecto1Application.logUser.getCliente())).collect(Collectors.toList());
+				}
+			}
+			ventaView.getGrid().setItems(ventas);
 		}
 	}
 
@@ -204,5 +333,9 @@ public class VentasController {
 
 	public VentaView getView(){
 		return ventaView;
+	}
+	
+	private String getCantAniosVencimientoPuntos() {
+		return configuracionService.findValueByKey("cant_anios_venc_puntos");
 	}
 }

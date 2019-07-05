@@ -1,5 +1,6 @@
 package com.tp.proyecto1.controllers.reportes;
 
+import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.contabilidad.Egreso;
 import com.tp.proyecto1.model.pasajes.Pago;
@@ -57,15 +58,25 @@ public class ReportesController {
 	public ReportesController() {
 		Inject.Inject(this);
 		this.reportesView = new ReportesView();
-		setComponents();
 		setListeners();
+		setComponents();
 	}
 
 	private void setListeners() {
 
 		reportesView.getComboTipoReporte().addValueChangeListener(e->setFiltroDinamico());
 		reportesView.getBtnGenerar().addClickListener(e-> generarReporte());
+		reportesView.getComboTipoGrafico().addValueChangeListener(e->deshabilitarComboMeses());
 
+	}
+
+	private void deshabilitarComboMeses() {
+
+		if(reportesView.getComboTipoGrafico().getValue().equals("Anual")){
+			reportesView.getComboBoxMeses().setEnabled(false);
+		}else{
+			reportesView.getComboBoxMeses().setEnabled(true);
+		}
 	}
 
 	private void generarReporte() {
@@ -171,7 +182,8 @@ public class ReportesController {
 		HorizontalLayout hlGraficos = new HorizontalLayout();
 		hlGraficos.setSizeFull();
 		hlGraficos.add(areaChart,donutChart,verticalChart);
-		reportesView.add(hlGraficos);
+		reportesView.getHlGraficos().removeAll();
+		reportesView.getHlGraficos().add(hlGraficos);
 	}
 
 	private void setGraficosAnual(List<Double> listaMensual) {
@@ -181,7 +193,8 @@ public class ReportesController {
 		HorizontalLayout hlGraficos = new HorizontalLayout();
 		hlGraficos.setSizeFull();
 		hlGraficos.add(areaChart,donutChart,verticalChart);
-		reportesView.add(hlGraficos);
+		reportesView.getHlGraficos().removeAll();
+		reportesView.getHlGraficos().add(hlGraficos);
 	}
 
 	private void setGridEgreso(Grid<Egreso> egresoGrid) {
@@ -304,7 +317,16 @@ public class ReportesController {
 
 	}
 
-	private void setComponents() {
+	public void setComponents() {
+
+		reportesView.getComboBoxMeses().setEnabled(false);
+
+		if(Proyecto1Application.logUser!=null){
+			if(Proyecto1Application.logUser.getRol().getName().equals("SUPERVISOR")){
+				reportesView.getComboTipoReporte().setValue(TipoReporte.VENDEDOR.name());
+				reportesView.getComboTipoReporte().setReadOnly(true);
+			}
+		}
 	}
 
 	public ReportesView getReportesView() {

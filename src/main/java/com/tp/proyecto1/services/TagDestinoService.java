@@ -1,13 +1,12 @@
 package com.tp.proyecto1.services;
 
-import java.util.List;
-
+import com.tp.proyecto1.model.viajes.TagDestino;
+import com.tp.proyecto1.repository.viajes.TagDestinoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tp.proyecto1.model.viajes.TagDestino;
-import com.tp.proyecto1.repository.viajes.TagDestinoRepository;
+import java.util.List;
 
 @Service
 public class TagDestinoService {

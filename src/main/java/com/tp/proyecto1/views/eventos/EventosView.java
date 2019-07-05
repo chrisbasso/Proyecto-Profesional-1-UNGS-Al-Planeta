@@ -9,7 +9,6 @@ import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 
@@ -20,9 +19,10 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 	private NumberField idClienteFilter = new NumberField("Nº Cliente/Interesado");
 	private TextField nombreFilter = new TextField("Nombre");
 	private TextField apellidoFilter = new TextField("Apellido");
-	private DatePicker fechaFilter = new DatePicker("Fecha");
+	private DatePicker fechaFilter = new DatePicker("Vence antes del");
 	private Button searchButton = new Button("Buscar", VaadinIcon.SEARCH.create());
-	private Button newConsultaButton = new Button("Nueva Evento");
+	private Button newConsultaButton = new Button("Nuevo");
+	private Button helpButton = new Button(VaadinIcon.QUESTION_CIRCLE.create());
 	private Checkbox checkAbierto = new Checkbox("Solo Abiertos");
 
 	public EventosView() {
@@ -37,27 +37,31 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 		searchButton.setMinWidth("150px");
 		newConsultaButton.setMinWidth("150px");
 		checkAbierto.setMinWidth("150px");
+		idFilter.setWidth("100px");
 		idClienteFilter.setMinWidth("150px");	
+		fechaFilter.setWidth("150px");
+		nombreFilter.setWidth("140px");
+		apellidoFilter.setWidth("140px");
+		checkAbierto.setWidth("160px");
 		ConfigDatePicker configDatePicker = new ConfigDatePicker();
 		configDatePicker.setearLenguajeEspañol(fechaFilter);
 	}
 
 	@Override
 	public void setLayout() {
-		HorizontalLayout hlSpace = new HorizontalLayout();
-		hlSpace.setWidthFull();
-		this.hlActions.add(idFilter,idClienteFilter,nombreFilter,apellidoFilter,fechaFilter,checkAbierto,hlSpace,searchButton,newConsultaButton);
+		this.hlActions.add(idFilter,idClienteFilter,nombreFilter,apellidoFilter,fechaFilter,checkAbierto,searchButton,newConsultaButton,helpButton);
 	}
 
 	@Override
 	public void setGrid() {
-		grid.setColumns("id", "persona.id", "persona.nombre", "persona.apellido", "fecha", "hora","creadorEvento.user","usuarioAsignado.user", "cerradorEvento.user", "prioridad");
+		grid.setColumns("id", "persona.nombre", "persona.apellido", "fecha","fechaVencimiento","horaVencimiento","creadorEvento.user","usuarioAsignado.user", "cerradorEvento.user", "prioridad");
 		grid.getColumnByKey("id").setHeader("Nº Evento");
-		grid.getColumnByKey("persona.id").setHeader("Nº Cliente/Interesado");
 		grid.getColumnByKey("creadorEvento.user").setHeader("Creador");
 		grid.getColumnByKey("usuarioAsignado.user").setHeader("Asignado a");
 		grid.getColumnByKey("cerradorEvento.user").setHeader("Cerrado por:");
-		grid.getColumnByKey("id").setWidth("100px").setFlexGrow(0);
+		grid.getColumnByKey("fecha").setWidth("125px").setFlexGrow(0);
+		grid.getColumnByKey("fechaVencimiento").setHeader("Vence el").setWidth("125px").setFlexGrow(0);
+		grid.getColumnByKey("horaVencimiento").setHeader("A las").setWidth("120px").setFlexGrow(0);
 	}
 
 	public Grid<Evento> getGrid(){
@@ -126,6 +130,16 @@ public class EventosView extends FilterGridLayout<Evento> implements View {
 
 	public void setNewConsultaButton(Button newConsultaButton) {
 		this.newConsultaButton = newConsultaButton;
+	}
+
+	public Button getHelpButton()
+	{
+		return helpButton;
+	}
+
+	public void setHelpButton(Button helpButton)
+	{
+		this.helpButton = helpButton;
 	}
 
 }

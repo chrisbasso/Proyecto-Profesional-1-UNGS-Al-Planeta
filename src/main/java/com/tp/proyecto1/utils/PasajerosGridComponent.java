@@ -3,6 +3,7 @@ package com.tp.proyecto1.utils;
 import com.tp.proyecto1.model.pasajes.Pasajero;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.html.Div;
@@ -22,8 +23,10 @@ public class PasajerosGridComponent extends VerticalLayout {
 	private List<Pasajero> pasajerosList = new ArrayList<>();
 	private Editor<Pasajero> editor;
 	private Collection<Button> editButtons;
+	private Boolean editarInvisible;
+	
 	public PasajerosGridComponent() {
-
+		this.editarInvisible = Boolean.TRUE;
 		setLayout();
 		setGrid();
 		setListener();
@@ -63,7 +66,7 @@ public class PasajerosGridComponent extends VerticalLayout {
 	public void setGrid() {
 		grid.setWidthFull();
 
-		grid.setHeight("170px");
+		//grid.setHeight("170px");
 
 		grid.setItems(pasajerosList);
 
@@ -73,6 +76,8 @@ public class PasajerosGridComponent extends VerticalLayout {
 				.setHeader("Nombre y Apellido");
 		Grid.Column<Pasajero> columnDNI = grid.addColumn(Pasajero::getDni)
 				.setHeader("DNI");
+		Grid.Column<Pasajero> fechaNacimiento = grid.addColumn(Pasajero::getFechaNacimiento)
+				.setHeader("Fecha Nacimiento");
 
 		Binder<Pasajero> binder = new Binder<>(Pasajero.class);
 		editor = grid.getEditor();
@@ -95,6 +100,11 @@ public class PasajerosGridComponent extends VerticalLayout {
 						"DNI no puede estar vacío").bind("dni");
 		columnDNI.setEditorComponent(fieldDni);
 
+		DatePicker fieldFecha = new DatePicker();
+		fieldFecha.setHeight("30px");
+		binder.forField(fieldFecha).bind("fechaNacimiento");
+		fechaNacimiento.setEditorComponent(fieldFecha);
+
 		editButtons = Collections
 				.newSetFromMap(new WeakHashMap<>());
 
@@ -111,6 +121,7 @@ public class PasajerosGridComponent extends VerticalLayout {
 				fieldNombre.focus();
 			});
 			edit.setEnabled(!editor.isOpen());
+			edit.setVisible(editarInvisible);
 			editButtons.add(edit);
 			return edit;
 		});
@@ -174,4 +185,13 @@ public class PasajerosGridComponent extends VerticalLayout {
 		this.pasajerosList = pasajerosList;
 		grid.getDataProvider().refreshAll();
 	}
+
+	public Boolean getEditarInvisible() {
+		return editarInvisible;
+	}
+
+	public void setEditarInvisible(Boolean editarInvisible) {
+		this.editarInvisible = editarInvisible;
+	}
+	
 }

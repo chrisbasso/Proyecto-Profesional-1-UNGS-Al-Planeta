@@ -117,7 +117,7 @@ public class VentaForm extends Dialog {
 		subtotal.setPrefixComponent(new Span("$"));
 		subtotal.setPreventInvalidInput(true);
 		pasajerosGridComponent = new PasajerosGridComponent();
-		pasajerosGridComponent.getGrid().setHeight("110px");
+		pasajerosGridComponent.getGrid().setHeight("200px");
 		promocion = new ComboBox<>();
 		puntosDisponibles = new TextField();
 		puntosaUsar = new NumberField();

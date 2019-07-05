@@ -11,4 +11,7 @@ import java.util.List;
 public interface EventoRepository extends JpaRepository<Evento, Long> {
 
 	List<Evento> findAllByPersona(Persona persona);
+	
+	List<Evento> findAllByIsAbierto(Boolean estado);
+	
 }

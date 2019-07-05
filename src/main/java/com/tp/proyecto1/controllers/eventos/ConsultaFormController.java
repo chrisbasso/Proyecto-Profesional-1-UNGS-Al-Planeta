@@ -8,18 +8,13 @@ import com.tp.proyecto1.model.eventos.Consulta;
 import com.tp.proyecto1.model.eventos.Evento;
 import com.tp.proyecto1.model.eventos.Reclamo;
 import com.tp.proyecto1.model.users.User;
-import com.tp.proyecto1.model.viajes.Promocion;
-import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.EventoService;
 import com.tp.proyecto1.services.UserService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.eventos.ConsultaForm;
 import com.vaadin.flow.component.AbstractField;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.textfield.EmailField;
-import com.vaadin.flow.component.timepicker.TimePicker;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.Setter;
 import com.vaadin.flow.function.SerializablePredicate;
@@ -32,6 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @UIScope
@@ -70,7 +66,7 @@ public class ConsultaFormController {
         tipos.add("Consulta");
         tipos.add("Reclamo");
         consultaForm.getComboTipo().setItems(tipos);
-        consultaForm.getComboUsuarios().setItems(userService.findAll());
+        consultaForm.getComboUsuarios().setItems( userService.findAll().stream().filter(e->e.getRol().getName().equals("VENDEDOR")).collect(Collectors.toList()));
         consultaForm.getComboUsuarios().setItemLabelGenerator(User::getUser);
         consultaForm.getComboUsuarios().setEnabled(false);
     }
@@ -111,19 +107,25 @@ public class ConsultaFormController {
             }
             evento.setFecha(LocalDate.now());
             evento.setHora(LocalTime.now());
-            evento.setCreadorEvento(Proyecto1Application.logUser);
-            evento.setUsuarioAsignado(Proyecto1Application.logUser);
+            User user = Proyecto1Application.logUser;
+            evento.setCreadorEvento(user);
+            evento.setUsuarioAsignado(user);
+            if (user == null || evento.getCreadorEvento() == null || evento.getUsuarioAsignado() == null)
+            {
+            	Notification.show("Se produjo un erroe al detectar el user, vuelva a intentarlo");
+            	return;
+            }
         }
         else
         {
-            evento.setUsuarioAsignado(consultaForm.getComboUsuarios().getValue());
+        	evento.setUsuarioAsignado(consultaForm.getComboUsuarios().getValue());
         }
         if (consultaForm.getFechaVencimiento().getValue() != null &&
         			consultaForm.getHoraVencimiento().getValue() != null)
         {
-        	if ((evento.getFecha().isEqual(consultaForm.getFechaVencimiento().getValue())
-        				&& evento.getHora().isBefore(consultaForm.getHoraVencimiento().getValue()))
-        				|| evento.getFecha().isBefore(consultaForm.getFechaVencimiento().getValue()))
+        	if ((LocalDate.now().isEqual(consultaForm.getFechaVencimiento().getValue())
+        				&& LocalTime.now().isBefore(consultaForm.getHoraVencimiento().getValue()))
+        				|| LocalDate.now().isBefore(consultaForm.getFechaVencimiento().getValue()))
         	{
         		evento.setFechaVencimiento(consultaForm.getFechaVencimiento().getValue());
                 evento.setHoraVencimiento(consultaForm.getHoraVencimiento().getValue());
@@ -131,15 +133,15 @@ public class ConsultaFormController {
         	else
         	{
         		Notification.show("La fecha de vencimiento no es valida.");
-        		evento = null;
-        		throw new IllegalArgumentException("La fecha de vencimiento no es valida.");
+        		return;
         	}
         }
         evento.setMensaje(consultaForm.getTextAreaDescripcion().getValue());
         evento.setPrioridad(consultaForm.getComboPrioridad().getValue());
-       
+        
         if (binderEvento.writeBeanIfValid(evento)) {
 
+        	this.evento.setCerradorEvento(null); // necesario porque le agregamos un cerrador para que no diga null
         	eventoService.save(this.evento);
         	this.evento = null;
             changeHandler.onChange();
@@ -148,8 +150,9 @@ public class ConsultaFormController {
         }
         else
         {
-        	evento = null;
         	 Notification.show("No se pudo guardar el evento. Revise los campos.");
+        	 if (this.evento.getId() == null)
+        		 this.evento = null;
         }
        
     }
@@ -195,28 +198,45 @@ public class ConsultaFormController {
             consultaForm.getApellido().setValue(evento.getPersona().getApellido());
             consultaForm.getEmail().setValue(evento.getPersona().getEmail());
             consultaForm.getTelefono().setValue(evento.getPersona().getTelefono());
+            
             consultaForm.getCheckInteresado().setValue(true);
+            consultaForm.getEmail().setReadOnly(true);
+            consultaForm.getApellido().setReadOnly(true);
+            consultaForm.getNombre().setReadOnly(true);
+            consultaForm.getCheckInteresado().setReadOnly(true);
+            consultaForm.getTelefono().setReadOnly(true);
         }else{
             consultaForm.getBuscadorClientes().getFiltro().setValue(evento.getPersona().getId().toString());
+            consultaForm.getEmail().setEnabled(false);
+            consultaForm.getApellido().setEnabled(false);
+            consultaForm.getNombre().setEnabled(false);
+            consultaForm.getCheckInteresado().setEnabled(false);
+
         }
         consultaForm.getComboUsuarios().setValue(evento.getUsuarioAsignado());
         consultaForm.getTextAreaDescripcion().setValue(evento.getMensaje());
         consultaForm.getComboPrioridad().setValue(evento.getPrioridad());
+       
+        
+        
         consultaForm.getCheckInteresado().setEnabled(false);
         consultaForm.getBuscadorClientes().setEnabled(false);
         consultaForm.getComboTipo().setEnabled(false);
         consultaForm.getComboUsuarios().setEnabled(true);
-        consultaForm.getFechaVencimiento().setValue(evento.getFechaVencimiento());
-        consultaForm.getHoraVencimiento().setValue(evento.getHoraVencimiento());
+        if (evento.getFechaVencimiento() != null)
+        	consultaForm.getFechaVencimiento().setValue(evento.getFechaVencimiento());
+        if (evento.getHoraVencimiento() != null)
+        	consultaForm.getHoraVencimiento().setValue(evento.getHoraVencimiento());
+        
     }
     
     private void setBinders()
     {
     	setBinderFieldDescripcion(consultaForm.getTextAreaDescripcion(), Evento::getMensaje, Evento::setMensaje, true);
-    	setBinderFieldNombre(consultaForm.getNombre(), Persona::getNombre, Persona::setNombre, true);
-    	setBinderFieldApellido(consultaForm.getApellido(), Persona::getApellido, Persona::setApellido, true);
-    	setBinderFieldMail(consultaForm.getEmail(), Persona::getEmail, Persona::setEmail, true);
-    	setBinderFieldTelefono(consultaForm.getTelefono(), Persona::getTelefono, Persona::setTelefono, true);
+    	setBinderFieldNombre(consultaForm.getNombre(), Persona::getNombre, Persona::setNombre, false);
+    	setBinderFieldApellido(consultaForm.getApellido(), Persona::getApellido, Persona::setApellido, false);
+    	setBinderFieldMail(consultaForm.getEmail(), Persona::getEmail, Persona::setEmail, false);
+    	setBinderFieldTelefono(consultaForm.getTelefono(), Persona::getTelefono, Persona::setTelefono, false);
     	binderEvento.setBean(evento);
     }
     

@@ -1,11 +1,5 @@
 package com.tp.proyecto1;
 
-import static org.junit.Assert.assertEquals;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.springframework.boot.CommandLineRunner;
-
 import com.tp.proyecto1.repository.clientes.ClienteRepository;
 import com.tp.proyecto1.repository.lotePuntos.LotePuntoRepository;
 import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
@@ -15,12 +9,10 @@ import com.tp.proyecto1.repository.pasajes.TransaccionRepository;
 import com.tp.proyecto1.repository.sucursales.SucursalRepository;
 import com.tp.proyecto1.repository.viajes.PaisRepository;
 import com.tp.proyecto1.repository.viajes.PromocionRepository;
-import com.tp.proyecto1.services.AsientoService;
-import com.tp.proyecto1.services.ConfiguracionService;
-import com.tp.proyecto1.services.TagDestinoService;
-import com.tp.proyecto1.services.UserService;
-import com.tp.proyecto1.services.VentaService;
-import com.tp.proyecto1.services.ViajeService;
+import com.tp.proyecto1.services.*;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.boot.CommandLineRunner;
 
 public class Proyecto1ApplicationTest {
 

@@ -1,8 +1,5 @@
 package com.tp.proyecto1.controllers.configuracion;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-
 import com.tp.proyecto1.model.configuraciones.Configuracion;
 import com.tp.proyecto1.services.ConfiguracionService;
 import com.tp.proyecto1.utils.ChangeHandler;
@@ -10,6 +7,8 @@ import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.configuracion.ConfiguracionForm;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 @Controller
 @UIScope
@@ -69,7 +68,7 @@ public class ConfiguracionFormController {
 	
 	private boolean validarDatosCompletos() {
 		boolean notNull = (configuracionForm.getClave() != null && configuracionForm.getValor() != null); 
-		boolean notVacio = (configuracionForm.getClave() != "" && configuracionForm.getValor() != "");
+		boolean notVacio = (!"".equals(configuracionForm.getClave()) && !"".equals(configuracionForm.getValor()));
 		return (notNull && notVacio);			
 	}
 	

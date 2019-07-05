@@ -1,16 +1,10 @@
 package com.tp.proyecto1.model.contabilidad;
 
-import java.time.LocalDate;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.SequenceGenerator;
-
 import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.model.users.User;
+
+import javax.persistence.*;
+import java.time.LocalDate;
 @Entity
 public class Cabecera {
 	

@@ -43,9 +43,8 @@ public class UsuariosView extends FilterGridLayout<User> implements View {
 	@Override
 	public void setGrid() {
 
-		grid.setColumns("id", "user", "password", "rol.name", "sucursal.descripcion", "enabled");
+		grid.setColumns("id", "user", "rol.name", "sucursal.descripcion", "enabled");
 		grid.getColumnByKey("user").setHeader("Nombre Usuario");
-		grid.getColumnByKey("password").setHeader("Contraseña");
 		grid.getColumnByKey("rol.name").setHeader("Rol");
 		grid.getColumnByKey("sucursal.descripcion").setHeader("Sucursal");
 		grid.getColumnByKey("enabled").setHeader("Activo");

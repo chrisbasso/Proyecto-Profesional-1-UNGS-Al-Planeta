@@ -1,20 +1,19 @@
 package com.tp.proyecto1.controllers.viajes;
 
+import com.tp.proyecto1.controllers.reserva.ReservaFormController;
 import com.tp.proyecto1.controllers.venta.VentaFormController;
 import com.tp.proyecto1.model.viajes.*;
-import com.tp.proyecto1.utils.Inject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-
-import com.tp.proyecto1.controllers.reserva.ReservaFormController;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
+import com.tp.proyecto1.utils.Inject;
 import com.tp.proyecto1.views.viajes.ViajesView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.ColumnTextAlign;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 
 @Controller

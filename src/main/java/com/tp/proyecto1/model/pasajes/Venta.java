@@ -1,22 +1,17 @@
 package com.tp.proyecto1.model.pasajes;
 
-import java.util.List;
+import com.tp.proyecto1.model.clientes.Cliente;
+import com.tp.proyecto1.model.viajes.Promocion;
 
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.tp.proyecto1.model.clientes.Cliente;
-import com.tp.proyecto1.model.viajes.Promocion;
+import java.util.List;
 
 @Entity
 public class Venta extends Transaccion{
 	
 	@OneToOne
 	private Promocion promocion;
-	
-	private Double Subtotal;
 	
 	public Venta() {
 		
@@ -32,14 +27,6 @@ public class Venta extends Transaccion{
 
 	public void setPromocion(Promocion promocion) {
 		this.promocion = promocion;
-	}
-
-	public Double getSubtotal() {
-		return Subtotal;
-	}
-
-	public void setSubtotal(Double subtotal) {
-		Subtotal = subtotal;
 	}
 
 }

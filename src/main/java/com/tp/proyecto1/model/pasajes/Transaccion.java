@@ -8,7 +8,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +44,8 @@ public class Transaccion {
 	
 	private EstadoTransaccion estadoTransaccion;
 
+	private Double Subtotal;
+	
 	@ManyToOne
 	private Sucursal sucursal;
 
@@ -176,6 +177,14 @@ public class Transaccion {
 		this.estadoTransaccion = estadoTransaccion;
 	}
 
+	public Double getSubtotal() {
+		return Subtotal;
+	}
+
+	public void setSubtotal(Double subtotal) {
+		Subtotal = subtotal;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -192,4 +201,5 @@ public class Transaccion {
 	public int hashCode() {
 		return Objects.hash(id, pasajes, pagos, importeTotal, cliente);
 	}
+	
 }

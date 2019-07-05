@@ -1,15 +1,14 @@
 package com.tp.proyecto1.controllers.reserva;
 
-import java.time.LocalDate;
-import java.util.List;
-
-import org.springframework.stereotype.Controller;
-
 import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.tp.proyecto1.model.pasajes.Pago;
 import com.tp.proyecto1.views.reserva.AgregarPagoForm;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.stereotype.Controller;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 @UIScope
@@ -55,7 +54,13 @@ public class PagoFormController {
 	 * se ingreso un importe. Los listeners de esos componentes invocan este método. 
 	 */
 	private void validacionBotones() {
-		if(form.getFormaPagoSeleccionada() != null && form.getPagoIngresado() > 0) {
+		Double pagoIngresado = 0.0;
+		if(form.getPagoIngresado() != null) {
+			pagoIngresado = form.getPagoIngresado();	
+		}
+		boolean controlPagoIngresado = (pagoIngresado <= importeMaximo &&
+				pagoIngresado > 0);		
+		if(form.getFormaPagoSeleccionada() != null && controlPagoIngresado) {
 			form.activarBtnAgregar();
 		}else{
 			form.desactivarBtnAgregar();			 

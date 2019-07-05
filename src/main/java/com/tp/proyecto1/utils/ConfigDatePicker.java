@@ -1,9 +1,9 @@
 package com.tp.proyecto1.utils;
 
-import java.util.Arrays;
-
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.datepicker.DatePicker.DatePickerI18n;
+
+import java.util.Arrays;
 
 public class ConfigDatePicker {
 	

@@ -195,6 +195,6 @@ public class Viaje {
 	@Override
 	public String toString()
 	{
-		return getDestino().toString() + ", " + getFechaSalida().toString() + " "  +  getHoraSalida().toString() + ", " + getTransporte().getTipo().getDescripcion();
+		return	"Origen: " + getOrigen().getNombre() + ", Destino: " + getDestino().toString() + ", " + getFechaSalida().toString() + " "  +  getHoraSalida().toString() + ", " + getTransporte().getTipo().getDescripcion();
 	}
 }

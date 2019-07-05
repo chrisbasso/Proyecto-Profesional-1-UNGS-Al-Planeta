@@ -1,15 +1,6 @@
 package com.tp.proyecto1.controllers.reserva;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-
+import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.controllers.venta.VentaFormController;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.model.pasajes.Reserva;
@@ -20,14 +11,20 @@ import com.tp.proyecto1.services.ReservaService;
 import com.tp.proyecto1.services.ViajeService;
 import com.tp.proyecto1.utils.ChangeHandler;
 import com.tp.proyecto1.utils.ConfirmationDialog;
+import com.tp.proyecto1.utils.EnviadorDeMail;
 import com.tp.proyecto1.utils.Inject;
-import com.tp.proyecto1.views.reserva.ComprobanteReserva;
+import com.tp.proyecto1.views.reportes.ComprobanteReservaJR;
 import com.tp.proyecto1.views.reserva.ReservaView;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
+import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @UIScope
@@ -96,6 +93,8 @@ public class ReservasController {
 			reservaService.save(reserva);
 			viajeService.save(viaje);
 			Notification.show("Reserva dada de baja");
+			EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+			enviadorDeMail.enviarMailConInfoVentaCancelacion("Cancelacion de Reserva", reserva);
 			changeHandler.onChange();
 		});
 		confirmationDialog.open();
@@ -136,10 +135,22 @@ public class ReservasController {
 
     private void imprimirComprobante(){
     	Reserva reserva = reservaView.getReservaSeleccionada(); 
-		ComprobanteReserva comprobante = new ComprobanteReserva(reserva);
-		comprobante.open();
-		UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
-				"  print(); self.close();}, 1000);");
+    	EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+    	if(reserva != null) {
+			/*ComprobanteReserva comprobante = new ComprobanteReserva(reserva);
+			comprobante.open();
+			UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
+					"  print(); self.close();}, 1000);");*/
+    		List<Reserva> reservas = new ArrayList<Reserva>();
+			reservas.add(reserva);
+			ComprobanteReservaJR comproReserva = new ComprobanteReservaJR(reservas);
+			comproReserva.exportarAPdf(reserva.getCliente().getNombreyApellido()+ "-"+ reserva.getCliente().getDni());
+			enviadorDeMail.enviarConGmail(reserva.getCliente().getEmail(),
+					"Comprobante de reserva- " + reserva.getCliente().getNombreyApellido()+ "-"+ reserva.getCliente().getDni(), reserva);
+    	}
+    	else{
+			Notification.show("Seleccione una Reserva.");
+		}
 	}
 
     private void listarReservas() {
@@ -193,12 +204,23 @@ public class ReservasController {
     	}        
     	
     	reservas.addAll(reservaService.findByCiudad(ciudadFiltros));
-    	List <Reserva> reservasList = new ArrayList <Reserva> (reservas);
+    	List <Reserva> reservasList = new ArrayList(reservas);
+		if(Proyecto1Application.logUser!=null){
+			if(Proyecto1Application.logUser.getRol().getName().equals("CLIENTE")){
+				reservasList = reservasList.stream().filter(e->e.getCliente().equals(Proyecto1Application.logUser.getCliente())).collect(Collectors.toList());
+			}
+		}
     	reservaView.cargarReservas(reservasList);
     }
     
     private void listarTodasLasReservas() {
-    	reservaView.cargarReservas(reservaService.findAll());
+		List <Reserva> reservasList = reservaService.findAll();
+		if(Proyecto1Application.logUser!=null){
+			if(Proyecto1Application.logUser.getRol().getName().equals("CLIENTE")){
+				reservasList = reservasList.stream().filter(e->e.getCliente().equals(Proyecto1Application.logUser.getCliente())).collect(Collectors.toList());
+			}
+		}
+    	reservaView.cargarReservas(reservasList);
     }
 
     private void venderReserva() {

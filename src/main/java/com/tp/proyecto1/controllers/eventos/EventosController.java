@@ -78,18 +78,22 @@ public class EventosController {
 	}
 
 	private Button createEditButton(Evento evento) {
-		return new Button(VaadinIcon.EDIT.create(), clickEvent -> {
+		Button editBtn = new Button(VaadinIcon.EDIT.create(), clickEvent -> {
 			ConsultaFormController consultaFormController = new ConsultaFormController();
 			consultaFormController.setComponentsValues(evento);
 			consultaFormController.getView().open();
 			consultaFormController.setChangeHandler(this::listarEventos);
 		});
+		if (!evento.isAbierto())
+			editBtn.setEnabled(false);
+		return editBtn;
 	}
 
 
 	private void setListeners() {
 		setChangeHandler(this::listarEventos);
 		eventosView.getNewConsultaButton().addClickListener(e->openConsultaForm());
+		eventosView.getHelpButton().addClickListener(e->abrirManual());
 		eventosView.getSearchButton().addClickListener(e->listarEventos());
 	}
 
@@ -98,11 +102,18 @@ public class EventosController {
 		consultaFormController.setChangeHandler(this::listarEventos);
 		consultaFormController.getView().open();
 	}
+	
+	private void abrirManual()
+	{
+		EventosHelpController eventosHelpController = new EventosHelpController();
+		eventosHelpController.getView().open();
+	}
 
 	private void listarEventos() {
 		Evento eventoConsulta = new Consulta();
 		Evento eventoReclamo = new Reclamo();
-		System.out.println(eventosView.getCheckAbierto().getValue());
+
+		
 		if (eventosView.getCheckAbierto().getValue())
 		{
 			
@@ -112,21 +123,28 @@ public class EventosController {
         if(checkFiltros()){
             setParametrosBusqueda(eventoConsulta);
             setParametrosBusqueda(eventoReclamo);
+           
             
-			List<Evento> eventos = eventoService.findEventos(eventoConsulta);
-			for(Evento evento : eventoService.findEventos(eventoReclamo))
+			List<Evento> eventos = eventoService.findEventos(eventoConsulta, eventosView.getFechaFilter().getValue());
+			for(Evento evento : eventoService.findEventos(eventoReclamo, eventosView.getFechaFilter().getValue()))
 				eventos.add(evento);
 				
 			eventos.stream().forEach(e-> verificarUsuarioCierre(e));
             eventosView.getGrid().setItems(eventos);
         }else{
-			List<Evento> eventos = eventoService.findAll();
+			List<Evento> eventos = eventoService.findAll(new Evento());
 			eventos.stream().forEach(e-> verificarUsuarioCierre(e));
             eventosView.getGrid().setItems(eventos);
         }
 	}
 
 	private void verificarUsuarioCierre(Evento e) {
+		if (e.getUsuarioAsignado() == null)
+		{
+				User usuarioVacio = new User();
+				usuarioVacio.setUser("");
+				e.setUsuarioAsignado(usuarioVacio);
+		}
 		if(e.getCerradorEvento()==null){
 			User usuarioVacio = new User();
 			usuarioVacio.setUser("");
@@ -150,12 +168,6 @@ public class EventosController {
 		if(!eventosView.getApellidoFilter().isEmpty()){
 			eventoBusqueda.getPersona().setApellido(eventosView.getApellidoFilter().getValue());
 		}
-		if(!eventosView.getFechaFilter().isEmpty()){
-			eventoBusqueda.setFecha(eventosView.getFechaFilter().getValue());
-		}
-		
-		
-
 	}
 
 	private boolean checkFiltros() {

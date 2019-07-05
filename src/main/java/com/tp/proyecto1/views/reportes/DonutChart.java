@@ -7,7 +7,6 @@ import com.github.appreciated.apexcharts.config.builder.ResponsiveBuilder;
 import com.github.appreciated.apexcharts.config.chart.Type;
 import com.github.appreciated.apexcharts.config.legend.Position;
 import com.github.appreciated.apexcharts.config.responsive.builder.OptionsBuilder;
-
 import com.vaadin.flow.component.html.Div;
 
 import java.util.List;
@@ -36,8 +35,9 @@ public class DonutChart extends Div {
 								.build())
 						.build());
 		add(donutChart);
-		setWidth("35%");
-		setHeight("35%");
+		setWidth("30%");
+		setHeight("30%");
+//		donutChart.withColors("#800000","#808000","#008000","#008080","#800080","#00FFFF", "#FFFF00", "#00FF00", "#e6194B", "#bfef45", "#fabebe", "#469990");
 	}
 }
 

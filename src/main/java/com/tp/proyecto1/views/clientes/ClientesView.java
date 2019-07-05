@@ -1,6 +1,5 @@
 package com.tp.proyecto1.views.clientes;
 
-import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.clientes.Cliente;
 import com.tp.proyecto1.utils.FilterGridLayout;
 import com.vaadin.flow.component.button.Button;
@@ -9,7 +8,6 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 

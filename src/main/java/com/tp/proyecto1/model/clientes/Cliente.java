@@ -1,13 +1,10 @@
 package com.tp.proyecto1.model.clientes;
 
-import javax.persistence.*;
-
+import com.tp.proyecto1.model.lotePunto.LotePunto;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import com.tp.proyecto1.model.lotePunto.LotePunto;
-import com.tp.proyecto1.model.pasajes.Pago;
-
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

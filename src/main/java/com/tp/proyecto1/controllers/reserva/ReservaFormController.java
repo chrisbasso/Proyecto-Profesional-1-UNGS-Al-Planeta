@@ -1,13 +1,5 @@
 package com.tp.proyecto1.controllers.reserva;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-
 import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.controllers.contabilidad.AsientoREST;
 import com.tp.proyecto1.model.clientes.Cliente;
@@ -16,18 +8,21 @@ import com.tp.proyecto1.model.pasajes.Pasaje;
 import com.tp.proyecto1.model.pasajes.PasajeReserva;
 import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.model.viajes.Viaje;
-import com.tp.proyecto1.services.ClienteService;
-import com.tp.proyecto1.services.ConfiguracionService;
-import com.tp.proyecto1.services.ReservaService;
-import com.tp.proyecto1.services.VentaService;
-import com.tp.proyecto1.services.ViajeService;
+import com.tp.proyecto1.services.*;
 import com.tp.proyecto1.utils.ChangeHandler;
+import com.tp.proyecto1.utils.EnviadorDeMail;
 import com.tp.proyecto1.utils.Inject;
-import com.tp.proyecto1.views.reserva.ComprobanteReserva;
+import com.tp.proyecto1.views.reportes.ComprobanteReservaJR;
 import com.tp.proyecto1.views.reserva.ReservaForm;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @UIScope
@@ -78,8 +73,13 @@ public class ReservaFormController {
      */
 	private void actualizarImportes(){
 		reservaForm.actualizarPrecioTotal(getPrecioTotal());
-		reservaForm.actualizarSaldo(getSaldo());
+		Double saldo = getSaldo();
+		reservaForm.actualizarSaldo(saldo);
 		reservaForm.actualizarPagos(getSumatoriaPagos());
+		
+		if(saldo <= 0) {
+			reservaForm.deshabilitarBtnAgregarPago();	
+		}
 	}
 	/*
 	 * Calcular el precio total según los datos del form
@@ -151,8 +151,11 @@ public class ReservaFormController {
 			Long id = reservaService.save(reserva);
 			AsientoREST.contabilizarNuevaReserva(reserva);
 			viajeService.save(viaje);
-		//	imprimirComprobante(reserva);
+		/*	EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+			enviadorDeMail.enviarMailConInfoReserva("Confirmacion y detalle de Reserva - Al Planeta", reserva);*/
+			imprimirComprobante(reserva);
 			mensajeGuardadoCierreForm(id);
+			reservaForm.close();
 		}else {
 			Notification.show("Lo sentimos, no quedan pasajes disponibles en el viaje seleccionado.");
 			reservaForm.close();
@@ -160,10 +163,18 @@ public class ReservaFormController {
 	}	
 	private void imprimirComprobante(Reserva reserva)
 	{
+		/*
 		ComprobanteReserva comprobante = new ComprobanteReserva(reserva);
 		comprobante.open();
 		UI.getCurrent().getPage().executeJavaScript("setTimeout(function() {" +
-				"  print(); self.close();}, 1000);");
+				"  print(); self.close();}, 1000);");*/
+		EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+		List<Reserva> reservas = new ArrayList<Reserva>();
+		reservas.add(reserva);
+		ComprobanteReservaJR comproVenta = new ComprobanteReservaJR(reservas);
+		comproVenta.exportarAPdf(reserva.getCliente().getNombreyApellido()+ "-"+ reserva.getCliente().getDni());
+		enviadorDeMail.enviarConGmail(reserva.getCliente().getEmail(),
+				"Comprobante de Reserva - " + reserva.getCliente().getNombreyApellido()+ "-"+ reserva.getCliente().getDni(), reserva);
 	}
 	/*
 	 *  Iniciar el form para modificaciones de reservas
@@ -190,7 +201,9 @@ public class ReservaFormController {
 			reserva.setPagos(listaDePagos);
 			Long id = reservaService.save(reserva);
 			viajeService.save(viaje);
+			imprimirComprobante(reserva);
 			mensajeGuardadoCierreForm(id);
+			reservaForm.close();	
 		}else {
 			Notification.show("Lo sentimos, no pudimos actualizar los pasajes disponibles en el viaje seleccionado.");
 			reservaForm.close();

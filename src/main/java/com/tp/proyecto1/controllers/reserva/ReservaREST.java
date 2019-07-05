@@ -1,17 +1,16 @@
 package com.tp.proyecto1.controllers.reserva;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import com.tp.proyecto1.model.pasajes.Reserva;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.services.ClienteService;
 import com.tp.proyecto1.services.ConfiguracionService;
 import com.tp.proyecto1.services.ReservaService;
 import com.tp.proyecto1.services.ViajeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 @Component
 public class ReservaREST {
 	@Autowired

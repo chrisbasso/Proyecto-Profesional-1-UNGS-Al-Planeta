@@ -1,11 +1,10 @@
 package com.tp.proyecto1.services;
 
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import com.tp.proyecto1.model.viajes.Ciudad;
+import com.tp.proyecto1.model.viajes.Promocion;
+import com.tp.proyecto1.model.viajes.PromocionPuntos;
+import com.tp.proyecto1.model.viajes.Viaje;
+import com.tp.proyecto1.repository.viajes.PromocionRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +12,11 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tp.proyecto1.model.viajes.Ciudad;
-import com.tp.proyecto1.model.viajes.Promocion;
-import com.tp.proyecto1.model.viajes.PromocionPuntos;
-import com.tp.proyecto1.model.viajes.Viaje;
-import com.tp.proyecto1.repository.viajes.PromocionRepository;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class PromocionService

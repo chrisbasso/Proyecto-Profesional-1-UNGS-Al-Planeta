@@ -7,7 +7,6 @@ import com.tp.proyecto1.model.users.User;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -27,7 +26,7 @@ public class Evento {
 	@ManyToOne
 	private User creadorEvento;
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne
 	private User cerradorEvento;
 
 	@ManyToOne
@@ -132,8 +131,6 @@ public class Evento {
 				Objects.equals(mensaje, evento.mensaje) &&
 				Objects.equals(fecha, evento.fecha) &&
 				Objects.equals(hora, evento.hora) &&
-				Objects.equals(fechaVencimiento, evento.fechaVencimiento) &&
-				Objects.equals(horaVencimiento, evento.horaVencimiento) &&
 				Objects.equals(persona, evento.persona) &&
 				Objects.equals(prioridad, evento.prioridad);
 	}

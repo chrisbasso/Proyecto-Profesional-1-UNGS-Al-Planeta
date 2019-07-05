@@ -26,7 +26,7 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
     private Button btnComprobante;
     private Button btnEnvioMail;
     private Checkbox activosCheck;
-
+	
     public VentaView() {
         super(Venta.class);
         setComponents();
@@ -42,15 +42,15 @@ public class VentaView extends FilterGridLayout<Venta> implements View {
         this.codTransporteFilter = new TextField("Cod. Transporte");
         this.searchButton = new Button("Buscar", VaadinIcon.SEARCH.create());
         this.searchButton.setMinWidth("110px");
-        this.btnComprobante = new Button("Exportar Comprobante");
+        this.btnComprobante = new Button("Reenviar Comprobante",VaadinIcon.MAILBOX.create());
         this.fechaFilter = new DatePicker("Fecha");
         ConfigDatePicker configDatePicker = new ConfigDatePicker();
         configDatePicker.setearLenguajeEspañol(fechaFilter);
         this.activosCheck = new Checkbox("Solo Activos");
         this.activosCheck.setMinWidth("140px");
         activosCheck.setValue(true);
-        this.btnEnvioMail = new Button("Enviar Mail", VaadinIcon.MAILBOX.create());
-        this.btnEnvioMail.setVisible(false);
+        this.btnEnvioMail = new Button("Reenviar Voucher", VaadinIcon.MAILBOX.create());
+        
     }
 
     @Override

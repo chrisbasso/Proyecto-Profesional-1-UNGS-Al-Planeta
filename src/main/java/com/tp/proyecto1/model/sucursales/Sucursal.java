@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Sucursal {
@@ -50,7 +51,20 @@ public class Sucursal {
 	public void setTransacciones(List<Transaccion> transacciones) {
 		this.transacciones = transacciones;
 	}
+	
+	@Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Sucursal sucursal = (Sucursal) o;
+        return Objects.equals(id, sucursal.id) &&
+                Objects.equals(descripcion, sucursal.descripcion);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, descripcion);
+    }
 	@Override
 	public String toString() {
 		return descripcion;

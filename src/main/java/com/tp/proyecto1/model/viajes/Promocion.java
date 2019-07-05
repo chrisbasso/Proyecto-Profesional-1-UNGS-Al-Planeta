@@ -1,27 +1,13 @@
 package com.tp.proyecto1.model.viajes;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import com.vaadin.flow.component.dialog.Dialog;
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Entity
 @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)

@@ -1,16 +1,26 @@
 package com.tp.proyecto1;
 
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-
+import com.tp.proyecto1.controllers.reserva.ReservaREST;
+import com.tp.proyecto1.model.contabilidad.Cuenta;
+import com.tp.proyecto1.model.contabilidad.TipoCuenta;
+import com.tp.proyecto1.model.lotePunto.LotePunto;
+import com.tp.proyecto1.model.pasajes.EstadoTransaccion;
+import com.tp.proyecto1.model.pasajes.Reserva;
+import com.tp.proyecto1.model.pasajes.Venta;
+import com.tp.proyecto1.model.sucursales.Sucursal;
+import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.model.viajes.*;
+import com.tp.proyecto1.repository.clientes.ClienteRepository;
+import com.tp.proyecto1.repository.lotePuntos.LotePuntoRepository;
+import com.tp.proyecto1.repository.pasajes.*;
+import com.tp.proyecto1.repository.sucursales.SucursalRepository;
 import com.tp.proyecto1.repository.viajes.ContinenteRepository;
+import com.tp.proyecto1.repository.viajes.PaisRepository;
+import com.tp.proyecto1.repository.viajes.PromocionRepository;
+import com.tp.proyecto1.services.*;
+import com.tp.proyecto1.utils.EnviadorDeMail;
+import com.tp.proyecto1.views.reportes.VoucherVentaJR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -19,29 +29,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
 
-import com.tp.proyecto1.controllers.reserva.ReservaREST;
-import com.tp.proyecto1.model.contabilidad.Cuenta;
-import com.tp.proyecto1.model.contabilidad.TipoCuenta;
-import com.tp.proyecto1.model.lotePunto.LotePunto;
-import com.tp.proyecto1.model.pasajes.EstadoTransaccion;
-import com.tp.proyecto1.model.pasajes.Reserva;
-import com.tp.proyecto1.model.sucursales.Sucursal;
-import com.tp.proyecto1.model.users.User;
-import com.tp.proyecto1.repository.clientes.ClienteRepository;
-import com.tp.proyecto1.repository.lotePuntos.LotePuntoRepository;
-import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
-import com.tp.proyecto1.repository.pasajes.PasajeVentaRepository;
-import com.tp.proyecto1.repository.pasajes.ReservaRepository;
-import com.tp.proyecto1.repository.pasajes.TransaccionRepository;
-import com.tp.proyecto1.repository.sucursales.SucursalRepository;
-import com.tp.proyecto1.repository.viajes.PaisRepository;
-import com.tp.proyecto1.repository.viajes.PromocionRepository;
-import com.tp.proyecto1.services.AsientoService;
-import com.tp.proyecto1.services.ConfiguracionService;
-import com.tp.proyecto1.services.TagDestinoService;
-import com.tp.proyecto1.services.UserService;
-import com.tp.proyecto1.services.VentaService;
-import com.tp.proyecto1.services.ViajeService;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 @SpringBootApplication
@@ -73,7 +66,8 @@ public class Proyecto1Application {
 									  SucursalRepository sucursalRepository,
 									  AsientoService asientoService,
 									  LotePuntoRepository lotePuntoRepository,
-									  ContinenteRepository continenteRepository) {
+									  ContinenteRepository continenteRepository,
+									  VentaRepository ventaRepository) {
 		return args -> {
 			setSurcursales(sucursalRepository);
 			crearUsuarios(userService);
@@ -84,12 +78,13 @@ public class Proyecto1Application {
 			crearPaisesCiudades(continenteRepository);
 			//crearViajes(viajeService);
 			crearCuentas(asientoService);
-			procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository, lotePuntoRepository);
+			procesoVertificarVencimientos(viajeService, reservaRepository, promocionRepository, lotePuntoRepository,ventaRepository);
+			procesoEnvioDeVoucher(ventaRepository);
 
 		};
 	}
 
-	private void procesoVertificarVencimientos(ViajeService viajeService, ReservaRepository reservaRepository, PromocionRepository promocionRepository, LotePuntoRepository lotePuntoRepository) {
+	private void procesoVertificarVencimientos(ViajeService viajeService, ReservaRepository reservaRepository, PromocionRepository promocionRepository, LotePuntoRepository lotePuntoRepository, VentaRepository ventaRepository) {
 		Timer timer = new Timer();
 
 		TimerTask task = new TimerTask() {
@@ -98,7 +93,6 @@ public class Proyecto1Application {
 			public void run()
 			{
 				log.info("Verificando Vencimientos...");
-
 				List<Reserva> reservas = reservaRepository.findAll();				
 				for (Reserva reserva : reservas) {
 					boolean seDebeAnular = false;
@@ -119,9 +113,23 @@ public class Proyecto1Application {
 				Viaje viajeExample = new Viaje();
 				viajeExample.setFechaSalida(LocalDate.now());
 				List<Viaje> viajes = viajeService.findViajes(viajeExample,null, null);
+				LotePunto lotePuntoExample2 = new LotePunto();
+				lotePuntoExample2.setIsAcreditado(Boolean.FALSE);
+				Venta venta = new Venta();
+				
 				for (Viaje viaje : viajes) {
 					if(viaje.getHoraSalida().isBefore(LocalTime.now()) && viaje.isActivo()){
 						log.info(viaje.getHoraSalida().toString());
+						venta.setViaje(viaje);
+						lotePuntoExample2.setVenta(venta);
+						List<LotePunto> lotePuntos2 = lotePuntoRepository.findAll(Example.of(lotePuntoExample2));
+						for(LotePunto lotePunto : lotePuntos2){
+							if(lotePunto.getVenta().getEstadoTransaccion() != EstadoTransaccion.CANCELADA || 
+									lotePunto.getVenta().getEstadoTransaccion() != EstadoTransaccion.PENALIZADA) {
+								lotePunto.setIsAcreditado(Boolean.TRUE);
+								lotePuntoRepository.save(lotePunto);
+							}
+						}
 						viaje.setActivo(Boolean.FALSE);
 						viajeService.save(viaje);
 					}
@@ -152,12 +160,69 @@ public class Proyecto1Application {
 					lotePunto.setActivo(Boolean.FALSE);
 					lotePuntoRepository.save(lotePunto);
 				}
-
+				
+				/*log.info("Verificando envio de vouchers...");
+				
+				EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+				LocalDate fechaActual = LocalDate.now();
+				List<Venta> ventas = ventaRepository.findAll();	
+				for (Venta venta : ventas) {
+					LocalDate fechaVoucher =  venta.getViaje().getFechaSalida().minusDays(1);
+					if (venta.isActivo() && fechaVoucher.compareTo(fechaActual) == 0 && venta.getEstadoTransaccion() != EstadoTransaccion.VOUCHERENVIADO 
+							&& venta.getEstadoTransaccion() != EstadoTransaccion.CANCELADA  && venta.getEstadoTransaccion() != EstadoTransaccion.PENALIZADA){
+						venta.setEstadoTransaccion(EstadoTransaccion.VOUCHERENVIADO);
+						ventaRepository.save(venta);
+						List<Venta> ventasList = new ArrayList<Venta>();
+						ventasList.add(venta);
+						VoucherVentaJR voucherVenta = new VoucherVentaJR(ventas);
+						voucherVenta.exportarAPdf(venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni());
+						enviadorDeMail.enviarConGmailVoucher(venta.getCliente().getEmail(),
+								"Voucher del Viaje- " + venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni(), venta);
+					}
+				}*/
 			}
 		};
 
-		timer.schedule(task, 10, 60000); //una vez por minuto
+		timer.schedule(task, 100, 700000); //una vez por minuto
 	}
+	
+	private void procesoEnvioDeVoucher(VentaRepository ventaRepository) {
+		Timer timer = new Timer();
+
+		TimerTask task = new TimerTask() {
+
+			@Override
+			public void run()
+			{
+				log.info("Verificando envio de vouchers...");
+
+				LocalDate fechaActual = LocalDate.now();
+				List<Venta> ventas = ventaRepository.findAll();	
+				for (Venta venta : ventas) {
+					int cantDiasRestantes = venta.getViaje().getFechaSalida().compareTo(fechaActual);
+					if (venta.isActivo() && cantDiasRestantes == 2){
+						LocalDate fechaVoucher =  venta.getViaje().getFechaSalida().minusDays(1);
+						if (venta.isActivo() && fechaVoucher.compareTo(fechaActual) == 0 && (venta.getEstadoTransaccion() != EstadoTransaccion.VOUCHERENVIADO 
+								|| venta.getEstadoTransaccion() != EstadoTransaccion.CANCELADA  || venta.getEstadoTransaccion() != EstadoTransaccion.PENALIZADA)){
+							venta.setEstadoTransaccion(EstadoTransaccion.VOUCHERENVIADO);
+							ventaRepository.save(venta);
+							EnviadorDeMail enviadorDeMail = new EnviadorDeMail();
+							List<Venta> ventasList = new ArrayList<Venta>();
+							ventasList.add(venta);
+							VoucherVentaJR voucherVenta = new VoucherVentaJR(ventas);
+							voucherVenta.exportarAPdf(venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni());
+							enviadorDeMail.enviarConGmailVoucher(venta.getCliente().getEmail(),
+									"Voucher del Viaje- " + venta.getCliente().getNombreyApellido()+ "-"+ venta.getCliente().getDni(), venta);
+						}
+					}
+				
+				}
+			}
+		};
+
+		timer.schedule(task, 10, 800000); //una vez por minuto
+	}
+		
 
 	private void setSurcursales(SucursalRepository sucursalRepository) {
 		if(sucursalRepository.findAll().isEmpty()){
@@ -233,8 +298,10 @@ public class Proyecto1Application {
 		configService.createConfiguracionIfNotExist("cant_anios_venc_puntos", "1");
 		configService.createConfiguracionIfNotExist("movimiento_caja-numero_cuenta","100");
 		configService.createConfiguracionIfNotExist("punto_por_pesos", "10");
-		//TODO reemplazar con nombre fichero
-		configService.createConfiguracionIfNotExist("backup_path", "/home/ricardo/eclipse-workspace/proyectoP1/");
+		configService.createConfiguracionIfNotExist("mail_remitente_gmail", "proy.despegue");
+		configService.createConfiguracionIfNotExist("mail_remitente_pass_gmail", "Laboratorio1");
+		configService.createConfiguracionIfNotExist("puerto_seguro_google", "587");
+
 	}
 
 	private void crearFormasDePago(VentaService ventaService) {
@@ -268,6 +335,10 @@ public class Proyecto1Application {
 		userVendedor.setEnabled(true);
 		userVendedor.setSucursal(sucursal);
 		userService.createUserIfNotExist(userVendedor);
+		User userVendedor2 = new User("vendedor2", "vendedor2", userService.getRolByName("VENDEDOR"));
+		userVendedor2.setEnabled(true);
+		userVendedor2.setSucursal(sucursal);
+		userService.createUserIfNotExist(userVendedor2);
 		User userSupervisor = new User("supervisor", "supervisor", userService.getRolByName("SUPERVISOR"));
 		userSupervisor.setEnabled(true);
 		userSupervisor.setSucursal(sucursal);

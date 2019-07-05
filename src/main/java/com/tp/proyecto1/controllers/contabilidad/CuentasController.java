@@ -1,8 +1,7 @@
 package com.tp.proyecto1.controllers.contabilidad;
 
-import org.springframework.stereotype.Controller;
-
 import com.tp.proyecto1.views.contabilidad.CuentasView;
+import org.springframework.stereotype.Controller;
 
 @Controller
 public class CuentasController {

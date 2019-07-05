@@ -1,9 +1,5 @@
 package com.tp.proyecto1.views.contabilidad;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.tp.proyecto1.model.contabilidad.Cuenta;
 import com.tp.proyecto1.model.sucursales.Sucursal;
 import com.tp.proyecto1.utils.ConfigDatePicker;
@@ -18,7 +14,10 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.textfield.NumberField;
-import com.vaadin.flow.component.textfield.TextField;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SalidaCajaForm extends Dialog{
 

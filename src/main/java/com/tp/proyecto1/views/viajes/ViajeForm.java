@@ -19,6 +19,8 @@ import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.component.timepicker.TimePicker;
 import org.vaadin.gatanaso.MultiselectComboBox;
 
+import java.time.LocalDate;
+
 public class ViajeForm extends Dialog {
 
     private VerticalLayout mainLayout = new VerticalLayout();
@@ -95,6 +97,7 @@ public class ViajeForm extends Dialog {
         fechaSalida = new DatePicker();
 		ConfigDatePicker configDatePicker = new ConfigDatePicker();
 		configDatePicker.setearLenguajeEspañol(fechaSalida);
+		fechaSalida.setMin(LocalDate.now());
         horaSalida = new TimePicker();
         cantidadDias = new NumberField();
         cantidadDias.setMin(0);

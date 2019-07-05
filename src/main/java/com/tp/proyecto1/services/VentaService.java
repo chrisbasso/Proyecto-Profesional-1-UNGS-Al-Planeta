@@ -3,11 +3,8 @@ package com.tp.proyecto1.services;
 import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.tp.proyecto1.model.pasajes.PasajeVenta;
 import com.tp.proyecto1.model.pasajes.Venta;
-import com.tp.proyecto1.repository.pasajes.PasajeVentaRepository;
 import com.tp.proyecto1.repository.pasajes.FormaDePagoRepository;
-
-import java.util.List;
-
+import com.tp.proyecto1.repository.pasajes.PasajeVentaRepository;
 import com.tp.proyecto1.repository.pasajes.VentaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class VentaService {
@@ -85,4 +84,9 @@ public class VentaService {
         return formaDePagoRepository.findAll();
 
     }
+    
+	@Transactional
+	public List <Venta> findByIdCliente(Long idCliente){
+		return ventaRepository.findAllByCliente_Id(idCliente);
+	}
 }

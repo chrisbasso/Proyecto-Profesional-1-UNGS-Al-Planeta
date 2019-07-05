@@ -61,4 +61,10 @@ public class Continente {
 	public int hashCode() {
 		return Objects.hash(id, nombre);
 	}
+	
+	@Override
+	public String toString()
+	{
+		return nombre;
+	}
 }

@@ -25,6 +25,7 @@ public class ReportesView extends VerticalLayout {
 	private Component gridDinamico = new Grid();
 	private HorizontalLayout hlCampos = new HorizontalLayout();
 
+	private HorizontalLayout hlGraficos = new HorizontalLayout();
 
 	public ReportesView() {
 
@@ -39,7 +40,8 @@ public class ReportesView extends VerticalLayout {
 		hlCampos.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
 		setCampos();
 		this.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-		this.add(hlCampos, gridDinamico);
+		this.add(hlCampos,hlGraficos, gridDinamico);
+		hlGraficos.setSizeFull();
 	}
 
 	public void setCampos() {
@@ -147,5 +149,13 @@ public class ReportesView extends VerticalLayout {
 
 	public void setHlCampos(HorizontalLayout hlCampos) {
 		this.hlCampos = hlCampos;
+	}
+
+	public HorizontalLayout getHlGraficos() {
+		return hlGraficos;
+	}
+
+	public void setHlGraficos(HorizontalLayout hlGraficos) {
+		this.hlGraficos = hlGraficos;
 	}
 }

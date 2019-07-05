@@ -1,8 +1,5 @@
 package com.tp.proyecto1.views.eventos;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.tp.proyecto1.Proyecto1Application;
 import com.tp.proyecto1.model.users.User;
 import com.tp.proyecto1.utils.BuscadorClientesComponent;
@@ -22,6 +19,9 @@ import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.timepicker.TimePicker;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ConsultaForm extends Dialog {
 
@@ -110,6 +110,7 @@ public class ConsultaForm extends Dialog {
 
         if(Proyecto1Application.logUser.getRol().getName().equals("VENDEDOR")){
             comboUsuarios.setVisible(false);
+            comboUsuarios.setEnabled(false);
         }
 
     }

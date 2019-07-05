@@ -1,7 +1,5 @@
 package com.tp.proyecto1.views.reserva;
 
-import java.util.List;
-
 import com.tp.proyecto1.model.pasajes.FormaDePago;
 import com.tp.proyecto1.model.pasajes.Pago;
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
@@ -21,7 +19,8 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
-import com.vaadin.flow.component.textfield.TextField;
+
+import java.util.List;
 
 public class AgregarPagoForm extends Dialog{
 

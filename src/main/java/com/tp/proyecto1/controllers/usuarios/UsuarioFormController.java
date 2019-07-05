@@ -20,6 +20,8 @@ import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
+
 
 @Controller
 @UIScope
@@ -38,6 +40,7 @@ public class UsuarioFormController {
 
 	private Binder<User> binderUser = new Binder<>();
 
+
 	public UsuarioFormController(User user) {
 		Inject.Inject(this);
 		this.usuarioForm = new UsuarioForm();
@@ -49,14 +52,35 @@ public class UsuarioFormController {
 
 	private void setComponents() {
 
-		usuarioForm.getComboRoles().setItems(userService.getRoles());
+
+		List<Role> roles = userService.getRoles();
+		usuarioForm.getComboRoles().setItems(roles);
+
 		usuarioForm.getComboSucursal().setItems(sucursalService.findAll());
+
+		if(user!=null){
+			if(user.getCliente()!=null){
+				usuarioForm.getBuscadorClientes().getFiltro().setValue(user.getCliente().getId().toString());
+			}
+		}
 
 	}
 
 	private void setListeners() {
 		usuarioForm.getBtnGuardar().addClickListener(e-> saveUser());
 		usuarioForm.getBtnCancelar().addClickListener(e-> usuarioForm.close());
+		usuarioForm.getComboRoles().addValueChangeListener(e-> verificarRol());
+	}
+
+	private void verificarRol() {
+
+		if(usuarioForm.getComboRoles().getValue().getName().equals("CLIENTE")){
+			usuarioForm.getBuscadorClientes().setEnabled(true);
+		}else{
+			usuarioForm.getBuscadorClientes().setEnabled(false);
+			usuarioForm.getBuscadorClientes().getFiltro().setValue("");
+			usuarioForm.getDescripcionCliente().setText("");
+		}
 	}
 
 	private void saveUser() {
@@ -76,6 +100,7 @@ public class UsuarioFormController {
 			}
 		}
 		if (binderUser.writeBeanIfValid(user)) {
+				user.setCliente(usuarioForm.getBuscadorClientes().getCliente());
 				userService.save(user);
 				usuarioForm.close();
 				changeHandler.onChange();
@@ -93,6 +118,7 @@ public class UsuarioFormController {
 
 	private void setBinders() {
 		setBinderField(usuarioForm.getTxtUsuario(), User::getUser, User::setUser, true);
+		setBinderField(usuarioForm.getEmailfield(), User::getEmail, User::setEmail, true);
 		setBinderField(usuarioForm.getTxtPassword(), User::getPassword, User::setPassword, true);
 		setBinderFieldComboRol(usuarioForm.getComboRoles(), User::getRol, User::setRol, true);
 		setBinderFieldComboSucursal(usuarioForm.getComboSucursal(), User::getSucursal, User::setSucursal, true);

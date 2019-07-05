@@ -1,10 +1,9 @@
 package com.tp.proyecto1.model.pasajes;
 
-import java.util.List;
+import com.tp.proyecto1.model.clientes.Cliente;
 
 import javax.persistence.Entity;
-
-import com.tp.proyecto1.model.clientes.Cliente;
+import java.util.List;
 
 @Entity
 public class Reserva extends Transaccion{

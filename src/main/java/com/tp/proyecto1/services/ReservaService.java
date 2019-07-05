@@ -1,18 +1,16 @@
 package com.tp.proyecto1.services;
 
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-
+import com.tp.proyecto1.model.pasajes.Reserva;
+import com.tp.proyecto1.model.viajes.Ciudad;
+import com.tp.proyecto1.repository.pasajes.ReservaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.tp.proyecto1.model.pasajes.Reserva;
-import com.tp.proyecto1.model.viajes.Ciudad;
-import com.tp.proyecto1.repository.pasajes.ReservaRepository;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReservaService {

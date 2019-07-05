@@ -1,5 +1,6 @@
 package com.tp.proyecto1.controllers.configuracion;
 
+
 import java.io.File;
 import java.io.FileFilter;
 
@@ -16,6 +17,15 @@ import com.tp.proyecto1.views.configuracion.BackUpCrearForm;
 import com.tp.proyecto1.views.configuracion.BackUpTomarForm;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.spring.annotation.UIScope;
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Controller;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+import java.io.FileFilter;
 
 @Controller
 @UIScope
@@ -26,6 +36,9 @@ public class DBController {
 	private ConfiguracionService configService;
 	private BackUpCrearForm bckUpCrearView;
 	private BackUpTomarForm bckUpTomarView;
+
+	@Autowired
+	private Environment env;
 	
 	public DBController() {
 		Inject.Inject(this);
@@ -46,7 +59,7 @@ public class DBController {
 		if(bckUpCrearView.getNombreArchivo() != null) {
 			bckUpCrearView.habilitarGuardado(true);
 		}else {
-			bckUpCrearView.habilitarGuardado(true);
+			bckUpCrearView.habilitarGuardado(false);
 		}		
 	}
 	
@@ -72,8 +85,14 @@ public class DBController {
      *            Full path and name are required to save the backup.            
      *            Example = "/home/ricardo/eclipse-workspace/db/alplaneta_grupo4.sql"
      */
-	private boolean backup(String fullPathAndName) {	 
-		String sqlCmd = "mysqldump -uroot -ppass --add-drop-database -B alplaneta_grupo4 -r " + fullPathAndName;		
+
+	private boolean backup(String fullPathAndName) {
+
+		String username = env.getProperty("spring.datasource.username");
+		String pass = env.getProperty("spring.datasource.password");
+
+		String sqlCmd = "mysqldump -u"+username + " -p" + pass + " --add-drop-database -B alplaneta_grupo4 -r " + fullPathAndName;
+
 		System.out.println("Running backup");
 		boolean result = execute(sqlCmd);
 		if(!result) {
@@ -120,8 +139,9 @@ public class DBController {
 	}
 	
 	private void cargarArchivos() {
-		String path = configService.findValueByKey("backup_path");
-		File folder = new File(path);
+
+		File folder = new File("./");
+
 	    FileFilter ff = new FileFilter() {			
 			@Override
 			public boolean accept(File pathname) {
@@ -146,7 +166,12 @@ public class DBController {
      *            Example = "/home/ricardo/eclipse-workspace/db/alplaneta_grupo4.sql"
      */	
 	private boolean restore(String fullPathAndName) {
-		String[] sqlCmd = new String[]{"mysql", "--user=root", "--password=pass", "-e", "source " + fullPathAndName};	
+
+		String username = env.getProperty("spring.datasource.username");
+		String pass = env.getProperty("spring.datasource.password");
+
+		String[] sqlCmd = new String[]{"mysql", "--user=" + username, "--password=" + pass, "-e", "source " + fullPathAndName};
+
 		System.out.println("Running restore");
 		boolean result = execute(sqlCmd);
 		if(!result) {

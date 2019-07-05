@@ -1,9 +1,5 @@
 package com.tp.proyecto1.views.contabilidad;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.tp.proyecto1.model.contabilidad.Asiento;
 import com.tp.proyecto1.model.contabilidad.Cuenta;
 import com.tp.proyecto1.model.contabilidad.Posicion;
@@ -29,6 +25,10 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AsientoForm extends Dialog{
 

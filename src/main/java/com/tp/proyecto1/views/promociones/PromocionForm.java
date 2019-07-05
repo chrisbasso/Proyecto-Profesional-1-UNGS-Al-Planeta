@@ -1,10 +1,5 @@
 package com.tp.proyecto1.views.promociones;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.vaadin.gatanaso.MultiselectComboBox;
-
 import com.tp.proyecto1.model.viajes.Ciudad;
 import com.tp.proyecto1.model.viajes.Viaje;
 import com.tp.proyecto1.utils.ConfigDatePicker;
@@ -18,6 +13,10 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
+import org.vaadin.gatanaso.MultiselectComboBox;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class PromocionForm extends Dialog
 {
@@ -77,7 +76,7 @@ public class PromocionForm extends Dialog
         nroFloat.setEnabled(false);
         textAreaDescripcion = new TextArea("Descripción");
         textAreaDescripcion.setHeight("100px");
-        textAreaDescripcion.setWidth("770px");
+        textAreaDescripcion.setWidth("1170px");
         
         cantidadPasajes = new TextField();
         cantidadPasajes.setPattern("[0-9]*");
@@ -114,7 +113,7 @@ public class PromocionForm extends Dialog
         mainLayout.setSizeFull();
 
         this.add(mainLayout);
-        this.setWidth("800px");
+        this.setWidth("1200px");
         this.setHeight("100%");
 
     }
